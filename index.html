@@ -1,0 +1,980 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Obelisk DEX - Your Decentralized Post-Quantum Bank</title>
+    <meta name="description" content="Self-custody decentralized exchange with post-quantum security. Your keys, your crypto, your bank.">
+
+    <!-- Security Headers -->
+    <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline' https://unpkg.com; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src https://fonts.gstatic.com; connect-src https://api.hyperliquid.xyz https://api.uniswap.org https://api.coingecko.com https://*.infura.io https://*.alchemy.com wss://api.hyperliquid.xyz;">
+
+    <!-- Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+
+    <link rel="stylesheet" href="css/main.css">
+    <link rel="stylesheet" href="css/banking.css">
+    <link rel="stylesheet" href="css/tools.css">
+    <link rel="icon" type="image/svg+xml" href="assets/obelisk-icon.svg">
+</head>
+<body>
+    <!-- App Container -->
+    <div id="app">
+        <!-- Header -->
+        <header class="header">
+            <div class="header-left">
+                <div class="logo">
+                    <svg class="logo-icon" viewBox="0 0 40 40" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <path d="M20 2L8 38h24L20 2z" fill="url(#obelisk-gradient)" />
+                        <path d="M20 8L12 34h16L20 8z" fill="#0a0a0f" />
+                        <path d="M20 14L15 30h10L20 14z" fill="url(#obelisk-gradient)" opacity="0.6" />
+                        <defs>
+                            <linearGradient id="obelisk-gradient" x1="20" y1="2" x2="20" y2="38" gradientUnits="userSpaceOnUse">
+                                <stop stop-color="#00f0ff" />
+                                <stop offset="1" stop-color="#0080ff" />
+                            </linearGradient>
+                        </defs>
+                    </svg>
+                    <span class="logo-text">OBELISK</span>
+                    <span class="logo-badge">Post-Quantum DEX</span>
+                </div>
+                <nav class="nav-tabs">
+                    <button class="nav-tab active" data-tab="trade">Trade</button>
+                    <button class="nav-tab" data-tab="swap">Swap</button>
+                    <button class="nav-tab" data-tab="banking">Banking</button>
+                    <button class="nav-tab" data-tab="bonds">Bonds</button>
+                    <button class="nav-tab" data-tab="tools">Tools</button>
+                    <button class="nav-tab" data-tab="wallet">Wallet</button>
+                    <button class="nav-tab" data-tab="portfolio">Portfolio</button>
+                </nav>
+            </div>
+            <div class="header-right">
+                <button class="btn-lang" id="btn-lang" title="Changer de langue">
+                    <span id="lang-flag">🇬🇧</span>
+                </button>
+                <div class="network-selector">
+                    <span class="network-dot"></span>
+                    <span id="network-name">Arbitrum</span>
+                </div>
+                <button class="btn-connect" id="btn-connect-wallet">
+                    <span class="btn-icon">🔐</span>
+                    <span data-i18n="connect_wallet">Connect Wallet</span>
+                </button>
+            </div>
+        </header>
+
+        <!-- Main Content -->
+        <main class="main-content">
+            <!-- Trade Tab (Hyperliquid) -->
+            <section class="tab-content active" id="tab-trade">
+                <div class="trade-layout">
+                    <!-- Chart Section -->
+                    <div class="chart-container">
+                        <div class="chart-header">
+                            <div class="pair-selector">
+                                <span class="pair-name" id="current-pair">BTC-USD</span>
+                                <span class="pair-price positive" id="current-price">$97,234.50</span>
+                                <span class="pair-change positive" id="price-change">+2.34%</span>
+                            </div>
+                            <div class="chart-controls">
+                                <button class="chart-tf active">1H</button>
+                                <button class="chart-tf">4H</button>
+                                <button class="chart-tf">1D</button>
+                                <button class="chart-tf">1W</button>
+                            </div>
+                        </div>
+                        <div class="chart-area" id="trading-chart">
+                            <div class="chart-placeholder">
+                                <span data-i18n="tradingview_chart">📊 TradingView Chart</span>
+                                <span class="sub" data-i18n="chart_placeholder">Connect wallet to load</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Order Book -->
+                    <div class="orderbook-container">
+                        <div class="orderbook-header">
+                            <span>Order Book</span>
+                            <div class="orderbook-toggle">
+                                <button class="ob-btn active">Both</button>
+                                <button class="ob-btn">Bids</button>
+                                <button class="ob-btn">Asks</button>
+                            </div>
+                        </div>
+                        <div class="orderbook-labels">
+                            <span>Price</span>
+                            <span>Size</span>
+                            <span>Total</span>
+                        </div>
+                        <div class="orderbook-asks" id="orderbook-asks">
+                            <!-- Asks will be populated -->
+                        </div>
+                        <div class="orderbook-spread">
+                            <span id="spread-value">Spread: $12.50 (0.01%)</span>
+                        </div>
+                        <div class="orderbook-bids" id="orderbook-bids">
+                            <!-- Bids will be populated -->
+                        </div>
+                    </div>
+
+                    <!-- Order Form -->
+                    <div class="order-container">
+                        <div class="order-tabs">
+                            <button class="order-tab active" data-side="long">Long</button>
+                            <button class="order-tab" data-side="short">Short</button>
+                        </div>
+                        <div class="order-type-selector">
+                            <button class="type-btn active">Market</button>
+                            <button class="type-btn">Limit</button>
+                            <button class="type-btn">Stop</button>
+                        </div>
+                        <div class="order-form">
+                            <div class="form-group">
+                                <label>Size (USD)</label>
+                                <div class="input-group">
+                                    <input type="number" id="order-size" placeholder="0.00" />
+                                    <span class="input-suffix">USD</span>
+                                </div>
+                            </div>
+                            <div class="form-group" id="limit-price-group" style="display:none;">
+                                <label>Limit Price</label>
+                                <div class="input-group">
+                                    <input type="number" id="limit-price" placeholder="0.00" />
+                                    <span class="input-suffix">USD</span>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label>Leverage</label>
+                                <div class="leverage-slider">
+                                    <input type="range" id="leverage-slider" min="1" max="50" value="10" />
+                                    <span class="leverage-value" id="leverage-value">10x</span>
+                                </div>
+                                <div class="leverage-presets">
+                                    <button class="lev-btn">1x</button>
+                                    <button class="lev-btn">5x</button>
+                                    <button class="lev-btn active">10x</button>
+                                    <button class="lev-btn">25x</button>
+                                    <button class="lev-btn">50x</button>
+                                </div>
+                            </div>
+                            <div class="order-summary">
+                                <div class="summary-row">
+                                    <span>Entry Price</span>
+                                    <span id="entry-price">$97,234.50</span>
+                                </div>
+                                <div class="summary-row">
+                                    <span>Liquidation Price</span>
+                                    <span id="liq-price" class="warning">$87,511.05</span>
+                                </div>
+                                <div class="summary-row">
+                                    <span>Fee</span>
+                                    <span id="order-fee">~$0.50</span>
+                                </div>
+                            </div>
+                            <button class="btn-order btn-long" id="btn-place-order" disabled>
+                                Connect Wallet to Trade
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Positions -->
+                <div class="positions-section">
+                    <div class="positions-header">
+                        <button class="pos-tab active">Positions (0)</button>
+                        <button class="pos-tab">Orders (0)</button>
+                        <button class="pos-tab">History</button>
+                    </div>
+                    <div class="positions-table">
+                        <div class="positions-empty">
+                            <span>No open positions</span>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Swap Tab (Uniswap) -->
+            <section class="tab-content" id="tab-swap">
+                <div class="swap-container">
+                    <div class="swap-card">
+                        <div class="swap-header">
+                            <h2>Swap</h2>
+                            <button class="btn-settings" id="swap-settings">⚙️</button>
+                        </div>
+                        <div class="swap-form">
+                            <div class="swap-input">
+                                <div class="swap-input-header">
+                                    <span>You pay</span>
+                                    <span class="balance">Balance: <span id="from-balance">0.00</span></span>
+                                </div>
+                                <div class="swap-input-row">
+                                    <input type="number" id="swap-from-amount" placeholder="0" />
+                                    <button class="token-selector" id="from-token">
+                                        <img src="assets/eth.svg" alt="ETH" class="token-icon" onerror="this.style.display='none'">
+                                        <span>ETH</span>
+                                        <span class="dropdown-arrow">▼</span>
+                                    </button>
+                                </div>
+                            </div>
+                            <button class="swap-switch" id="btn-swap-switch">
+                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                    <path d="M7 16V4m0 0L3 8m4-4l4 4M17 8v12m0 0l4-4m-4 4l-4-4"/>
+                                </svg>
+                            </button>
+                            <div class="swap-input">
+                                <div class="swap-input-header">
+                                    <span>You receive</span>
+                                    <span class="balance">Balance: <span id="to-balance">0.00</span></span>
+                                </div>
+                                <div class="swap-input-row">
+                                    <input type="number" id="swap-to-amount" placeholder="0" readonly />
+                                    <button class="token-selector" id="to-token">
+                                        <img src="assets/usdc.svg" alt="USDC" class="token-icon" onerror="this.style.display='none'">
+                                        <span>USDC</span>
+                                        <span class="dropdown-arrow">▼</span>
+                                    </button>
+                                </div>
+                            </div>
+                            <div class="swap-details" id="swap-details" style="display:none;">
+                                <div class="detail-row">
+                                    <span>Rate</span>
+                                    <span id="swap-rate">1 ETH = 3,245.67 USDC</span>
+                                </div>
+                                <div class="detail-row">
+                                    <span>Price Impact</span>
+                                    <span id="price-impact" class="positive">&lt;0.01%</span>
+                                </div>
+                                <div class="detail-row">
+                                    <span>Network Fee</span>
+                                    <span id="network-fee">~$2.50</span>
+                                </div>
+                            </div>
+                            <button class="btn-swap" id="btn-swap" disabled>
+                                Connect Wallet to Swap
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Banking Tab (Deposit/Withdraw) -->
+            <section class="tab-content" id="tab-banking">
+                <div class="banking-container">
+                    <div class="banking-header">
+                        <h2>Deposit & Withdraw</h2>
+                        <p class="banking-subtitle">Transfer funds to trade on Hyperliquid</p>
+                    </div>
+
+                    <div class="banking-grid">
+                        <!-- Deposit Card -->
+                        <div class="banking-card">
+                            <div class="card-icon deposit-icon">
+                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                    <path d="M12 3v18m0-18l-4 4m4-4l4 4"/>
+                                    <rect x="3" y="17" width="18" height="4" rx="1"/>
+                                </svg>
+                            </div>
+                            <h3>Deposit</h3>
+                            <p>Transfer USDC from your wallet to Hyperliquid</p>
+
+                            <div class="balance-display">
+                                <span class="balance-label">Wallet Balance</span>
+                                <span class="balance-amount" id="deposit-wallet-balance">$0.00 USDC</span>
+                            </div>
+
+                            <div class="form-group">
+                                <label>Amount to Deposit</label>
+                                <div class="input-group">
+                                    <input type="number" id="deposit-amount" placeholder="0.00" min="10" step="0.01"/>
+                                    <button class="btn-max" onclick="DepositUI.setMaxDeposit()">MAX</button>
+                                    <span class="input-suffix">USDC</span>
+                                </div>
+                                <span class="input-hint">Minimum: $10 USDC</span>
+                            </div>
+
+                            <div class="fee-info">
+                                <div class="fee-row">
+                                    <span>Network Fee</span>
+                                    <span id="deposit-gas-fee">~$0.50</span>
+                                </div>
+                                <div class="fee-row">
+                                    <span>Deposit Fee</span>
+                                    <span class="positive">FREE</span>
+                                </div>
+                            </div>
+
+                            <button class="btn-primary btn-deposit" id="btn-deposit" disabled>
+                                Connect Wallet to Deposit
+                            </button>
+                        </div>
+
+                        <!-- Withdraw Card -->
+                        <div class="banking-card">
+                            <div class="card-icon withdraw-icon">
+                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                    <path d="M12 21V3m0 18l-4-4m4 4l4-4"/>
+                                    <rect x="3" y="3" width="18" height="4" rx="1"/>
+                                </svg>
+                            </div>
+                            <h3>Withdraw</h3>
+                            <p>Transfer USDC from Hyperliquid to your wallet</p>
+
+                            <div class="balance-display">
+                                <span class="balance-label">Hyperliquid Balance</span>
+                                <span class="balance-amount" id="withdraw-hl-balance">$0.00 USDC</span>
+                            </div>
+
+                            <div class="form-group">
+                                <label>Amount to Withdraw</label>
+                                <div class="input-group">
+                                    <input type="number" id="withdraw-amount" placeholder="0.00" min="2" step="0.01"/>
+                                    <button class="btn-max" onclick="DepositUI.setMaxWithdraw()">MAX</button>
+                                    <span class="input-suffix">USDC</span>
+                                </div>
+                                <span class="input-hint">Minimum: $2 USDC</span>
+                            </div>
+
+                            <div class="fee-info">
+                                <div class="fee-row">
+                                    <span>Withdrawal Fee</span>
+                                    <span>$1.00</span>
+                                </div>
+                                <div class="fee-row">
+                                    <span>You'll receive</span>
+                                    <span id="withdraw-receive">$0.00</span>
+                                </div>
+                            </div>
+
+                            <button class="btn-secondary btn-withdraw" id="btn-withdraw" disabled>
+                                Connect Wallet to Withdraw
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Transaction History -->
+                    <div class="tx-history">
+                        <h3>Recent Transactions</h3>
+                        <div class="tx-list" id="banking-tx-list">
+                            <div class="tx-empty">No transactions yet</div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Bonds Tab (Fixed Income) -->
+            <section class="tab-content" id="tab-bonds">
+                <div class="bonds-container">
+                    <div class="bonds-header">
+                        <div class="header-content">
+                            <h2>Tokenized Bonds & Fixed Income</h2>
+                            <p class="bonds-subtitle">Earn stable yields from US Treasuries, Corporate Bonds & DeFi</p>
+                        </div>
+                        <div class="investor-toggle">
+                            <button class="toggle-btn active" data-type="retail">Retail</button>
+                            <button class="toggle-btn" data-type="institutional">Institutional</button>
+                        </div>
+                    </div>
+
+                    <!-- Portfolio Summary -->
+                    <div class="bonds-summary">
+                        <div class="summary-stat">
+                            <span class="stat-label">Total Invested</span>
+                            <span class="stat-value" id="bonds-total">$0.00</span>
+                        </div>
+                        <div class="summary-stat">
+                            <span class="stat-label">Accrued Yield</span>
+                            <span class="stat-value positive" id="bonds-yield">+$0.00</span>
+                        </div>
+                        <div class="summary-stat">
+                            <span class="stat-label">Avg APY</span>
+                            <span class="stat-value" id="bonds-avg-apy">0.00%</span>
+                        </div>
+                    </div>
+
+                    <!-- Product Categories -->
+                    <div class="bond-categories">
+                        <button class="cat-btn active" data-category="all">All Products</button>
+                        <button class="cat-btn" data-category="treasury">US Treasury</button>
+                        <button class="cat-btn" data-category="corporate">Corporate</button>
+                        <button class="cat-btn" data-category="defi">DeFi Yield</button>
+                        <button class="cat-btn" data-category="credit">Credit</button>
+                    </div>
+
+                    <!-- Bond Products Grid -->
+                    <div class="bonds-grid" id="bonds-grid">
+                        <!-- US Treasury - USDY -->
+                        <div class="bond-card" data-product="USDY" data-type="treasury">
+                            <div class="bond-header">
+                                <div class="bond-info">
+                                    <span class="bond-name">US Dollar Yield</span>
+                                    <span class="bond-issuer">Ondo Finance</span>
+                                </div>
+                                <span class="bond-rating aaa">AAA</span>
+                            </div>
+                            <div class="bond-apy">
+                                <span class="apy-value">5.25%</span>
+                                <span class="apy-label">APY</span>
+                            </div>
+                            <div class="bond-details">
+                                <div class="detail">
+                                    <span class="label">Underlying</span>
+                                    <span class="value">US Treasuries</span>
+                                </div>
+                                <div class="detail">
+                                    <span class="label">Min. Investment</span>
+                                    <span class="value">$100</span>
+                                </div>
+                                <div class="detail">
+                                    <span class="label">Liquidity</span>
+                                    <span class="value">Daily</span>
+                                </div>
+                            </div>
+                            <button class="btn-invest" data-product="USDY">Invest</button>
+                        </div>
+
+                        <!-- OUSG - Institutional -->
+                        <div class="bond-card institutional-only" data-product="OUSG" data-type="treasury">
+                            <div class="institutional-badge">Institutional</div>
+                            <div class="bond-header">
+                                <div class="bond-info">
+                                    <span class="bond-name">Short-Term US Govt</span>
+                                    <span class="bond-issuer">Ondo Finance</span>
+                                </div>
+                                <span class="bond-rating aaa">AAA</span>
+                            </div>
+                            <div class="bond-apy">
+                                <span class="apy-value">5.35%</span>
+                                <span class="apy-label">APY</span>
+                            </div>
+                            <div class="bond-details">
+                                <div class="detail">
+                                    <span class="label">Underlying</span>
+                                    <span class="value">T-Bills</span>
+                                </div>
+                                <div class="detail">
+                                    <span class="label">Min. Investment</span>
+                                    <span class="value">$100,000</span>
+                                </div>
+                                <div class="detail">
+                                    <span class="label">Maturity</span>
+                                    <span class="value">3-6 months</span>
+                                </div>
+                            </div>
+                            <button class="btn-invest" data-product="OUSG">Invest</button>
+                        </div>
+
+                        <!-- BlackRock BUIDL -->
+                        <div class="bond-card institutional-only premium" data-product="BUIDL" data-type="money-market">
+                            <div class="institutional-badge">Institutional</div>
+                            <div class="premium-badge">Premium</div>
+                            <div class="bond-header">
+                                <div class="bond-info">
+                                    <span class="bond-name">BlackRock USD Fund</span>
+                                    <span class="bond-issuer">BlackRock / Securitize</span>
+                                </div>
+                                <span class="bond-rating aaa">AAA</span>
+                            </div>
+                            <div class="bond-apy">
+                                <span class="apy-value">5.30%</span>
+                                <span class="apy-label">APY</span>
+                            </div>
+                            <div class="bond-details">
+                                <div class="detail">
+                                    <span class="label">Underlying</span>
+                                    <span class="value">T-Bills, Repos</span>
+                                </div>
+                                <div class="detail">
+                                    <span class="label">Min. Investment</span>
+                                    <span class="value">$5,000,000</span>
+                                </div>
+                                <div class="detail">
+                                    <span class="label">Liquidity</span>
+                                    <span class="value">Daily</span>
+                                </div>
+                            </div>
+                            <button class="btn-invest" data-product="BUIDL">Request Access</button>
+                        </div>
+
+                        <!-- Corporate Bond -->
+                        <div class="bond-card" data-product="CORP_AAA" data-type="corporate">
+                            <div class="bond-header">
+                                <div class="bond-info">
+                                    <span class="bond-name">Investment Grade Corp</span>
+                                    <span class="bond-issuer">Maple Finance</span>
+                                </div>
+                                <span class="bond-rating a">A</span>
+                            </div>
+                            <div class="bond-apy">
+                                <span class="apy-value">7.50%</span>
+                                <span class="apy-label">APY</span>
+                            </div>
+                            <div class="bond-details">
+                                <div class="detail">
+                                    <span class="label">Underlying</span>
+                                    <span class="value">Corporate Debt</span>
+                                </div>
+                                <div class="detail">
+                                    <span class="label">Min. Investment</span>
+                                    <span class="value">$1,000</span>
+                                </div>
+                                <div class="detail">
+                                    <span class="label">Maturity</span>
+                                    <span class="value">90 days</span>
+                                </div>
+                            </div>
+                            <button class="btn-invest" data-product="CORP_AAA">Invest</button>
+                        </div>
+
+                        <!-- sDAI -->
+                        <div class="bond-card" data-product="SDAI" data-type="defi">
+                            <div class="bond-header">
+                                <div class="bond-info">
+                                    <span class="bond-name">Spark DAI</span>
+                                    <span class="bond-issuer">MakerDAO / Spark</span>
+                                </div>
+                                <span class="bond-rating defi">DeFi</span>
+                            </div>
+                            <div class="bond-apy">
+                                <span class="apy-value">8.00%</span>
+                                <span class="apy-label">APY</span>
+                            </div>
+                            <div class="bond-details">
+                                <div class="detail">
+                                    <span class="label">Underlying</span>
+                                    <span class="value">DSR + RWA</span>
+                                </div>
+                                <div class="detail">
+                                    <span class="label">Min. Investment</span>
+                                    <span class="value">$1</span>
+                                </div>
+                                <div class="detail">
+                                    <span class="label">Liquidity</span>
+                                    <span class="value">Instant</span>
+                                </div>
+                            </div>
+                            <button class="btn-invest" data-product="SDAI">Invest</button>
+                        </div>
+
+                        <!-- High Yield Credit -->
+                        <div class="bond-card high-risk" data-product="CREDIT" data-type="credit">
+                            <div class="risk-badge">High Yield</div>
+                            <div class="bond-header">
+                                <div class="bond-info">
+                                    <span class="bond-name">DeFi Credit Pool</span>
+                                    <span class="bond-issuer">Centrifuge</span>
+                                </div>
+                                <span class="bond-rating b">B+</span>
+                            </div>
+                            <div class="bond-apy highlight">
+                                <span class="apy-value">12.00%</span>
+                                <span class="apy-label">APY</span>
+                            </div>
+                            <div class="bond-details">
+                                <div class="detail">
+                                    <span class="label">Underlying</span>
+                                    <span class="value">Trade Finance</span>
+                                </div>
+                                <div class="detail">
+                                    <span class="label">Min. Investment</span>
+                                    <span class="value">$500</span>
+                                </div>
+                                <div class="detail">
+                                    <span class="label">Maturity</span>
+                                    <span class="value">30-180 days</span>
+                                </div>
+                            </div>
+                            <button class="btn-invest" data-product="CREDIT">Invest</button>
+                        </div>
+                    </div>
+
+                    <!-- Institutional Access Section -->
+                    <div class="institutional-section" id="institutional-section" style="display:none;">
+                        <div class="inst-card">
+                            <h3>Institutional Access</h3>
+                            <p>Access exclusive bond products with higher yields and larger allocations.</p>
+
+                            <div class="requirements">
+                                <h4>Requirements</h4>
+                                <ul>
+                                    <li>Minimum $100,000 investment</li>
+                                    <li>Accredited investor verification</li>
+                                    <li>KYC/AML compliance</li>
+                                </ul>
+                            </div>
+
+                            <button class="btn-primary" id="btn-request-institutional">
+                                Request Institutional Access
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- My Positions -->
+                    <div class="my-positions" id="bond-positions">
+                        <h3>My Bond Positions</h3>
+                        <div class="positions-list" id="bond-positions-list">
+                            <div class="positions-empty">
+                                <span>No bond positions yet</span>
+                                <span class="sub">Invest in bonds above to start earning yield</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Tools Tab (Unique Features) -->
+            <section class="tab-content" id="tab-tools">
+                <div class="tools-container">
+                    <div class="tools-header">
+                        <h2>Unique Trading Tools</h2>
+                        <p class="tools-subtitle">Advanced features that set Obelisk apart</p>
+                    </div>
+
+                    <!-- Smart Intent Trading -->
+                    <div class="intent-section">
+                        <h3>Smart Intent Trading</h3>
+                        <p style="color: rgba(255,255,255,0.7); margin-bottom: 16px;">Trade using natural language. Just tell us what you want to do.</p>
+
+                        <form id="intent-form" class="intent-form">
+                            <input type="text" id="intent-input" class="intent-input"
+                                   placeholder='Try: "DCA $100 into ETH weekly" or "Stop loss at $3000"' />
+                            <button type="submit" class="btn-primary intent-submit">Create Intent</button>
+                        </form>
+
+                        <div id="intent-suggestions" class="intent-suggestions"></div>
+
+                        <h4 style="margin: 20px 0 12px;">Active Intents</h4>
+                        <div id="active-intents" class="active-intents">
+                            <p class="no-intents">No active intents</p>
+                        </div>
+                    </div>
+
+                    <!-- Cross-Chain Arbitrage Scanner -->
+                    <div class="arbitrage-section">
+                        <h3>Cross-Chain Arbitrage Scanner</h3>
+                        <p style="color: rgba(255,255,255,0.7); margin-bottom: 16px;">Find price differences across DEXes and chains in real-time.</p>
+
+                        <div class="scanner-controls">
+                            <button id="start-scanner" class="btn-primary scanner-btn">
+                                Start Scanner
+                            </button>
+                            <button id="stop-scanner" class="btn-secondary scanner-btn" disabled>
+                                Stop Scanner
+                            </button>
+                        </div>
+
+                        <div id="arbitrage-opportunities" class="arbitrage-opportunities">
+                            <p class="no-opportunities">Click "Start Scanner" to find opportunities</p>
+                        </div>
+                    </div>
+
+                    <!-- AI Portfolio Advisor -->
+                    <div class="advisor-section">
+                        <div class="advisor-header">
+                            <div>
+                                <h3>AI Portfolio Advisor</h3>
+                                <p style="color: rgba(255,255,255,0.7);">Get personalized recommendations based on your portfolio.</p>
+                            </div>
+                            <button id="analyze-portfolio" class="btn-primary">
+                                Analyze Portfolio
+                            </button>
+                        </div>
+
+                        <div id="advisor-results"></div>
+                    </div>
+
+                    <!-- Social Recovery -->
+                    <div class="recovery-section">
+                        <h3>Social Recovery Guardians</h3>
+                        <p style="color: rgba(255,255,255,0.7); margin-bottom: 16px;">Recover your wallet without a seed phrase using trusted contacts.</p>
+
+                        <div id="recovery-status"></div>
+
+                        <form id="guardian-setup-form" class="guardian-setup-form">
+                            <div class="form-group">
+                                <label>Guardian Addresses</label>
+                                <textarea id="guardian-addresses"
+                                          placeholder="Enter guardian wallet addresses (one per line)&#10;0x123...&#10;0x456..."></textarea>
+                                <span class="form-help">Add 2-7 trusted addresses who can help recover your wallet</span>
+                            </div>
+                            <div class="form-group">
+                                <label>Recovery Threshold</label>
+                                <input type="number" id="guardian-threshold" min="2" max="7" value="2" />
+                                <span class="form-help">Number of guardians required to approve recovery</span>
+                            </div>
+                            <div class="form-group">
+                                <label>Wallet Password</label>
+                                <input type="password" id="recovery-password" placeholder="Your wallet password" />
+                            </div>
+                            <button type="submit" class="btn-primary">Setup Guardians</button>
+                        </form>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Wallet Tab (Post-Quantum) -->
+            <section class="tab-content" id="tab-wallet">
+                <div class="wallet-container">
+                    <!-- No Wallet State -->
+                    <div class="wallet-empty" id="wallet-empty">
+                        <div class="wallet-hero">
+                            <div class="shield-icon">
+                                <svg viewBox="0 0 64 64" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                    <path d="M32 4L8 16v16c0 14.4 10.24 27.84 24 32 13.76-4.16 24-17.6 24-32V16L32 4z" fill="url(#shield-grad)" />
+                                    <path d="M32 12l-18 9v12c0 10.8 7.68 20.88 18 24 10.32-3.12 18-13.2 18-24V21l-18-9z" fill="#0a0a0f" />
+                                    <path d="M28 32l-4-4-2 2 6 6 12-12-2-2-10 10z" fill="#00f0ff" />
+                                    <defs>
+                                        <linearGradient id="shield-grad" x1="32" y1="4" x2="32" y2="52" gradientUnits="userSpaceOnUse">
+                                            <stop stop-color="#00f0ff" />
+                                            <stop offset="1" stop-color="#0080ff" />
+                                        </linearGradient>
+                                    </defs>
+                                </svg>
+                            </div>
+                            <h2>Post-Quantum Secure Wallet</h2>
+                            <p class="hero-subtitle">Your keys never leave your device. Protected against quantum computers.</p>
+                            <div class="security-badges">
+                                <span class="badge">🔐 CRYSTALS-Kyber</span>
+                                <span class="badge">✍️ CRYSTALS-Dilithium</span>
+                                <span class="badge">🌳 SPHINCS+</span>
+                                <span class="badge">🛡️ AES-256-GCM</span>
+                                <span class="badge">🔑 Argon2id</span>
+                                <span class="badge">👻 Stealth Addresses</span>
+                                <span class="badge">🔀 Private Transactions</span>
+                            </div>
+                        </div>
+                        <div class="wallet-actions">
+                            <button class="btn-primary btn-create" id="btn-create-wallet">
+                                <span class="btn-icon">✨</span>
+                                Create New Wallet
+                            </button>
+                            <button class="btn-secondary btn-import" id="btn-import-wallet">
+                                <span class="btn-icon">📥</span>
+                                Import Existing Wallet
+                            </button>
+                            <button class="btn-secondary btn-connect-external" id="btn-connect-external">
+                                <span class="btn-icon">🔗</span>
+                                Connect External Wallet
+                            </button>
+                        </div>
+                        <div class="privacy-notice">
+                            <div class="notice-icon">ℹ️</div>
+                            <div class="notice-text">
+                                <strong>Zero-Knowledge Architecture</strong>
+                                <p>Obelisk never stores your keys, seeds, or personal data. Everything is encrypted locally on your device with your password. We cannot access your funds - even if compelled by law.</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Wallet Connected State -->
+                    <div class="wallet-connected" id="wallet-connected" style="display:none;">
+                        <div class="wallet-header-section">
+                            <div class="wallet-info">
+                                <div class="wallet-address-display">
+                                    <span class="address-label">Address</span>
+                                    <div class="address-row">
+                                        <span class="address" id="wallet-address">0x1234...5678</span>
+                                        <button class="btn-copy" id="btn-copy-address">📋</button>
+                                    </div>
+                                </div>
+                                <div class="wallet-security-status">
+                                    <span class="security-icon">🛡️</span>
+                                    <span class="security-text">Post-Quantum Protected</span>
+                                </div>
+                            </div>
+                            <div class="wallet-balance-card">
+                                <span class="balance-label">Total Balance</span>
+                                <span class="balance-value" id="total-balance">$0.00</span>
+                            </div>
+                        </div>
+
+                        <div class="wallet-assets">
+                            <div class="assets-header">
+                                <h3>Assets</h3>
+                                <button class="btn-refresh" id="btn-refresh-balances">🔄</button>
+                            </div>
+                            <div class="assets-list" id="assets-list">
+                                <div class="asset-item">
+                                    <div class="asset-info">
+                                        <div class="asset-icon">Ξ</div>
+                                        <div class="asset-details">
+                                            <span class="asset-name">Ethereum</span>
+                                            <span class="asset-symbol">ETH</span>
+                                        </div>
+                                    </div>
+                                    <div class="asset-balance">
+                                        <span class="asset-amount">0.00</span>
+                                        <span class="asset-value">$0.00</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="wallet-actions-connected">
+                            <button class="btn-action" id="btn-send">
+                                <span>↑</span> Send
+                            </button>
+                            <button class="btn-action" id="btn-send-private">
+                                <span>👻</span> Private Send
+                            </button>
+                            <button class="btn-action" id="btn-receive">
+                                <span>↓</span> Receive
+                            </button>
+                            <button class="btn-action" id="btn-stealth">
+                                <span>🎭</span> Stealth Address
+                            </button>
+                            <button class="btn-action" id="btn-backup">
+                                <span>💾</span> Backup
+                            </button>
+                        </div>
+
+                        <!-- Privacy Features -->
+                        <div class="privacy-features">
+                            <h3>Privacy Features</h3>
+                            <div class="privacy-grid">
+                                <div class="privacy-card">
+                                    <div class="privacy-icon">👻</div>
+                                    <h4>Stealth Addresses</h4>
+                                    <p>Generate one-time addresses for each payment. Impossible to link.</p>
+                                    <span class="meta-address" id="meta-address">Not available</span>
+                                    <button class="btn-copy-meta" id="btn-copy-meta">Copy Meta-Address</button>
+                                </div>
+                                <div class="privacy-card">
+                                    <div class="privacy-icon">🔀</div>
+                                    <h4>Private Transactions</h4>
+                                    <p>Mix your transactions through privacy pools.</p>
+                                    <div class="privacy-stats">
+                                        <span>Pool Balance: $2.4M</span>
+                                        <span>Anonymity Set: 1,247</span>
+                                    </div>
+                                    <button class="btn-mix" id="btn-deposit-pool">Deposit to Pool</button>
+                                </div>
+                                <div class="privacy-card">
+                                    <div class="privacy-icon">🔐</div>
+                                    <h4>Post-Quantum Signatures</h4>
+                                    <p>All transactions signed with quantum-resistant algorithms.</p>
+                                    <div class="algo-list">
+                                        <span class="algo-badge">Dilithium3</span>
+                                        <span class="algo-badge">SPHINCS+-256f</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Portfolio Tab -->
+            <section class="tab-content" id="tab-portfolio">
+                <div class="portfolio-container">
+                    <div class="portfolio-summary">
+                        <div class="summary-card">
+                            <span class="card-label">Total Value</span>
+                            <span class="card-value" id="portfolio-total">$0.00</span>
+                            <span class="card-change positive" id="portfolio-change">+0.00%</span>
+                        </div>
+                        <div class="summary-card">
+                            <span class="card-label">24h PnL</span>
+                            <span class="card-value" id="portfolio-pnl">$0.00</span>
+                        </div>
+                        <div class="summary-card">
+                            <span class="card-label">Open Positions</span>
+                            <span class="card-value" id="portfolio-positions">0</span>
+                        </div>
+                    </div>
+                    <div class="portfolio-chart">
+                        <div class="chart-placeholder">
+                            <span>📈 Portfolio Performance</span>
+                            <span class="sub">Connect wallet to view</span>
+                        </div>
+                    </div>
+                    <div class="portfolio-history">
+                        <h3>Transaction History</h3>
+                        <div class="history-empty">
+                            <span>No transactions yet</span>
+                        </div>
+                    </div>
+                </div>
+            </section>
+        </main>
+
+        <!-- Footer -->
+        <footer class="footer">
+            <div class="footer-left">
+                <span class="status-indicator online"></span>
+                <span>Connected to Hyperliquid</span>
+            </div>
+            <div class="footer-center">
+                <span class="security-notice">🔐 All data encrypted locally • Zero server storage</span>
+            </div>
+            <div class="footer-right">
+                <a href="#" class="footer-link">Docs</a>
+                <a href="#" class="footer-link">GitHub</a>
+                <a href="#" class="footer-link">Discord</a>
+            </div>
+        </footer>
+    </div>
+
+    <!-- Modals -->
+    <div class="modal" id="modal-create-wallet" style="display:none;">
+        <div class="modal-backdrop"></div>
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>Create Post-Quantum Wallet</h3>
+                <button class="modal-close">&times;</button>
+            </div>
+            <div class="modal-body">
+                <div class="step-indicator">
+                    <div class="step active">1. Password</div>
+                    <div class="step">2. Seed Phrase</div>
+                    <div class="step">3. Verify</div>
+                </div>
+                <div class="step-content" id="step-1">
+                    <p>Create a strong password to encrypt your wallet locally.</p>
+                    <div class="form-group">
+                        <label>Password</label>
+                        <input type="password" id="create-password" placeholder="Enter strong password" />
+                    </div>
+                    <div class="form-group">
+                        <label>Confirm Password</label>
+                        <input type="password" id="confirm-password" placeholder="Confirm password" />
+                    </div>
+                    <div class="password-strength">
+                        <div class="strength-bar"></div>
+                        <span class="strength-text">Password strength: --</span>
+                    </div>
+                    <button class="btn-primary btn-next">Continue</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Scripts -->
+    <script src="js/crypto-utils.js"></script>
+    <script src="js/post-quantum.js"></script>
+    <script src="js/private-wallet.js"></script>
+    <script src="js/wallet.js"></script>
+    <script src="js/hyperliquid.js"></script>
+    <script src="js/uniswap.js"></script>
+    <script src="js/storage.js"></script>
+    <script src="js/prices.js"></script>
+    <script src="js/deposit-withdraw.js"></script>
+    <script src="js/bonds.js"></script>
+    <script src="js/i18n.js"></script>
+    <script src="js/app.js"></script>
+    <script src="js/simulator.js"></script>
+    <script src="js/click-tester.js"></script>
+    <script src="js/ui-banking.js"></script>
+    <!-- Unique Tools -->
+    <script src="js/smart-intent.js"></script>
+    <script src="js/arbitrage-scanner.js"></script>
+    <script src="js/social-recovery.js"></script>
+    <script src="js/ai-advisor.js"></script>
+    <script src="js/ui-tools.js"></script>
+
+    <!-- Notifications Container -->
+    <div id="notifications"></div>
+</body>
+</html>
+
