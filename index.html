@@ -782,6 +782,7 @@
             <nav class="nav-links" role="navigation" aria-label="Main navigation">
                 <a href="#features">Features</a>
                 <a href="#security">Security</a>
+                <a href="tools.html">Tools</a>
                 <a href="https://github.com" target="_blank" rel="noopener noreferrer">Docs<span class="sr-only"> (opens in new tab)</span></a>
             </nav>
             <div class="header-right">
@@ -1032,6 +1033,7 @@
                 exploreFeatures: 'Explore Features',
                 features: 'Features',
                 security: 'Security',
+                tools: 'Tools',
                 docs: 'Docs',
                 footer: 'Â© 2025 Obelisk DEX. Built for the post-quantum era.',
                 statFees: 'Fees on Swaps',
@@ -1055,6 +1057,7 @@
                 exploreFeatures: 'DÃ©couvrir',
                 features: 'FonctionnalitÃ©s',
                 security: 'SÃ©curitÃ©',
+                tools: 'Outils',
                 docs: 'Docs',
                 footer: 'Â© 2025 Obelisk DEX. ConÃ§u pour l\'Ã¨re post-quantique.',
                 statFees: 'Frais sur Swaps',
@@ -1078,6 +1081,7 @@
                 exploreFeatures: 'Explorar',
                 features: 'Funciones',
                 security: 'Seguridad',
+                tools: 'Herramientas',
                 docs: 'Docs',
                 footer: 'Â© 2025 Obelisk DEX. Construido para la era post-cuÃ¡ntica.',
                 statFees: 'Comisiones en Swaps',
@@ -1101,6 +1105,7 @@
                 exploreFeatures: 'Entdecken',
                 features: 'Funktionen',
                 security: 'Sicherheit',
+                tools: 'Werkzeuge',
                 docs: 'Docs',
                 footer: 'Â© 2025 Obelisk DEX. Gebaut fÃ¼r die Post-Quanten-Ã„ra.',
                 statFees: 'Swap-GebÃ¼hren',
@@ -1138,7 +1143,8 @@
             const navLinks = document.querySelectorAll('.nav-links a');
             navLinks[0].textContent = t.features;
             navLinks[1].textContent = t.security;
-            navLinks[2].innerHTML = t.docs + '<span class="sr-only"> (opens in new tab)</span>';
+            navLinks[2].textContent = t.tools;
+            navLinks[3].innerHTML = t.docs + '<span class="sr-only"> (opens in new tab)</span>';
 
             // Update stats
             document.getElementById('stat-fees').textContent = t.statFees;

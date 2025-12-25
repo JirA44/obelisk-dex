@@ -1,0 +1,1204 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>OBELISK Tools - Free Crypto Utilities</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        :root {
+            --bg: #0a0a0f;
+            --card: #12121a;
+            --border: #2a2a3a;
+            --accent: #00d4ff;
+            --accent2: #7b2dff;
+            --green: #00ff88;
+            --red: #ff4466;
+            --yellow: #ffaa00;
+            --text: #ffffff;
+            --text2: #888;
+        }
+
+        body {
+            font-family: 'Inter', -apple-system, sans-serif;
+            background: var(--bg);
+            color: var(--text);
+            min-height: 100vh;
+        }
+
+        .header {
+            background: linear-gradient(135deg, var(--accent2) 0%, var(--accent) 100%);
+            padding: 60px 20px;
+            text-align: center;
+            position: relative;
+        }
+
+        .header h1 {
+            font-size: 3rem;
+            margin-bottom: 10px;
+        }
+
+        .header p {
+            font-size: 1.2rem;
+            opacity: 0.9;
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 40px 20px;
+        }
+
+        .tools-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+            gap: 25px;
+            margin-top: 30px;
+        }
+
+        .tool-card {
+            background: var(--card);
+            border: 1px solid var(--border);
+            border-radius: 16px;
+            padding: 25px;
+            transition: all 0.3s;
+        }
+
+        .tool-card:hover {
+            border-color: var(--accent);
+            transform: translateY(-5px);
+            box-shadow: 0 20px 40px rgba(0, 212, 255, 0.1);
+        }
+
+        .tool-header {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+
+        .tool-icon {
+            width: 50px;
+            height: 50px;
+            background: linear-gradient(135deg, var(--accent), var(--accent2));
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 24px;
+        }
+
+        .tool-title {
+            font-size: 1.3rem;
+            font-weight: 600;
+        }
+
+        .tool-desc {
+            color: var(--text2);
+            margin-bottom: 20px;
+            line-height: 1.6;
+        }
+
+        .tool-content {
+            background: rgba(0,0,0,0.3);
+            border-radius: 12px;
+            padding: 20px;
+        }
+
+        input, select {
+            width: 100%;
+            padding: 12px 15px;
+            background: var(--bg);
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            color: var(--text);
+            font-size: 1rem;
+            margin-bottom: 12px;
+        }
+
+        input:focus, select:focus {
+            outline: none;
+            border-color: var(--accent);
+        }
+
+        .btn {
+            width: 100%;
+            padding: 14px;
+            background: linear-gradient(135deg, var(--accent), var(--accent2));
+            border: none;
+            border-radius: 8px;
+            color: white;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .btn:hover {
+            transform: scale(1.02);
+            box-shadow: 0 5px 20px rgba(0, 212, 255, 0.3);
+        }
+
+        .result {
+            margin-top: 15px;
+            padding: 15px;
+            background: var(--bg);
+            border-radius: 8px;
+            border-left: 3px solid var(--accent);
+        }
+
+        .result-row {
+            display: flex;
+            justify-content: space-between;
+            padding: 8px 0;
+            border-bottom: 1px solid var(--border);
+        }
+
+        .result-row:last-child { border: none; }
+
+        .result-label { color: var(--text2); }
+        .result-value { font-weight: 600; }
+        .result-value.green { color: var(--green); }
+        .result-value.red { color: var(--red); }
+        .result-value.yellow { color: var(--yellow); }
+
+        .input-group {
+            display: flex;
+            gap: 10px;
+        }
+
+        .input-group input { flex: 1; }
+
+        .converter-result {
+            font-size: 2rem;
+            text-align: center;
+            padding: 20px;
+            color: var(--accent);
+            font-weight: bold;
+        }
+
+        .gas-indicator {
+            display: flex;
+            justify-content: space-around;
+            text-align: center;
+            margin-top: 15px;
+        }
+
+        .gas-level {
+            padding: 15px;
+            border-radius: 8px;
+            flex: 1;
+            margin: 0 5px;
+        }
+
+        .gas-level.slow { background: rgba(0, 255, 136, 0.1); border: 1px solid var(--green); }
+        .gas-level.standard { background: rgba(0, 212, 255, 0.1); border: 1px solid var(--accent); }
+        .gas-level.fast { background: rgba(255, 68, 102, 0.1); border: 1px solid var(--red); }
+
+        .countdown {
+            font-size: 3rem;
+            text-align: center;
+            font-family: monospace;
+            color: var(--accent);
+            padding: 20px;
+        }
+
+        .fear-greed-meter {
+            height: 30px;
+            background: linear-gradient(90deg, #ff4466, #ffaa00, #00ff88);
+            border-radius: 15px;
+            position: relative;
+            margin: 20px 0;
+        }
+
+        .fear-greed-needle {
+            position: absolute;
+            top: -5px;
+            width: 4px;
+            height: 40px;
+            background: white;
+            border-radius: 2px;
+            transition: left 0.5s;
+        }
+
+        .progress-bar {
+            height: 8px;
+            background: var(--border);
+            border-radius: 4px;
+            overflow: hidden;
+            margin: 10px 0;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, var(--accent), var(--green));
+            border-radius: 4px;
+            transition: width 0.3s;
+        }
+
+        .token-input {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            background: var(--bg);
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            padding: 5px;
+            margin-bottom: 12px;
+        }
+
+        .token-input input {
+            border: none;
+            margin: 0;
+            background: transparent;
+        }
+
+        .token-select {
+            min-width: 100px;
+            margin: 0;
+        }
+
+        .swap-icon {
+            text-align: center;
+            font-size: 1.5rem;
+            padding: 10px;
+            cursor: pointer;
+            color: var(--accent);
+        }
+
+        .category-title {
+            font-size: 1.5rem;
+            margin: 40px 0 20px;
+            padding-bottom: 10px;
+            border-bottom: 2px solid var(--border);
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .badge {
+            background: var(--accent);
+            color: var(--bg);
+            padding: 3px 10px;
+            border-radius: 20px;
+            font-size: 0.7rem;
+            font-weight: bold;
+        }
+
+        .badge.new { background: var(--green); }
+        .badge.hot { background: var(--red); }
+
+        .whale-alert {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            padding: 12px;
+            background: var(--bg);
+            border-radius: 8px;
+            margin-bottom: 10px;
+            border-left: 3px solid var(--yellow);
+        }
+
+        .whale-icon { font-size: 1.5rem; }
+        .whale-info { flex: 1; }
+        .whale-amount { color: var(--green); font-weight: bold; }
+        .whale-time { color: var(--text2); font-size: 0.8rem; }
+
+        .portfolio-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 12px;
+            background: var(--bg);
+            border-radius: 8px;
+            margin-bottom: 8px;
+        }
+
+        .portfolio-token {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .portfolio-alloc {
+            text-align: right;
+        }
+
+        @media (max-width: 768px) {
+            .header h1 { font-size: 2rem; }
+            .tools-grid { grid-template-columns: 1fr; }
+            .input-group { flex-direction: column; }
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <a href="index.html" style="position:absolute;top:20px;left:20px;color:white;text-decoration:none;font-size:14px;opacity:0.8;">← Back to Home</a>
+        <h1>OBELISK Tools</h1>
+        <p>Free Crypto Utilities - No Login Required</p>
+    </div>
+
+    <div class="container">
+
+        <!-- CALCULATORS -->
+        <h2 class="category-title">Calculators</h2>
+        <div class="tools-grid">
+
+            <!-- Impermanent Loss Calculator -->
+            <div class="tool-card">
+                <div class="tool-header">
+                    <div class="tool-icon">📉</div>
+                    <div class="tool-title">Impermanent Loss Calculator</div>
+                </div>
+                <p class="tool-desc">Calculate potential IL when providing liquidity to AMM pools.</p>
+                <div class="tool-content">
+                    <input type="number" id="il-initial" placeholder="Initial investment ($)" value="1000">
+                    <div class="input-group">
+                        <input type="number" id="il-token1-change" placeholder="Token A price change (%)" value="50">
+                        <input type="number" id="il-token2-change" placeholder="Token B price change (%)" value="0">
+                    </div>
+                    <button class="btn" onclick="calculateIL()">Calculate IL</button>
+                    <div class="result" id="il-result" style="display:none;">
+                        <div class="result-row">
+                            <span class="result-label">Impermanent Loss</span>
+                            <span class="result-value red" id="il-loss">-5.72%</span>
+                        </div>
+                        <div class="result-row">
+                            <span class="result-label">Value if HODL</span>
+                            <span class="result-value" id="il-hodl">$1,250</span>
+                        </div>
+                        <div class="result-row">
+                            <span class="result-label">Value in LP</span>
+                            <span class="result-value" id="il-lp">$1,178</span>
+                        </div>
+                        <div class="result-row">
+                            <span class="result-label">Loss Amount</span>
+                            <span class="result-value red" id="il-amount">-$72</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Profit Calculator -->
+            <div class="tool-card">
+                <div class="tool-header">
+                    <div class="tool-icon">💰</div>
+                    <div class="tool-title">Profit/Loss Calculator</div>
+                </div>
+                <p class="tool-desc">Calculate your PnL with entry, exit, leverage and fees.</p>
+                <div class="tool-content">
+                    <div class="input-group">
+                        <input type="number" id="pnl-entry" placeholder="Entry price" value="100">
+                        <input type="number" id="pnl-exit" placeholder="Exit price" value="120">
+                    </div>
+                    <div class="input-group">
+                        <input type="number" id="pnl-amount" placeholder="Position size ($)" value="1000">
+                        <input type="number" id="pnl-leverage" placeholder="Leverage (1x)" value="1">
+                    </div>
+                    <input type="number" id="pnl-fees" placeholder="Fees (%)" value="0.1">
+                    <button class="btn" onclick="calculatePnL()">Calculate PnL</button>
+                    <div class="result" id="pnl-result" style="display:none;">
+                        <div class="result-row">
+                            <span class="result-label">Profit/Loss</span>
+                            <span class="result-value" id="pnl-value">+$200</span>
+                        </div>
+                        <div class="result-row">
+                            <span class="result-label">ROI</span>
+                            <span class="result-value" id="pnl-roi">+20%</span>
+                        </div>
+                        <div class="result-row">
+                            <span class="result-label">Fees Paid</span>
+                            <span class="result-value" id="pnl-fee-paid">$2</span>
+                        </div>
+                        <div class="result-row">
+                            <span class="result-label">Liquidation Price</span>
+                            <span class="result-value yellow" id="pnl-liq">N/A</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- DCA Calculator -->
+            <div class="tool-card">
+                <div class="tool-header">
+                    <div class="tool-icon">📊</div>
+                    <div class="tool-title">DCA Calculator</div>
+                </div>
+                <p class="tool-desc">Plan your Dollar Cost Averaging strategy.</p>
+                <div class="tool-content">
+                    <input type="number" id="dca-weekly" placeholder="Weekly investment ($)" value="100">
+                    <input type="number" id="dca-weeks" placeholder="Number of weeks" value="52">
+                    <input type="number" id="dca-growth" placeholder="Expected yearly growth (%)" value="50">
+                    <button class="btn" onclick="calculateDCA()">Calculate</button>
+                    <div class="result" id="dca-result" style="display:none;">
+                        <div class="result-row">
+                            <span class="result-label">Total Invested</span>
+                            <span class="result-value" id="dca-invested">$5,200</span>
+                        </div>
+                        <div class="result-row">
+                            <span class="result-label">Estimated Value</span>
+                            <span class="result-value green" id="dca-value">$7,800</span>
+                        </div>
+                        <div class="result-row">
+                            <span class="result-label">Profit</span>
+                            <span class="result-value green" id="dca-profit">+$2,600</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- APY/APR Converter -->
+            <div class="tool-card">
+                <div class="tool-header">
+                    <div class="tool-icon">🔄</div>
+                    <div class="tool-title">APY ↔ APR Converter</div>
+                </div>
+                <p class="tool-desc">Convert between APY and APR with compound frequency.</p>
+                <div class="tool-content">
+                    <input type="number" id="apy-input" placeholder="Enter APY or APR (%)" value="100">
+                    <select id="apy-compound">
+                        <option value="365">Daily (365x/year)</option>
+                        <option value="52">Weekly (52x/year)</option>
+                        <option value="12">Monthly (12x/year)</option>
+                        <option value="4">Quarterly (4x/year)</option>
+                    </select>
+                    <button class="btn" onclick="convertAPY()">Convert</button>
+                    <div class="result" id="apy-result" style="display:none;">
+                        <div class="result-row">
+                            <span class="result-label">APR (Simple)</span>
+                            <span class="result-value" id="apy-apr">69.31%</span>
+                        </div>
+                        <div class="result-row">
+                            <span class="result-label">APY (Compound)</span>
+                            <span class="result-value green" id="apy-apy">100%</span>
+                        </div>
+                        <div class="result-row">
+                            <span class="result-label">Daily Rate</span>
+                            <span class="result-value" id="apy-daily">0.19%</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+
+        <!-- CONVERTERS -->
+        <h2 class="category-title">Converters <span class="badge new">NEW</span></h2>
+        <div class="tools-grid">
+
+            <!-- Crypto Converter -->
+            <div class="tool-card">
+                <div class="tool-header">
+                    <div class="tool-icon">💱</div>
+                    <div class="tool-title">Crypto Converter</div>
+                </div>
+                <p class="tool-desc">Convert between any cryptocurrencies with live prices.</p>
+                <div class="tool-content">
+                    <div class="token-input">
+                        <input type="number" id="conv-amount" placeholder="Amount" value="1">
+                        <select class="token-select" id="conv-from">
+                            <option value="BTC">BTC</option>
+                            <option value="ETH">ETH</option>
+                            <option value="SOL">SOL</option>
+                            <option value="USDC">USDC</option>
+                        </select>
+                    </div>
+                    <div class="swap-icon" onclick="swapTokens()">⇅</div>
+                    <div class="token-input">
+                        <input type="number" id="conv-result" placeholder="Result" readonly>
+                        <select class="token-select" id="conv-to">
+                            <option value="USDC">USDC</option>
+                            <option value="ETH">ETH</option>
+                            <option value="BTC">BTC</option>
+                            <option value="SOL">SOL</option>
+                        </select>
+                    </div>
+                    <button class="btn" onclick="convertCrypto()">Convert</button>
+                </div>
+            </div>
+
+            <!-- Unit Converter -->
+            <div class="tool-card">
+                <div class="tool-header">
+                    <div class="tool-icon">📏</div>
+                    <div class="tool-title">Unit Converter (Wei/Gwei/ETH)</div>
+                </div>
+                <p class="tool-desc">Convert between Wei, Gwei, and ETH units.</p>
+                <div class="tool-content">
+                    <input type="text" id="unit-input" placeholder="Enter value" value="1">
+                    <select id="unit-from">
+                        <option value="eth">ETH</option>
+                        <option value="gwei">Gwei</option>
+                        <option value="wei">Wei</option>
+                    </select>
+                    <button class="btn" onclick="convertUnits()">Convert</button>
+                    <div class="result" id="unit-result">
+                        <div class="result-row">
+                            <span class="result-label">ETH</span>
+                            <span class="result-value" id="unit-eth">1</span>
+                        </div>
+                        <div class="result-row">
+                            <span class="result-label">Gwei</span>
+                            <span class="result-value" id="unit-gwei">1,000,000,000</span>
+                        </div>
+                        <div class="result-row">
+                            <span class="result-label">Wei</span>
+                            <span class="result-value" id="unit-wei">1,000,000,000,000,000,000</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Timestamp Converter -->
+            <div class="tool-card">
+                <div class="tool-header">
+                    <div class="tool-icon">🕐</div>
+                    <div class="tool-title">Unix Timestamp Converter</div>
+                </div>
+                <p class="tool-desc">Convert between Unix timestamp and human date.</p>
+                <div class="tool-content">
+                    <input type="text" id="ts-input" placeholder="Timestamp or date">
+                    <button class="btn" onclick="convertTimestamp()">Convert</button>
+                    <div class="result" id="ts-result">
+                        <div class="result-row">
+                            <span class="result-label">Current Time</span>
+                            <span class="result-value" id="ts-now"></span>
+                        </div>
+                        <div class="result-row">
+                            <span class="result-label">Unix (seconds)</span>
+                            <span class="result-value" id="ts-unix"></span>
+                        </div>
+                        <div class="result-row">
+                            <span class="result-label">Unix (ms)</span>
+                            <span class="result-value" id="ts-unix-ms"></span>
+                        </div>
+                        <div class="result-row">
+                            <span class="result-label">ISO Date</span>
+                            <span class="result-value" id="ts-iso"></span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+
+        <!-- LIVE DATA -->
+        <h2 class="category-title">Live Data <span class="badge hot">LIVE</span></h2>
+        <div class="tools-grid">
+
+            <!-- Gas Tracker -->
+            <div class="tool-card">
+                <div class="tool-header">
+                    <div class="tool-icon">⛽</div>
+                    <div class="tool-title">Gas Tracker</div>
+                </div>
+                <p class="tool-desc">Real-time gas prices across multiple chains.</p>
+                <div class="tool-content">
+                    <select id="gas-chain" onchange="updateGas()">
+                        <option value="ethereum">Ethereum</option>
+                        <option value="polygon">Polygon</option>
+                        <option value="arbitrum">Arbitrum</option>
+                        <option value="base">Base</option>
+                    </select>
+                    <div class="gas-indicator">
+                        <div class="gas-level slow">
+                            <div style="font-size:1.5rem" id="gas-slow">15</div>
+                            <div style="color:var(--text2);font-size:0.8rem">Slow</div>
+                            <div style="color:var(--green)">~5 min</div>
+                        </div>
+                        <div class="gas-level standard">
+                            <div style="font-size:1.5rem" id="gas-standard">25</div>
+                            <div style="color:var(--text2);font-size:0.8rem">Standard</div>
+                            <div style="color:var(--accent)">~1 min</div>
+                        </div>
+                        <div class="gas-level fast">
+                            <div style="font-size:1.5rem" id="gas-fast">35</div>
+                            <div style="color:var(--text2);font-size:0.8rem">Fast</div>
+                            <div style="color:var(--red)">~15 sec</div>
+                        </div>
+                    </div>
+                    <div class="result" style="margin-top:15px">
+                        <div class="result-row">
+                            <span class="result-label">ETH Transfer Cost</span>
+                            <span class="result-value" id="gas-transfer">$0.85</span>
+                        </div>
+                        <div class="result-row">
+                            <span class="result-label">Swap Cost</span>
+                            <span class="result-value" id="gas-swap">$4.50</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Fear & Greed -->
+            <div class="tool-card">
+                <div class="tool-header">
+                    <div class="tool-icon">😱</div>
+                    <div class="tool-title">Fear & Greed Index</div>
+                </div>
+                <p class="tool-desc">Market sentiment indicator updated in real-time.</p>
+                <div class="tool-content">
+                    <div style="text-align:center;font-size:4rem;font-weight:bold" id="fg-value">50</div>
+                    <div style="text-align:center;font-size:1.2rem;color:var(--yellow)" id="fg-label">Neutral</div>
+                    <div class="fear-greed-meter">
+                        <div class="fear-greed-needle" id="fg-needle" style="left:50%"></div>
+                    </div>
+                    <div style="display:flex;justify-content:space-between;color:var(--text2);font-size:0.8rem">
+                        <span>Extreme Fear</span>
+                        <span>Extreme Greed</span>
+                    </div>
+                    <div class="result" style="margin-top:15px">
+                        <div class="result-row">
+                            <span class="result-label">Yesterday</span>
+                            <span class="result-value" id="fg-yesterday">48</span>
+                        </div>
+                        <div class="result-row">
+                            <span class="result-label">Last Week</span>
+                            <span class="result-value" id="fg-week">42</span>
+                        </div>
+                        <div class="result-row">
+                            <span class="result-label">Recommendation</span>
+                            <span class="result-value yellow" id="fg-rec">HOLD</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Funding Countdown -->
+            <div class="tool-card">
+                <div class="tool-header">
+                    <div class="tool-icon">⏰</div>
+                    <div class="tool-title">Funding Rate Countdown</div>
+                </div>
+                <p class="tool-desc">Time until next funding rate payment.</p>
+                <div class="tool-content">
+                    <div class="countdown" id="funding-countdown">07:42:15</div>
+                    <div class="result">
+                        <div class="result-row">
+                            <span class="result-label">BTC Funding</span>
+                            <span class="result-value green" id="fund-btc">+0.0100%</span>
+                        </div>
+                        <div class="result-row">
+                            <span class="result-label">ETH Funding</span>
+                            <span class="result-value green" id="fund-eth">+0.0085%</span>
+                        </div>
+                        <div class="result-row">
+                            <span class="result-label">SOL Funding</span>
+                            <span class="result-value red" id="fund-sol">-0.0120%</span>
+                        </div>
+                        <div class="result-row">
+                            <span class="result-label">Best Opportunity</span>
+                            <span class="result-value yellow" id="fund-best">Short SOL</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Whale Watcher -->
+            <div class="tool-card">
+                <div class="tool-header">
+                    <div class="tool-icon">🐋</div>
+                    <div class="tool-title">Whale Watcher</div>
+                </div>
+                <p class="tool-desc">Track large transactions in real-time.</p>
+                <div class="tool-content" id="whale-feed">
+                    <div class="whale-alert">
+                        <span class="whale-icon">🐋</span>
+                        <div class="whale-info">
+                            <div><span class="whale-amount">500 BTC</span> moved to Binance</div>
+                            <div class="whale-time">2 minutes ago</div>
+                        </div>
+                    </div>
+                    <div class="whale-alert">
+                        <span class="whale-icon">🦈</span>
+                        <div class="whale-info">
+                            <div><span class="whale-amount">10,000 ETH</span> withdrawn from Coinbase</div>
+                            <div class="whale-time">5 minutes ago</div>
+                        </div>
+                    </div>
+                    <div class="whale-alert">
+                        <span class="whale-icon">🐳</span>
+                        <div class="whale-info">
+                            <div><span class="whale-amount">$50M USDT</span> minted</div>
+                            <div class="whale-time">12 minutes ago</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+
+        <!-- ANALYSIS TOOLS -->
+        <h2 class="category-title">Analysis Tools</h2>
+        <div class="tools-grid">
+
+            <!-- Portfolio Allocation -->
+            <div class="tool-card">
+                <div class="tool-header">
+                    <div class="tool-icon">🥧</div>
+                    <div class="tool-title">Portfolio Allocator</div>
+                </div>
+                <p class="tool-desc">Optimize your portfolio allocation with risk profiles.</p>
+                <div class="tool-content">
+                    <input type="number" id="port-total" placeholder="Total investment ($)" value="10000">
+                    <select id="port-risk">
+                        <option value="conservative">Conservative (Low Risk)</option>
+                        <option value="balanced" selected>Balanced (Medium Risk)</option>
+                        <option value="aggressive">Aggressive (High Risk)</option>
+                        <option value="degen">Degen (Max Risk)</option>
+                    </select>
+                    <button class="btn" onclick="allocatePortfolio()">Generate Allocation</button>
+                    <div id="port-result" style="margin-top:15px">
+                        <div class="portfolio-item">
+                            <div class="portfolio-token">
+                                <span>BTC</span>
+                            </div>
+                            <div class="portfolio-alloc">
+                                <div>40% - $4,000</div>
+                                <div class="progress-bar"><div class="progress-fill" style="width:40%"></div></div>
+                            </div>
+                        </div>
+                        <div class="portfolio-item">
+                            <div class="portfolio-token">
+                                <span>ETH</span>
+                            </div>
+                            <div class="portfolio-alloc">
+                                <div>30% - $3,000</div>
+                                <div class="progress-bar"><div class="progress-fill" style="width:30%"></div></div>
+                            </div>
+                        </div>
+                        <div class="portfolio-item">
+                            <div class="portfolio-token">
+                                <span>Stables</span>
+                            </div>
+                            <div class="portfolio-alloc">
+                                <div>20% - $2,000</div>
+                                <div class="progress-bar"><div class="progress-fill" style="width:20%"></div></div>
+                            </div>
+                        </div>
+                        <div class="portfolio-item">
+                            <div class="portfolio-token">
+                                <span>Alts</span>
+                            </div>
+                            <div class="portfolio-alloc">
+                                <div>10% - $1,000</div>
+                                <div class="progress-bar"><div class="progress-fill" style="width:10%"></div></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Risk Calculator -->
+            <div class="tool-card">
+                <div class="tool-header">
+                    <div class="tool-icon">⚠️</div>
+                    <div class="tool-title">Position Size Calculator</div>
+                </div>
+                <p class="tool-desc">Calculate safe position sizes based on risk management.</p>
+                <div class="tool-content">
+                    <input type="number" id="risk-capital" placeholder="Total capital ($)" value="10000">
+                    <input type="number" id="risk-percent" placeholder="Risk per trade (%)" value="2">
+                    <input type="number" id="risk-sl" placeholder="Stop loss (%)" value="5">
+                    <button class="btn" onclick="calculateRisk()">Calculate</button>
+                    <div class="result" id="risk-result" style="display:none;">
+                        <div class="result-row">
+                            <span class="result-label">Max Risk Amount</span>
+                            <span class="result-value" id="risk-amount">$200</span>
+                        </div>
+                        <div class="result-row">
+                            <span class="result-label">Position Size</span>
+                            <span class="result-value green" id="risk-position">$4,000</span>
+                        </div>
+                        <div class="result-row">
+                            <span class="result-label">Max Leverage</span>
+                            <span class="result-value yellow" id="risk-leverage">20x</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Liquidation Calculator -->
+            <div class="tool-card">
+                <div class="tool-header">
+                    <div class="tool-icon">💥</div>
+                    <div class="tool-title">Liquidation Price Calculator</div>
+                </div>
+                <p class="tool-desc">Find your liquidation price for leveraged positions.</p>
+                <div class="tool-content">
+                    <input type="number" id="liq-entry" placeholder="Entry price" value="100">
+                    <input type="number" id="liq-leverage" placeholder="Leverage" value="10">
+                    <select id="liq-direction">
+                        <option value="long">Long</option>
+                        <option value="short">Short</option>
+                    </select>
+                    <input type="number" id="liq-maint" placeholder="Maintenance margin (%)" value="0.5">
+                    <button class="btn" onclick="calculateLiq()">Calculate</button>
+                    <div class="result" id="liq-result" style="display:none;">
+                        <div class="result-row">
+                            <span class="result-label">Liquidation Price</span>
+                            <span class="result-value red" id="liq-price">$90.50</span>
+                        </div>
+                        <div class="result-row">
+                            <span class="result-label">Distance to Liq</span>
+                            <span class="result-value yellow" id="liq-distance">-9.5%</span>
+                        </div>
+                        <div class="result-row">
+                            <span class="result-label">Effective Margin</span>
+                            <span class="result-value" id="liq-margin">10%</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Compound Interest -->
+            <div class="tool-card">
+                <div class="tool-header">
+                    <div class="tool-icon">📈</div>
+                    <div class="tool-title">Compound Interest Calculator</div>
+                </div>
+                <p class="tool-desc">Calculate staking/yield farming returns over time.</p>
+                <div class="tool-content">
+                    <input type="number" id="comp-principal" placeholder="Initial amount ($)" value="1000">
+                    <input type="number" id="comp-apy" placeholder="APY (%)" value="50">
+                    <input type="number" id="comp-years" placeholder="Years" value="3">
+                    <select id="comp-frequency">
+                        <option value="365">Daily compound</option>
+                        <option value="52">Weekly compound</option>
+                        <option value="12">Monthly compound</option>
+                    </select>
+                    <button class="btn" onclick="calculateCompound()">Calculate</button>
+                    <div class="result" id="comp-result" style="display:none;">
+                        <div class="result-row">
+                            <span class="result-label">Year 1</span>
+                            <span class="result-value" id="comp-y1">$1,648</span>
+                        </div>
+                        <div class="result-row">
+                            <span class="result-label">Year 2</span>
+                            <span class="result-value" id="comp-y2">$2,718</span>
+                        </div>
+                        <div class="result-row">
+                            <span class="result-label">Year 3</span>
+                            <span class="result-value green" id="comp-y3">$4,481</span>
+                        </div>
+                        <div class="result-row">
+                            <span class="result-label">Total Profit</span>
+                            <span class="result-value green" id="comp-profit">+$3,481 (+348%)</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+
+    </div>
+
+    <script>
+        // Live prices (would be fetched from API)
+        const prices = {
+            BTC: 98000,
+            ETH: 3400,
+            SOL: 190,
+            USDC: 1
+        };
+
+        // Impermanent Loss Calculator
+        function calculateIL() {
+            const initial = parseFloat(document.getElementById('il-initial').value);
+            const change1 = parseFloat(document.getElementById('il-token1-change').value) / 100;
+            const change2 = parseFloat(document.getElementById('il-token2-change').value) / 100;
+
+            const priceRatio = (1 + change1) / (1 + change2);
+            const ilPercent = 2 * Math.sqrt(priceRatio) / (1 + priceRatio) - 1;
+
+            const hodlValue = initial * (1 + (change1 + change2) / 2);
+            const lpValue = hodlValue * (1 + ilPercent);
+            const loss = lpValue - hodlValue;
+
+            document.getElementById('il-loss').textContent = (ilPercent * 100).toFixed(2) + '%';
+            document.getElementById('il-hodl').textContent = '$' + hodlValue.toLocaleString(undefined, {maximumFractionDigits: 0});
+            document.getElementById('il-lp').textContent = '$' + lpValue.toLocaleString(undefined, {maximumFractionDigits: 0});
+            document.getElementById('il-amount').textContent = (loss >= 0 ? '+' : '') + '$' + loss.toFixed(0);
+            document.getElementById('il-result').style.display = 'block';
+        }
+
+        // PnL Calculator
+        function calculatePnL() {
+            const entry = parseFloat(document.getElementById('pnl-entry').value);
+            const exit = parseFloat(document.getElementById('pnl-exit').value);
+            const amount = parseFloat(document.getElementById('pnl-amount').value);
+            const leverage = parseFloat(document.getElementById('pnl-leverage').value);
+            const feePercent = parseFloat(document.getElementById('pnl-fees').value);
+
+            const pnlPercent = ((exit - entry) / entry) * leverage * 100;
+            const pnlAmount = amount * (pnlPercent / 100);
+            const fees = amount * 2 * (feePercent / 100);
+            const netPnl = pnlAmount - fees;
+            const roi = (netPnl / amount) * 100;
+
+            const liqPrice = leverage > 1 ? entry * (1 - 1/leverage) : null;
+
+            const pnlEl = document.getElementById('pnl-value');
+            const roiEl = document.getElementById('pnl-roi');
+
+            pnlEl.textContent = (netPnl >= 0 ? '+' : '') + '$' + netPnl.toFixed(2);
+            pnlEl.className = 'result-value ' + (netPnl >= 0 ? 'green' : 'red');
+
+            roiEl.textContent = (roi >= 0 ? '+' : '') + roi.toFixed(2) + '%';
+            roiEl.className = 'result-value ' + (roi >= 0 ? 'green' : 'red');
+
+            document.getElementById('pnl-fee-paid').textContent = '$' + fees.toFixed(2);
+            document.getElementById('pnl-liq').textContent = liqPrice ? '$' + liqPrice.toFixed(2) : 'N/A';
+            document.getElementById('pnl-result').style.display = 'block';
+        }
+
+        // DCA Calculator
+        function calculateDCA() {
+            const weekly = parseFloat(document.getElementById('dca-weekly').value);
+            const weeks = parseInt(document.getElementById('dca-weeks').value);
+            const growth = parseFloat(document.getElementById('dca-growth').value) / 100;
+
+            const totalInvested = weekly * weeks;
+            const weeklyGrowth = Math.pow(1 + growth, 1/52) - 1;
+
+            let value = 0;
+            for (let i = 0; i < weeks; i++) {
+                value = (value + weekly) * (1 + weeklyGrowth);
+            }
+
+            const profit = value - totalInvested;
+
+            document.getElementById('dca-invested').textContent = '$' + totalInvested.toLocaleString();
+            document.getElementById('dca-value').textContent = '$' + value.toLocaleString(undefined, {maximumFractionDigits: 0});
+            document.getElementById('dca-profit').textContent = '+$' + profit.toLocaleString(undefined, {maximumFractionDigits: 0});
+            document.getElementById('dca-result').style.display = 'block';
+        }
+
+        // APY Converter
+        function convertAPY() {
+            const input = parseFloat(document.getElementById('apy-input').value);
+            const compound = parseInt(document.getElementById('apy-compound').value);
+
+            // Assume input is APY, calculate APR
+            const apr = compound * (Math.pow(1 + input/100, 1/compound) - 1) * 100;
+            const apy = (Math.pow(1 + apr/100/compound, compound) - 1) * 100;
+            const daily = apr / 365;
+
+            document.getElementById('apy-apr').textContent = apr.toFixed(2) + '%';
+            document.getElementById('apy-apy').textContent = apy.toFixed(2) + '%';
+            document.getElementById('apy-daily').textContent = daily.toFixed(4) + '%';
+            document.getElementById('apy-result').style.display = 'block';
+        }
+
+        // Crypto Converter
+        function convertCrypto() {
+            const amount = parseFloat(document.getElementById('conv-amount').value);
+            const from = document.getElementById('conv-from').value;
+            const to = document.getElementById('conv-to').value;
+
+            const valueUSD = amount * prices[from];
+            const result = valueUSD / prices[to];
+
+            document.getElementById('conv-result').value = result.toFixed(6);
+        }
+
+        function swapTokens() {
+            const from = document.getElementById('conv-from');
+            const to = document.getElementById('conv-to');
+            const temp = from.value;
+            from.value = to.value;
+            to.value = temp;
+            convertCrypto();
+        }
+
+        // Unit Converter
+        function convertUnits() {
+            const input = document.getElementById('unit-input').value;
+            const from = document.getElementById('unit-from').value;
+
+            let wei;
+            if (from === 'eth') wei = BigInt(parseFloat(input) * 1e18);
+            else if (from === 'gwei') wei = BigInt(parseFloat(input) * 1e9);
+            else wei = BigInt(input);
+
+            document.getElementById('unit-eth').textContent = (Number(wei) / 1e18).toFixed(18).replace(/\.?0+$/, '');
+            document.getElementById('unit-gwei').textContent = (Number(wei) / 1e9).toLocaleString();
+            document.getElementById('unit-wei').textContent = wei.toLocaleString();
+        }
+
+        // Timestamp Converter
+        function convertTimestamp() {
+            const input = document.getElementById('ts-input').value || Date.now();
+            let date;
+
+            if (/^\d{10,13}$/.test(input)) {
+                const ts = input.length === 10 ? parseInt(input) * 1000 : parseInt(input);
+                date = new Date(ts);
+            } else {
+                date = new Date(input);
+            }
+
+            document.getElementById('ts-now').textContent = new Date().toLocaleString();
+            document.getElementById('ts-unix').textContent = Math.floor(date.getTime() / 1000);
+            document.getElementById('ts-unix-ms').textContent = date.getTime();
+            document.getElementById('ts-iso').textContent = date.toISOString();
+        }
+
+        // Risk Calculator
+        function calculateRisk() {
+            const capital = parseFloat(document.getElementById('risk-capital').value);
+            const riskPercent = parseFloat(document.getElementById('risk-percent').value);
+            const slPercent = parseFloat(document.getElementById('risk-sl').value);
+
+            const riskAmount = capital * (riskPercent / 100);
+            const positionSize = riskAmount / (slPercent / 100);
+            const maxLeverage = Math.floor(100 / slPercent);
+
+            document.getElementById('risk-amount').textContent = '$' + riskAmount.toFixed(0);
+            document.getElementById('risk-position').textContent = '$' + positionSize.toLocaleString(undefined, {maximumFractionDigits: 0});
+            document.getElementById('risk-leverage').textContent = maxLeverage + 'x';
+            document.getElementById('risk-result').style.display = 'block';
+        }
+
+        // Liquidation Calculator
+        function calculateLiq() {
+            const entry = parseFloat(document.getElementById('liq-entry').value);
+            const leverage = parseFloat(document.getElementById('liq-leverage').value);
+            const direction = document.getElementById('liq-direction').value;
+            const maint = parseFloat(document.getElementById('liq-maint').value) / 100;
+
+            const margin = 1 / leverage;
+            let liqPrice;
+
+            if (direction === 'long') {
+                liqPrice = entry * (1 - margin + maint);
+            } else {
+                liqPrice = entry * (1 + margin - maint);
+            }
+
+            const distance = ((liqPrice - entry) / entry) * 100;
+
+            document.getElementById('liq-price').textContent = '$' + liqPrice.toFixed(2);
+            document.getElementById('liq-distance').textContent = distance.toFixed(2) + '%';
+            document.getElementById('liq-margin').textContent = (margin * 100).toFixed(1) + '%';
+            document.getElementById('liq-result').style.display = 'block';
+        }
+
+        // Compound Interest
+        function calculateCompound() {
+            const principal = parseFloat(document.getElementById('comp-principal').value);
+            const apy = parseFloat(document.getElementById('comp-apy').value) / 100;
+            const years = parseInt(document.getElementById('comp-years').value);
+            const freq = parseInt(document.getElementById('comp-frequency').value);
+
+            const rate = apy / freq;
+            const values = [];
+
+            for (let y = 1; y <= years; y++) {
+                const value = principal * Math.pow(1 + rate, freq * y);
+                values.push(value);
+            }
+
+            document.getElementById('comp-y1').textContent = '$' + values[0]?.toLocaleString(undefined, {maximumFractionDigits: 0}) || 'N/A';
+            document.getElementById('comp-y2').textContent = '$' + values[1]?.toLocaleString(undefined, {maximumFractionDigits: 0}) || 'N/A';
+            document.getElementById('comp-y3').textContent = '$' + values[2]?.toLocaleString(undefined, {maximumFractionDigits: 0}) || 'N/A';
+
+            const final = values[years - 1] || principal;
+            const profit = final - principal;
+            const profitPercent = (profit / principal) * 100;
+
+            document.getElementById('comp-profit').textContent = '+$' + profit.toLocaleString(undefined, {maximumFractionDigits: 0}) + ' (+' + profitPercent.toFixed(0) + '%)';
+            document.getElementById('comp-result').style.display = 'block';
+        }
+
+        // Portfolio Allocator
+        function allocatePortfolio() {
+            const total = parseFloat(document.getElementById('port-total').value);
+            const risk = document.getElementById('port-risk').value;
+
+            const allocations = {
+                conservative: { BTC: 50, ETH: 20, Stables: 25, Alts: 5 },
+                balanced: { BTC: 40, ETH: 30, Stables: 20, Alts: 10 },
+                aggressive: { BTC: 30, ETH: 30, Stables: 10, Alts: 30 },
+                degen: { BTC: 15, ETH: 25, Stables: 5, Alts: 55 }
+            };
+
+            const alloc = allocations[risk];
+            const html = Object.entries(alloc).map(([token, pct]) => `
+                <div class="portfolio-item">
+                    <div class="portfolio-token"><span>${token}</span></div>
+                    <div class="portfolio-alloc">
+                        <div>${pct}% - $${(total * pct / 100).toLocaleString()}</div>
+                        <div class="progress-bar"><div class="progress-fill" style="width:${pct}%"></div></div>
+                    </div>
+                </div>
+            `).join('');
+
+            document.getElementById('port-result').innerHTML = html;
+        }
+
+        // Gas Tracker
+        function updateGas() {
+            const chain = document.getElementById('gas-chain').value;
+            const gasPrices = {
+                ethereum: { slow: 15, standard: 25, fast: 35, transfer: 0.85, swap: 4.50 },
+                polygon: { slow: 30, standard: 50, fast: 80, transfer: 0.001, swap: 0.05 },
+                arbitrum: { slow: 0.1, standard: 0.15, fast: 0.25, transfer: 0.02, swap: 0.15 },
+                base: { slow: 0.01, standard: 0.02, fast: 0.03, transfer: 0.005, swap: 0.03 }
+            };
+
+            const gas = gasPrices[chain];
+            document.getElementById('gas-slow').textContent = gas.slow;
+            document.getElementById('gas-standard').textContent = gas.standard;
+            document.getElementById('gas-fast').textContent = gas.fast;
+            document.getElementById('gas-transfer').textContent = '$' + gas.transfer;
+            document.getElementById('gas-swap').textContent = '$' + gas.swap;
+        }
+
+        // Funding Countdown
+        function updateFundingCountdown() {
+            const now = new Date();
+            const hours = now.getUTCHours();
+            const nextFunding = [0, 8, 16].find(h => h > hours) ?? 24;
+            const diff = (nextFunding - hours) * 3600 - now.getUTCMinutes() * 60 - now.getUTCSeconds();
+
+            const h = Math.floor(diff / 3600);
+            const m = Math.floor((diff % 3600) / 60);
+            const s = diff % 60;
+
+            document.getElementById('funding-countdown').textContent =
+                `${h.toString().padStart(2, '0')}:${m.toString().padStart(2, '0')}:${s.toString().padStart(2, '0')}`;
+        }
+
+        // Fear & Greed simulation
+        function updateFearGreed() {
+            const value = 45 + Math.floor(Math.random() * 20);
+            document.getElementById('fg-value').textContent = value;
+            document.getElementById('fg-needle').style.left = value + '%';
+
+            let label, color;
+            if (value < 25) { label = 'Extreme Fear'; color = 'var(--red)'; }
+            else if (value < 40) { label = 'Fear'; color = 'var(--red)'; }
+            else if (value < 60) { label = 'Neutral'; color = 'var(--yellow)'; }
+            else if (value < 75) { label = 'Greed'; color = 'var(--green)'; }
+            else { label = 'Extreme Greed'; color = 'var(--green)'; }
+
+            document.getElementById('fg-label').textContent = label;
+            document.getElementById('fg-label').style.color = color;
+        }
+
+        // Initialize
+        convertTimestamp();
+        updateGas();
+        updateFearGreed();
+        setInterval(updateFundingCountdown, 1000);
+        setInterval(updateFearGreed, 30000);
+
+        // Auto-convert on input change
+        document.getElementById('conv-amount').addEventListener('input', convertCrypto);
+        document.getElementById('conv-from').addEventListener('change', convertCrypto);
+        document.getElementById('conv-to').addEventListener('change', convertCrypto);
+    </script>
+</body>
+</html>
