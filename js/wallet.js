@@ -315,15 +315,19 @@ const WalletManager = {
                     <div style="width:100%;">
                         <p style="color:rgba(255,255,255,0.7); margin:0 0 16px 0; padding:0; font-size:14px;">${typeof I18n !== 'undefined' ? I18n.t('choose_wallet') : 'Choose your wallet:'}</p>
                         <div style="display:flex; flex-direction:column; gap:10px; width:100%;">
-                            ${wallets.map((w, i) => `
+                            ${wallets.map((w, i) => {
+                                const iconStr = (w.icon || '').trim();
+                                const isDataUrl = iconStr.toLowerCase().startsWith('data:image') || iconStr.includes('base64');
+                                const isEmoji = iconStr.length <= 4;
+                                return `
                                 <button class="wallet-option" data-index="${i}" style="display:flex; align-items:center; gap:12px; padding:14px 16px; background:rgba(255,255,255,0.05); border:1px solid rgba(255,255,255,0.1); border-radius:12px; color:#ffffff; cursor:pointer; font-size:15px; width:100%; box-sizing:border-box; text-align:left;">
-                                    ${w.icon && w.icon.startsWith('data:')
-                                        ? `<img src="${w.icon}" style="width:28px; height:28px; flex-shrink:0; border-radius:6px;" alt="${w.name}">`
-                                        : `<span style="font-size:24px; flex-shrink:0; width:28px; text-align:center;">${w.icon || '🔗'}</span>`
+                                    ${isDataUrl
+                                        ? `<img src="${iconStr}" style="width:28px; height:28px; flex-shrink:0; border-radius:6px; object-fit:contain;" alt="${w.name}" onerror="this.outerHTML='<span style=\\'font-size:24px; flex-shrink:0; width:28px; text-align:center;\\'>🔗</span>'">`
+                                        : `<span style="font-size:24px; flex-shrink:0; width:28px; text-align:center;">${isEmoji ? iconStr : '🔗'}</span>`
                                     }
                                     <span style="font-weight:500; white-space:nowrap; overflow:hidden; text-overflow:ellipsis;">${w.name}</span>
                                 </button>
-                            `).join('')}
+                            `}).join('')}
                         </div>
                     </div>
                 </div>
@@ -384,9 +388,84 @@ const WalletManager = {
      * Connect to specific wallet provider
      */
     async connectWallet(wallet) {
-        const provider = wallet.provider;
+        let provider = wallet.provider;
+        const walletName = wallet.name.toLowerCase();
+
+        console.log('Connecting to wallet:', wallet.name);
+        console.log('Provider:', provider);
+        console.log('window.phantom:', window.phantom);
+        console.log('window.solana:', window.solana);
+        console.log('window.ethereum:', window.ethereum);
 
         try {
+            // Special handling for Phantom - prefer Solana connection (more reliable)
+            if (walletName.includes('phantom')) {
+                console.log('Phantom detected, trying Solana provider...');
+
+                if (window.solana?.isPhantom) {
+                    try {
+                        // Check if already connected
+                        if (window.solana.isConnected && window.solana.publicKey) {
+                            console.log('Phantom already connected!');
+                            const address = window.solana.publicKey.toString();
+
+                            this.currentWallet = {
+                                id: 'phantom_sol_' + address.slice(0, 8),
+                                address: address,
+                                type: 'solana',
+                                name: 'Phantom (Solana)',
+                                provider: window.solana
+                            };
+                            this.isUnlocked = true;
+                            return this.currentWallet;
+                        }
+
+                        console.log('Requesting Phantom Solana connection...');
+                        console.log('Phantom isConnected:', window.solana.isConnected);
+                        console.log('Phantom publicKey:', window.solana.publicKey);
+
+                        const resp = await window.solana.connect();
+                        const address = resp.publicKey.toString();
+
+                        this.currentWallet = {
+                            id: 'phantom_sol_' + address.slice(0, 8),
+                            address: address,
+                            type: 'solana',
+                            name: 'Phantom (Solana)',
+                            provider: window.solana
+                        };
+                        this.isUnlocked = true;
+
+                        window.solana.on('disconnect', () => {
+                            this.lockWallet();
+                            window.dispatchEvent(new Event('wallet-disconnected'));
+                        });
+
+                        console.log('Phantom Solana connected:', address);
+                        return this.currentWallet;
+                    } catch (solErr) {
+                        console.error('Phantom Solana error:', solErr);
+                        // If user rejected, throw that specific error
+                        if (solErr.code === 4001 || solErr.message?.includes('reject')) {
+                            throw new Error('Connection cancelled by user');
+                        }
+                        // Otherwise continue to try EIP-6963 provider
+                        console.log('Solana failed, trying EIP-6963 provider...');
+                    }
+                }
+            }
+
+            // Standard EIP-1193 connection for Ethereum wallets
+            console.log('Requesting eth_requestAccounts...');
+
+            // First check if wallet is unlocked by trying a simple call
+            try {
+                const chainId = await provider.request({ method: 'eth_chainId' });
+                console.log('Wallet chain ID:', chainId);
+            } catch (chainErr) {
+                console.warn('Chain ID check failed:', chainErr.message);
+            }
+
             const accounts = await provider.request({
                 method: 'eth_requestAccounts'
             });
@@ -398,7 +477,7 @@ const WalletManager = {
             const address = accounts[0];
 
             this.currentWallet = {
-                id: wallet.name.toLowerCase() + '_' + address.slice(2, 10),
+                id: wallet.name.toLowerCase().replace(/\s+/g, '_') + '_' + address.slice(2, 10),
                 address: address,
                 type: this.TYPES.METAMASK,
                 name: wallet.name,
@@ -406,24 +485,54 @@ const WalletManager = {
             };
             this.isUnlocked = true;
 
-            // Listen for account changes on this specific provider
-            provider.on('accountsChanged', (accounts) => {
-                if (accounts.length === 0) {
-                    this.lockWallet();
-                    window.dispatchEvent(new Event('wallet-disconnected'));
-                } else {
-                    this.currentWallet.address = accounts[0];
-                    window.dispatchEvent(new Event('wallet-changed'));
-                }
-            });
+            // Emit wallet-connected event
+            window.dispatchEvent(new Event('wallet-connected'));
+            console.log('✅ Wallet connected:', address);
 
-            provider.on('chainChanged', () => {
-                window.dispatchEvent(new Event('wallet-chain-changed'));
-            });
+            // Listen for account changes on this specific provider
+            if (typeof provider.on === 'function') {
+                provider.on('accountsChanged', (accounts) => {
+                    if (accounts.length === 0) {
+                        this.lockWallet();
+                        window.dispatchEvent(new Event('wallet-disconnected'));
+                    } else {
+                        this.currentWallet.address = accounts[0];
+                        window.dispatchEvent(new Event('wallet-changed'));
+                    }
+                });
+
+                provider.on('chainChanged', () => {
+                    window.dispatchEvent(new Event('wallet-chain-changed'));
+                });
+            }
 
             return this.currentWallet;
         } catch (e) {
-            throw new Error(`Failed to connect ${wallet.name}: ` + e.message);
+            // Debug logging
+            console.error('Wallet connection error:', e);
+            console.error('Error name:', e.name);
+            console.error('Error message:', e.message);
+            console.error('Error code:', e.code);
+
+            // Better error messages based on error code
+            const msg = e.message || String(e);
+            const code = e.code;
+
+            if (code === 4001 || msg.includes('User rejected') || msg.includes('user rejected') || msg.includes('cancelled')) {
+                throw new Error(`Connection cancelled by user`);
+            }
+
+            if (code === -32603) {
+                // Internal JSON-RPC error - usually wallet locked or no account
+                throw new Error(`${wallet.name}: Please unlock your wallet and ensure you have an account created.`);
+            }
+
+            if (code === -32002) {
+                // Already pending
+                throw new Error(`${wallet.name}: Connection already pending. Check your wallet popup.`);
+            }
+
+            throw new Error(`Failed to connect ${wallet.name}: ${msg}`);
         }
     },
 

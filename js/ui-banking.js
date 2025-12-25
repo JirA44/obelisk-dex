@@ -1,5 +1,6 @@
 /**
  * Obelisk DEX - Banking & Bonds UI Controller
+ * Version: 2.1.0 - Demo mode support
  *
  * Handles UI interactions for deposit/withdraw and bonds modules.
  */
@@ -32,9 +33,10 @@ const DepositUI = {
     },
 
     async updateBalances() {
-        if (!WalletManager.isUnlocked) return;
+        if (typeof WalletManager === 'undefined' || !WalletManager.isUnlocked) return;
 
-        const address = WalletManager.currentWallet.address;
+        const address = WalletManager.currentWallet?.address;
+        if (!address) return;
 
         // Get USDC balance on wallet
         this.walletBalance = await DepositWithdraw.getUSDCBalance(address);
@@ -54,16 +56,39 @@ const DepositUI = {
         const btnDeposit = document.getElementById('btn-deposit');
         const btnWithdraw = document.getElementById('btn-withdraw');
 
-        if (WalletManager.isUnlocked) {
+        if (!btnDeposit || !btnWithdraw) {
+            console.warn('Deposit/Withdraw buttons not found');
+            return;
+        }
+
+        // Check demo mode
+        const isDemo = typeof DemoTrading !== 'undefined' && DemoTrading.enabled;
+
+        // Check multiple ways if wallet is connected
+        const walletManagerConnected = typeof WalletManager !== 'undefined' && WalletManager.isUnlocked;
+        const metamaskConnected = typeof window.ethereum !== 'undefined' && window.ethereum.selectedAddress;
+        const isConnected = walletManagerConnected || metamaskConnected || isDemo;
+
+        console.log('Wallet status:', { walletManagerConnected, metamaskConnected, isDemo, isConnected });
+
+        if (isConnected) {
             btnDeposit.disabled = false;
-            btnDeposit.textContent = 'Deposit USDC';
+            btnDeposit.textContent = isDemo ? 'Deposit USDC (Demo)' : 'Deposit USDC';
+            btnDeposit.style.opacity = '1';
+            btnDeposit.style.cursor = 'pointer';
             btnWithdraw.disabled = false;
-            btnWithdraw.textContent = 'Withdraw USDC';
+            btnWithdraw.textContent = isDemo ? 'Withdraw USDC (Demo)' : 'Withdraw USDC';
+            btnWithdraw.style.opacity = '1';
+            btnWithdraw.style.cursor = 'pointer';
         } else {
             btnDeposit.disabled = true;
             btnDeposit.textContent = 'Connect Wallet to Deposit';
+            btnDeposit.style.opacity = '0.5';
+            btnDeposit.style.cursor = 'not-allowed';
             btnWithdraw.disabled = true;
             btnWithdraw.textContent = 'Connect Wallet to Withdraw';
+            btnWithdraw.style.opacity = '0.5';
+            btnWithdraw.style.cursor = 'not-allowed';
         }
     },
 
@@ -92,30 +117,41 @@ const DepositUI = {
 
     async handleDeposit() {
         const amount = parseFloat(document.getElementById('deposit-amount').value);
+        const minDeposit = DepositWithdraw?.MIN_DEPOSIT?.USDC || 0.01;
 
-        if (!amount || amount < 10) {
-            ObeliskApp.showNotification('Minimum deposit is $10 USDC', 'error');
+        if (!amount || amount < minDeposit) {
+            (window.ObeliskApp?.showNotification || console.log)(`Minimum deposit is $${minDeposit} USDC`, 'error');
             return;
         }
+
+        // Check demo mode
+        const isDemo = typeof DemoTrading !== 'undefined' && DemoTrading.enabled;
 
         try {
             const btn = document.getElementById('btn-deposit');
             btn.disabled = true;
             btn.textContent = 'Depositing...';
 
-            const result = await DepositWithdraw.depositUSDC(
-                WalletManager.currentWallet,
-                amount
-            );
-
-            if (result.success) {
-                ObeliskApp.showNotification(result.message, 'success');
+            if (isDemo) {
+                // Demo mode - simulate deposit
+                await new Promise(r => setTimeout(r, 1000));
+                (window.ObeliskApp?.showNotification || console.log)(`[DEMO] Deposited $${amount} USDC`, 'success');
                 document.getElementById('deposit-amount').value = '';
-                this.updateTransactionHistory();
-                await this.updateBalances();
+            } else {
+                const result = await DepositWithdraw.depositUSDC(
+                    WalletManager.currentWallet,
+                    amount
+                );
+
+                if (result.success) {
+                    (window.ObeliskApp?.showNotification || console.log)(result.message, 'success');
+                    document.getElementById('deposit-amount').value = '';
+                    this.updateTransactionHistory();
+                    await this.updateBalances();
+                }
             }
         } catch (e) {
-            ObeliskApp.showNotification(e.message, 'error');
+            (window.ObeliskApp?.showNotification || console.log)(e.message, 'error');
         } finally {
             this.updateButtonStates();
         }
@@ -124,29 +160,41 @@ const DepositUI = {
     async handleWithdraw() {
         const amount = parseFloat(document.getElementById('withdraw-amount').value);
 
-        if (!amount || amount < 2) {
-            ObeliskApp.showNotification('Minimum withdrawal is $2 USDC', 'error');
+        if (!amount || amount < 0.1) {
+            (window.ObeliskApp?.showNotification || console.log)('Minimum withdrawal is $0.10 USDC', 'error');
             return;
         }
+
+        // Check demo mode
+        const isDemo = typeof DemoTrading !== 'undefined' && DemoTrading.enabled;
 
         try {
             const btn = document.getElementById('btn-withdraw');
             btn.disabled = true;
             btn.textContent = 'Withdrawing...';
 
-            const result = await DepositWithdraw.withdrawUSDC(
-                WalletManager.currentWallet,
-                amount
-            );
-
-            if (result.success) {
-                ObeliskApp.showNotification(result.message, 'success');
+            if (isDemo) {
+                // Demo mode - simulate withdrawal
+                await new Promise(r => setTimeout(r, 1000));
+                const fee = 1;
+                const receive = Math.max(0, amount - fee);
+                (window.ObeliskApp?.showNotification || console.log)(`[DEMO] Withdrew $${receive.toFixed(2)} USDC (fee: $${fee})`, 'success');
                 document.getElementById('withdraw-amount').value = '';
-                this.updateTransactionHistory();
-                await this.updateBalances();
+            } else {
+                const result = await DepositWithdraw.withdrawUSDC(
+                    WalletManager.currentWallet,
+                    amount
+                );
+
+                if (result.success) {
+                    (window.ObeliskApp?.showNotification || console.log)(result.message, 'success');
+                    document.getElementById('withdraw-amount').value = '';
+                    this.updateTransactionHistory();
+                    await this.updateBalances();
+                }
             }
         } catch (e) {
-            ObeliskApp.showNotification(e.message, 'error');
+            (window.ObeliskApp?.showNotification || console.log)(e.message, 'error');
         } finally {
             this.updateButtonStates();
         }
@@ -255,13 +303,30 @@ const BondsUI = {
     },
 
     showInvestModal(productId) {
+        console.log('Opening invest modal for:', productId);
+
+        // Check BondsModule exists
+        if (typeof BondsModule === 'undefined') {
+            console.error('BondsModule not loaded');
+            ObeliskApp?.showNotification?.('Module not loaded', 'error');
+            return;
+        }
+
         const product = BondsModule.PRODUCTS[productId];
-        if (!product) return;
+        if (!product) {
+            console.error('Product not found:', productId);
+            ObeliskApp?.showNotification?.('Product not found', 'error');
+            return;
+        }
 
         // Check if wallet connected
-        if (!WalletManager.isUnlocked) {
-            ObeliskApp.showNotification('Please connect your wallet first', 'error');
-            ObeliskApp.switchTab('wallet');
+        if (typeof WalletManager === 'undefined' || !WalletManager.isUnlocked) {
+            // Show clearer message
+            const msg = window.ethereum
+                ? 'Connectez votre wallet MetaMask via le bouton "Connect Wallet" en haut'
+                : 'Installez MetaMask ou connectez un wallet Web3 pour investir';
+            ObeliskApp?.showNotification?.(msg, 'error');
+            ObeliskApp?.switchTab?.('wallet');
             return;
         }
 
@@ -339,39 +404,47 @@ const BondsUI = {
         // Update yield preview on amount change
         const amountInput = modal.querySelector('#invest-amount');
         amountInput.addEventListener('input', () => {
-            const amount = parseFloat(amountInput.value) || 0;
-            const yield30 = BondsModule.calculateYield(productId, amount, 30);
-            const yield90 = BondsModule.calculateYield(productId, amount, 90);
-            const yield365 = BondsModule.calculateYield(productId, amount, 365);
+            try {
+                const amount = parseFloat(amountInput.value) || 0;
+                const yield30 = BondsModule.calculateYield?.(productId, amount, 30) || { yield: amount * (product.apy/100) * (30/365) };
+                const yield90 = BondsModule.calculateYield?.(productId, amount, 90) || { yield: amount * (product.apy/100) * (90/365) };
+                const yield365 = BondsModule.calculateYield?.(productId, amount, 365) || { yield: amount * (product.apy/100) };
 
-            modal.querySelector('#yield-30d').textContent = `+$${yield30.yield.toFixed(2)}`;
-            modal.querySelector('#yield-90d').textContent = `+$${yield90.yield.toFixed(2)}`;
-            modal.querySelector('#yield-365d').textContent = `+$${yield365.yield.toFixed(2)}`;
+                modal.querySelector('#yield-30d').textContent = `+$${(yield30.yield || 0).toFixed(2)}`;
+                modal.querySelector('#yield-90d').textContent = `+$${(yield90.yield || 0).toFixed(2)}`;
+                modal.querySelector('#yield-365d').textContent = `+$${(yield365.yield || 0).toFixed(2)}`;
+            } catch (e) {
+                console.error('Yield calculation error:', e);
+            }
         });
 
         // Confirm invest
         modal.querySelector('#btn-confirm-invest').addEventListener('click', async () => {
             const amount = parseFloat(amountInput.value);
             if (!amount || amount < product.minInvestment) {
-                ObeliskApp.showNotification(`Minimum investment is $${product.minInvestment.toLocaleString()}`, 'error');
+                (window.ObeliskApp?.showNotification || console.log)(`Minimum investment is $${product.minInvestment.toLocaleString()}`, 'error');
                 return;
             }
 
+            // Demo mode check
+            const isDemo = typeof DemoTrading !== 'undefined' && DemoTrading.enabled;
+            const wallet = WalletManager?.currentWallet || (isDemo ? { type: 'demo', address: '0xDEMO' } : null);
+
             try {
                 const result = await BondsModule.buyBond(
-                    WalletManager.currentWallet,
+                    wallet,
                     productId,
                     amount
                 );
 
                 if (result.success) {
-                    ObeliskApp.showNotification(result.message, 'success');
+                    (window.ObeliskApp?.showNotification || console.log)(result.message, 'success');
                     modal.remove();
                     this.updatePortfolioSummary();
                     this.updatePositionsList();
                 }
             } catch (e) {
-                ObeliskApp.showNotification(e.message, 'error');
+                (window.ObeliskApp?.showNotification || console.log)(e.message, 'error');
             }
         });
     },
@@ -434,7 +507,7 @@ const BondsUI = {
             const email = modal.querySelector('#inst-email').value;
 
             if (!orgName || !email) {
-                ObeliskApp.showNotification('Please fill all fields', 'error');
+                (window.ObeliskApp?.showNotification || console.log)('Please fill all fields', 'error');
                 return;
             }
 
@@ -444,7 +517,7 @@ const BondsUI = {
                 size: modal.querySelector('#inst-size').value
             });
 
-            ObeliskApp.showNotification(result.message, 'success');
+            (window.ObeliskApp?.showNotification || console.log)(result.message, 'success');
             modal.remove();
         });
     },
@@ -507,12 +580,12 @@ const BondsUI = {
                 try {
                     const result = await BondsModule.redeemBond(WalletManager.currentWallet, index);
                     if (result.success) {
-                        ObeliskApp.showNotification(result.message, 'success');
+                        (window.ObeliskApp?.showNotification || console.log)(result.message, 'success');
                         this.updatePortfolioSummary();
                         this.updatePositionsList();
                     }
                 } catch (e) {
-                    ObeliskApp.showNotification(e.message, 'error');
+                    (window.ObeliskApp?.showNotification || console.log)(e.message, 'error');
                 }
             });
         });
@@ -533,7 +606,7 @@ const PriceTicker = {
     },
 
     updateTradingPrice(prices) {
-        const currentPair = ObeliskApp.state?.currentPair || 'BTC';
+        const currentPair = (window.ObeliskApp?.state || {})?.currentPair || 'BTC';
         const priceData = prices[currentPair];
 
         if (priceData) {
@@ -573,10 +646,31 @@ document.addEventListener('DOMContentLoaded', async () => {
 
     // Listen for wallet connection
     window.addEventListener('wallet-connected', () => {
+        console.log('✅ Wallet connected event received');
+        DepositUI.updateButtonStates();
         DepositUI.updateBalances();
         BondsUI.updatePortfolioSummary();
         BondsUI.updatePositionsList();
     });
+
+    // Also listen for MetaMask account changes
+    if (typeof window.ethereum !== 'undefined') {
+        window.ethereum.on('accountsChanged', (accounts) => {
+            console.log('MetaMask accounts changed:', accounts);
+            if (accounts.length > 0) {
+                DepositUI.updateButtonStates();
+                DepositUI.updateBalances();
+            }
+        });
+
+        // Check if already connected
+        window.ethereum.request({ method: 'eth_accounts' }).then(accounts => {
+            if (accounts.length > 0) {
+                console.log('MetaMask already connected:', accounts[0]);
+                DepositUI.updateButtonStates();
+            }
+        }).catch(console.error);
+    }
 
     console.log('Banking & Bonds UI initialized!');
 });

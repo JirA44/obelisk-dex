@@ -1,64 +1,53 @@
 /**
- * Obelisk DEX - Hyperliquid Integration
+ * Obelisk DEX - Trading API v2.1
  *
- * Connects to Hyperliquid DEX for perpetual futures trading.
- * All API calls go directly from client to Hyperliquid (no proxy).
+ * Connects to Obelisk API for market data and trading.
+ * API: https://obelisk-api.hugo-padilla-pro.workers.dev
+ * Updated: 2024-12-13
  */
 
 const HyperliquidAPI = {
-    // API endpoints
-    MAINNET_API: 'https://api.hyperliquid.xyz',
-    MAINNET_WS: 'wss://api.hyperliquid.xyz/ws',
-
-    // WebSocket connection
-    ws: null,
-    wsCallbacks: {},
-    wsReconnectAttempts: 0,
-    maxReconnectAttempts: 5,
+    // Obelisk API endpoint
+    OBELISK_API: 'https://obelisk-api.hugo-padilla-pro.workers.dev',
 
     // Cache
     marketsCache: null,
     marketsCacheTime: 0,
-    CACHE_TTL: 60000, // 1 minute
+    CACHE_TTL: 30000, // 30 seconds
+
+    // Connection status
+    connected: false,
 
     /**
-     * Initialize Hyperliquid connection
+     * Initialize connection to Obelisk API
      */
     async init() {
+        console.log('Connecting to Obelisk API...');
         await this.loadMarkets();
-        this.connectWebSocket();
+        this.connected = true;
+        console.log('Obelisk API connected!');
+        window.dispatchEvent(new Event('hyperliquid-connected'));
     },
 
     /**
-     * Make API request to Hyperliquid
+     * Make API request to Obelisk
      */
-    async request(endpoint, data = null) {
-        const url = `${this.MAINNET_API}${endpoint}`;
-        const options = {
-            method: data ? 'POST' : 'GET',
-            headers: {
-                'Content-Type': 'application/json'
-            }
-        };
-
-        if (data) {
-            options.body = JSON.stringify(data);
-        }
-
+    async request(endpoint) {
+        const url = `${this.OBELISK_API}${endpoint}`;
         try {
-            const response = await fetch(url, options);
+            const response = await fetch(url);
             if (!response.ok) {
                 throw new Error(`HTTP ${response.status}: ${response.statusText}`);
             }
             return await response.json();
         } catch (e) {
-            console.error('Hyperliquid API error:', e);
+            console.error('Obelisk API error:', e);
             throw e;
         }
     },
 
     /**
-     * Get all available markets
+     * Get all available markets from Obelisk API
      */
     async loadMarkets() {
         if (this.marketsCache && Date.now() - this.marketsCacheTime < this.CACHE_TTL) {
@@ -66,14 +55,15 @@ const HyperliquidAPI = {
         }
 
         try {
-            const response = await this.request('/info', {
-                type: 'meta'
-            });
+            const response = await this.request('/api/markets');
 
-            this.marketsCache = response.universe.map(market => ({
-                name: market.name,
-                szDecimals: market.szDecimals,
-                maxLeverage: market.maxLeverage || 50
+            this.marketsCache = (response.markets || []).map(market => ({
+                name: market.pair.replace('/USDC', ''),
+                pair: market.pair,
+                price: market.price,
+                change24h: market.change24h,
+                volume: market.volume,
+                maxLeverage: 50
             }));
             this.marketsCacheTime = Date.now();
 
@@ -93,14 +83,19 @@ const HyperliquidAPI = {
     },
 
     /**
-     * Get current prices for all markets
+     * Get current prices for all markets from Obelisk API
      */
     async getAllPrices() {
         try {
-            const response = await this.request('/info', {
-                type: 'allMids'
-            });
-            return response;
+            const response = await this.request('/api/tickers');
+            const prices = {};
+
+            for (const [pair, data] of Object.entries(response.tickers || {})) {
+                const symbol = pair.replace('/USDC', '');
+                prices[symbol] = data.price;
+            }
+
+            return prices;
         } catch (e) {
             console.error('Failed to get prices:', e);
             return {};
@@ -108,30 +103,28 @@ const HyperliquidAPI = {
     },
 
     /**
-     * Get orderbook for a market
+     * Get orderbook for a market from Obelisk API
      */
     async getOrderbook(symbol) {
         try {
-            const response = await this.request('/info', {
-                type: 'l2Book',
-                coin: symbol
-            });
+            const response = await this.request(`/api/orderbook/${symbol}/USDC`);
 
             return {
-                bids: response.levels[0].map(level => ({
-                    price: parseFloat(level.px),
-                    size: parseFloat(level.sz),
-                    total: parseFloat(level.px) * parseFloat(level.sz)
+                bids: (response.bids || []).map(level => ({
+                    price: level.price,
+                    size: level.quantity,
+                    total: level.total
                 })),
-                asks: response.levels[1].map(level => ({
-                    price: parseFloat(level.px),
-                    size: parseFloat(level.sz),
-                    total: parseFloat(level.px) * parseFloat(level.sz)
-                }))
+                asks: (response.asks || []).map(level => ({
+                    price: level.price,
+                    size: level.quantity,
+                    total: level.total
+                })),
+                spread: response.spread
             };
         } catch (e) {
             console.error('Failed to get orderbook:', e);
-            return { bids: [], asks: [] };
+            return { bids: [], asks: [], spread: 0 };
         }
     },
 
@@ -188,282 +181,90 @@ const HyperliquidAPI = {
 
     /**
      * Get user's account value and margin info
+     * Note: Returns local balance from SecureStorage since API doesn't have this endpoint
      */
     async getAccountInfo(address) {
-        try {
-            const response = await this.request('/info', {
-                type: 'clearinghouseState',
-                user: address
-            });
+        // Return balance from local storage (demo mode)
+        // In production, this would connect to actual blockchain/DEX
+        const stored = localStorage.getItem('obelisk_demo_balance');
+        const balance = stored ? parseFloat(stored) : 10000; // Default demo balance
 
-            return {
-                accountValue: parseFloat(response.marginSummary?.accountValue || 0),
-                totalMarginUsed: parseFloat(response.marginSummary?.totalMarginUsed || 0),
-                totalPositionValue: parseFloat(response.marginSummary?.totalPositionValue || 0),
-                availableBalance: parseFloat(response.marginSummary?.accountValue || 0) -
-                    parseFloat(response.marginSummary?.totalMarginUsed || 0)
-            };
-        } catch (e) {
-            console.error('Failed to get account info:', e);
-            return {
-                accountValue: 0,
-                totalMarginUsed: 0,
-                totalPositionValue: 0,
-                availableBalance: 0
-            };
-        }
+        return {
+            accountValue: balance,
+            totalMarginUsed: 0,
+            totalPositionValue: 0,
+            availableBalance: balance
+        };
     },
 
     /**
      * Get trade history
+     * Note: Returns local trade history since API doesn't have this endpoint
      */
     async getTradeHistory(address, limit = 100) {
-        try {
-            const response = await this.request('/info', {
-                type: 'userFills',
-                user: address
-            });
-
-            return response.slice(0, limit).map(fill => ({
-                symbol: fill.coin,
-                side: fill.side,
-                size: parseFloat(fill.sz),
-                price: parseFloat(fill.px),
-                fee: parseFloat(fill.fee),
-                timestamp: fill.time,
-                hash: fill.hash
-            }));
-        } catch (e) {
-            console.error('Failed to get trade history:', e);
-            return [];
-        }
+        // Return trades from local storage (demo mode)
+        const stored = localStorage.getItem('obelisk_trade_history');
+        const trades = stored ? JSON.parse(stored) : [];
+        return trades.slice(0, limit);
     },
 
     /**
-     * Place a market order
+     * Place a market order via Obelisk API
      */
     async placeMarketOrder(address, symbol, side, size, leverage, privateKey) {
-        const order = {
-            a: this.getAssetIndex(symbol),
-            b: side === 'buy',
-            p: '0', // Market order
-            s: size.toString(),
-            r: false, // Not reduce only
-            t: {
-                limit: {
-                    tif: 'Ioc' // Immediate or cancel for market orders
-                }
-            }
-        };
+        try {
+            const response = await fetch(`${this.OBELISK_API}/api/order`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                    pair: `${symbol}/USDC`,
+                    side: side,
+                    type: 'market',
+                    quantity: size,
+                    userId: address
+                })
+            });
 
-        return await this.signAndSendOrder(address, order, privateKey);
+            const data = await response.json();
+            return {
+                success: data.success,
+                orderId: data.order?.id,
+                order: data.order
+            };
+        } catch (e) {
+            console.error('Failed to place market order:', e);
+            return { success: false, error: e.message };
+        }
     },
 
     /**
-     * Place a limit order
+     * Place a limit order via Obelisk API
      */
     async placeLimitOrder(address, symbol, side, size, price, leverage, privateKey) {
-        const order = {
-            a: this.getAssetIndex(symbol),
-            b: side === 'buy',
-            p: price.toString(),
-            s: size.toString(),
-            r: false,
-            t: {
-                limit: {
-                    tif: 'Gtc' // Good til cancelled
-                }
-            }
-        };
+        try {
+            const response = await fetch(`${this.OBELISK_API}/api/order`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                    pair: `${symbol}/USDC`,
+                    side: side,
+                    type: 'limit',
+                    quantity: size,
+                    price: price,
+                    userId: address
+                })
+            });
 
-        return await this.signAndSendOrder(address, order, privateKey);
-    },
-
-    /**
-     * Cancel an order
-     */
-    async cancelOrder(address, symbol, orderId, privateKey) {
-        const cancel = {
-            a: this.getAssetIndex(symbol),
-            o: orderId
-        };
-
-        // Sign and send cancel request
-        // Implementation depends on Hyperliquid signing requirements
-        return await this.signAndSendCancel(address, cancel, privateKey);
-    },
-
-    /**
-     * Get asset index from symbol
-     */
-    getAssetIndex(symbol) {
-        const markets = this.marketsCache || [];
-        const index = markets.findIndex(m => m.name === symbol);
-        return index >= 0 ? index : 0;
-    },
-
-    /**
-     * Sign and send order (simplified - full implementation needs EIP-712 signing)
-     */
-    async signAndSendOrder(address, order, privateKey) {
-        // In production, implement proper Hyperliquid signing:
-        // 1. Create typed data structure (EIP-712)
-        // 2. Sign with private key
-        // 3. Send to /exchange endpoint
-
-        console.log('Order to sign:', order);
-
-        // For now, return mock response
-        // Full implementation requires ethers.js or similar for EIP-712 signing
-        return {
-            success: true,
-            orderId: 'mock_' + Date.now()
-        };
-    },
-
-    /**
-     * Sign and send cancel
-     */
-    async signAndSendCancel(address, cancel, privateKey) {
-        console.log('Cancel to sign:', cancel);
-        return { success: true };
-    },
-
-    // ============ WEBSOCKET ============
-
-    /**
-     * Connect to WebSocket for real-time data
-     */
-    connectWebSocket() {
-        if (this.ws && this.ws.readyState === WebSocket.OPEN) {
-            return;
+            const data = await response.json();
+            return {
+                success: data.success,
+                orderId: data.order?.id,
+                order: data.order
+            };
+        } catch (e) {
+            console.error('Failed to place limit order:', e);
+            return { success: false, error: e.message };
         }
-
-        this.ws = new WebSocket(this.MAINNET_WS);
-
-        this.ws.onopen = () => {
-            console.log('Hyperliquid WebSocket connected');
-            this.wsReconnectAttempts = 0;
-            window.dispatchEvent(new Event('hyperliquid-connected'));
-        };
-
-        this.ws.onclose = () => {
-            console.log('Hyperliquid WebSocket disconnected');
-            this.attemptReconnect();
-        };
-
-        this.ws.onerror = (error) => {
-            console.error('Hyperliquid WebSocket error:', error);
-        };
-
-        this.ws.onmessage = (event) => {
-            try {
-                const data = JSON.parse(event.data);
-                this.handleWebSocketMessage(data);
-            } catch (e) {
-                console.error('Failed to parse WebSocket message:', e);
-            }
-        };
-    },
-
-    /**
-     * Attempt to reconnect WebSocket
-     */
-    attemptReconnect() {
-        if (this.wsReconnectAttempts >= this.maxReconnectAttempts) {
-            console.error('Max WebSocket reconnect attempts reached');
-            return;
-        }
-
-        this.wsReconnectAttempts++;
-        const delay = Math.min(1000 * Math.pow(2, this.wsReconnectAttempts), 30000);
-
-        setTimeout(() => {
-            console.log(`Attempting WebSocket reconnect (${this.wsReconnectAttempts}/${this.maxReconnectAttempts})`);
-            this.connectWebSocket();
-        }, delay);
-    },
-
-    /**
-     * Handle incoming WebSocket message
-     */
-    handleWebSocketMessage(data) {
-        const channel = data.channel;
-        if (this.wsCallbacks[channel]) {
-            this.wsCallbacks[channel].forEach(callback => callback(data.data));
-        }
-    },
-
-    /**
-     * Subscribe to orderbook updates
-     */
-    subscribeOrderbook(symbol, callback) {
-        const channel = `l2Book:${symbol}`;
-        if (!this.wsCallbacks[channel]) {
-            this.wsCallbacks[channel] = [];
-        }
-        this.wsCallbacks[channel].push(callback);
-
-        if (this.ws && this.ws.readyState === WebSocket.OPEN) {
-            this.ws.send(JSON.stringify({
-                method: 'subscribe',
-                subscription: { type: 'l2Book', coin: symbol }
-            }));
-        }
-    },
-
-    /**
-     * Subscribe to trades
-     */
-    subscribeTrades(symbol, callback) {
-        const channel = `trades:${symbol}`;
-        if (!this.wsCallbacks[channel]) {
-            this.wsCallbacks[channel] = [];
-        }
-        this.wsCallbacks[channel].push(callback);
-
-        if (this.ws && this.ws.readyState === WebSocket.OPEN) {
-            this.ws.send(JSON.stringify({
-                method: 'subscribe',
-                subscription: { type: 'trades', coin: symbol }
-            }));
-        }
-    },
-
-    /**
-     * Subscribe to user updates (positions, orders)
-     */
-    subscribeUser(address, callback) {
-        const channel = `user:${address}`;
-        if (!this.wsCallbacks[channel]) {
-            this.wsCallbacks[channel] = [];
-        }
-        this.wsCallbacks[channel].push(callback);
-
-        if (this.ws && this.ws.readyState === WebSocket.OPEN) {
-            this.ws.send(JSON.stringify({
-                method: 'subscribe',
-                subscription: { type: 'userEvents', user: address }
-            }));
-        }
-    },
-
-    /**
-     * Unsubscribe from a channel
-     */
-    unsubscribe(channel) {
-        delete this.wsCallbacks[channel];
-    },
-
-    /**
-     * Disconnect WebSocket
-     */
-    disconnect() {
-        if (this.ws) {
-            this.ws.close();
-            this.ws = null;
-        }
-        this.wsCallbacks = {};
     },
 
     // ============ UTILITIES ============

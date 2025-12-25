@@ -6,24 +6,108 @@
  */
 
 const DepositWithdraw = {
-    // Hyperliquid bridge contracts
+    // Supported networks with their configurations
+    NETWORKS: {
+        ARBITRUM: {
+            name: 'Arbitrum One',
+            chainId: 42161,
+            icon: '🔵',
+            bridge: '0x2Df1c51E09aECF9cacB7bc98cB1742757f163dF7',
+            usdc: '0xaf88d065e77c8cC2239327C5EDb3A432268e5831',
+            rpc: 'https://arb1.arbitrum.io/rpc',
+            explorer: 'https://arbiscan.io',
+            gasEstimate: 0.50,
+            depositTime: '~1 min'
+        },
+        ETHEREUM: {
+            name: 'Ethereum',
+            chainId: 1,
+            icon: '⟠',
+            bridge: '0x2Df1c51E09aECF9cacB7bc98cB1742757f163dF7',
+            usdc: '0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48',
+            rpc: 'https://eth.llamarpc.com',
+            explorer: 'https://etherscan.io',
+            gasEstimate: 5.00,
+            depositTime: '~10 min'
+        },
+        BASE: {
+            name: 'Base',
+            chainId: 8453,
+            icon: '🔷',
+            bridge: '0x2Df1c51E09aECF9cacB7bc98cB1742757f163dF7',
+            usdc: '0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913',
+            rpc: 'https://mainnet.base.org',
+            explorer: 'https://basescan.org',
+            gasEstimate: 0.10,
+            depositTime: '~1 min'
+        },
+        POLYGON: {
+            name: 'Polygon',
+            chainId: 137,
+            icon: '🟣',
+            bridge: '0x2Df1c51E09aECF9cacB7bc98cB1742757f163dF7',
+            usdc: '0x3c499c542cEF5E3811e1192ce70d8cC03d5c3359',
+            rpc: 'https://polygon-rpc.com',
+            explorer: 'https://polygonscan.com',
+            gasEstimate: 0.05,
+            depositTime: '~2 min'
+        },
+        OPTIMISM: {
+            name: 'Optimism',
+            chainId: 10,
+            icon: '🔴',
+            bridge: '0x2Df1c51E09aECF9cacB7bc98cB1742757f163dF7',
+            usdc: '0x0b2C639c533813f4Aa9D7837CAf62653d097Ff85',
+            rpc: 'https://mainnet.optimism.io',
+            explorer: 'https://optimistic.etherscan.io',
+            gasEstimate: 0.20,
+            depositTime: '~1 min'
+        },
+        BSC: {
+            name: 'BNB Chain',
+            chainId: 56,
+            icon: '🟡',
+            bridge: '0x2Df1c51E09aECF9cacB7bc98cB1742757f163dF7',
+            usdc: '0x8AC76a51cc950d9822D68b83fE1Ad97B32Cd580d',
+            rpc: 'https://bsc-dataseed.binance.org',
+            explorer: 'https://bscscan.com',
+            gasEstimate: 0.15,
+            depositTime: '~3 min'
+        },
+        SOLANA: {
+            name: 'Solana',
+            chainId: 'solana',
+            icon: '◎',
+            usdc: 'EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v', // USDC SPL token
+            rpc: 'https://api.mainnet-beta.solana.com',
+            explorer: 'https://solscan.io',
+            gasEstimate: 0.001, // ~0.001 SOL
+            depositTime: '~30 sec',
+            isNonEVM: true
+        }
+    },
+
+    // Currently selected network
+    selectedNetwork: 'ARBITRUM',
+
+    // Legacy compatibility
     CONTRACTS: {
         ARBITRUM: {
-            bridge: '0x2Df1c51E09aECF9cacB7bc98cB1742757f163dF7', // Hyperliquid bridge
-            usdc: '0xaf88d065e77c8cC2239327C5EDb3A432268e5831'   // Native USDC on Arbitrum
+            bridge: '0x2Df1c51E09aECF9cacB7bc98cB1742757f163dF7',
+            usdc: '0xaf88d065e77c8cC2239327C5EDb3A432268e5831'
         }
     },
 
     // Minimum deposit amounts
     MIN_DEPOSIT: {
-        USDC: 10,
-        ETH: 0.01
+        USDC: 0.1,
+        ETH: 0.0001
     },
 
     // Fee structure
     FEES: {
-        deposit: 0, // No deposit fee
-        withdraw: 1  // $1 withdrawal fee
+        deposit: 0,
+        withdraw: 1
     },
 
     // Transaction history
@@ -35,6 +119,78 @@ const DepositWithdraw = {
     async init() {
         console.log('Initializing Deposit/Withdraw module...');
         await this.loadHistory();
+    },
+
+    /**
+     * Select network for deposit
+     */
+    selectNetwork(networkKey) {
+        if (!this.NETWORKS[networkKey]) return;
+
+        this.selectedNetwork = networkKey;
+        const network = this.NETWORKS[networkKey];
+
+        // Update UI buttons
+        document.querySelectorAll('.network-btn').forEach(btn => {
+            btn.classList.toggle('active', btn.dataset.network === networkKey);
+        });
+
+        // Update gas fee display
+        const gasFeeEl = document.getElementById('deposit-gas-fee');
+        if (gasFeeEl) {
+            gasFeeEl.textContent = `~$${network.gasEstimate.toFixed(2)}`;
+        }
+
+        // Try to switch MetaMask network
+        this.switchMetaMaskNetwork(networkKey);
+
+        console.log(`[DEPOSIT] Selected network: ${network.name}`);
+    },
+
+    /**
+     * Switch MetaMask to selected network
+     */
+    async switchMetaMaskNetwork(networkKey) {
+        if (!window.ethereum) return;
+
+        const network = this.NETWORKS[networkKey];
+        const chainIdHex = '0x' + network.chainId.toString(16);
+
+        try {
+            await window.ethereum.request({
+                method: 'wallet_switchEthereumChain',
+                params: [{ chainId: chainIdHex }]
+            });
+        } catch (error) {
+            // If network not added, try to add it
+            if (error.code === 4902) {
+                try {
+                    await window.ethereum.request({
+                        method: 'wallet_addEthereumChain',
+                        params: [{
+                            chainId: chainIdHex,
+                            chainName: network.name,
+                            rpcUrls: [network.rpc],
+                            blockExplorerUrls: [network.explorer],
+                            nativeCurrency: {
+                                name: networkKey === 'BSC' ? 'BNB' : 'ETH',
+                                symbol: networkKey === 'BSC' ? 'BNB' : 'ETH',
+                                decimals: 18
+                            }
+                        }]
+                    });
+                } catch (addError) {
+                    console.error('Failed to add network:', addError);
+                }
+            }
+        }
+    },
+
+    /**
+     * Get current network config
+     */
+    getCurrentNetwork() {
+        return this.NETWORKS[this.selectedNetwork];
     },
 
     /**

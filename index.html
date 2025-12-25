@@ -1,980 +1,1205 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="en">
 <head>
+    <!-- Accessibility: Prefers reduced motion -->
+    <meta name="color-scheme" content="dark">
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Obelisk DEX - Your Decentralized Post-Quantum Bank</title>
-    <meta name="description" content="Self-custody decentralized exchange with post-quantum security. Your keys, your crypto, your bank.">
-
-    <!-- Security Headers -->
-    <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline' https://unpkg.com; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src https://fonts.gstatic.com; connect-src https://api.hyperliquid.xyz https://api.uniswap.org https://api.coingecko.com https://*.infura.io https://*.alchemy.com wss://api.hyperliquid.xyz;">
-
-    <!-- Fonts -->
+    <title>OBELISK - Post-Quantum Decentralized Exchange</title>
+    <meta name="description" content="The future of decentralized finance. Self-custody DEX with post-quantum cryptography. Your keys, your crypto, your bank.">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
-
-    <link rel="stylesheet" href="css/main.css">
-    <link rel="stylesheet" href="css/banking.css">
-    <link rel="stylesheet" href="css/tools.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet">
     <link rel="icon" type="image/svg+xml" href="assets/obelisk-icon.svg">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --bg-dark: #0a0a0f;
+            --bg-card: #12121a;
+            --bg-card-hover: #1a1a25;
+            --primary: #00ff88;
+            --secondary: #00aaff;
+            --accent: #8a2be2;
+            --text: #ffffff;
+            --text-dim: #888899;
+            --border: #2a2a3a;
+        }
+
+        body {
+            font-family: 'Inter', -apple-system, sans-serif;
+            background: var(--bg-dark);
+            color: var(--text);
+            min-height: 100vh;
+            overflow-x: hidden;
+            max-width: 100vw;
+        }
+
+        /* Animated background */
+        .bg-gradient {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background:
+                radial-gradient(ellipse at 20% 20%, rgba(0, 255, 136, 0.08) 0%, transparent 50%),
+                radial-gradient(ellipse at 80% 80%, rgba(138, 43, 226, 0.08) 0%, transparent 50%),
+                radial-gradient(ellipse at 50% 50%, rgba(0, 170, 255, 0.05) 0%, transparent 60%);
+            pointer-events: none;
+            z-index: 0;
+        }
+
+        .container {
+            position: relative;
+            z-index: 1;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 24px;
+        }
+
+        /* Header */
+        header {
+            padding: 24px 0;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .logo-icon {
+            width: 48px;
+            height: 48px;
+        }
+
+        .logo-text {
+            font-size: 28px;
+            font-weight: 800;
+            background: linear-gradient(135deg, var(--primary), var(--secondary), var(--accent));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 32px;
+        }
+
+        .nav-links a {
+            color: var(--text-dim);
+            text-decoration: none;
+            font-weight: 500;
+            transition: color 0.3s;
+        }
+
+        .nav-links a:hover {
+            color: var(--primary);
+        }
+
+        .btn-launch {
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            color: var(--bg-dark);
+            border: none;
+            padding: 12px 28px;
+            border-radius: 12px;
+            font-weight: 700;
+            font-size: 16px;
+            cursor: pointer;
+            transition: transform 0.3s, box-shadow 0.3s;
+            text-decoration: none;
+        }
+
+        .btn-launch:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 30px rgba(0, 255, 136, 0.3);
+        }
+
+        /* Language Selector */
+        .lang-selector {
+            position: relative;
+            display: inline-block;
+        }
+
+        .lang-btn {
+            background: rgba(255, 255, 255, 0.1);
+            border: 1px solid var(--border);
+            color: var(--text);
+            padding: 8px 16px;
+            border-radius: 8px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 14px;
+            transition: all 0.3s;
+        }
+
+        .lang-btn:hover {
+            background: rgba(255, 255, 255, 0.15);
+            border-color: var(--primary);
+        }
+
+        .lang-dropdown {
+            position: absolute;
+            top: 100%;
+            right: 0;
+            margin-top: 8px;
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            min-width: 150px;
+            display: none;
+            z-index: 1000;
+            box-shadow: 0 8px 30px rgba(0, 0, 0, 0.3);
+        }
+
+        .lang-dropdown.active {
+            display: block;
+        }
+
+        .lang-option {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 12px 16px;
+            cursor: pointer;
+            transition: background 0.2s;
+            text-decoration: none;
+            color: var(--text);
+        }
+
+        .lang-option:hover {
+            background: rgba(0, 255, 136, 0.1);
+        }
+
+        .lang-option.active {
+            color: var(--primary);
+        }
+
+        .header-right {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+        }
+
+        /* Hero Section */
+        .hero {
+            padding: 80px 0 100px;
+            text-align: center;
+        }
+
+        .hero-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            background: rgba(0, 255, 136, 0.1);
+            border: 1px solid rgba(0, 255, 136, 0.3);
+            padding: 8px 16px;
+            border-radius: 50px;
+            font-size: 14px;
+            color: var(--primary);
+            margin-bottom: 32px;
+        }
+
+        .hero h1 {
+            font-size: clamp(40px, 8vw, 72px);
+            font-weight: 800;
+            line-height: 1.1;
+            margin-bottom: 24px;
+        }
+
+        .hero h1 span {
+            background: linear-gradient(135deg, var(--primary), var(--secondary), var(--accent));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .hero-subtitle {
+            font-size: 20px;
+            color: var(--text-dim);
+            max-width: 600px;
+            margin: 0 auto 48px;
+            line-height: 1.6;
+        }
+
+        .hero-buttons {
+            display: flex;
+            gap: 16px;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            color: var(--bg-dark);
+            border: none;
+            padding: 16px 40px;
+            border-radius: 12px;
+            font-weight: 700;
+            font-size: 18px;
+            cursor: pointer;
+            transition: transform 0.3s, box-shadow 0.3s;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 12px 40px rgba(0, 255, 136, 0.4);
+        }
+
+        .btn-secondary {
+            background: transparent;
+            color: var(--text);
+            border: 2px solid var(--border);
+            padding: 16px 40px;
+            border-radius: 12px;
+            font-weight: 600;
+            font-size: 18px;
+            cursor: pointer;
+            transition: all 0.3s;
+            text-decoration: none;
+        }
+
+        .btn-secondary:hover {
+            border-color: var(--primary);
+            background: rgba(0, 255, 136, 0.1);
+        }
+
+        /* Stats */
+        .stats {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 24px;
+            padding: 60px 0;
+            border-top: 1px solid var(--border);
+            border-bottom: 1px solid var(--border);
+        }
+
+        .stat-item {
+            text-align: center;
+        }
+
+        .stat-value {
+            font-size: 36px;
+            font-weight: 800;
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .stat-label {
+            color: var(--text-dim);
+            margin-top: 8px;
+        }
+
+        /* Features Section */
+        .features {
+            padding: 100px 0;
+        }
+
+        .section-title {
+            text-align: center;
+            font-size: 40px;
+            font-weight: 800;
+            margin-bottom: 16px;
+        }
+
+        .section-subtitle {
+            text-align: center;
+            color: var(--text-dim);
+            margin-bottom: 60px;
+            font-size: 18px;
+        }
+
+        .features-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 24px;
+            width: 100%;
+            max-width: 100%;
+        }
+
+        .feature-card {
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: 20px;
+            padding: 32px;
+            transition: all 0.3s;
+            cursor: pointer;
+            text-decoration: none;
+            color: inherit;
+            display: block;
+        }
+
+        .feature-card:hover {
+            background: var(--bg-card-hover);
+            border-color: var(--primary);
+            transform: translateY(-4px);
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
+        }
+
+        .feature-icon {
+            width: 56px;
+            height: 56px;
+            background: linear-gradient(135deg, rgba(0, 255, 136, 0.2), rgba(0, 170, 255, 0.2));
+            border-radius: 16px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 28px;
+            margin-bottom: 20px;
+        }
+
+        .feature-card h3 {
+            font-size: 22px;
+            font-weight: 700;
+            margin-bottom: 12px;
+        }
+
+        .feature-card p {
+            color: var(--text-dim);
+            line-height: 1.6;
+        }
+
+        .feature-link {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            color: var(--primary);
+            margin-top: 16px;
+            font-weight: 600;
+        }
+
+        /* Security Section */
+        .security {
+            padding: 100px 0;
+            background: linear-gradient(180deg, transparent, rgba(138, 43, 226, 0.05), transparent);
+        }
+
+        .security-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 60px;
+            align-items: center;
+        }
+
+        .security-content h2 {
+            font-size: 40px;
+            font-weight: 800;
+            margin-bottom: 24px;
+        }
+
+        .security-content h2 span {
+            color: var(--accent);
+        }
+
+        .security-content p {
+            color: var(--text-dim);
+            font-size: 18px;
+            line-height: 1.7;
+            margin-bottom: 32px;
+        }
+
+        .security-features {
+            display: flex;
+            flex-direction: column;
+            gap: 16px;
+        }
+
+        .security-feature {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .security-feature .check {
+            width: 24px;
+            height: 24px;
+            background: rgba(0, 255, 136, 0.2);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--primary);
+        }
+
+        .security-visual {
+            display: flex;
+            justify-content: center;
+        }
+
+        .obelisk-3d {
+            width: 300px;
+            height: 400px;
+            position: relative;
+        }
+
+        .obelisk-3d svg {
+            width: 100%;
+            height: 100%;
+            filter: drop-shadow(0 0 60px rgba(0, 255, 136, 0.3));
+        }
+
+        /* CTA Section */
+        .cta {
+            padding: 100px 0;
+            text-align: center;
+        }
+
+        .cta-box {
+            background: linear-gradient(135deg, rgba(0, 255, 136, 0.1), rgba(138, 43, 226, 0.1));
+            border: 1px solid var(--border);
+            border-radius: 32px;
+            padding: 60px;
+        }
+
+        .cta h2 {
+            font-size: 36px;
+            font-weight: 800;
+            margin-bottom: 16px;
+        }
+
+        .cta p {
+            color: var(--text-dim);
+            font-size: 18px;
+            margin-bottom: 32px;
+        }
+
+        /* Footer */
+        footer {
+            padding: 40px 0;
+            border-top: 1px solid var(--border);
+            text-align: center;
+            color: var(--text-dim);
+        }
+
+        footer a {
+            color: var(--primary);
+            text-decoration: none;
+        }
+
+        /* Live Time */
+        .live-time {
+            padding: 40px 0;
+            text-align: center;
+        }
+
+        .time-container {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: 16px;
+            padding: 20px 32px;
+        }
+
+        .time-block {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            min-width: 60px;
+        }
+
+        .time-block.ms-block {
+            min-width: 70px;
+        }
+
+        .time-value {
+            font-size: 32px;
+            font-weight: 800;
+            font-family: 'JetBrains Mono', monospace;
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .time-label {
+            font-size: 10px;
+            color: var(--text-dim);
+            font-weight: 600;
+            letter-spacing: 1px;
+            margin-top: 4px;
+        }
+
+        .time-separator {
+            font-size: 28px;
+            font-weight: 800;
+            color: var(--primary);
+            opacity: 0.5;
+            margin-bottom: 16px;
+        }
+
+        .time-info {
+            margin-top: 12px;
+            font-size: 12px;
+            color: var(--text-dim);
+        }
+
+        .time-info::before {
+            content: '';
+            display: inline-block;
+            width: 8px;
+            height: 8px;
+            background: var(--primary);
+            border-radius: 50%;
+            margin-right: 8px;
+            animation: pulse 1s infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.3; }
+        }
+
+        /* Accessibility: Focus styles */
+        *:focus {
+            outline: 2px solid var(--primary);
+            outline-offset: 2px;
+        }
+
+        *:focus:not(:focus-visible) {
+            outline: none;
+        }
+
+        *:focus-visible {
+            outline: 2px solid var(--primary);
+            outline-offset: 2px;
+        }
+
+        /* Accessibility: Skip link */
+        .skip-link {
+            position: absolute;
+            top: -100px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: var(--primary);
+            color: var(--bg-dark);
+            padding: 12px 24px;
+            border-radius: 8px;
+            font-weight: 700;
+            z-index: 9999;
+            transition: top 0.3s;
+        }
+
+        .skip-link:focus {
+            top: 10px;
+        }
+
+        /* Accessibility: Reduced motion */
+        @media (prefers-reduced-motion: reduce) {
+            *, *::before, *::after {
+                animation-duration: 0.01ms !important;
+                animation-iteration-count: 1 !important;
+                transition-duration: 0.01ms !important;
+            }
+        }
+
+        /* Accessibility: High contrast mode */
+        @media (prefers-contrast: high) {
+            :root {
+                --text-dim: #aaaaaa;
+                --border: #444455;
+            }
+        }
+
+        /* Accessibility: Screen reader only */
+        .sr-only {
+            position: absolute;
+            width: 1px;
+            height: 1px;
+            padding: 0;
+            margin: -1px;
+            overflow: hidden;
+            clip: rect(0, 0, 0, 0);
+            white-space: nowrap;
+            border: 0;
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            * {
+                max-width: 100%;
+                box-sizing: border-box;
+            }
+            html, body {
+                overflow-x: hidden;
+            }
+
+            .container {
+                padding: 0 16px;
+            }
+
+            .nav-links {
+                display: none;
+            }
+
+            .hero {
+                padding: 40px 0 60px;
+            }
+
+            .hero h1 {
+                font-size: 32px;
+            }
+
+            .hero-subtitle {
+                font-size: 16px;
+            }
+
+            .hero-buttons {
+                flex-direction: column;
+                align-items: center;
+                gap: 12px;
+            }
+
+            .hero-buttons .btn-primary,
+            .hero-buttons .btn-secondary {
+                width: 100%;
+                justify-content: center;
+                padding: 16px 24px;
+                min-height: 48px;
+            }
+
+            .features-grid {
+                grid-template-columns: 1fr;
+                min-width: 0;
+            }
+
+            /* Prevent horizontal overflow */
+            .container, .hero, .stats, .features, .security, .cta, .cta-box {
+                max-width: 100%;
+            }
+
+            .feature-card {
+                padding: 24px;
+            }
+
+            .security-grid {
+                grid-template-columns: 1fr;
+                text-align: center;
+            }
+
+            .security-features {
+                align-items: center;
+            }
+
+            .obelisk-3d {
+                width: 200px;
+                height: 280px;
+            }
+
+            .cta-box {
+                padding: 32px 20px;
+            }
+
+            .cta-box .btn-primary {
+                width: 100%;
+                min-height: 48px;
+                justify-content: center;
+            }
+
+            .btn-launch {
+                padding: 12px 20px;
+                min-height: 44px;
+            }
+
+            /* Timer responsive */
+            .time-container {
+                padding: 12px 16px;
+                gap: 4px;
+                flex-wrap: wrap;
+                justify-content: center;
+            }
+
+            .time-block {
+                min-width: 50px;
+            }
+
+            .time-block.ms-block {
+                min-width: 55px;
+            }
+
+            .time-value {
+                font-size: 24px;
+            }
+
+            /* Footer links */
+            footer a {
+                min-height: 44px;
+                display: inline-flex;
+                align-items: center;
+            }
+        
+
+            /* Fix header overflow */
+            header { flex-wrap: wrap; gap: 8px; max-width: 100%; }
+            .header-right { gap: 4px; }
+            .logo-text { font-size: 18px; }
+            .btn-launch { padding: 8px 12px; font-size: 12px; }
+            .lang-btn { padding: 4px 8px; font-size: 11px; }
+        }
+    </style>
 </head>
 <body>
-    <!-- App Container -->
-    <div id="app">
-        <!-- Header -->
-        <header class="header">
-            <div class="header-left">
-                <div class="logo">
-                    <svg class="logo-icon" viewBox="0 0 40 40" fill="none" xmlns="http://www.w3.org/2000/svg">
-                        <path d="M20 2L8 38h24L20 2z" fill="url(#obelisk-gradient)" />
-                        <path d="M20 8L12 34h16L20 8z" fill="#0a0a0f" />
-                        <path d="M20 14L15 30h10L20 14z" fill="url(#obelisk-gradient)" opacity="0.6" />
-                        <defs>
-                            <linearGradient id="obelisk-gradient" x1="20" y1="2" x2="20" y2="38" gradientUnits="userSpaceOnUse">
-                                <stop stop-color="#00f0ff" />
-                                <stop offset="1" stop-color="#0080ff" />
-                            </linearGradient>
-                        </defs>
-                    </svg>
-                    <span class="logo-text">OBELISK</span>
-                    <span class="logo-badge">Post-Quantum DEX</span>
-                </div>
-                <nav class="nav-tabs">
-                    <button class="nav-tab active" data-tab="trade">Trade</button>
-                    <button class="nav-tab" data-tab="swap">Swap</button>
-                    <button class="nav-tab" data-tab="banking">Banking</button>
-                    <button class="nav-tab" data-tab="bonds">Bonds</button>
-                    <button class="nav-tab" data-tab="tools">Tools</button>
-                    <button class="nav-tab" data-tab="wallet">Wallet</button>
-                    <button class="nav-tab" data-tab="portfolio">Portfolio</button>
-                </nav>
-            </div>
+    <!-- Accessibility: Skip to main content -->
+    <a href="#main-content" class="skip-link">Skip to main content</a>
+
+    <div class="bg-gradient" aria-hidden="true"></div>
+
+    <div class="container">
+        <header role="banner">
+            <a href="/" class="logo" aria-label="Obelisk DEX - Home">
+                <svg class="logo-icon" viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+                    <path d="M24 2L10 46h28L24 2z" fill="url(#grad1)" />
+                    <path d="M24 10L14 42h20L24 10z" fill="#0a0a0f" />
+                    <path d="M24 18L17 38h14L24 18z" fill="url(#grad1)" opacity="0.6" />
+                    <defs>
+                        <linearGradient id="grad1" x1="24" y1="2" x2="24" y2="46" gradientUnits="userSpaceOnUse">
+                            <stop stop-color="#00ff88" />
+                            <stop offset="0.5" stop-color="#00aaff" />
+                            <stop offset="1" stop-color="#8a2be2" />
+                        </linearGradient>
+                    </defs>
+                </svg>
+                <span class="logo-text">OBELISK</span>
+            </a>
+            <nav class="nav-links" role="navigation" aria-label="Main navigation">
+                <a href="#features">Features</a>
+                <a href="#security">Security</a>
+                <a href="https://github.com" target="_blank" rel="noopener noreferrer">Docs<span class="sr-only"> (opens in new tab)</span></a>
+            </nav>
             <div class="header-right">
-                <button class="btn-lang" id="btn-lang" title="Changer de langue">
-                    <span id="lang-flag">🇬🇧</span>
-                </button>
-                <div class="network-selector">
-                    <span class="network-dot"></span>
-                    <span id="network-name">Arbitrum</span>
+                <div class="lang-selector" id="lang-selector">
+                    <button class="lang-btn" id="lang-btn" aria-label="Select language" aria-expanded="false">
+                        <span id="current-lang-flag">ðŸ‡¬ðŸ‡§</span>
+                        <span id="current-lang-name">EN</span>
+                        <span aria-hidden="true">â–¼</span>
+                    </button>
+                    <div class="lang-dropdown" id="lang-dropdown" role="menu">
+                        <div class="lang-option active" data-lang="en" role="menuitem">
+                            <span>ðŸ‡¬ðŸ‡§</span>
+                            <span>English</span>
+                        </div>
+                        <div class="lang-option" data-lang="fr" role="menuitem">
+                            <span>ðŸ‡«ðŸ‡·</span>
+                            <span>FranÃ§ais</span>
+                        </div>
+                        <div class="lang-option" data-lang="es" role="menuitem">
+                            <span>ðŸ‡ªðŸ‡¸</span>
+                            <span>EspaÃ±ol</span>
+                        </div>
+                        <div class="lang-option" data-lang="de" role="menuitem">
+                            <span>ðŸ‡©ðŸ‡ª</span>
+                            <span>Deutsch</span>
+                        </div>
+                    </div>
                 </div>
-                <button class="btn-connect" id="btn-connect-wallet">
-                    <span class="btn-icon">🔐</span>
-                    <span data-i18n="connect_wallet">Connect Wallet</span>
-                </button>
+                <a href="app.html" class="btn-launch" role="button">Launch App</a>
             </div>
         </header>
 
-        <!-- Main Content -->
-        <main class="main-content">
-            <!-- Trade Tab (Hyperliquid) -->
-            <section class="tab-content active" id="tab-trade">
-                <div class="trade-layout">
-                    <!-- Chart Section -->
-                    <div class="chart-container">
-                        <div class="chart-header">
-                            <div class="pair-selector">
-                                <span class="pair-name" id="current-pair">BTC-USD</span>
-                                <span class="pair-price positive" id="current-price">$97,234.50</span>
-                                <span class="pair-change positive" id="price-change">+2.34%</span>
-                            </div>
-                            <div class="chart-controls">
-                                <button class="chart-tf active">1H</button>
-                                <button class="chart-tf">4H</button>
-                                <button class="chart-tf">1D</button>
-                                <button class="chart-tf">1W</button>
-                            </div>
-                        </div>
-                        <div class="chart-area" id="trading-chart">
-                            <div class="chart-placeholder">
-                                <span data-i18n="tradingview_chart">📊 TradingView Chart</span>
-                                <span class="sub" data-i18n="chart_placeholder">Connect wallet to load</span>
-                            </div>
-                        </div>
-                    </div>
+        <main id="main-content" role="main">
+        <section class="hero" aria-labelledby="hero-title">
+            <div class="hero-badge" role="status">
+                <span aria-hidden="true">ðŸ›¡ï¸</span>
+                <span>Post-Quantum Security</span>
+            </div>
+            <h1 id="hero-title">Your <span>Decentralized</span><br>Crypto Bank</h1>
+            <p class="hero-subtitle">
+                Trade, swap, earn and manage your crypto with military-grade post-quantum encryption.
+                Self-custody. No middlemen. Your keys, your coins.
+            </p>
+            <div class="hero-buttons">
+                <a href="app.html" class="btn-primary">
+                    <span>Launch App</span>
+                    <span>â†’</span>
+                </a>
+                <a href="#features" class="btn-secondary">Explore Features</a>
+            </div>
+        </section>
 
-                    <!-- Order Book -->
-                    <div class="orderbook-container">
-                        <div class="orderbook-header">
-                            <span>Order Book</span>
-                            <div class="orderbook-toggle">
-                                <button class="ob-btn active">Both</button>
-                                <button class="ob-btn">Bids</button>
-                                <button class="ob-btn">Asks</button>
-                            </div>
-                        </div>
-                        <div class="orderbook-labels">
-                            <span>Price</span>
-                            <span>Size</span>
-                            <span>Total</span>
-                        </div>
-                        <div class="orderbook-asks" id="orderbook-asks">
-                            <!-- Asks will be populated -->
-                        </div>
-                        <div class="orderbook-spread">
-                            <span id="spread-value">Spread: $12.50 (0.01%)</span>
-                        </div>
-                        <div class="orderbook-bids" id="orderbook-bids">
-                            <!-- Bids will be populated -->
-                        </div>
-                    </div>
+        <section class="stats" aria-label="Platform statistics">
+            <div class="stat-item" role="group" aria-label="Swap fees">
+                <div class="stat-value" aria-hidden="true">$0</div>
+                <div class="stat-label" id="stat-fees">Fees on Swaps</div>
+            </div>
+            <div class="stat-item" role="group" aria-label="Maximum leverage">
+                <div class="stat-value" aria-hidden="true">100x</div>
+                <div class="stat-label" id="stat-leverage">Max Leverage</div>
+            </div>
+            <div class="stat-item" role="group" aria-label="Execution time">
+                <div class="stat-value" aria-hidden="true">&lt; 1s</div>
+                <div class="stat-label" id="stat-execution">Execution Time</div>
+            </div>
+            <div class="stat-item" role="group" aria-label="Self custody">
+                <div class="stat-value" aria-hidden="true">100%</div>
+                <div class="stat-label" id="stat-custody">Self-Custody</div>
+            </div>
+        </section>
 
-                    <!-- Order Form -->
-                    <div class="order-container">
-                        <div class="order-tabs">
-                            <button class="order-tab active" data-side="long">Long</button>
-                            <button class="order-tab" data-side="short">Short</button>
-                        </div>
-                        <div class="order-type-selector">
-                            <button class="type-btn active">Market</button>
-                            <button class="type-btn">Limit</button>
-                            <button class="type-btn">Stop</button>
-                        </div>
-                        <div class="order-form">
-                            <div class="form-group">
-                                <label>Size (USD)</label>
-                                <div class="input-group">
-                                    <input type="number" id="order-size" placeholder="0.00" />
-                                    <span class="input-suffix">USD</span>
-                                </div>
-                            </div>
-                            <div class="form-group" id="limit-price-group" style="display:none;">
-                                <label>Limit Price</label>
-                                <div class="input-group">
-                                    <input type="number" id="limit-price" placeholder="0.00" />
-                                    <span class="input-suffix">USD</span>
-                                </div>
-                            </div>
-                            <div class="form-group">
-                                <label>Leverage</label>
-                                <div class="leverage-slider">
-                                    <input type="range" id="leverage-slider" min="1" max="50" value="10" />
-                                    <span class="leverage-value" id="leverage-value">10x</span>
-                                </div>
-                                <div class="leverage-presets">
-                                    <button class="lev-btn">1x</button>
-                                    <button class="lev-btn">5x</button>
-                                    <button class="lev-btn active">10x</button>
-                                    <button class="lev-btn">25x</button>
-                                    <button class="lev-btn">50x</button>
-                                </div>
-                            </div>
-                            <div class="order-summary">
-                                <div class="summary-row">
-                                    <span>Entry Price</span>
-                                    <span id="entry-price">$97,234.50</span>
-                                </div>
-                                <div class="summary-row">
-                                    <span>Liquidation Price</span>
-                                    <span id="liq-price" class="warning">$87,511.05</span>
-                                </div>
-                                <div class="summary-row">
-                                    <span>Fee</span>
-                                    <span id="order-fee">~$0.50</span>
-                                </div>
-                            </div>
-                            <button class="btn-order btn-long" id="btn-place-order" disabled>
-                                Connect Wallet to Trade
-                            </button>
-                        </div>
+        <section class="live-time" aria-label="Live local time">
+            <div class="time-container" role="timer" aria-live="polite" aria-atomic="true">
+                <div class="time-block">
+                    <span class="time-value" id="hours">00</span>
+                    <span class="time-label" aria-hidden="true">H</span>
+                </div>
+                <span class="time-separator" aria-hidden="true">:</span>
+                <div class="time-block">
+                    <span class="time-value" id="minutes">00</span>
+                    <span class="time-label" aria-hidden="true">MIN</span>
+                </div>
+                <span class="time-separator" aria-hidden="true">:</span>
+                <div class="time-block">
+                    <span class="time-value" id="seconds">00</span>
+                    <span class="time-label" aria-hidden="true">SEC</span>
+                </div>
+                <span class="time-separator" aria-hidden="true">.</span>
+                <div class="time-block ms-block">
+                    <span class="time-value" id="milliseconds">000</span>
+                    <span class="time-label" aria-hidden="true">MS</span>
+                </div>
+                <span class="sr-only" id="time-announce"></span>
+            </div>
+            <div class="time-info" id="time-info" aria-hidden="true">Local Time â€¢ Live Refresh</div>
+        </section>
+
+        <section class="features" id="features" aria-labelledby="features-title">
+            <h2 class="section-title" id="features-title">All-in-One DeFi Platform</h2>
+            <p class="section-subtitle">Everything you need to manage your crypto portfolio</p>
+
+            <div class="features-grid" role="list">
+                <a href="app.html#trade" class="feature-card" role="listitem">
+                    <div class="feature-icon" aria-hidden="true">ðŸ“ˆ</div>
+                    <h3>Perpetual Trading</h3>
+                    <p>Trade BTC, ETH and 100+ assets with up to 100x leverage. Real-time order book and professional charts.</p>
+                    <span class="feature-link" aria-hidden="true">Start Trading â†’</span>
+                </a>
+
+                <a href="app.html#swap" class="feature-card" role="listitem">
+                    <div class="feature-icon" aria-hidden="true">ðŸ”„</div>
+                    <h3>Token Swap</h3>
+                    <p>Instant swaps with best rates aggregated from multiple DEXs. Zero platform fees.</p>
+                    <span class="feature-link" aria-hidden="true">Swap Now â†’</span>
+                </a>
+
+                <a href="app.html#banking" class="feature-card" role="listitem">
+                    <div class="feature-icon" aria-hidden="true">ðŸ¦</div>
+                    <h3>DeFi Banking</h3>
+                    <p>Deposit, earn interest, and manage your crypto like a traditional bank - but decentralized.</p>
+                    <span class="feature-link" aria-hidden="true">Open Account â†’</span>
+                </a>
+
+                <a href="app.html#bonds" class="feature-card" role="listitem">
+                    <div class="feature-icon" aria-hidden="true">ðŸ“œ</div>
+                    <h3>Crypto Bonds</h3>
+                    <p>Fixed-income investments with predictable returns. Stake and earn with flexible terms.</p>
+                    <span class="feature-link" aria-hidden="true">View Bonds â†’</span>
+                </a>
+
+                <a href="app.html#tools" class="feature-card" role="listitem">
+                    <div class="feature-icon" aria-hidden="true">ðŸ› ï¸</div>
+                    <h3>Pro Tools</h3>
+                    <p>Arbitrage scanner, AI advisor, whale tracking and advanced analytics for serious traders.</p>
+                    <span class="feature-link" aria-hidden="true">Explore Tools â†’</span>
+                </a>
+
+                <a href="app.html#portfolio" class="feature-card" role="listitem">
+                    <div class="feature-icon" aria-hidden="true">ðŸ’¼</div>
+                    <h3>Portfolio Manager</h3>
+                    <p>Track all your assets, view P&L, analyze performance and manage your entire crypto portfolio.</p>
+                    <span class="feature-link" aria-hidden="true">View Portfolio â†’</span>
+                </a>
+            </div>
+        </section>
+
+        <section class="security" id="security" aria-labelledby="security-title">
+            <div class="security-grid">
+                <div class="security-content">
+                    <h2 id="security-title">Protected by <span>Post-Quantum</span> Cryptography</h2>
+                    <p>
+                        Obelisk uses CRYSTALS-Kyber and CRYSTALS-Dilithium algorithms,
+                        the same standards chosen by NIST for quantum-resistant security.
+                        Your assets are protected against both current and future threats.
+                    </p>
+                    <ul class="security-features" role="list" aria-label="Security features">
+                        <li class="security-feature">
+                            <span class="check" aria-hidden="true">âœ“</span>
+                            <span>Non-custodial - You control your keys</span>
+                        </li>
+                        <li class="security-feature">
+                            <span class="check" aria-hidden="true">âœ“</span>
+                            <span>NIST Post-Quantum standards</span>
+                        </li>
+                        <li class="security-feature">
+                            <span class="check" aria-hidden="true">âœ“</span>
+                            <span>Social recovery system</span>
+                        </li>
+                        <li class="security-feature">
+                            <span class="check" aria-hidden="true">âœ“</span>
+                            <span>Open source & audited</span>
+                        </li>
+                    </ul>
+                </div>
+                <div class="security-visual" aria-hidden="true">
+                    <div class="obelisk-3d">
+                        <svg viewBox="0 0 200 300" fill="none" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Obelisk 3D illustration">
+                            <path d="M100 10L40 280h120L100 10z" fill="url(#grad2)" />
+                            <path d="M100 40L55 260h90L100 40z" fill="#0a0a0f" />
+                            <path d="M100 70L70 240h60L100 70z" fill="url(#grad2)" opacity="0.5" />
+                            <path d="M100 100L85 220h30L100 100z" fill="url(#grad2)" opacity="0.3" />
+                            <!-- Glowing effect -->
+                            <ellipse cx="100" cy="285" rx="60" ry="10" fill="url(#grad2)" opacity="0.3" />
+                            <defs>
+                                <linearGradient id="grad2" x1="100" y1="10" x2="100" y2="280" gradientUnits="userSpaceOnUse">
+                                    <stop stop-color="#00ff88" />
+                                    <stop offset="0.5" stop-color="#00aaff" />
+                                    <stop offset="1" stop-color="#8a2be2" />
+                                </linearGradient>
+                            </defs>
+                        </svg>
                     </div>
                 </div>
+            </div>
+        </section>
 
-                <!-- Positions -->
-                <div class="positions-section">
-                    <div class="positions-header">
-                        <button class="pos-tab active">Positions (0)</button>
-                        <button class="pos-tab">Orders (0)</button>
-                        <button class="pos-tab">History</button>
-                    </div>
-                    <div class="positions-table">
-                        <div class="positions-empty">
-                            <span>No open positions</span>
-                        </div>
-                    </div>
-                </div>
-            </section>
-
-            <!-- Swap Tab (Uniswap) -->
-            <section class="tab-content" id="tab-swap">
-                <div class="swap-container">
-                    <div class="swap-card">
-                        <div class="swap-header">
-                            <h2>Swap</h2>
-                            <button class="btn-settings" id="swap-settings">⚙️</button>
-                        </div>
-                        <div class="swap-form">
-                            <div class="swap-input">
-                                <div class="swap-input-header">
-                                    <span>You pay</span>
-                                    <span class="balance">Balance: <span id="from-balance">0.00</span></span>
-                                </div>
-                                <div class="swap-input-row">
-                                    <input type="number" id="swap-from-amount" placeholder="0" />
-                                    <button class="token-selector" id="from-token">
-                                        <img src="assets/eth.svg" alt="ETH" class="token-icon" onerror="this.style.display='none'">
-                                        <span>ETH</span>
-                                        <span class="dropdown-arrow">▼</span>
-                                    </button>
-                                </div>
-                            </div>
-                            <button class="swap-switch" id="btn-swap-switch">
-                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                                    <path d="M7 16V4m0 0L3 8m4-4l4 4M17 8v12m0 0l4-4m-4 4l-4-4"/>
-                                </svg>
-                            </button>
-                            <div class="swap-input">
-                                <div class="swap-input-header">
-                                    <span>You receive</span>
-                                    <span class="balance">Balance: <span id="to-balance">0.00</span></span>
-                                </div>
-                                <div class="swap-input-row">
-                                    <input type="number" id="swap-to-amount" placeholder="0" readonly />
-                                    <button class="token-selector" id="to-token">
-                                        <img src="assets/usdc.svg" alt="USDC" class="token-icon" onerror="this.style.display='none'">
-                                        <span>USDC</span>
-                                        <span class="dropdown-arrow">▼</span>
-                                    </button>
-                                </div>
-                            </div>
-                            <div class="swap-details" id="swap-details" style="display:none;">
-                                <div class="detail-row">
-                                    <span>Rate</span>
-                                    <span id="swap-rate">1 ETH = 3,245.67 USDC</span>
-                                </div>
-                                <div class="detail-row">
-                                    <span>Price Impact</span>
-                                    <span id="price-impact" class="positive">&lt;0.01%</span>
-                                </div>
-                                <div class="detail-row">
-                                    <span>Network Fee</span>
-                                    <span id="network-fee">~$2.50</span>
-                                </div>
-                            </div>
-                            <button class="btn-swap" id="btn-swap" disabled>
-                                Connect Wallet to Swap
-                            </button>
-                        </div>
-                    </div>
-                </div>
-            </section>
-
-            <!-- Banking Tab (Deposit/Withdraw) -->
-            <section class="tab-content" id="tab-banking">
-                <div class="banking-container">
-                    <div class="banking-header">
-                        <h2>Deposit & Withdraw</h2>
-                        <p class="banking-subtitle">Transfer funds to trade on Hyperliquid</p>
-                    </div>
-
-                    <div class="banking-grid">
-                        <!-- Deposit Card -->
-                        <div class="banking-card">
-                            <div class="card-icon deposit-icon">
-                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                                    <path d="M12 3v18m0-18l-4 4m4-4l4 4"/>
-                                    <rect x="3" y="17" width="18" height="4" rx="1"/>
-                                </svg>
-                            </div>
-                            <h3>Deposit</h3>
-                            <p>Transfer USDC from your wallet to Hyperliquid</p>
-
-                            <div class="balance-display">
-                                <span class="balance-label">Wallet Balance</span>
-                                <span class="balance-amount" id="deposit-wallet-balance">$0.00 USDC</span>
-                            </div>
-
-                            <div class="form-group">
-                                <label>Amount to Deposit</label>
-                                <div class="input-group">
-                                    <input type="number" id="deposit-amount" placeholder="0.00" min="10" step="0.01"/>
-                                    <button class="btn-max" onclick="DepositUI.setMaxDeposit()">MAX</button>
-                                    <span class="input-suffix">USDC</span>
-                                </div>
-                                <span class="input-hint">Minimum: $10 USDC</span>
-                            </div>
-
-                            <div class="fee-info">
-                                <div class="fee-row">
-                                    <span>Network Fee</span>
-                                    <span id="deposit-gas-fee">~$0.50</span>
-                                </div>
-                                <div class="fee-row">
-                                    <span>Deposit Fee</span>
-                                    <span class="positive">FREE</span>
-                                </div>
-                            </div>
-
-                            <button class="btn-primary btn-deposit" id="btn-deposit" disabled>
-                                Connect Wallet to Deposit
-                            </button>
-                        </div>
-
-                        <!-- Withdraw Card -->
-                        <div class="banking-card">
-                            <div class="card-icon withdraw-icon">
-                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                                    <path d="M12 21V3m0 18l-4-4m4 4l4-4"/>
-                                    <rect x="3" y="3" width="18" height="4" rx="1"/>
-                                </svg>
-                            </div>
-                            <h3>Withdraw</h3>
-                            <p>Transfer USDC from Hyperliquid to your wallet</p>
-
-                            <div class="balance-display">
-                                <span class="balance-label">Hyperliquid Balance</span>
-                                <span class="balance-amount" id="withdraw-hl-balance">$0.00 USDC</span>
-                            </div>
-
-                            <div class="form-group">
-                                <label>Amount to Withdraw</label>
-                                <div class="input-group">
-                                    <input type="number" id="withdraw-amount" placeholder="0.00" min="2" step="0.01"/>
-                                    <button class="btn-max" onclick="DepositUI.setMaxWithdraw()">MAX</button>
-                                    <span class="input-suffix">USDC</span>
-                                </div>
-                                <span class="input-hint">Minimum: $2 USDC</span>
-                            </div>
-
-                            <div class="fee-info">
-                                <div class="fee-row">
-                                    <span>Withdrawal Fee</span>
-                                    <span>$1.00</span>
-                                </div>
-                                <div class="fee-row">
-                                    <span>You'll receive</span>
-                                    <span id="withdraw-receive">$0.00</span>
-                                </div>
-                            </div>
-
-                            <button class="btn-secondary btn-withdraw" id="btn-withdraw" disabled>
-                                Connect Wallet to Withdraw
-                            </button>
-                        </div>
-                    </div>
-
-                    <!-- Transaction History -->
-                    <div class="tx-history">
-                        <h3>Recent Transactions</h3>
-                        <div class="tx-list" id="banking-tx-list">
-                            <div class="tx-empty">No transactions yet</div>
-                        </div>
-                    </div>
-                </div>
-            </section>
-
-            <!-- Bonds Tab (Fixed Income) -->
-            <section class="tab-content" id="tab-bonds">
-                <div class="bonds-container">
-                    <div class="bonds-header">
-                        <div class="header-content">
-                            <h2>Tokenized Bonds & Fixed Income</h2>
-                            <p class="bonds-subtitle">Earn stable yields from US Treasuries, Corporate Bonds & DeFi</p>
-                        </div>
-                        <div class="investor-toggle">
-                            <button class="toggle-btn active" data-type="retail">Retail</button>
-                            <button class="toggle-btn" data-type="institutional">Institutional</button>
-                        </div>
-                    </div>
-
-                    <!-- Portfolio Summary -->
-                    <div class="bonds-summary">
-                        <div class="summary-stat">
-                            <span class="stat-label">Total Invested</span>
-                            <span class="stat-value" id="bonds-total">$0.00</span>
-                        </div>
-                        <div class="summary-stat">
-                            <span class="stat-label">Accrued Yield</span>
-                            <span class="stat-value positive" id="bonds-yield">+$0.00</span>
-                        </div>
-                        <div class="summary-stat">
-                            <span class="stat-label">Avg APY</span>
-                            <span class="stat-value" id="bonds-avg-apy">0.00%</span>
-                        </div>
-                    </div>
-
-                    <!-- Product Categories -->
-                    <div class="bond-categories">
-                        <button class="cat-btn active" data-category="all">All Products</button>
-                        <button class="cat-btn" data-category="treasury">US Treasury</button>
-                        <button class="cat-btn" data-category="corporate">Corporate</button>
-                        <button class="cat-btn" data-category="defi">DeFi Yield</button>
-                        <button class="cat-btn" data-category="credit">Credit</button>
-                    </div>
-
-                    <!-- Bond Products Grid -->
-                    <div class="bonds-grid" id="bonds-grid">
-                        <!-- US Treasury - USDY -->
-                        <div class="bond-card" data-product="USDY" data-type="treasury">
-                            <div class="bond-header">
-                                <div class="bond-info">
-                                    <span class="bond-name">US Dollar Yield</span>
-                                    <span class="bond-issuer">Ondo Finance</span>
-                                </div>
-                                <span class="bond-rating aaa">AAA</span>
-                            </div>
-                            <div class="bond-apy">
-                                <span class="apy-value">5.25%</span>
-                                <span class="apy-label">APY</span>
-                            </div>
-                            <div class="bond-details">
-                                <div class="detail">
-                                    <span class="label">Underlying</span>
-                                    <span class="value">US Treasuries</span>
-                                </div>
-                                <div class="detail">
-                                    <span class="label">Min. Investment</span>
-                                    <span class="value">$100</span>
-                                </div>
-                                <div class="detail">
-                                    <span class="label">Liquidity</span>
-                                    <span class="value">Daily</span>
-                                </div>
-                            </div>
-                            <button class="btn-invest" data-product="USDY">Invest</button>
-                        </div>
-
-                        <!-- OUSG - Institutional -->
-                        <div class="bond-card institutional-only" data-product="OUSG" data-type="treasury">
-                            <div class="institutional-badge">Institutional</div>
-                            <div class="bond-header">
-                                <div class="bond-info">
-                                    <span class="bond-name">Short-Term US Govt</span>
-                                    <span class="bond-issuer">Ondo Finance</span>
-                                </div>
-                                <span class="bond-rating aaa">AAA</span>
-                            </div>
-                            <div class="bond-apy">
-                                <span class="apy-value">5.35%</span>
-                                <span class="apy-label">APY</span>
-                            </div>
-                            <div class="bond-details">
-                                <div class="detail">
-                                    <span class="label">Underlying</span>
-                                    <span class="value">T-Bills</span>
-                                </div>
-                                <div class="detail">
-                                    <span class="label">Min. Investment</span>
-                                    <span class="value">$100,000</span>
-                                </div>
-                                <div class="detail">
-                                    <span class="label">Maturity</span>
-                                    <span class="value">3-6 months</span>
-                                </div>
-                            </div>
-                            <button class="btn-invest" data-product="OUSG">Invest</button>
-                        </div>
-
-                        <!-- BlackRock BUIDL -->
-                        <div class="bond-card institutional-only premium" data-product="BUIDL" data-type="money-market">
-                            <div class="institutional-badge">Institutional</div>
-                            <div class="premium-badge">Premium</div>
-                            <div class="bond-header">
-                                <div class="bond-info">
-                                    <span class="bond-name">BlackRock USD Fund</span>
-                                    <span class="bond-issuer">BlackRock / Securitize</span>
-                                </div>
-                                <span class="bond-rating aaa">AAA</span>
-                            </div>
-                            <div class="bond-apy">
-                                <span class="apy-value">5.30%</span>
-                                <span class="apy-label">APY</span>
-                            </div>
-                            <div class="bond-details">
-                                <div class="detail">
-                                    <span class="label">Underlying</span>
-                                    <span class="value">T-Bills, Repos</span>
-                                </div>
-                                <div class="detail">
-                                    <span class="label">Min. Investment</span>
-                                    <span class="value">$5,000,000</span>
-                                </div>
-                                <div class="detail">
-                                    <span class="label">Liquidity</span>
-                                    <span class="value">Daily</span>
-                                </div>
-                            </div>
-                            <button class="btn-invest" data-product="BUIDL">Request Access</button>
-                        </div>
-
-                        <!-- Corporate Bond -->
-                        <div class="bond-card" data-product="CORP_AAA" data-type="corporate">
-                            <div class="bond-header">
-                                <div class="bond-info">
-                                    <span class="bond-name">Investment Grade Corp</span>
-                                    <span class="bond-issuer">Maple Finance</span>
-                                </div>
-                                <span class="bond-rating a">A</span>
-                            </div>
-                            <div class="bond-apy">
-                                <span class="apy-value">7.50%</span>
-                                <span class="apy-label">APY</span>
-                            </div>
-                            <div class="bond-details">
-                                <div class="detail">
-                                    <span class="label">Underlying</span>
-                                    <span class="value">Corporate Debt</span>
-                                </div>
-                                <div class="detail">
-                                    <span class="label">Min. Investment</span>
-                                    <span class="value">$1,000</span>
-                                </div>
-                                <div class="detail">
-                                    <span class="label">Maturity</span>
-                                    <span class="value">90 days</span>
-                                </div>
-                            </div>
-                            <button class="btn-invest" data-product="CORP_AAA">Invest</button>
-                        </div>
-
-                        <!-- sDAI -->
-                        <div class="bond-card" data-product="SDAI" data-type="defi">
-                            <div class="bond-header">
-                                <div class="bond-info">
-                                    <span class="bond-name">Spark DAI</span>
-                                    <span class="bond-issuer">MakerDAO / Spark</span>
-                                </div>
-                                <span class="bond-rating defi">DeFi</span>
-                            </div>
-                            <div class="bond-apy">
-                                <span class="apy-value">8.00%</span>
-                                <span class="apy-label">APY</span>
-                            </div>
-                            <div class="bond-details">
-                                <div class="detail">
-                                    <span class="label">Underlying</span>
-                                    <span class="value">DSR + RWA</span>
-                                </div>
-                                <div class="detail">
-                                    <span class="label">Min. Investment</span>
-                                    <span class="value">$1</span>
-                                </div>
-                                <div class="detail">
-                                    <span class="label">Liquidity</span>
-                                    <span class="value">Instant</span>
-                                </div>
-                            </div>
-                            <button class="btn-invest" data-product="SDAI">Invest</button>
-                        </div>
-
-                        <!-- High Yield Credit -->
-                        <div class="bond-card high-risk" data-product="CREDIT" data-type="credit">
-                            <div class="risk-badge">High Yield</div>
-                            <div class="bond-header">
-                                <div class="bond-info">
-                                    <span class="bond-name">DeFi Credit Pool</span>
-                                    <span class="bond-issuer">Centrifuge</span>
-                                </div>
-                                <span class="bond-rating b">B+</span>
-                            </div>
-                            <div class="bond-apy highlight">
-                                <span class="apy-value">12.00%</span>
-                                <span class="apy-label">APY</span>
-                            </div>
-                            <div class="bond-details">
-                                <div class="detail">
-                                    <span class="label">Underlying</span>
-                                    <span class="value">Trade Finance</span>
-                                </div>
-                                <div class="detail">
-                                    <span class="label">Min. Investment</span>
-                                    <span class="value">$500</span>
-                                </div>
-                                <div class="detail">
-                                    <span class="label">Maturity</span>
-                                    <span class="value">30-180 days</span>
-                                </div>
-                            </div>
-                            <button class="btn-invest" data-product="CREDIT">Invest</button>
-                        </div>
-                    </div>
-
-                    <!-- Institutional Access Section -->
-                    <div class="institutional-section" id="institutional-section" style="display:none;">
-                        <div class="inst-card">
-                            <h3>Institutional Access</h3>
-                            <p>Access exclusive bond products with higher yields and larger allocations.</p>
-
-                            <div class="requirements">
-                                <h4>Requirements</h4>
-                                <ul>
-                                    <li>Minimum $100,000 investment</li>
-                                    <li>Accredited investor verification</li>
-                                    <li>KYC/AML compliance</li>
-                                </ul>
-                            </div>
-
-                            <button class="btn-primary" id="btn-request-institutional">
-                                Request Institutional Access
-                            </button>
-                        </div>
-                    </div>
-
-                    <!-- My Positions -->
-                    <div class="my-positions" id="bond-positions">
-                        <h3>My Bond Positions</h3>
-                        <div class="positions-list" id="bond-positions-list">
-                            <div class="positions-empty">
-                                <span>No bond positions yet</span>
-                                <span class="sub">Invest in bonds above to start earning yield</span>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </section>
-
-            <!-- Tools Tab (Unique Features) -->
-            <section class="tab-content" id="tab-tools">
-                <div class="tools-container">
-                    <div class="tools-header">
-                        <h2>Unique Trading Tools</h2>
-                        <p class="tools-subtitle">Advanced features that set Obelisk apart</p>
-                    </div>
-
-                    <!-- Smart Intent Trading -->
-                    <div class="intent-section">
-                        <h3>Smart Intent Trading</h3>
-                        <p style="color: rgba(255,255,255,0.7); margin-bottom: 16px;">Trade using natural language. Just tell us what you want to do.</p>
-
-                        <form id="intent-form" class="intent-form">
-                            <input type="text" id="intent-input" class="intent-input"
-                                   placeholder='Try: "DCA $100 into ETH weekly" or "Stop loss at $3000"' />
-                            <button type="submit" class="btn-primary intent-submit">Create Intent</button>
-                        </form>
-
-                        <div id="intent-suggestions" class="intent-suggestions"></div>
-
-                        <h4 style="margin: 20px 0 12px;">Active Intents</h4>
-                        <div id="active-intents" class="active-intents">
-                            <p class="no-intents">No active intents</p>
-                        </div>
-                    </div>
-
-                    <!-- Cross-Chain Arbitrage Scanner -->
-                    <div class="arbitrage-section">
-                        <h3>Cross-Chain Arbitrage Scanner</h3>
-                        <p style="color: rgba(255,255,255,0.7); margin-bottom: 16px;">Find price differences across DEXes and chains in real-time.</p>
-
-                        <div class="scanner-controls">
-                            <button id="start-scanner" class="btn-primary scanner-btn">
-                                Start Scanner
-                            </button>
-                            <button id="stop-scanner" class="btn-secondary scanner-btn" disabled>
-                                Stop Scanner
-                            </button>
-                        </div>
-
-                        <div id="arbitrage-opportunities" class="arbitrage-opportunities">
-                            <p class="no-opportunities">Click "Start Scanner" to find opportunities</p>
-                        </div>
-                    </div>
-
-                    <!-- AI Portfolio Advisor -->
-                    <div class="advisor-section">
-                        <div class="advisor-header">
-                            <div>
-                                <h3>AI Portfolio Advisor</h3>
-                                <p style="color: rgba(255,255,255,0.7);">Get personalized recommendations based on your portfolio.</p>
-                            </div>
-                            <button id="analyze-portfolio" class="btn-primary">
-                                Analyze Portfolio
-                            </button>
-                        </div>
-
-                        <div id="advisor-results"></div>
-                    </div>
-
-                    <!-- Social Recovery -->
-                    <div class="recovery-section">
-                        <h3>Social Recovery Guardians</h3>
-                        <p style="color: rgba(255,255,255,0.7); margin-bottom: 16px;">Recover your wallet without a seed phrase using trusted contacts.</p>
-
-                        <div id="recovery-status"></div>
-
-                        <form id="guardian-setup-form" class="guardian-setup-form">
-                            <div class="form-group">
-                                <label>Guardian Addresses</label>
-                                <textarea id="guardian-addresses"
-                                          placeholder="Enter guardian wallet addresses (one per line)&#10;0x123...&#10;0x456..."></textarea>
-                                <span class="form-help">Add 2-7 trusted addresses who can help recover your wallet</span>
-                            </div>
-                            <div class="form-group">
-                                <label>Recovery Threshold</label>
-                                <input type="number" id="guardian-threshold" min="2" max="7" value="2" />
-                                <span class="form-help">Number of guardians required to approve recovery</span>
-                            </div>
-                            <div class="form-group">
-                                <label>Wallet Password</label>
-                                <input type="password" id="recovery-password" placeholder="Your wallet password" />
-                            </div>
-                            <button type="submit" class="btn-primary">Setup Guardians</button>
-                        </form>
-                    </div>
-                </div>
-            </section>
-
-            <!-- Wallet Tab (Post-Quantum) -->
-            <section class="tab-content" id="tab-wallet">
-                <div class="wallet-container">
-                    <!-- No Wallet State -->
-                    <div class="wallet-empty" id="wallet-empty">
-                        <div class="wallet-hero">
-                            <div class="shield-icon">
-                                <svg viewBox="0 0 64 64" fill="none" xmlns="http://www.w3.org/2000/svg">
-                                    <path d="M32 4L8 16v16c0 14.4 10.24 27.84 24 32 13.76-4.16 24-17.6 24-32V16L32 4z" fill="url(#shield-grad)" />
-                                    <path d="M32 12l-18 9v12c0 10.8 7.68 20.88 18 24 10.32-3.12 18-13.2 18-24V21l-18-9z" fill="#0a0a0f" />
-                                    <path d="M28 32l-4-4-2 2 6 6 12-12-2-2-10 10z" fill="#00f0ff" />
-                                    <defs>
-                                        <linearGradient id="shield-grad" x1="32" y1="4" x2="32" y2="52" gradientUnits="userSpaceOnUse">
-                                            <stop stop-color="#00f0ff" />
-                                            <stop offset="1" stop-color="#0080ff" />
-                                        </linearGradient>
-                                    </defs>
-                                </svg>
-                            </div>
-                            <h2>Post-Quantum Secure Wallet</h2>
-                            <p class="hero-subtitle">Your keys never leave your device. Protected against quantum computers.</p>
-                            <div class="security-badges">
-                                <span class="badge">🔐 CRYSTALS-Kyber</span>
-                                <span class="badge">✍️ CRYSTALS-Dilithium</span>
-                                <span class="badge">🌳 SPHINCS+</span>
-                                <span class="badge">🛡️ AES-256-GCM</span>
-                                <span class="badge">🔑 Argon2id</span>
-                                <span class="badge">👻 Stealth Addresses</span>
-                                <span class="badge">🔀 Private Transactions</span>
-                            </div>
-                        </div>
-                        <div class="wallet-actions">
-                            <button class="btn-primary btn-create" id="btn-create-wallet">
-                                <span class="btn-icon">✨</span>
-                                Create New Wallet
-                            </button>
-                            <button class="btn-secondary btn-import" id="btn-import-wallet">
-                                <span class="btn-icon">📥</span>
-                                Import Existing Wallet
-                            </button>
-                            <button class="btn-secondary btn-connect-external" id="btn-connect-external">
-                                <span class="btn-icon">🔗</span>
-                                Connect External Wallet
-                            </button>
-                        </div>
-                        <div class="privacy-notice">
-                            <div class="notice-icon">ℹ️</div>
-                            <div class="notice-text">
-                                <strong>Zero-Knowledge Architecture</strong>
-                                <p>Obelisk never stores your keys, seeds, or personal data. Everything is encrypted locally on your device with your password. We cannot access your funds - even if compelled by law.</p>
-                            </div>
-                        </div>
-                    </div>
-
-                    <!-- Wallet Connected State -->
-                    <div class="wallet-connected" id="wallet-connected" style="display:none;">
-                        <div class="wallet-header-section">
-                            <div class="wallet-info">
-                                <div class="wallet-address-display">
-                                    <span class="address-label">Address</span>
-                                    <div class="address-row">
-                                        <span class="address" id="wallet-address">0x1234...5678</span>
-                                        <button class="btn-copy" id="btn-copy-address">📋</button>
-                                    </div>
-                                </div>
-                                <div class="wallet-security-status">
-                                    <span class="security-icon">🛡️</span>
-                                    <span class="security-text">Post-Quantum Protected</span>
-                                </div>
-                            </div>
-                            <div class="wallet-balance-card">
-                                <span class="balance-label">Total Balance</span>
-                                <span class="balance-value" id="total-balance">$0.00</span>
-                            </div>
-                        </div>
-
-                        <div class="wallet-assets">
-                            <div class="assets-header">
-                                <h3>Assets</h3>
-                                <button class="btn-refresh" id="btn-refresh-balances">🔄</button>
-                            </div>
-                            <div class="assets-list" id="assets-list">
-                                <div class="asset-item">
-                                    <div class="asset-info">
-                                        <div class="asset-icon">Ξ</div>
-                                        <div class="asset-details">
-                                            <span class="asset-name">Ethereum</span>
-                                            <span class="asset-symbol">ETH</span>
-                                        </div>
-                                    </div>
-                                    <div class="asset-balance">
-                                        <span class="asset-amount">0.00</span>
-                                        <span class="asset-value">$0.00</span>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-
-                        <div class="wallet-actions-connected">
-                            <button class="btn-action" id="btn-send">
-                                <span>↑</span> Send
-                            </button>
-                            <button class="btn-action" id="btn-send-private">
-                                <span>👻</span> Private Send
-                            </button>
-                            <button class="btn-action" id="btn-receive">
-                                <span>↓</span> Receive
-                            </button>
-                            <button class="btn-action" id="btn-stealth">
-                                <span>🎭</span> Stealth Address
-                            </button>
-                            <button class="btn-action" id="btn-backup">
-                                <span>💾</span> Backup
-                            </button>
-                        </div>
-
-                        <!-- Privacy Features -->
-                        <div class="privacy-features">
-                            <h3>Privacy Features</h3>
-                            <div class="privacy-grid">
-                                <div class="privacy-card">
-                                    <div class="privacy-icon">👻</div>
-                                    <h4>Stealth Addresses</h4>
-                                    <p>Generate one-time addresses for each payment. Impossible to link.</p>
-                                    <span class="meta-address" id="meta-address">Not available</span>
-                                    <button class="btn-copy-meta" id="btn-copy-meta">Copy Meta-Address</button>
-                                </div>
-                                <div class="privacy-card">
-                                    <div class="privacy-icon">🔀</div>
-                                    <h4>Private Transactions</h4>
-                                    <p>Mix your transactions through privacy pools.</p>
-                                    <div class="privacy-stats">
-                                        <span>Pool Balance: $2.4M</span>
-                                        <span>Anonymity Set: 1,247</span>
-                                    </div>
-                                    <button class="btn-mix" id="btn-deposit-pool">Deposit to Pool</button>
-                                </div>
-                                <div class="privacy-card">
-                                    <div class="privacy-icon">🔐</div>
-                                    <h4>Post-Quantum Signatures</h4>
-                                    <p>All transactions signed with quantum-resistant algorithms.</p>
-                                    <div class="algo-list">
-                                        <span class="algo-badge">Dilithium3</span>
-                                        <span class="algo-badge">SPHINCS+-256f</span>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </section>
-
-            <!-- Portfolio Tab -->
-            <section class="tab-content" id="tab-portfolio">
-                <div class="portfolio-container">
-                    <div class="portfolio-summary">
-                        <div class="summary-card">
-                            <span class="card-label">Total Value</span>
-                            <span class="card-value" id="portfolio-total">$0.00</span>
-                            <span class="card-change positive" id="portfolio-change">+0.00%</span>
-                        </div>
-                        <div class="summary-card">
-                            <span class="card-label">24h PnL</span>
-                            <span class="card-value" id="portfolio-pnl">$0.00</span>
-                        </div>
-                        <div class="summary-card">
-                            <span class="card-label">Open Positions</span>
-                            <span class="card-value" id="portfolio-positions">0</span>
-                        </div>
-                    </div>
-                    <div class="portfolio-chart">
-                        <div class="chart-placeholder">
-                            <span>📈 Portfolio Performance</span>
-                            <span class="sub">Connect wallet to view</span>
-                        </div>
-                    </div>
-                    <div class="portfolio-history">
-                        <h3>Transaction History</h3>
-                        <div class="history-empty">
-                            <span>No transactions yet</span>
-                        </div>
-                    </div>
-                </div>
-            </section>
+        <section class="cta" aria-labelledby="cta-title">
+            <div class="cta-box">
+                <h2 id="cta-title">Ready to Take Control?</h2>
+                <p>Join the future of decentralized finance. No registration required.</p>
+                <a href="app.html" class="btn-primary" role="button">
+                    <span>Launch Obelisk</span>
+                    <span aria-hidden="true">â†’</span>
+                </a>
+            </div>
+        </section>
         </main>
 
-        <!-- Footer -->
-        <footer class="footer">
-            <div class="footer-left">
-                <span class="status-indicator online"></span>
-                <span>Connected to Hyperliquid</span>
-            </div>
-            <div class="footer-center">
-                <span class="security-notice">🔐 All data encrypted locally • Zero server storage</span>
-            </div>
-            <div class="footer-right">
-                <a href="#" class="footer-link">Docs</a>
-                <a href="#" class="footer-link">GitHub</a>
-                <a href="#" class="footer-link">Discord</a>
-            </div>
+        <footer role="contentinfo">
+            <p>Â© 2025 Obelisk DEX. Built for the post-quantum era. <a href="https://github.com" target="_blank" rel="noopener noreferrer">GitHub<span class="sr-only"> (opens in new tab)</span></a></p>
         </footer>
     </div>
 
-    <!-- Modals -->
-    <div class="modal" id="modal-create-wallet" style="display:none;">
-        <div class="modal-backdrop"></div>
-        <div class="modal-content">
-            <div class="modal-header">
-                <h3>Create Post-Quantum Wallet</h3>
-                <button class="modal-close">&times;</button>
-            </div>
-            <div class="modal-body">
-                <div class="step-indicator">
-                    <div class="step active">1. Password</div>
-                    <div class="step">2. Seed Phrase</div>
-                    <div class="step">3. Verify</div>
-                </div>
-                <div class="step-content" id="step-1">
-                    <p>Create a strong password to encrypt your wallet locally.</p>
-                    <div class="form-group">
-                        <label>Password</label>
-                        <input type="password" id="create-password" placeholder="Enter strong password" />
-                    </div>
-                    <div class="form-group">
-                        <label>Confirm Password</label>
-                        <input type="password" id="confirm-password" placeholder="Confirm password" />
-                    </div>
-                    <div class="password-strength">
-                        <div class="strength-bar"></div>
-                        <span class="strength-text">Password strength: --</span>
-                    </div>
-                    <button class="btn-primary btn-next">Continue</button>
-                </div>
-            </div>
-        </div>
-    </div>
+    <script>
+        // Live time update (local timezone)
+        function updateTime() {
+            const now = new Date();
+            document.getElementById('hours').textContent = String(now.getHours()).padStart(2, '0');
+            document.getElementById('minutes').textContent = String(now.getMinutes()).padStart(2, '0');
+            document.getElementById('seconds').textContent = String(now.getSeconds()).padStart(2, '0');
+            document.getElementById('milliseconds').textContent = String(now.getMilliseconds()).padStart(3, '0');
+        }
 
-    <!-- Scripts -->
-    <script src="js/crypto-utils.js"></script>
-    <script src="js/post-quantum.js"></script>
-    <script src="js/private-wallet.js"></script>
-    <script src="js/wallet.js"></script>
-    <script src="js/hyperliquid.js"></script>
-    <script src="js/uniswap.js"></script>
-    <script src="js/storage.js"></script>
-    <script src="js/prices.js"></script>
-    <script src="js/deposit-withdraw.js"></script>
-    <script src="js/bonds.js"></script>
-    <script src="js/i18n.js"></script>
-    <script src="js/app.js"></script>
-    <script src="js/simulator.js"></script>
-    <script src="js/click-tester.js"></script>
-    <script src="js/ui-banking.js"></script>
-    <!-- Unique Tools -->
-    <script src="js/smart-intent.js"></script>
-    <script src="js/arbitrage-scanner.js"></script>
-    <script src="js/social-recovery.js"></script>
-    <script src="js/ai-advisor.js"></script>
-    <script src="js/ui-tools.js"></script>
+        // Get timezone name
+        function getTimezone() {
+            try {
+                return Intl.DateTimeFormat().resolvedOptions().timeZone;
+            } catch (e) {
+                return 'Local';
+            }
+        }
 
-    <!-- Notifications Container -->
-    <div id="notifications"></div>
+        // Update every 10ms for smooth milliseconds
+        setInterval(updateTime, 10);
+        updateTime();
+
+        // Display timezone
+        const tz = getTimezone();
+        document.getElementById('time-info').textContent = tz + ' â€¢ Live Refresh';
+
+        // Language Selector
+        const translations = {
+            en: {
+                flag: 'ðŸ‡¬ðŸ‡§', name: 'EN',
+                heroTitle: 'Your <span>Decentralized</span><br>Crypto Bank',
+                heroSubtitle: 'Trade, swap, earn and manage your crypto with military-grade post-quantum encryption. Self-custody. No middlemen. Your keys, your coins.',
+                launchApp: 'Launch App',
+                exploreFeatures: 'Explore Features',
+                features: 'Features',
+                security: 'Security',
+                docs: 'Docs',
+                footer: 'Â© 2025 Obelisk DEX. Built for the post-quantum era.',
+                statFees: 'Fees on Swaps',
+                statLeverage: 'Max Leverage',
+                statExecution: 'Execution Time',
+                statCustody: 'Self-Custody',
+                sectionTitle: 'All-in-One DeFi Platform',
+                sectionSubtitle: 'Everything you need to manage your crypto portfolio',
+                securityTitle: 'Protected by <span>Post-Quantum</span> Cryptography',
+                securityDesc: 'Obelisk uses CRYSTALS-Kyber and CRYSTALS-Dilithium algorithms, the same standards chosen by NIST for quantum-resistant security. Your assets are protected against both current and future threats.',
+                ctaTitle: 'Ready to Take Control?',
+                ctaSubtitle: 'Join the future of decentralized finance. No registration required.',
+                ctaButton: 'Launch Obelisk',
+                liveRefresh: 'Live Refresh'
+            },
+            fr: {
+                flag: 'ðŸ‡«ðŸ‡·', name: 'FR',
+                heroTitle: 'Votre <span>Banque Crypto</span><br>DÃ©centralisÃ©e',
+                heroSubtitle: 'Tradez, Ã©changez, gagnez et gÃ©rez vos cryptos avec un chiffrement post-quantique de niveau militaire. Auto-custody. Sans intermÃ©diaires. Vos clÃ©s, vos cryptos.',
+                launchApp: 'Lancer l\'App',
+                exploreFeatures: 'DÃ©couvrir',
+                features: 'FonctionnalitÃ©s',
+                security: 'SÃ©curitÃ©',
+                docs: 'Docs',
+                footer: 'Â© 2025 Obelisk DEX. ConÃ§u pour l\'Ã¨re post-quantique.',
+                statFees: 'Frais sur Swaps',
+                statLeverage: 'Levier Max',
+                statExecution: 'Temps d\'ExÃ©cution',
+                statCustody: 'Auto-Custody',
+                sectionTitle: 'Plateforme DeFi Tout-en-Un',
+                sectionSubtitle: 'Tout ce dont vous avez besoin pour gÃ©rer votre portefeuille crypto',
+                securityTitle: 'ProtÃ©gÃ© par la Cryptographie <span>Post-Quantique</span>',
+                securityDesc: 'Obelisk utilise les algorithmes CRYSTALS-Kyber et CRYSTALS-Dilithium, les mÃªmes standards choisis par le NIST pour la sÃ©curitÃ© rÃ©sistante aux ordinateurs quantiques. Vos actifs sont protÃ©gÃ©s contre les menaces actuelles et futures.',
+                ctaTitle: 'PrÃªt Ã  Prendre le ContrÃ´le ?',
+                ctaSubtitle: 'Rejoignez le futur de la finance dÃ©centralisÃ©e. Aucune inscription requise.',
+                ctaButton: 'Lancer Obelisk',
+                liveRefresh: 'Temps RÃ©el'
+            },
+            es: {
+                flag: 'ðŸ‡ªðŸ‡¸', name: 'ES',
+                heroTitle: 'Tu <span>Banco Crypto</span><br>Descentralizado',
+                heroSubtitle: 'Opera, intercambia, gana y gestiona tus criptos con encriptaciÃ³n post-cuÃ¡ntica de grado militar. Auto-custodia. Sin intermediarios. Tus llaves, tus monedas.',
+                launchApp: 'Iniciar App',
+                exploreFeatures: 'Explorar',
+                features: 'Funciones',
+                security: 'Seguridad',
+                docs: 'Docs',
+                footer: 'Â© 2025 Obelisk DEX. Construido para la era post-cuÃ¡ntica.',
+                statFees: 'Comisiones en Swaps',
+                statLeverage: 'Apalancamiento MÃ¡x',
+                statExecution: 'Tiempo de EjecuciÃ³n',
+                statCustody: 'Auto-Custodia',
+                sectionTitle: 'Plataforma DeFi Todo-en-Uno',
+                sectionSubtitle: 'Todo lo que necesitas para gestionar tu cartera crypto',
+                securityTitle: 'Protegido por CriptografÃ­a <span>Post-CuÃ¡ntica</span>',
+                securityDesc: 'Obelisk utiliza los algoritmos CRYSTALS-Kyber y CRYSTALS-Dilithium, los mismos estÃ¡ndares elegidos por NIST para seguridad resistente a quantum. Tus activos estÃ¡n protegidos contra amenazas actuales y futuras.',
+                ctaTitle: 'Â¿Listo para Tomar el Control?',
+                ctaSubtitle: 'Ãšnete al futuro de las finanzas descentralizadas. Sin registro requerido.',
+                ctaButton: 'Lanzar Obelisk',
+                liveRefresh: 'Tiempo Real'
+            },
+            de: {
+                flag: 'ðŸ‡©ðŸ‡ª', name: 'DE',
+                heroTitle: 'Deine <span>Dezentralisierte</span><br>Krypto-Bank',
+                heroSubtitle: 'Handle, tausche, verdiene und verwalte deine Kryptos mit Post-Quanten-VerschlÃ¼sselung auf MilitÃ¤rniveau. Selbstverwahrung. Keine MittelsmÃ¤nner. Deine SchlÃ¼ssel, deine Coins.',
+                launchApp: 'App Starten',
+                exploreFeatures: 'Entdecken',
+                features: 'Funktionen',
+                security: 'Sicherheit',
+                docs: 'Docs',
+                footer: 'Â© 2025 Obelisk DEX. Gebaut fÃ¼r die Post-Quanten-Ã„ra.',
+                statFees: 'Swap-GebÃ¼hren',
+                statLeverage: 'Max Hebel',
+                statExecution: 'AusfÃ¼hrungszeit',
+                statCustody: 'Selbstverwahrung',
+                sectionTitle: 'All-in-One DeFi Plattform',
+                sectionSubtitle: 'Alles was du brauchst um dein Krypto-Portfolio zu verwalten',
+                securityTitle: 'GeschÃ¼tzt durch <span>Post-Quanten</span> Kryptographie',
+                securityDesc: 'Obelisk verwendet CRYSTALS-Kyber und CRYSTALS-Dilithium Algorithmen, dieselben Standards die vom NIST fÃ¼r quantensichere Sicherheit gewÃ¤hlt wurden. Deine Assets sind gegen aktuelle und zukÃ¼nftige Bedrohungen geschÃ¼tzt.',
+                ctaTitle: 'Bereit die Kontrolle zu Ã¼bernehmen?',
+                ctaSubtitle: 'Werde Teil der Zukunft dezentraler Finanzen. Keine Registrierung erforderlich.',
+                ctaButton: 'Obelisk Starten',
+                liveRefresh: 'Live-Aktualisierung'
+            }
+        };
+
+        function setLanguage(lang) {
+            const t = translations[lang];
+            if (!t) return;
+
+            // Update UI
+            document.getElementById('current-lang-flag').textContent = t.flag;
+            document.getElementById('current-lang-name').textContent = t.name;
+
+            // Update content
+            document.getElementById('hero-title').innerHTML = t.heroTitle;
+            document.querySelector('.hero-subtitle').textContent = t.heroSubtitle;
+            document.querySelector('.btn-primary span:first-child').textContent = t.launchApp;
+            document.querySelector('.btn-secondary').textContent = t.exploreFeatures;
+            document.querySelector('.btn-launch').textContent = t.launchApp;
+            document.querySelector('footer p').innerHTML = t.footer + ' <a href="https://github.com" target="_blank" rel="noopener noreferrer">GitHub</a>';
+
+            // Update nav links
+            const navLinks = document.querySelectorAll('.nav-links a');
+            navLinks[0].textContent = t.features;
+            navLinks[1].textContent = t.security;
+            navLinks[2].innerHTML = t.docs + '<span class="sr-only"> (opens in new tab)</span>';
+
+            // Update stats
+            document.getElementById('stat-fees').textContent = t.statFees;
+            document.getElementById('stat-leverage').textContent = t.statLeverage;
+            document.getElementById('stat-execution').textContent = t.statExecution;
+            document.getElementById('stat-custody').textContent = t.statCustody;
+
+            // Update section titles
+            document.getElementById('features-title').textContent = t.sectionTitle;
+            document.querySelector('.section-subtitle').textContent = t.sectionSubtitle;
+            document.getElementById('security-title').innerHTML = t.securityTitle;
+            document.querySelector('.security-content p').textContent = t.securityDesc;
+
+            // Update CTA
+            document.getElementById('cta-title').textContent = t.ctaTitle;
+            document.querySelector('.cta p').textContent = t.ctaSubtitle;
+            document.querySelector('.cta .btn-primary span:first-child').textContent = t.ctaButton;
+
+            // Update time info with timezone
+            const tz = getTimezone();
+            document.getElementById('time-info').textContent = tz + ' â€¢ ' + t.liveRefresh;
+
+            // Update active state
+            document.querySelectorAll('.lang-option').forEach(opt => {
+                opt.classList.toggle('active', opt.dataset.lang === lang);
+            });
+
+            // Save preference
+            localStorage.setItem('obelisk-lang', lang);
+        }
+
+        // Language dropdown toggle
+        const langBtn = document.getElementById('lang-btn');
+        const langDropdown = document.getElementById('lang-dropdown');
+
+        langBtn.addEventListener('click', () => {
+            const isOpen = langDropdown.classList.toggle('active');
+            langBtn.setAttribute('aria-expanded', isOpen);
+        });
+
+        // Language option click
+        document.querySelectorAll('.lang-option').forEach(option => {
+            option.addEventListener('click', () => {
+                setLanguage(option.dataset.lang);
+                langDropdown.classList.remove('active');
+                langBtn.setAttribute('aria-expanded', 'false');
+            });
+        });
+
+        // Close dropdown on outside click
+        document.addEventListener('click', (e) => {
+            if (!e.target.closest('#lang-selector')) {
+                langDropdown.classList.remove('active');
+                langBtn.setAttribute('aria-expanded', 'false');
+            }
+        });
+
+        // Load saved language
+        const savedLang = localStorage.getItem('obelisk-lang') || 'en';
+        if (savedLang !== 'en') setLanguage(savedLang);
+    </script>
 </body>
 </html>
 

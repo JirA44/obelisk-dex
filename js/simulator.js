@@ -87,7 +87,7 @@ const DemoSimulator = {
         `;
         indicator.style.cssText = `
             position: fixed;
-            top: 10px;
+            bottom: 20px;
             left: 50%;
             transform: translateX(-50%);
             background: linear-gradient(135deg, #ff6b35, #f7931a);
@@ -99,7 +99,7 @@ const DemoSimulator = {
             display: flex;
             align-items: center;
             gap: 8px;
-            z-index: 10000;
+            z-index: 9000;
             box-shadow: 0 4px 20px rgba(255, 107, 53, 0.4);
             animation: pulse 2s infinite;
         `;
@@ -550,8 +550,8 @@ const DemoSimulator = {
      * Show notification
      */
     showNotification(message, type = 'info') {
-        if (window.ObeliskApp && ObeliskApp.showNotification) {
-            ObeliskApp.showNotification(message, type);
+        if (window.ObeliskApp?.showNotification) {
+            window.ObeliskApp.showNotification(message, type);
         } else {
             console.log(`[${type.toUpperCase()}] ${message}`);
         }
@@ -620,3 +620,4 @@ document.addEventListener('keydown', (e) => {
 window.DemoSimulator = DemoSimulator;
 
 console.log('💡 Demo Simulator loaded. Press Ctrl+Shift+D or call DemoSimulator.start() to activate.');
+

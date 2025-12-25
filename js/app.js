@@ -1,5 +1,6 @@
 /**
  * Obelisk DEX - Main Application
+ * Version: 2.1.0 - Fixed price access errors
  *
  * Zero-trust decentralized exchange with post-quantum security.
  * Your keys, your crypto, your bank.
@@ -33,21 +34,42 @@ const ObeliskApp = {
         // Cache DOM elements
         this.cacheElements();
 
-        // Initialize modules
-        await SecureStorage.init();
-        await HyperliquidAPI.init();
-
-        // Setup event listeners
+        // Setup event listeners FIRST (so navigation always works)
         this.setupEventListeners();
 
+        // Initialize modules (with error handling)
+        try {
+            if (typeof SecureStorage !== 'undefined') await SecureStorage.init();
+        } catch (e) {
+            console.warn('SecureStorage init failed:', e.message);
+        }
+
+        try {
+            if (typeof HyperliquidAPI !== 'undefined') await HyperliquidAPI.init();
+        } catch (e) {
+            console.warn('HyperliquidAPI init failed:', e.message);
+        }
+
         // Check for existing wallet
-        await this.checkExistingWallet();
+        try {
+            await this.checkExistingWallet();
+        } catch (e) {
+            console.warn('Wallet check failed:', e.message);
+        }
 
         // Load initial data
-        await this.loadInitialData();
+        try {
+            await this.loadInitialData();
+        } catch (e) {
+            console.warn('Initial data load failed:', e.message);
+        }
 
         // Start price updates
-        this.startPriceUpdates();
+        try {
+            this.startPriceUpdates();
+        } catch (e) {
+            console.warn('Price updates failed:', e.message);
+        }
 
         console.log('Obelisk DEX ready!');
     },
@@ -117,6 +139,12 @@ const ObeliskApp = {
             tab.addEventListener('click', () => this.switchTab(tab.dataset.tab));
         });
 
+        // Settings button in header
+        const btnSettings = document.getElementById('btn-settings-nav');
+        if (btnSettings) {
+            btnSettings.addEventListener('click', () => this.switchTab('settings'));
+        }
+
         // Connect wallet button - directly show wallet selector
         this.elements.btnConnect?.addEventListener('click', async () => {
             try {
@@ -171,6 +199,19 @@ const ObeliskApp = {
         this.elements.btnImportWallet?.addEventListener('click', () => this.showImportWalletModal());
         this.elements.btnConnectExternal?.addEventListener('click', () => this.connectMetaMask());
 
+        // Deposit buttons (welcome screen and others)
+        document.getElementById('btn-deposit-welcome')?.addEventListener('click', () => {
+            this.switchTab('banking');
+            // Focus on deposit amount field
+            setTimeout(() => {
+                document.getElementById('deposit-amount')?.focus();
+            }, 100);
+        });
+
+        document.getElementById('btn-deposit-pool')?.addEventListener('click', () => {
+            this.switchTab('banking');
+        });
+
         // Modal close buttons
         document.querySelectorAll('.modal-close, .modal-backdrop').forEach(el => {
             el.addEventListener('click', () => this.closeModals());
@@ -205,6 +246,12 @@ const ObeliskApp = {
         this.elements.navTabs.forEach(tab => {
             tab.classList.toggle('active', tab.dataset.tab === tabName);
         });
+
+        // Update settings button state
+        const btnSettings = document.getElementById('btn-settings-nav');
+        if (btnSettings) {
+            btnSettings.classList.toggle('active', tabName === 'settings');
+        }
 
         // Update content
         this.elements.tabContents.forEach(content => {
@@ -271,7 +318,7 @@ const ObeliskApp = {
      * Update order summary
      */
     updateOrderSummary() {
-        const price = this.state.prices[this.state.currentPair] || 0;
+        const price = this.state.prices?.[this.state.currentPair] || 0;
         const leverage = this.state.leverage;
         const side = this.state.orderSide;
 
@@ -324,12 +371,31 @@ const ObeliskApp = {
      * Start price update loop
      */
     startPriceUpdates() {
-        // Update prices every 5 seconds
+        // Use Obelisk RealtimePrices if available (real multi-DEX prices)
+        if (typeof RealtimePrices !== 'undefined') {
+            RealtimePrices.subscribe((type, data) => {
+                if (type === 'prices') {
+                    // Convert to expected format
+                    const prices = {};
+                    Object.entries(data).forEach(([coin, info]) => {
+                        prices[coin] = info.price;
+                    });
+                    this.state.prices = prices;
+                    this.updatePriceDisplay();
+                }
+            });
+            console.log('Using Obelisk RealtimePrices (Hyperliquid + dYdX)');
+            return;
+        }
+
+        // Fallback: Update prices every 5 seconds via HyperliquidAPI
         setInterval(async () => {
             try {
-                const prices = await HyperliquidAPI.getAllPrices();
-                this.state.prices = prices;
-                this.updatePriceDisplay();
+                if (typeof HyperliquidAPI !== 'undefined') {
+                    const prices = await HyperliquidAPI.getAllPrices();
+                    this.state.prices = prices;
+                    this.updatePriceDisplay();
+                }
             } catch (e) {
                 console.error('Price update failed:', e);
             }
@@ -351,7 +417,7 @@ const ObeliskApp = {
      * Update price display
      */
     updatePriceDisplay() {
-        const price = this.state.prices[this.state.currentPair];
+        const price = this.state.prices?.[this.state.currentPair];
         if (price && this.elements.currentPrice) {
             this.elements.currentPrice.textContent = `$${HyperliquidAPI.formatPrice(parseFloat(price))}`;
         }
@@ -415,7 +481,7 @@ const ObeliskApp = {
             this.elements.priceImpact.textContent = `${quote.priceImpact.toFixed(2)}%`;
             this.elements.priceImpact.className = quote.priceImpact < 1 ? 'positive' : (quote.priceImpact < 3 ? 'warning' : 'negative');
 
-            const gasCostUSD = await UniswapAPI.estimateGasCostUSD(quote.estimatedGas, this.state.prices['ETH'] || 3000);
+            const gasCostUSD = await UniswapAPI.estimateGasCostUSD(quote.estimatedGas, this.state.prices?.['ETH'] || 3000);
             this.elements.networkFee.textContent = `~$${gasCostUSD.toFixed(2)}`;
 
             this.elements.swapDetails.style.display = 'block';
@@ -700,8 +766,17 @@ const ObeliskApp = {
      */
     async loadWalletBalances(address) {
         try {
+            const wallet = WalletManager.currentWallet;
+
+            // Handle Solana wallets differently
+            if (wallet?.type === 'solana') {
+                await this.loadSolanaBalances(address);
+                return;
+            }
+
+            // Ethereum balances
             const balances = await UniswapAPI.getAllBalances(address);
-            const ethPrice = this.state.prices['ETH'] || 3000;
+            const ethPrice = this.state.prices?.['ETH'] || 3000;
 
             let totalUSD = 0;
             let assetsHTML = '';
@@ -738,6 +813,56 @@ const ObeliskApp = {
             }
         } catch (e) {
             console.error('Failed to load balances:', e);
+        }
+    },
+
+    /**
+     * Load Solana wallet balances
+     */
+    async loadSolanaBalances(address) {
+        try {
+            // Get SOL price from our prices
+            const solPrice = this.state.prices?.['SOL'] || 150;
+
+            // Fetch SOL balance from Solana RPC
+            const response = await fetch('https://api.mainnet-beta.solana.com', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                    jsonrpc: '2.0',
+                    id: 1,
+                    method: 'getBalance',
+                    params: [address]
+                })
+            });
+
+            const data = await response.json();
+            const lamports = data.result?.value || 0;
+            const solBalance = lamports / 1e9; // Convert lamports to SOL
+            const valueUSD = solBalance * solPrice;
+
+            console.log(`SOL Balance: ${solBalance} SOL ($${valueUSD.toFixed(2)})`);
+
+            this.elements.totalBalance.textContent = `$${valueUSD.toFixed(2)}`;
+            this.elements.assetsList.innerHTML = `
+                <div class="asset-item">
+                    <div class="asset-info">
+                        <div class="asset-icon" style="background: linear-gradient(135deg, #9945FF, #14F195);">◎</div>
+                        <div class="asset-details">
+                            <span class="asset-name">Solana</span>
+                            <span class="asset-symbol">SOL</span>
+                        </div>
+                    </div>
+                    <div class="asset-balance">
+                        <span class="asset-amount">${solBalance.toFixed(4)}</span>
+                        <span class="asset-value">$${valueUSD.toFixed(2)}</span>
+                    </div>
+                </div>
+            `;
+        } catch (e) {
+            console.error('Failed to load Solana balances:', e);
+            this.elements.totalBalance.textContent = '$0.00';
+            this.elements.assetsList.innerHTML = '<div class="asset-item">Unable to load Solana balance</div>';
         }
     },
 

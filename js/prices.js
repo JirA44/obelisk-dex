@@ -1,100 +1,68 @@
 /**
- * Obelisk DEX - Real-Time Price Service
+ * Obelisk DEX - Real-Time Price Service v2.1
  *
- * Uses CoinGecko API for real-time cryptocurrency prices.
- * No API key required for basic usage (rate limited).
+ * Uses Obelisk API for real-time cryptocurrency prices.
+ * Connected to: https://obelisk-api.hugo-padilla-pro.workers.dev
+ * Updated: 2024-12-13
  */
 
 const PriceService = {
-    // CoinGecko API
-    COINGECKO_API: 'https://api.coingecko.com/api/v3',
+    // Obelisk API
+    OBELISK_API: 'https://obelisk-api.hugo-padilla-pro.workers.dev',
 
-    // Coin ID mapping
-    COIN_IDS: {
-        BTC: 'bitcoin',
-        ETH: 'ethereum',
-        SOL: 'solana',
-        ARB: 'arbitrum',
-        MATIC: 'matic-network',
-        AVAX: 'avalanche-2',
-        LINK: 'chainlink',
-        UNI: 'uniswap',
-        AAVE: 'aave',
-        OP: 'optimism',
-        DOGE: 'dogecoin',
-        XRP: 'ripple',
-        ADA: 'cardano',
-        DOT: 'polkadot',
-        ATOM: 'cosmos',
-        NEAR: 'near',
-        APT: 'aptos',
-        SUI: 'sui',
-        INJ: 'injective-protocol',
-        TIA: 'celestia',
-        SEI: 'sei-network',
-        WIF: 'dogwifcoin',
-        PEPE: 'pepe',
-        BONK: 'bonk',
-        SHIB: 'shiba-inu'
-    },
+    // Supported pairs (from Obelisk API)
+    PAIRS: ['BTC', 'ETH', 'SOL', 'ARB', 'XRP', 'ADA', 'AVAX', 'LINK', 'UNI', 'OP', 'INJ', 'SUI'],
 
     // Price cache
     priceCache: {},
     lastUpdate: 0,
-    updateInterval: 10000, // 10 seconds
+    updateInterval: 2000, // 2 seconds (faster updates)
 
     // Subscribers for price updates
     subscribers: [],
 
-    // WebSocket for Binance real-time (faster updates)
-    binanceWs: null,
+    // Connection status
+    connected: false,
 
     /**
      * Initialize price service
      */
     async init() {
-        console.log('Initializing Price Service...');
+        console.log('Initializing Obelisk Price Service...');
 
         // Initial price fetch
         await this.fetchAllPrices();
 
-        // Start periodic updates
+        // Start periodic updates (fast)
         this.startPeriodicUpdates();
 
-        // Connect to Binance WebSocket for real-time
-        this.connectBinanceWebSocket();
-
-        console.log('Price Service ready!');
+        console.log('Obelisk Price Service ready!');
     },
 
     /**
-     * Fetch all prices from CoinGecko
+     * Fetch all prices from Obelisk API
      */
     async fetchAllPrices() {
-        const coinIds = Object.values(this.COIN_IDS).join(',');
-
         try {
-            const response = await fetch(
-                `${this.COINGECKO_API}/simple/price?ids=${coinIds}&vs_currencies=usd&include_24hr_change=true&include_24hr_vol=true&include_market_cap=true`
-            );
+            const response = await fetch(`${this.OBELISK_API}/api/tickers`);
 
             if (!response.ok) {
                 throw new Error(`HTTP ${response.status}`);
             }
 
             const data = await response.json();
+            this.connected = true;
 
-            // Map back to symbols
-            for (const [symbol, coinId] of Object.entries(this.COIN_IDS)) {
-                if (data[coinId]) {
-                    this.priceCache[symbol] = {
-                        price: data[coinId].usd,
-                        change24h: data[coinId].usd_24h_change || 0,
-                        volume24h: data[coinId].usd_24h_vol || 0,
-                        marketCap: data[coinId].usd_market_cap || 0,
-                        lastUpdate: Date.now()
-                    };
-                }
+            // Map tickers to price cache
+            for (const [pair, ticker] of Object.entries(data.tickers || {})) {
+                const symbol = pair.replace('/USDC', '');
+                this.priceCache[symbol] = {
+                    price: ticker.price,
+                    change24h: ticker.change24h || 0,
+                    volume24h: ticker.volume || 0,
+                    marketCap: 0,
+                    lastUpdate: Date.now()
+                };
             }
 
             this.lastUpdate = Date.now();
@@ -102,164 +70,67 @@ const PriceService = {
 
             return this.priceCache;
         } catch (e) {
-            console.error('Failed to fetch prices from CoinGecko:', e);
+            console.error('Failed to fetch prices from Obelisk API:', e);
+            this.connected = false;
             return this.priceCache;
         }
     },
 
     /**
-     * Fetch detailed market data for a specific coin
+     * Fetch detailed market data for a specific coin from Obelisk API
      */
     async fetchCoinDetails(symbol) {
-        const coinId = this.COIN_IDS[symbol];
-        if (!coinId) return null;
-
         try {
-            const response = await fetch(
-                `${this.COINGECKO_API}/coins/${coinId}?localization=false&tickers=false&community_data=false&developer_data=false`
-            );
-
+            const response = await fetch(`${this.OBELISK_API}/api/ticker/${symbol}/USDC`);
             if (!response.ok) throw new Error(`HTTP ${response.status}`);
 
             const data = await response.json();
 
             return {
                 symbol: symbol,
-                name: data.name,
-                price: data.market_data.current_price.usd,
-                change24h: data.market_data.price_change_percentage_24h,
-                change7d: data.market_data.price_change_percentage_7d,
-                change30d: data.market_data.price_change_percentage_30d,
-                high24h: data.market_data.high_24h.usd,
-                low24h: data.market_data.low_24h.usd,
-                volume24h: data.market_data.total_volume.usd,
-                marketCap: data.market_data.market_cap.usd,
-                rank: data.market_cap_rank,
-                ath: data.market_data.ath.usd,
-                athDate: data.market_data.ath_date.usd,
-                athChange: data.market_data.ath_change_percentage.usd,
-                circulatingSupply: data.market_data.circulating_supply,
-                totalSupply: data.market_data.total_supply,
-                image: data.image.small
+                name: symbol,
+                price: data.price,
+                change24h: data.change24h,
+                high24h: data.high,
+                low24h: data.low,
+                volume24h: data.volume,
+                marketCap: 0,
+                lastUpdate: data.timestamp
             };
         } catch (e) {
             console.error(`Failed to fetch details for ${symbol}:`, e);
-            return null;
+            return this.priceCache[symbol] || null;
         }
     },
 
     /**
-     * Fetch price history for charts
+     * Fetch orderbook from Obelisk API
      */
-    async fetchPriceHistory(symbol, days = 7) {
-        const coinId = this.COIN_IDS[symbol];
-        if (!coinId) return [];
-
+    async fetchOrderbook(symbol) {
         try {
-            const response = await fetch(
-                `${this.COINGECKO_API}/coins/${coinId}/market_chart?vs_currency=usd&days=${days}`
-            );
-
+            const response = await fetch(`${this.OBELISK_API}/api/orderbook/${symbol}/USDC`);
             if (!response.ok) throw new Error(`HTTP ${response.status}`);
 
             const data = await response.json();
-
-            return data.prices.map(([timestamp, price]) => ({
-                time: timestamp,
-                price: price
-            }));
+            return {
+                bids: data.bids || [],
+                asks: data.asks || [],
+                spread: data.spread,
+                timestamp: data.timestamp
+            };
         } catch (e) {
-            console.error(`Failed to fetch price history for ${symbol}:`, e);
-            return [];
+            console.error(`Failed to fetch orderbook for ${symbol}:`, e);
+            return { bids: [], asks: [], spread: 0 };
         }
     },
 
     /**
-     * Fetch OHLCV candles for trading chart
-     */
-    async fetchOHLCV(symbol, days = 30) {
-        const coinId = this.COIN_IDS[symbol];
-        if (!coinId) return [];
-
-        try {
-            const response = await fetch(
-                `${this.COINGECKO_API}/coins/${coinId}/ohlc?vs_currency=usd&days=${days}`
-            );
-
-            if (!response.ok) throw new Error(`HTTP ${response.status}`);
-
-            const data = await response.json();
-
-            return data.map(([timestamp, open, high, low, close]) => ({
-                time: timestamp / 1000,
-                open,
-                high,
-                low,
-                close
-            }));
-        } catch (e) {
-            console.error(`Failed to fetch OHLCV for ${symbol}:`, e);
-            return [];
-        }
-    },
-
-    /**
-     * Connect to Binance WebSocket for real-time prices
-     */
-    connectBinanceWebSocket() {
-        const symbols = ['btcusdt', 'ethusdt', 'solusdt', 'arbusdt', 'linkusdt', 'uniusdt', 'avaxusdt', 'maticusdt', 'dogeusdt', 'xrpusdt'];
-        const streams = symbols.map(s => `${s}@ticker`).join('/');
-
-        try {
-            this.binanceWs = new WebSocket(`wss://stream.binance.com:9443/stream?streams=${streams}`);
-
-            this.binanceWs.onopen = () => {
-                console.log('Binance WebSocket connected for real-time prices');
-            };
-
-            this.binanceWs.onmessage = (event) => {
-                try {
-                    const { data } = JSON.parse(event.data);
-                    const symbol = data.s.replace('USDT', '');
-
-                    if (this.priceCache[symbol]) {
-                        this.priceCache[symbol] = {
-                            ...this.priceCache[symbol],
-                            price: parseFloat(data.c),
-                            change24h: parseFloat(data.P),
-                            volume24h: parseFloat(data.v) * parseFloat(data.c),
-                            high24h: parseFloat(data.h),
-                            low24h: parseFloat(data.l),
-                            lastUpdate: Date.now()
-                        };
-
-                        this.notifySubscribers(symbol);
-                    }
-                } catch (e) {
-                    // Ignore parse errors
-                }
-            };
-
-            this.binanceWs.onclose = () => {
-                console.log('Binance WebSocket disconnected, reconnecting...');
-                setTimeout(() => this.connectBinanceWebSocket(), 5000);
-            };
-
-            this.binanceWs.onerror = (error) => {
-                console.error('Binance WebSocket error:', error);
-            };
-        } catch (e) {
-            console.error('Failed to connect Binance WebSocket:', e);
-        }
-    },
-
-    /**
-     * Start periodic price updates
+     * Start periodic price updates (fast - every 2 seconds)
      */
     startPeriodicUpdates() {
         setInterval(() => {
             this.fetchAllPrices();
-        }, 30000); // Update every 30 seconds
+        }, this.updateInterval);
     },
 
     /**
@@ -357,46 +228,62 @@ const PriceService = {
     },
 
     /**
-     * Get trending coins
+     * Get all available markets from Obelisk API
      */
-    async getTrending() {
+    async getMarkets() {
         try {
-            const response = await fetch(`${this.COINGECKO_API}/search/trending`);
+            const response = await fetch(`${this.OBELISK_API}/api/markets`);
             if (!response.ok) throw new Error(`HTTP ${response.status}`);
 
             const data = await response.json();
-            return data.coins.map(coin => ({
-                id: coin.item.id,
-                symbol: coin.item.symbol.toUpperCase(),
-                name: coin.item.name,
-                rank: coin.item.market_cap_rank,
-                image: coin.item.small
-            }));
+            return data.markets || [];
         } catch (e) {
-            console.error('Failed to fetch trending:', e);
+            console.error('Failed to fetch markets:', e);
             return [];
         }
     },
 
     /**
-     * Search for coins
+     * Get top movers (highest change)
      */
-    async searchCoins(query) {
-        try {
-            const response = await fetch(`${this.COINGECKO_API}/search?query=${encodeURIComponent(query)}`);
-            if (!response.ok) throw new Error(`HTTP ${response.status}`);
+    getTopMovers() {
+        const prices = Object.entries(this.priceCache)
+            .map(([symbol, data]) => ({ symbol, ...data }))
+            .sort((a, b) => Math.abs(b.change24h) - Math.abs(a.change24h));
+        return prices.slice(0, 5);
+    },
 
-            const data = await response.json();
-            return data.coins.slice(0, 10).map(coin => ({
-                id: coin.id,
-                symbol: coin.symbol.toUpperCase(),
-                name: coin.name,
-                rank: coin.market_cap_rank,
-                image: coin.thumb
+    /**
+     * Search for coins in available pairs
+     */
+    searchCoins(query) {
+        const q = query.toUpperCase();
+        return this.PAIRS
+            .filter(symbol => symbol.includes(q))
+            .map(symbol => ({
+                symbol,
+                name: symbol,
+                price: this.priceCache[symbol]?.price || 0
             }));
+    },
+
+    /**
+     * Check API connection status
+     */
+    isConnected() {
+        return this.connected;
+    },
+
+    /**
+     * Get API info
+     */
+    async getApiInfo() {
+        try {
+            const response = await fetch(`${this.OBELISK_API}/`);
+            if (!response.ok) throw new Error(`HTTP ${response.status}`);
+            return await response.json();
         } catch (e) {
-            console.error('Failed to search coins:', e);
-            return [];
+            return { error: e.message };
         }
     }
 };
