@@ -892,6 +892,291 @@
 
         </div>
 
+        <!-- INVESTMENT TOOLS -->
+        <h2 class="category-title">Investment Tools</h2>
+        <div class="tools-grid">
+
+            <!-- Staking Rewards Calculator -->
+            <div class="tool-card">
+                <div class="tool-header">
+                    <div class="tool-icon">🥩</div>
+                    <div class="tool-title">Staking Rewards Calculator</div>
+                </div>
+                <p class="tool-desc">Calculate staking rewards with auto-compound options.</p>
+                <div class="tool-content">
+                    <input type="number" id="stake-amount" placeholder="Amount to stake" value="10000">
+                    <input type="number" id="stake-apy" placeholder="APY (%)" value="12">
+                    <input type="number" id="stake-days" placeholder="Staking period (days)" value="365">
+                    <select id="stake-compound">
+                        <option value="none">No auto-compound</option>
+                        <option value="daily">Daily compound</option>
+                        <option value="weekly">Weekly compound</option>
+                        <option value="monthly">Monthly compound</option>
+                    </select>
+                    <button type="button" class="btn" onclick="calculateStaking()">Calculate Rewards</button>
+                    <div class="result" id="stake-result" style="display:none;">
+                        <div class="result-row">
+                            <span class="result-label">Daily Rewards</span>
+                            <span class="result-value" id="stake-daily">$3.29</span>
+                        </div>
+                        <div class="result-row">
+                            <span class="result-label">Monthly Rewards</span>
+                            <span class="result-value" id="stake-monthly">$100</span>
+                        </div>
+                        <div class="result-row">
+                            <span class="result-label">Total Rewards</span>
+                            <span class="result-value green" id="stake-total">$1,200</span>
+                        </div>
+                        <div class="result-row">
+                            <span class="result-label">Final Balance</span>
+                            <span class="result-value green" id="stake-final">$11,200</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Break-even Calculator -->
+            <div class="tool-card">
+                <div class="tool-header">
+                    <div class="tool-icon">⚖️</div>
+                    <div class="tool-title">Break-even Calculator</div>
+                </div>
+                <p class="tool-desc">Calculate the price needed to break even after losses.</p>
+                <div class="tool-content">
+                    <input type="number" id="be-initial" placeholder="Initial investment ($)" value="10000">
+                    <input type="number" id="be-current" placeholder="Current value ($)" value="5000">
+                    <input type="number" id="be-price" placeholder="Current token price ($)" value="50">
+                    <button type="button" class="btn" onclick="calculateBreakeven()">Calculate</button>
+                    <div class="result" id="be-result" style="display:none;">
+                        <div class="result-row">
+                            <span class="result-label">Current Loss</span>
+                            <span class="result-value red" id="be-loss">-50%</span>
+                        </div>
+                        <div class="result-row">
+                            <span class="result-label">Break-even Price</span>
+                            <span class="result-value yellow" id="be-price-needed">$100</span>
+                        </div>
+                        <div class="result-row">
+                            <span class="result-label">Required Gain</span>
+                            <span class="result-value yellow" id="be-gain">+100%</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Yield Farm Comparator -->
+            <div class="tool-card">
+                <div class="tool-header">
+                    <div class="tool-icon">🌾</div>
+                    <div class="tool-title">Yield Farm Comparator</div>
+                </div>
+                <p class="tool-desc">Compare yield farming opportunities with IL consideration.</p>
+                <div class="tool-content">
+                    <input type="number" id="yf-investment" placeholder="Investment ($)" value="10000">
+                    <div class="input-group">
+                        <input type="number" id="yf-apy1" placeholder="Farm 1 APY (%)" value="80">
+                        <input type="number" id="yf-il1" placeholder="Est. IL (%)" value="5">
+                    </div>
+                    <div class="input-group">
+                        <input type="number" id="yf-apy2" placeholder="Farm 2 APY (%)" value="120">
+                        <input type="number" id="yf-il2" placeholder="Est. IL (%)" value="15">
+                    </div>
+                    <button type="button" class="btn" onclick="compareYieldFarms()">Compare</button>
+                    <div class="result" id="yf-result" style="display:none;">
+                        <div class="result-row">
+                            <span class="result-label">Farm 1 Net Return</span>
+                            <span class="result-value" id="yf-net1">$7,500 (75%)</span>
+                        </div>
+                        <div class="result-row">
+                            <span class="result-label">Farm 2 Net Return</span>
+                            <span class="result-value" id="yf-net2">$10,500 (105%)</span>
+                        </div>
+                        <div class="result-row">
+                            <span class="result-label">Recommendation</span>
+                            <span class="result-value green" id="yf-winner">Farm 2 (+$3,000)</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Token Vesting Calculator -->
+            <div class="tool-card">
+                <div class="tool-header">
+                    <div class="tool-icon">🔓</div>
+                    <div class="tool-title">Token Vesting Calculator</div>
+                </div>
+                <p class="tool-desc">Calculate token unlock schedules and values.</p>
+                <div class="tool-content">
+                    <input type="number" id="vest-total" placeholder="Total tokens" value="100000">
+                    <input type="number" id="vest-price" placeholder="Token price ($)" value="0.50">
+                    <input type="number" id="vest-cliff" placeholder="Cliff (months)" value="6">
+                    <input type="number" id="vest-duration" placeholder="Vesting duration (months)" value="24">
+                    <input type="number" id="vest-tge" placeholder="TGE unlock (%)" value="10">
+                    <button type="button" class="btn" onclick="calculateVesting()">Calculate Schedule</button>
+                    <div class="result" id="vest-result" style="display:none;">
+                        <div class="result-row">
+                            <span class="result-label">TGE Unlock</span>
+                            <span class="result-value" id="vest-tge-val">10,000 ($5,000)</span>
+                        </div>
+                        <div class="result-row">
+                            <span class="result-label">Monthly Unlock</span>
+                            <span class="result-value" id="vest-monthly">3,750 ($1,875)</span>
+                        </div>
+                        <div class="result-row">
+                            <span class="result-label">Total Value</span>
+                            <span class="result-value green" id="vest-total-val">$50,000</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Crypto Loan Calculator -->
+            <div class="tool-card">
+                <div class="tool-header">
+                    <div class="tool-icon">🏦</div>
+                    <div class="tool-title">Crypto Loan Calculator</div>
+                </div>
+                <p class="tool-desc">Calculate loan payments and collateral requirements.</p>
+                <div class="tool-content">
+                    <input type="number" id="loan-collateral" placeholder="Collateral value ($)" value="10000">
+                    <input type="number" id="loan-ltv" placeholder="LTV (%)" value="50">
+                    <input type="number" id="loan-apr" placeholder="Loan APR (%)" value="8">
+                    <input type="number" id="loan-duration" placeholder="Duration (months)" value="12">
+                    <button type="button" class="btn" onclick="calculateLoan()">Calculate</button>
+                    <div class="result" id="loan-result" style="display:none;">
+                        <div class="result-row">
+                            <span class="result-label">Max Loan Amount</span>
+                            <span class="result-value" id="loan-max">$5,000</span>
+                        </div>
+                        <div class="result-row">
+                            <span class="result-label">Total Interest</span>
+                            <span class="result-value yellow" id="loan-interest">$400</span>
+                        </div>
+                        <div class="result-row">
+                            <span class="result-label">Monthly Payment</span>
+                            <span class="result-value" id="loan-monthly">$450</span>
+                        </div>
+                        <div class="result-row">
+                            <span class="result-label">Liquidation Price</span>
+                            <span class="result-value red" id="loan-liq">-25% from entry</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Fibonacci Calculator -->
+            <div class="tool-card">
+                <div class="tool-header">
+                    <div class="tool-icon">🔢</div>
+                    <div class="tool-title">Fibonacci Retracement</div>
+                </div>
+                <p class="tool-desc">Calculate Fibonacci retracement and extension levels.</p>
+                <div class="tool-content">
+                    <input type="number" id="fib-high" placeholder="Swing High ($)" value="100">
+                    <input type="number" id="fib-low" placeholder="Swing Low ($)" value="50">
+                    <select id="fib-direction">
+                        <option value="up">Uptrend (Low to High)</option>
+                        <option value="down">Downtrend (High to Low)</option>
+                    </select>
+                    <button type="button" class="btn" onclick="calculateFibonacci()">Calculate Levels</button>
+                    <div class="result" id="fib-result" style="display:none;">
+                        <div class="result-row">
+                            <span class="result-label">0% (High)</span>
+                            <span class="result-value" id="fib-0">$100</span>
+                        </div>
+                        <div class="result-row">
+                            <span class="result-label">23.6%</span>
+                            <span class="result-value" id="fib-236">$88.20</span>
+                        </div>
+                        <div class="result-row">
+                            <span class="result-label">38.2%</span>
+                            <span class="result-value" id="fib-382">$80.90</span>
+                        </div>
+                        <div class="result-row">
+                            <span class="result-label">50%</span>
+                            <span class="result-value yellow" id="fib-50">$75.00</span>
+                        </div>
+                        <div class="result-row">
+                            <span class="result-label">61.8%</span>
+                            <span class="result-value" id="fib-618">$69.10</span>
+                        </div>
+                        <div class="result-row">
+                            <span class="result-label">100% (Low)</span>
+                            <span class="result-value" id="fib-100">$50</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Risk/Reward Calculator -->
+            <div class="tool-card">
+                <div class="tool-header">
+                    <div class="tool-icon">🎯</div>
+                    <div class="tool-title">Risk/Reward Calculator</div>
+                </div>
+                <p class="tool-desc">Calculate risk/reward ratio and required win rate.</p>
+                <div class="tool-content">
+                    <input type="number" id="rr-entry" placeholder="Entry price ($)" value="100">
+                    <input type="number" id="rr-stop" placeholder="Stop loss ($)" value="95">
+                    <input type="number" id="rr-target" placeholder="Target price ($)" value="115">
+                    <button type="button" class="btn" onclick="calculateRiskReward()">Calculate</button>
+                    <div class="result" id="rr-result" style="display:none;">
+                        <div class="result-row">
+                            <span class="result-label">Risk (Stop Loss)</span>
+                            <span class="result-value red" id="rr-risk">-$5 (-5%)</span>
+                        </div>
+                        <div class="result-row">
+                            <span class="result-label">Reward (Target)</span>
+                            <span class="result-value green" id="rr-reward">+$15 (+15%)</span>
+                        </div>
+                        <div class="result-row">
+                            <span class="result-label">Risk/Reward Ratio</span>
+                            <span class="result-value green" id="rr-ratio">1:3</span>
+                        </div>
+                        <div class="result-row">
+                            <span class="result-label">Min Win Rate Needed</span>
+                            <span class="result-value" id="rr-winrate">25%</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Portfolio Rebalancing -->
+            <div class="tool-card">
+                <div class="tool-header">
+                    <div class="tool-icon">⚖️</div>
+                    <div class="tool-title">Portfolio Rebalancer</div>
+                </div>
+                <p class="tool-desc">Calculate trades needed to rebalance your portfolio.</p>
+                <div class="tool-content">
+                    <input type="number" id="reb-btc" placeholder="Current BTC value ($)" value="5000">
+                    <input type="number" id="reb-eth" placeholder="Current ETH value ($)" value="3000">
+                    <input type="number" id="reb-sol" placeholder="Current SOL value ($)" value="2000">
+                    <div class="input-group">
+                        <input type="number" id="reb-btc-target" placeholder="BTC target %" value="50">
+                        <input type="number" id="reb-eth-target" placeholder="ETH target %" value="30">
+                        <input type="number" id="reb-sol-target" placeholder="SOL target %" value="20">
+                    </div>
+                    <button type="button" class="btn" onclick="calculateRebalance()">Calculate Rebalance</button>
+                    <div class="result" id="reb-result" style="display:none;">
+                        <div class="result-row">
+                            <span class="result-label">BTC</span>
+                            <span class="result-value" id="reb-btc-action">Buy +$0</span>
+                        </div>
+                        <div class="result-row">
+                            <span class="result-label">ETH</span>
+                            <span class="result-value" id="reb-eth-action">Sell -$0</span>
+                        </div>
+                        <div class="result-row">
+                            <span class="result-label">SOL</span>
+                            <span class="result-value" id="reb-sol-action">Hold</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+
     </div>
 
     <script>
@@ -1186,6 +1471,193 @@
 
             document.getElementById('fg-label').textContent = label;
             document.getElementById('fg-label').style.color = color;
+        }
+
+        // ==================== INVESTMENT TOOLS ====================
+
+        // Staking Rewards Calculator
+        function calculateStaking() {
+            const amount = parseFloat(document.getElementById('stake-amount').value);
+            const apy = parseFloat(document.getElementById('stake-apy').value) / 100;
+            const days = parseFloat(document.getElementById('stake-days').value);
+            const compound = document.getElementById('stake-compound').value;
+
+            let finalAmount;
+            if (compound === 'none') {
+                finalAmount = amount * (1 + apy * days / 365);
+            } else {
+                const periods = compound === 'daily' ? 365 : compound === 'weekly' ? 52 : 12;
+                const n = periods * days / 365;
+                finalAmount = amount * Math.pow(1 + apy / periods, n);
+            }
+
+            const totalRewards = finalAmount - amount;
+            const dailyRewards = totalRewards / days;
+            const monthlyRewards = dailyRewards * 30;
+
+            document.getElementById('stake-daily').textContent = '$' + dailyRewards.toFixed(2);
+            document.getElementById('stake-monthly').textContent = '$' + monthlyRewards.toFixed(0);
+            document.getElementById('stake-total').textContent = '$' + totalRewards.toLocaleString(undefined, {maximumFractionDigits: 0});
+            document.getElementById('stake-final').textContent = '$' + finalAmount.toLocaleString(undefined, {maximumFractionDigits: 0});
+            document.getElementById('stake-result').style.display = 'block';
+        }
+
+        // Break-even Calculator
+        function calculateBreakeven() {
+            const initial = parseFloat(document.getElementById('be-initial').value);
+            const current = parseFloat(document.getElementById('be-current').value);
+            const currentPrice = parseFloat(document.getElementById('be-price').value);
+
+            const lossPercent = ((current - initial) / initial) * 100;
+            const gainNeeded = ((initial - current) / current) * 100;
+            const breakEvenPrice = currentPrice * (initial / current);
+
+            document.getElementById('be-loss').textContent = lossPercent.toFixed(1) + '%';
+            document.getElementById('be-price-needed').textContent = '$' + breakEvenPrice.toFixed(2);
+            document.getElementById('be-gain').textContent = '+' + gainNeeded.toFixed(1) + '%';
+            document.getElementById('be-result').style.display = 'block';
+        }
+
+        // Yield Farm Comparator
+        function compareYieldFarms() {
+            const investment = parseFloat(document.getElementById('yf-investment').value);
+            const apy1 = parseFloat(document.getElementById('yf-apy1').value);
+            const il1 = parseFloat(document.getElementById('yf-il1').value);
+            const apy2 = parseFloat(document.getElementById('yf-apy2').value);
+            const il2 = parseFloat(document.getElementById('yf-il2').value);
+
+            const net1 = investment * (apy1 - il1) / 100;
+            const net2 = investment * (apy2 - il2) / 100;
+            const netPct1 = apy1 - il1;
+            const netPct2 = apy2 - il2;
+
+            document.getElementById('yf-net1').textContent = '$' + net1.toLocaleString(undefined, {maximumFractionDigits: 0}) + ' (' + netPct1.toFixed(0) + '%)';
+            document.getElementById('yf-net2').textContent = '$' + net2.toLocaleString(undefined, {maximumFractionDigits: 0}) + ' (' + netPct2.toFixed(0) + '%)';
+
+            const diff = Math.abs(net1 - net2);
+            const winner = net1 > net2 ? 'Farm 1' : 'Farm 2';
+            const winnerEl = document.getElementById('yf-winner');
+            winnerEl.textContent = winner + ' (+$' + diff.toLocaleString(undefined, {maximumFractionDigits: 0}) + ')';
+            winnerEl.className = 'result-value green';
+            document.getElementById('yf-result').style.display = 'block';
+        }
+
+        // Token Vesting Calculator
+        function calculateVesting() {
+            const total = parseFloat(document.getElementById('vest-total').value);
+            const price = parseFloat(document.getElementById('vest-price').value);
+            const cliff = parseFloat(document.getElementById('vest-cliff').value);
+            const duration = parseFloat(document.getElementById('vest-duration').value);
+            const tgePct = parseFloat(document.getElementById('vest-tge').value) / 100;
+
+            const tgeTokens = total * tgePct;
+            const vestingTokens = total - tgeTokens;
+            const monthlyTokens = vestingTokens / (duration - cliff);
+
+            document.getElementById('vest-tge-val').textContent = tgeTokens.toLocaleString() + ' ($' + (tgeTokens * price).toLocaleString(undefined, {maximumFractionDigits: 0}) + ')';
+            document.getElementById('vest-monthly').textContent = monthlyTokens.toLocaleString(undefined, {maximumFractionDigits: 0}) + ' ($' + (monthlyTokens * price).toLocaleString(undefined, {maximumFractionDigits: 0}) + ')';
+            document.getElementById('vest-total-val').textContent = '$' + (total * price).toLocaleString(undefined, {maximumFractionDigits: 0});
+            document.getElementById('vest-result').style.display = 'block';
+        }
+
+        // Crypto Loan Calculator
+        function calculateLoan() {
+            const collateral = parseFloat(document.getElementById('loan-collateral').value);
+            const ltv = parseFloat(document.getElementById('loan-ltv').value) / 100;
+            const apr = parseFloat(document.getElementById('loan-apr').value) / 100;
+            const months = parseFloat(document.getElementById('loan-duration').value);
+
+            const maxLoan = collateral * ltv;
+            const totalInterest = maxLoan * apr * (months / 12);
+            const totalRepay = maxLoan + totalInterest;
+            const monthlyPayment = totalRepay / months;
+            const liqDrop = (1 - ltv / 0.8) * 100; // Assuming 80% liq threshold
+
+            document.getElementById('loan-max').textContent = '$' + maxLoan.toLocaleString(undefined, {maximumFractionDigits: 0});
+            document.getElementById('loan-interest').textContent = '$' + totalInterest.toLocaleString(undefined, {maximumFractionDigits: 0});
+            document.getElementById('loan-monthly').textContent = '$' + monthlyPayment.toLocaleString(undefined, {maximumFractionDigits: 0});
+            document.getElementById('loan-liq').textContent = '-' + liqDrop.toFixed(0) + '% from entry';
+            document.getElementById('loan-result').style.display = 'block';
+        }
+
+        // Fibonacci Calculator
+        function calculateFibonacci() {
+            const high = parseFloat(document.getElementById('fib-high').value);
+            const low = parseFloat(document.getElementById('fib-low').value);
+            const direction = document.getElementById('fib-direction').value;
+
+            const diff = high - low;
+            const levels = direction === 'down' ?
+                { 0: high, 236: high - diff * 0.236, 382: high - diff * 0.382, 50: high - diff * 0.5, 618: high - diff * 0.618, 100: low } :
+                { 0: low, 236: low + diff * 0.236, 382: low + diff * 0.382, 50: low + diff * 0.5, 618: low + diff * 0.618, 100: high };
+
+            document.getElementById('fib-0').textContent = '$' + levels[0].toFixed(2);
+            document.getElementById('fib-236').textContent = '$' + levels[236].toFixed(2);
+            document.getElementById('fib-382').textContent = '$' + levels[382].toFixed(2);
+            document.getElementById('fib-50').textContent = '$' + levels[50].toFixed(2);
+            document.getElementById('fib-618').textContent = '$' + levels[618].toFixed(2);
+            document.getElementById('fib-100').textContent = '$' + levels[100].toFixed(2);
+            document.getElementById('fib-result').style.display = 'block';
+        }
+
+        // Risk/Reward Calculator
+        function calculateRiskReward() {
+            const entry = parseFloat(document.getElementById('rr-entry').value);
+            const stop = parseFloat(document.getElementById('rr-stop').value);
+            const target = parseFloat(document.getElementById('rr-target').value);
+
+            const risk = entry - stop;
+            const reward = target - entry;
+            const riskPct = (risk / entry) * 100;
+            const rewardPct = (reward / entry) * 100;
+            const ratio = reward / risk;
+            const minWinRate = (1 / (1 + ratio)) * 100;
+
+            document.getElementById('rr-risk').textContent = '-$' + risk.toFixed(2) + ' (-' + riskPct.toFixed(1) + '%)';
+            document.getElementById('rr-reward').textContent = '+$' + reward.toFixed(2) + ' (+' + rewardPct.toFixed(1) + '%)';
+
+            const ratioEl = document.getElementById('rr-ratio');
+            ratioEl.textContent = '1:' + ratio.toFixed(1);
+            ratioEl.className = 'result-value ' + (ratio >= 2 ? 'green' : ratio >= 1 ? 'yellow' : 'red');
+
+            document.getElementById('rr-winrate').textContent = minWinRate.toFixed(0) + '%';
+            document.getElementById('rr-result').style.display = 'block';
+        }
+
+        // Portfolio Rebalancer
+        function calculateRebalance() {
+            const btc = parseFloat(document.getElementById('reb-btc').value);
+            const eth = parseFloat(document.getElementById('reb-eth').value);
+            const sol = parseFloat(document.getElementById('reb-sol').value);
+            const total = btc + eth + sol;
+
+            const btcTarget = parseFloat(document.getElementById('reb-btc-target').value) / 100;
+            const ethTarget = parseFloat(document.getElementById('reb-eth-target').value) / 100;
+            const solTarget = parseFloat(document.getElementById('reb-sol-target').value) / 100;
+
+            const btcDiff = total * btcTarget - btc;
+            const ethDiff = total * ethTarget - eth;
+            const solDiff = total * solTarget - sol;
+
+            const formatAction = (diff) => {
+                if (Math.abs(diff) < 1) return 'Hold';
+                return diff > 0 ? 'Buy +$' + diff.toFixed(0) : 'Sell -$' + Math.abs(diff).toFixed(0);
+            };
+
+            const btcEl = document.getElementById('reb-btc-action');
+            const ethEl = document.getElementById('reb-eth-action');
+            const solEl = document.getElementById('reb-sol-action');
+
+            btcEl.textContent = formatAction(btcDiff);
+            btcEl.className = 'result-value ' + (btcDiff > 1 ? 'green' : btcDiff < -1 ? 'red' : '');
+
+            ethEl.textContent = formatAction(ethDiff);
+            ethEl.className = 'result-value ' + (ethDiff > 1 ? 'green' : ethDiff < -1 ? 'red' : '');
+
+            solEl.textContent = formatAction(solDiff);
+            solEl.className = 'result-value ' + (solDiff > 1 ? 'green' : solDiff < -1 ? 'red' : '');
+
+            document.getElementById('reb-result').style.display = 'block';
         }
 
         // Initialize
