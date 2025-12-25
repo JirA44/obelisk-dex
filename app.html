@@ -1,4 +1,4 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
@@ -12,7 +12,7 @@
     <!-- Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;family=JetBrains+Mono:wght@400;500&amp;display=swap" rel="stylesheet">
 
     <link rel="stylesheet" href="css/main.css">
     <link rel="stylesheet" href="css/banking.css">
@@ -171,7 +171,7 @@
     <!-- App Container -->
     <div id="app">
         <!-- Header -->
-        <header class="header" role="banner">
+        <header class="header">
             <h1 class="sr-only">Obelisk DEX - Trading Platform</h1>
             <div class="header-left">
                 <div class="logo">
@@ -191,19 +191,19 @@
                     <span class="logo-badge">Post-Quantum DEX</span>
                 </div>
                 <nav class="nav-tabs">
-                    <button class="nav-tab active" data-tab="trade">Trade</button>
-                    <button class="nav-tab" data-tab="swap">Swap</button>
-                    <button class="nav-tab" data-tab="banking">Banking</button>
-                    <button class="nav-tab" data-tab="bonds">Bonds</button>
-                    <button class="nav-tab" data-tab="tools">Tools</button>
-                    <button class="nav-tab" data-tab="wallet">Wallet</button>
-                    <button class="nav-tab" data-tab="portfolio">Portfolio</button>
+                    <button type="button" class="nav-tab active" data-tab="trade">Trade</button>
+                    <button type="button" class="nav-tab" data-tab="swap">Swap</button>
+                    <button type="button" class="nav-tab" data-tab="banking">Banking</button>
+                    <button type="button" class="nav-tab" data-tab="bonds">Bonds</button>
+                    <button type="button" class="nav-tab" data-tab="tools">Tools</button>
+                    <button type="button" class="nav-tab" data-tab="wallet">Wallet</button>
+                    <button type="button" class="nav-tab" data-tab="portfolio">Portfolio</button>
                 </nav>
             </div>
             <div class="header-right">
-                <button class="btn-settings-nav" id="btn-settings-nav" data-tab="settings" title="Settings">⚙️</button>
+                <button type="button" class="btn-settings-nav" id="btn-settings-nav" data-tab="settings" title="Settings">⚙️</button>
                 <div class="lang-selector" id="lang-selector">
-                    <button class="btn-lang" id="btn-lang" title="Changer de langue" aria-expanded="false">
+                    <button type="button" class="btn-lang" id="btn-lang" title="Changer de langue" aria-expanded="false">
                         <span id="lang-flag">🇬🇧</span>
                         <span id="lang-code">EN</span>
                     </button>
@@ -221,18 +221,18 @@
                 <!-- Auth buttons -->
                 <div class="auth-buttons">
                     <div class="auth-logged-out">
-                        <button class="btn-login" id="btn-login" data-i18n="login">Login</button>
+                        <button type="button" class="btn-login" id="btn-login" data-i18n="login">Login</button>
                     </div>
                     <div class="auth-logged-in" style="display:none;">
                         <span class="user-info">
                             <span id="user-display-name">User</span>
                         </span>
-                        <button class="btn-logout" id="btn-logout" title="Logout">
+                        <button type="button" class="btn-logout" id="btn-logout" title="Logout">
                             <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg>
                         </button>
                     </div>
                 </div>
-                <button class="btn-connect" id="btn-connect-wallet">
+                <button type="button" class="btn-connect" id="btn-connect-wallet">
                     <svg class="btn-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
                     <span data-i18n="connect_wallet">Connect Wallet</span>
                 </button>
@@ -240,7 +240,7 @@
         </header>
 
         <!-- Main Content -->
-        <main class="main-content" id="main-content" role="main">
+        <main class="main-content" id="main-content">
             <!-- Trade Tab (Hyperliquid) -->
             <section class="tab-content active" id="tab-trade">
                 <div class="trade-layout">
@@ -290,7 +290,7 @@
                                     <li><strong>Graphique :</strong> Analysez les prix avec les chandeliers et indicateurs techniques</li>
                                     <li><strong>Order Book :</strong> Visualisez l'offre et la demande en temps réel</li>
                                     <li><strong>Panneau d'ordre :</strong> Passez vos ordres Market, Limit ou Stop</li>
-                                    <li><strong>Positions :</strong> Gérez vos positions ouvertes et leur P&L</li>
+                                    <li><strong>Positions :</strong> Gérez vos positions ouvertes et leur P&amp;L</li>
                                 </ul>
                             </div>
                             <div class="guide-warning">
@@ -319,10 +319,10 @@
                                 <span class="pair-change positive" id="price-change">+2.34%</span>
                             </div>
                             <div class="chart-controls">
-                                <button class="chart-tf active">1H</button>
-                                <button class="chart-tf">4H</button>
-                                <button class="chart-tf">1D</button>
-                                <button class="chart-tf">1W</button>
+                                <button type="button" class="chart-tf active">1H</button>
+                                <button type="button" class="chart-tf">4H</button>
+                                <button type="button" class="chart-tf">1D</button>
+                                <button type="button" class="chart-tf">1W</button>
                             </div>
                         </div>
                         <div class="chart-area" id="trading-chart" style="min-height: 400px; height: 400px;">
@@ -349,9 +349,9 @@
                         <div class="orderbook-header">
                             <span data-i18n="order_book">Order Book</span>
                             <div class="orderbook-toggle">
-                                <button class="ob-btn active">Both</button>
-                                <button class="ob-btn">Bids</button>
-                                <button class="ob-btn">Asks</button>
+                                <button type="button" class="ob-btn active">Both</button>
+                                <button type="button" class="ob-btn">Bids</button>
+                                <button type="button" class="ob-btn">Asks</button>
                             </div>
                         </div>
                         <div class="orderbook-labels">
@@ -384,41 +384,41 @@
                         <div class="panel-content">
                     <div class="order-container">
                         <div class="order-tabs">
-                            <button class="order-tab active" data-side="long" data-i18n="long">Long</button>
-                            <button class="order-tab" data-side="short" data-i18n="short">Short</button>
+                            <button type="button" class="order-tab active" data-side="long" data-i18n="long">Long</button>
+                            <button type="button" class="order-tab" data-side="short" data-i18n="short">Short</button>
                         </div>
                         <div class="order-type-selector">
-                            <button class="type-btn active" data-i18n="market">Market</button>
-                            <button class="type-btn" data-i18n="limit">Limit</button>
-                            <button class="type-btn">Stop</button>
+                            <button type="button" class="type-btn active" data-i18n="market">Market</button>
+                            <button type="button" class="type-btn" data-i18n="limit">Limit</button>
+                            <button type="button" class="type-btn">Stop</button>
                         </div>
                         <div class="order-form">
                             <div class="form-group">
                                 <label for="order-size" data-i18n="amount">Size (USD)</label>
                                 <div class="input-group">
-                                    <input type="number" id="order-size" placeholder="0.00" aria-describedby="order-size-suffix" />
+                                    <input type="number" id="order-size" placeholder="0.00" aria-describedby="order-size-suffix" >
                                     <span class="input-suffix">USD</span>
                                 </div>
                             </div>
                             <div class="form-group" id="limit-price-group" style="display:none;">
                                 <label for="limit-price" data-i18n="limit_price">Limit Price</label>
                                 <div class="input-group">
-                                    <input type="number" id="limit-price" placeholder="0.00" aria-label="Limit price in USD" />
+                                    <input type="number" id="limit-price" placeholder="0.00" aria-label="Limit price in USD" >
                                     <span class="input-suffix">USD</span>
                                 </div>
                             </div>
                             <div class="form-group">
                                 <label for="leverage-slider" data-i18n="leverage">Leverage</label>
                                 <div class="leverage-slider">
-                                    <input type="range" id="leverage-slider" min="1" max="50" value="10" aria-valuetext="10x leverage" />
+                                    <input type="range" id="leverage-slider" min="1" max="50" value="10" aria-valuetext="10x leverage" >
                                     <span class="leverage-value" id="leverage-value">10x</span>
                                 </div>
                                 <div class="leverage-presets">
-                                    <button class="lev-btn">1x</button>
-                                    <button class="lev-btn">5x</button>
-                                    <button class="lev-btn active">10x</button>
-                                    <button class="lev-btn">25x</button>
-                                    <button class="lev-btn">50x</button>
+                                    <button type="button" class="lev-btn">1x</button>
+                                    <button type="button" class="lev-btn">5x</button>
+                                    <button type="button" class="lev-btn active">10x</button>
+                                    <button type="button" class="lev-btn">25x</button>
+                                    <button type="button" class="lev-btn">50x</button>
                                 </div>
                             </div>
                             <div class="order-summary">
@@ -435,7 +435,7 @@
                                     <span id="order-fee">~$0.50</span>
                                 </div>
                             </div>
-                            <button class="btn-order btn-long" id="btn-place-order" disabled data-i18n="connect_to_trade">
+                            <button type="button" class="btn-order btn-long" id="btn-place-order" disabled data-i18n="connect_to_trade">
                                 Connect Wallet to Trade
                             </button>
                         </div>
@@ -449,16 +449,16 @@
                     <div class="panel-header">
                         <div class="panel-title">
                             <span class="panel-title-icon">💼</span>
-                            <span data-i18n="positions">Positions & Orders</span>
+                            <span data-i18n="positions">Positions &amp; Orders</span>
                         </div>
                         <div class="panel-toggle"><span class="chevron">▼</span></div>
                     </div>
                     <div class="panel-content">
                 <div class="positions-section">
                     <div class="positions-header">
-                        <button class="pos-tab active">Positions (0)</button>
-                        <button class="pos-tab">Orders (0)</button>
-                        <button class="pos-tab">History</button>
+                        <button type="button" class="pos-tab active">Positions (0)</button>
+                        <button type="button" class="pos-tab">Orders (0)</button>
+                        <button type="button" class="pos-tab">History</button>
                     </div>
                     <div class="positions-table">
                         <div class="positions-empty">
@@ -473,7 +473,7 @@
             <!-- Swap Tab (Uniswap) -->
             <section class="tab-content" id="tab-swap">
                 <div class="swap-container">
-                    
+
                     <!-- Product Guide -->
                     <div class="product-guide" id="swap-guide">
                         <div class="product-guide-header" onclick="this.parentElement.classList.toggle('expanded')">
@@ -527,7 +527,7 @@
                     <div class="swap-card">
                         <div class="swap-header">
                             <h2>Swap</h2>
-                            <button class="btn-settings" id="swap-settings">⚙️</button>
+                            <button type="button" class="btn-settings" id="swap-settings">⚙️</button>
                         </div>
                         <div class="swap-form">
                             <div class="swap-input">
@@ -536,15 +536,15 @@
                                     <span class="balance">Balance: <span id="from-balance">0.00</span></span>
                                 </div>
                                 <div class="swap-input-row">
-                                    <input type="number" id="swap-from-amount" placeholder="0" aria-label="Amount to pay" />
-                                    <button class="token-selector" id="from-token">
+                                    <input type="number" id="swap-from-amount" placeholder="0" aria-label="Amount to pay" >
+                                    <button type="button" class="token-selector" id="from-token">
                                         <img src="assets/eth.svg" alt="ETH" class="token-icon" onerror="this.style.display='none'">
                                         <span>ETH</span>
                                         <span class="dropdown-arrow">▼</span>
                                     </button>
                                 </div>
                             </div>
-                            <button class="swap-switch" id="btn-swap-switch" aria-label="Switch tokens" title="Switch tokens">
+                            <button type="button" class="swap-switch" id="btn-swap-switch" aria-label="Switch tokens" title="Switch tokens">
                                 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
                                     <path d="M7 16V4m0 0L3 8m4-4l4 4M17 8v12m0 0l4-4m-4 4l-4-4"/>
                                 </svg>
@@ -555,8 +555,8 @@
                                     <span class="balance">Balance: <span id="to-balance">0.00</span></span>
                                 </div>
                                 <div class="swap-input-row">
-                                    <input type="number" id="swap-to-amount" placeholder="0" readonly aria-label="Amount to receive" />
-                                    <button class="token-selector" id="to-token">
+                                    <input type="number" id="swap-to-amount" placeholder="0" readonly aria-label="Amount to receive" >
+                                    <button type="button" class="token-selector" id="to-token">
                                         <img src="assets/usdc.svg" alt="USDC" class="token-icon" onerror="this.style.display='none'">
                                         <span>USDC</span>
                                         <span class="dropdown-arrow">▼</span>
@@ -577,7 +577,7 @@
                                     <span id="network-fee">~$2.50</span>
                                 </div>
                             </div>
-                            <button class="btn-swap" id="btn-swap" disabled>
+                            <button type="button" class="btn-swap" id="btn-swap" disabled>
                                 Connect Wallet to Swap
                             </button>
                         </div>
@@ -589,17 +589,17 @@
             <section class="tab-content" id="tab-banking">
                 <div class="banking-container">
                     <div class="banking-header">
-                        <h2 data-i18n="banking">Deposit & Withdraw</h2>
+                        <h2 data-i18n="banking">Deposit &amp; Withdraw</h2>
                         <p class="banking-subtitle" data-i18n="deposit_desc">Transfer funds to trade on Hyperliquid</p>
                     </div>
 
-                    
+
                     <!-- Product Guide -->
                     <div class="product-guide" id="banking-guide">
                         <div class="product-guide-header" onclick="this.parentElement.classList.toggle('expanded')">
                             <div class="product-guide-title">
                                 <span class="icon">📚</span>
-                                <span>Guide Dépôt & Retrait</span>
+                                <span>Guide Dépôt &amp; Retrait</span>
                             </div>
                             <span class="product-guide-toggle">▼</span>
                         </div>
@@ -686,8 +686,8 @@
                             <div class="form-group">
                                 <label for="deposit-amount">Amount to Deposit</label>
                                 <div class="input-group">
-                                    <input type="number" id="deposit-amount" placeholder="0.00" min="10" step="0.01" aria-describedby="deposit-hint"/>
-                                    <button class="btn-max" onclick="DepositUI.setMaxDeposit()">MAX</button>
+                                    <input type="number" id="deposit-amount" placeholder="0.00" min="10" step="0.01" aria-describedby="deposit-hint">
+                                    <button type="button" class="btn-max" onclick="DepositUI.setMaxDeposit()">MAX</button>
                                     <span class="input-suffix">USDC</span>
                                 </div>
                                 <span class="input-hint">Minimum: $10 USDC</span>
@@ -704,7 +704,7 @@
                                 </div>
                             </div>
 
-                            <button class="btn-primary btn-deposit" id="btn-deposit" disabled>
+                            <button type="button" class="btn-primary btn-deposit" id="btn-deposit" disabled>
                                 Connect Wallet to Deposit
                             </button>
                         </div>
@@ -728,8 +728,8 @@
                             <div class="form-group">
                                 <label for="withdraw-amount">Amount to Withdraw</label>
                                 <div class="input-group">
-                                    <input type="number" id="withdraw-amount" placeholder="0.00" min="2" step="0.01" aria-describedby="withdraw-hint"/>
-                                    <button class="btn-max" onclick="DepositUI.setMaxWithdraw()">MAX</button>
+                                    <input type="number" id="withdraw-amount" placeholder="0.00" min="2" step="0.01" aria-describedby="withdraw-hint">
+                                    <button type="button" class="btn-max" onclick="DepositUI.setMaxWithdraw()">MAX</button>
                                     <span class="input-suffix">USDC</span>
                                 </div>
                                 <span class="input-hint">Minimum: $2 USDC</span>
@@ -746,7 +746,7 @@
                                 </div>
                             </div>
 
-                            <button class="btn-secondary btn-withdraw" id="btn-withdraw" disabled>
+                            <button type="button" class="btn-secondary btn-withdraw" id="btn-withdraw" disabled>
                                 Connect Wallet to Withdraw
                             </button>
                         </div>
@@ -767,8 +767,8 @@
                 <div class="bonds-container">
                     <div class="bonds-header">
                         <div class="header-content">
-                            <h2 data-i18n="bonds_title">Tokenized Bonds & Fixed Income</h2>
-                            <p class="bonds-subtitle" data-i18n="bonds_desc">Earn stable yields from US Treasuries, Corporate Bonds & DeFi</p>
+                            <h2 data-i18n="bonds_title">Tokenized Bonds &amp; Fixed Income</h2>
+                            <p class="bonds-subtitle" data-i18n="bonds_desc">Earn stable yields from US Treasuries, Corporate Bonds &amp; DeFi</p>
                         </div>
                         <div class="investor-toggle">
                             <button class="toggle-btn active" data-type="retail">Retail</button>
@@ -776,7 +776,7 @@
                         </div>
                     </div>
 
-                    
+
                     <!-- Product Guide -->
                     <div class="product-guide" id="bonds-guide">
                         <div class="product-guide-header" onclick="this.parentElement.classList.toggle('expanded')">
@@ -852,11 +852,11 @@
 
                     <!-- Product Categories -->
                     <div class="bond-categories">
-                        <button class="cat-btn active" data-category="all">All Products</button>
-                        <button class="cat-btn" data-category="treasury">US Treasury</button>
-                        <button class="cat-btn" data-category="corporate">Corporate</button>
-                        <button class="cat-btn" data-category="defi">DeFi Yield</button>
-                        <button class="cat-btn" data-category="credit">Credit</button>
+                        <button type="button" class="cat-btn active" data-category="all">All Products</button>
+                        <button type="button" class="cat-btn" data-category="treasury">US Treasury</button>
+                        <button type="button" class="cat-btn" data-category="corporate">Corporate</button>
+                        <button type="button" class="cat-btn" data-category="defi">DeFi Yield</button>
+                        <button type="button" class="cat-btn" data-category="credit">Credit</button>
                     </div>
 
                     <!-- Bond Products Grid -->
@@ -888,7 +888,7 @@
                                     <span class="value">Daily</span>
                                 </div>
                             </div>
-                            <button class="btn-invest" data-product="USDY">Invest</button>
+                            <button type="button" class="btn-invest" data-product="USDY">Invest</button>
                         </div>
 
                         <!-- OUSG - Institutional -->
@@ -919,7 +919,7 @@
                                     <span class="value">3-6 months</span>
                                 </div>
                             </div>
-                            <button class="btn-invest" data-product="OUSG">Invest</button>
+                            <button type="button" class="btn-invest" data-product="OUSG">Invest</button>
                         </div>
 
                         <!-- BlackRock BUIDL -->
@@ -951,7 +951,7 @@
                                     <span class="value">Daily</span>
                                 </div>
                             </div>
-                            <button class="btn-invest" data-product="BUIDL">Request Access</button>
+                            <button type="button" class="btn-invest" data-product="BUIDL">Request Access</button>
                         </div>
 
                         <!-- Corporate Bond -->
@@ -981,7 +981,7 @@
                                     <span class="value">90 days</span>
                                 </div>
                             </div>
-                            <button class="btn-invest" data-product="CORP_AAA">Invest</button>
+                            <button type="button" class="btn-invest" data-product="CORP_AAA">Invest</button>
                         </div>
 
                         <!-- sDAI -->
@@ -1011,7 +1011,7 @@
                                     <span class="value">Instant</span>
                                 </div>
                             </div>
-                            <button class="btn-invest" data-product="SDAI">Invest</button>
+                            <button type="button" class="btn-invest" data-product="SDAI">Invest</button>
                         </div>
 
                         <!-- High Yield Credit -->
@@ -1042,7 +1042,7 @@
                                     <span class="value">30-180 days</span>
                                 </div>
                             </div>
-                            <button class="btn-invest" data-product="CREDIT">Invest</button>
+                            <button type="button" class="btn-invest" data-product="CREDIT">Invest</button>
                         </div>
                     </div>
 
@@ -1061,7 +1061,7 @@
                                 </ul>
                             </div>
 
-                            <button class="btn-primary" id="btn-request-institutional">
+                            <button type="button" class="btn-primary" id="btn-request-institutional">
                                 Request Institutional Access
                             </button>
                         </div>
@@ -1161,8 +1161,8 @@
                         <form id="intent-form" class="intent-form">
                             <label for="intent-input" class="sr-only">Enter trading intent</label>
                             <input type="text" id="intent-input" class="intent-input" data-i18n="intent_placeholder"
-                                   placeholder='Example: Buy $100 BTC if price drops 5%'
-                                   aria-label="Enter trading intent in natural language" />
+                                   placeholder="Example: Buy $100 BTC if price drops 5%'
+                                   aria-label="Enter trading intent in natural language" >
                             <button type="submit" class="btn-primary intent-submit">Create Intent</button>
                         </form>
 
@@ -1193,10 +1193,10 @@
                         </div>
 
                         <div class="scanner-controls">
-                            <button id="start-scanner" class="btn-primary scanner-btn" data-i18n="start_scanner">
+                            <button type="button" id="start-scanner" class="btn-primary scanner-btn" data-i18n="start_scanner">
                                 Start Scanner
                             </button>
-                            <button id="stop-scanner" class="btn-secondary scanner-btn" data-i18n="stop_scanner" disabled>
+                            <button type="button" id="stop-scanner" class="btn-secondary scanner-btn" data-i18n="stop_scanner" disabled>
                                 Stop Scanner
                             </button>
                         </div>
@@ -1224,7 +1224,7 @@
                             <p data-i18n="ai_advisor_desc">Get personalized trading advice based on your portfolio and market conditions.</p>
                         </div>
                         <div class="advisor-header">
-                            <button id="analyze-portfolio" class="btn-primary" data-i18n="analyze_portfolio">
+                            <button type="button" id="analyze-portfolio" class="btn-primary" data-i18n="analyze_portfolio">
                                 Analyze Portfolio
                             </button>
                         </div>
@@ -1262,12 +1262,12 @@
                             </div>
                             <div class="form-group">
                                 <label for="guardian-threshold">Recovery Threshold</label>
-                                <input type="number" id="guardian-threshold" min="2" max="7" value="2" aria-describedby="threshold-help"/>
+                                <input type="number" id="guardian-threshold" min="2" max="7" value="2" aria-describedby="threshold-help">
                                 <span class="form-help" id="threshold-help">Number of guardians required to approve recovery</span>
                             </div>
                             <div class="form-group">
                                 <label for="recovery-password">Wallet Password</label>
-                                <input type="password" id="recovery-password" placeholder="Your wallet password" />
+                                <input type="password" id="recovery-password" placeholder="Your wallet password" >
                             </div>
                             <button type="submit" class="btn-primary">Setup Guardians</button>
                         </form>
@@ -1362,15 +1362,15 @@
                             </div>
                         </div>
                         <div class="wallet-actions">
-                            <button class="btn-primary btn-create" id="btn-create-wallet">
+                            <button type="button" class="btn-primary btn-create" id="btn-create-wallet">
                                 <span class="btn-icon">✨</span>
                                 Create New Wallet
                             </button>
-                            <button class="btn-secondary btn-import" id="btn-import-wallet">
+                            <button type="button" class="btn-secondary btn-import" id="btn-import-wallet">
                                 <span class="btn-icon">ðŸ“¥</span>
                                 Import Existing Wallet
                             </button>
-                            <button class="btn-secondary btn-connect-external" id="btn-connect-external">
+                            <button type="button" class="btn-secondary btn-connect-external" id="btn-connect-external">
                                 <span class="btn-icon">ðŸ”—</span>
                                 Connect External Wallet
                             </button>
@@ -1392,7 +1392,7 @@
                                     <span class="address-label">Address</span>
                                     <div class="address-row">
                                         <span class="address" id="wallet-address">0x1234...5678</span>
-                                        <button class="btn-copy" id="btn-copy-address">ðŸ“‹</button>
+                                        <button type="button" class="btn-copy" id="btn-copy-address">ðŸ“‹</button>
                                     </div>
                                 </div>
                                 <div class="wallet-security-status">
@@ -1413,7 +1413,7 @@
                                 <span class="welcome-title" data-i18n="welcome_title">Welcome to Obelisk DEX!</span>
                                 <span class="welcome-text" data-i18n="welcome_text">Start by depositing 1 USDC to trade and invest securely.</span>
                             </div>
-                            <button class="btn-deposit-now" id="btn-deposit-welcome" data-i18n="deposit">Deposit</button>
+                            <button type="button" class="btn-deposit-now" id="btn-deposit-welcome" data-i18n="deposit">Deposit</button>
                         </div>
 
                         <div class="collapsible-panel" data-panel-id="panel-assets">
@@ -1428,7 +1428,7 @@
                         <div class="wallet-assets">
                             <div class="assets-header">
                                 <h3>Assets</h3>
-                                <button class="btn-refresh" id="btn-refresh-balances" title="Refresh">↻</button>
+                                <button type="button" class="btn-refresh" id="btn-refresh-balances" title="Refresh">↻</button>
                             </div>
                             <div class="assets-list" id="assets-list">
                                 <div class="asset-item">
@@ -1450,19 +1450,19 @@
                         </div>
 
                         <div class="wallet-actions-connected">
-                            <button class="btn-action" id="btn-send">
+                            <button type="button" class="btn-action" id="btn-send">
                                 <span>â†‘</span> Send
                             </button>
-                            <button class="btn-action" id="btn-send-private">
+                            <button type="button" class="btn-action" id="btn-send-private">
                                 <span>ðŸ‘»</span> Private Send
                             </button>
-                            <button class="btn-action" id="btn-receive">
+                            <button type="button" class="btn-action" id="btn-receive">
                                 <span>â†“</span> Receive
                             </button>
-                            <button class="btn-action" id="btn-stealth">
+                            <button type="button" class="btn-action" id="btn-stealth">
                                 <span>🎭</span> Stealth Address
                             </button>
-                            <button class="btn-action" id="btn-backup">
+                            <button type="button" class="btn-action" id="btn-backup">
                                 <span>ðŸ’¾</span> Backup
                             </button>
                         </div>
@@ -1484,7 +1484,7 @@
                                     <h4>Stealth Addresses</h4>
                                     <p>Generate one-time addresses for each payment. Impossible to link.</p>
                                     <span class="meta-address" id="meta-address">Not available</span>
-                                    <button class="btn-copy-meta" id="btn-copy-meta">Copy Meta-Address</button>
+                                    <button type="button" class="btn-copy-meta" id="btn-copy-meta">Copy Meta-Address</button>
                                 </div>
                                 <div class="privacy-card">
                                     <div class="privacy-icon">ðŸ”€</div>
@@ -1494,7 +1494,7 @@
                                         <span>Pool Balance: $2.4M</span>
                                         <span>Anonymity Set: 1,247</span>
                                     </div>
-                                    <button class="btn-mix" id="btn-deposit-pool">Deposit to Pool</button>
+                                    <button type="button" class="btn-mix" id="btn-deposit-pool">Deposit to Pool</button>
                                 </div>
                                 <div class="privacy-card">
                                     <div class="privacy-icon">ðŸ”</div>
@@ -1533,7 +1533,7 @@
                         <div class="guide-section">
                             <h4>📊 Sections du Portfolio</h4>
                             <ul>
-                                <li><strong>Overview :</strong> Valeur totale, P&L global, et répartition des actifs</li>
+                                <li><strong>Overview :</strong> Valeur totale, P&amp;L global, et répartition des actifs</li>
                                 <li><strong>Assets :</strong> Liste détaillée de tous vos tokens et leur valeur actuelle</li>
                                 <li><strong>Positions :</strong> Vos positions de trading ouvertes et leur performance</li>
                                 <li><strong>History :</strong> Historique complet de vos transactions et trades</li>
@@ -1545,7 +1545,7 @@
                             <div class="guide-steps">
                                 <div class="guide-step">
                                     <span class="step-number">1</span>
-                                    <p><strong>P&L Total :</strong> Profit ou perte cumulé depuis le début</p>
+                                    <p><strong>P&amp;L Total :</strong> Profit ou perte cumulé depuis le début</p>
                                 </div>
                                 <div class="guide-step">
                                     <span class="step-number">2</span>
@@ -1671,11 +1671,11 @@
                         <div class="matrix-options" id="matrix-options" style="display: none;">
                             <h4>Matrix Colors</h4>
                             <div class="color-options">
-                                <button class="color-btn active" data-color="green" style="background: #00ff41;">Green</button>
-                                <button class="color-btn" data-color="cyan" style="background: #00ffff;">Cyan</button>
-                                <button class="color-btn" data-color="purple" style="background: #bf00ff;">Purple</button>
-                                <button class="color-btn" data-color="rainbow" style="background: linear-gradient(90deg, #ff0000, #ff7f00, #ffff00, #00ff00, #0000ff, #8b00ff);">Rainbow</button>
-                                <button class="color-btn" data-color="gold" style="background: #ffd700;">Gold</button>
+                                <button type="button" class="color-btn active" data-color="green" style="background: #00ff41;">Green</button>
+                                <button type="button" class="color-btn" data-color="cyan" style="background: #00ffff;">Cyan</button>
+                                <button type="button" class="color-btn" data-color="purple" style="background: #bf00ff;">Purple</button>
+                                <button type="button" class="color-btn" data-color="rainbow" style="background: linear-gradient(90deg, #ff0000, #ff7f00, #ffff00, #00ff00, #0000ff, #8b00ff);">Rainbow</button>
+                                <button type="button" class="color-btn" data-color="gold" style="background: #ffd700;">Gold</button>
                             </div>
                         </div>
 
@@ -1683,9 +1683,9 @@
                         <div class="halo-options" id="halo-options" style="display: none;">
                             <h4>Forerunner Style</h4>
                             <div class="color-options">
-                                <button class="color-btn active" data-color="blue" style="background: #00a8ff;">Classic Blue</button>
-                                <button class="color-btn" data-color="gold" style="background: #ffa500;">Ancient Gold</button>
-                                <button class="color-btn" data-color="green" style="background: #39ff14;">Halo Green</button>
+                                <button type="button" class="color-btn active" data-color="blue" style="background: #00a8ff;">Classic Blue</button>
+                                <button type="button" class="color-btn" data-color="gold" style="background: #ffa500;">Ancient Gold</button>
+                                <button type="button" class="color-btn" data-color="green" style="background: #39ff14;">Halo Green</button>
                             </div>
                         </div>
                     </div>
@@ -1722,14 +1722,14 @@
                             <div class="custom-bg-upload">
                                 <label for="bg-upload" class="upload-label">
                                     <span>📤 Upload Custom Image</span>
-                                    <input type="file" id="bg-upload" accept="image/*" hidden />
+                                    <input type="file" id="bg-upload" accept="image/*" hidden >
                                 </label>
-                                <button class="btn-clear-bg" id="btn-clear-bg">Clear Image</button>
+                                <button type="button" class="btn-clear-bg" id="btn-clear-bg">Clear Image</button>
                             </div>
 
                             <div class="bg-opacity-control">
                                 <label for="bg-opacity">Background Opacity</label>
-                                <input type="range" id="bg-opacity" min="0" max="100" value="30" />
+                                <input type="range" id="bg-opacity" min="0" max="100" value="30" >
                                 <span id="bg-opacity-value">30%</span>
                             </div>
                         </div>
@@ -1740,7 +1740,7 @@
                         <h3>⚡ Animation Speed</h3>
                         <div class="speed-control">
                             <label for="anim-speed">Speed</label>
-                            <input type="range" id="anim-speed" min="0.25" max="2" step="0.25" value="1" />
+                            <input type="range" id="anim-speed" min="0.25" max="2" step="0.25" value="1" >
                             <span id="anim-speed-value">1x</span>
                         </div>
                     </div>
@@ -1758,10 +1758,10 @@
 
                     <!-- Save Button -->
                     <div class="settings-actions">
-                        <button class="btn-primary btn-save-settings" id="btn-save-settings">
+                        <button type="button" class="btn-primary btn-save-settings" id="btn-save-settings">
                             💾 Save Settings
                         </button>
-                        <button class="btn-secondary btn-reset-settings" id="btn-reset-settings">
+                        <button type="button" class="btn-secondary btn-reset-settings" id="btn-reset-settings">
                             🔄 Reset to Default
                         </button>
                     </div>
@@ -1792,7 +1792,7 @@
         <div class="modal-content">
             <div class="modal-header">
                 <h3>Create Post-Quantum Wallet</h3>
-                <button class="modal-close">&times;</button>
+                <button type="button" class="modal-close">&amp;times;</button>
             </div>
             <div class="modal-body">
                 <div class="step-indicator">
@@ -1804,17 +1804,17 @@
                     <p>Create a strong password to encrypt your wallet locally.</p>
                     <div class="form-group">
                         <label for="create-password">Password</label>
-                        <input type="password" id="create-password" placeholder="Enter strong password" autocomplete="new-password" />
+                        <input type="password" id="create-password" placeholder="Enter strong password" autocomplete="new-password" >
                     </div>
                     <div class="form-group">
                         <label for="confirm-password">Confirm Password</label>
-                        <input type="password" id="confirm-password" placeholder="Confirm password" autocomplete="new-password" />
+                        <input type="password" id="confirm-password" placeholder="Confirm password" autocomplete="new-password" >
                     </div>
                     <div class="password-strength">
                         <div class="strength-bar"></div>
                         <span class="strength-text">Password strength: --</span>
                     </div>
-                    <button class="btn-primary btn-next">Continue</button>
+                    <button type="button" class="btn-primary btn-next">Continue</button>
                 </div>
             </div>
         </div>
@@ -1862,7 +1862,7 @@
     <div class="auth-modal" id="login-modal">
         <div class="auth-modal-backdrop" onclick="Auth.hideAuthModals()" role="button" tabindex="-1" aria-label="Close modal"></div>
         <div class="auth-modal-content">
-            <button class="auth-modal-close" aria-label="Close">&times;</button>
+            <button type="button" class="auth-modal-close" aria-label="Close">&amp;times;</button>
             <div class="auth-header">
                 <h2 data-i18n="login">Login</h2>
                 <p data-i18n="login_subtitle">Welcome back to Obelisk DEX</p>
@@ -1871,17 +1871,17 @@
                 <div class="auth-error" id="login-error"></div>
                 <div class="form-group">
                     <label for="login-email" data-i18n="email_or_username">Email or Username</label>
-                    <input type="text" id="login-email" placeholder="hugo@example.com" required />
+                    <input type="text" id="login-email" placeholder="hugo@example.com" required >
                 </div>
                 <div class="form-group">
                     <label for="login-password" data-i18n="password">Password</label>
-                    <input type="password" id="login-password" placeholder="********" required />
+                    <input type="password" id="login-password" placeholder="********" required >
                 </div>
                 <button type="submit" class="btn-primary" data-i18n="login">Login</button>
             </form>
             <div class="auth-footer">
                 <span data-i18n="no_account">Don't have an account?</span>
-                <button class="btn-link" data-auth-switch="signup" data-i18n="signup">Sign Up</button>
+                <button type="button" class="btn-link" data-auth-switch="signup" data-i18n="signup">Sign Up</button>
             </div>
         </div>
     </div>
@@ -1890,7 +1890,7 @@
     <div class="auth-modal" id="signup-modal">
         <div class="auth-modal-backdrop" onclick="Auth.hideAuthModals()" role="button" tabindex="-1" aria-label="Close modal"></div>
         <div class="auth-modal-content">
-            <button class="auth-modal-close" aria-label="Close">&times;</button>
+            <button type="button" class="auth-modal-close" aria-label="Close">&amp;times;</button>
             <div class="auth-header">
                 <h2 data-i18n="signup">Sign Up</h2>
                 <p data-i18n="signup_subtitle">Create your Obelisk account</p>
@@ -1899,25 +1899,25 @@
                 <div class="auth-error" id="signup-error"></div>
                 <div class="form-group">
                     <label for="signup-username" data-i18n="username">Username</label>
-                    <input type="text" id="signup-username" placeholder="satoshi" required />
+                    <input type="text" id="signup-username" placeholder="satoshi" required >
                 </div>
                 <div class="form-group">
                     <label for="signup-email" data-i18n="email">Email</label>
-                    <input type="email" id="signup-email" placeholder="hugo@example.com" required />
+                    <input type="email" id="signup-email" placeholder="hugo@example.com" required >
                 </div>
                 <div class="form-group">
                     <label for="signup-password" data-i18n="password">Password</label>
-                    <input type="password" id="signup-password" placeholder="Min. 6 characters" required />
+                    <input type="password" id="signup-password" placeholder="Min. 6 characters" required >
                 </div>
                 <div class="form-group">
                     <label for="signup-confirm" data-i18n="confirm_password">Confirm Password</label>
-                    <input type="password" id="signup-confirm" placeholder="********" required />
+                    <input type="password" id="signup-confirm" placeholder="********" required >
                 </div>
                 <button type="submit" class="btn-primary" data-i18n="signup">Sign Up</button>
             </form>
             <div class="auth-footer">
                 <span data-i18n="have_account">Already have an account?</span>
-                <button class="btn-link" data-auth-switch="login" data-i18n="login">Login</button>
+                <button type="button" class="btn-link" data-auth-switch="login" data-i18n="login">Login</button>
             </div>
         </div>
     </div>
