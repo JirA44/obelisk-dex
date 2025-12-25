@@ -191,98 +191,265 @@ const BgAnimations = {
     },
 
     // ==================== HALO FORERUNNERS ANIMATION ====================
+    // Forerunner glyphs/symbols
+    forerunnerGlyphs: ['⬡', '◇', '△', '▽', '○', '◎', '⊡', '⊕', '⊗', '⋈', '⌬', '⎔'],
+
     initHalo() {
-        this.haloHexagons = [];
-        this.haloLines = [];
+        this.haloGrid = [];
+        this.haloEnergy = [];
+        this.haloGlyphs = [];
+        this.haloScanlines = [];
+        this.haloPulses = [];
 
-        const hexCount = Math.floor((this.canvas.width * this.canvas.height) / 50000);
+        const hexSize = 60;
+        const hexHeight = hexSize * Math.sqrt(3);
+        const cols = Math.ceil(this.canvas.width / (hexSize * 1.5)) + 2;
+        const rows = Math.ceil(this.canvas.height / hexHeight) + 2;
 
-        for (let i = 0; i < hexCount; i++) {
-            this.haloHexagons.push({
-                x: Math.random() * this.canvas.width,
-                y: Math.random() * this.canvas.height,
-                size: 20 + Math.random() * 40,
-                rotation: Math.random() * Math.PI * 2,
-                rotationSpeed: (Math.random() - 0.5) * 0.02,
-                alpha: 0.1 + Math.random() * 0.3,
-                pulseOffset: Math.random() * Math.PI * 2
+        // Create hexagonal grid
+        for (let row = 0; row < rows; row++) {
+            for (let col = 0; col < cols; col++) {
+                const x = col * hexSize * 1.5;
+                const y = row * hexHeight + (col % 2) * (hexHeight / 2);
+                this.haloGrid.push({
+                    x, y,
+                    size: hexSize,
+                    active: Math.random() > 0.7,
+                    pulseOffset: Math.random() * Math.PI * 2,
+                    glowIntensity: Math.random()
+                });
+            }
+        }
+
+        // Create energy lines that travel along grid
+        for (let i = 0; i < 15; i++) {
+            this.haloEnergy.push({
+                startX: Math.random() * this.canvas.width,
+                startY: Math.random() * this.canvas.height,
+                angle: Math.random() * Math.PI * 2,
+                length: 100 + Math.random() * 200,
+                speed: 2 + Math.random() * 3,
+                progress: Math.random(),
+                width: 1 + Math.random() * 2
             });
         }
 
-        // Create connecting lines
-        for (let i = 0; i < hexCount * 2; i++) {
-            const startHex = this.haloHexagons[Math.floor(Math.random() * hexCount)];
-            const endHex = this.haloHexagons[Math.floor(Math.random() * hexCount)];
-            if (startHex && endHex) {
-                this.haloLines.push({
-                    start: startHex,
-                    end: endHex,
-                    progress: 0,
-                    speed: 0.005 + Math.random() * 0.01,
-                    active: Math.random() > 0.5
-                });
-            }
+        // Create floating glyphs
+        for (let i = 0; i < 12; i++) {
+            this.haloGlyphs.push({
+                x: Math.random() * this.canvas.width,
+                y: Math.random() * this.canvas.height,
+                glyph: this.forerunnerGlyphs[Math.floor(Math.random() * this.forerunnerGlyphs.length)],
+                size: 20 + Math.random() * 40,
+                rotation: 0,
+                rotationSpeed: (Math.random() - 0.5) * 0.01,
+                alpha: 0,
+                targetAlpha: 0.3 + Math.random() * 0.4,
+                fadeSpeed: 0.005 + Math.random() * 0.01,
+                fadeIn: true
+            });
+        }
+
+        // Create scan lines
+        for (let i = 0; i < 3; i++) {
+            this.haloScanlines.push({
+                y: Math.random() * this.canvas.height,
+                speed: 0.5 + Math.random() * 1,
+                width: 2 + Math.random() * 4,
+                alpha: 0.3 + Math.random() * 0.3
+            });
+        }
+
+        // Create expanding pulses
+        for (let i = 0; i < 5; i++) {
+            this.haloPulses.push({
+                x: Math.random() * this.canvas.width,
+                y: Math.random() * this.canvas.height,
+                radius: 0,
+                maxRadius: 150 + Math.random() * 200,
+                speed: 1 + Math.random() * 2,
+                alpha: 0.5
+            });
         }
     },
 
     drawHalo(ctx, width, height) {
-        ctx.fillStyle = 'rgba(0, 10, 20, 0.1)';
+        // Dark fade with slight blue tint
+        ctx.fillStyle = 'rgba(0, 5, 15, 0.08)';
         ctx.fillRect(0, 0, width, height);
 
         const colorScheme = this.colors.halo[this.haloColor] || this.colors.halo.blue;
         const time = Date.now() / 1000;
 
-        // Draw connecting lines
-        ctx.strokeStyle = colorScheme.glow;
-        ctx.lineWidth = 1;
+        // Draw hexagonal grid (subtle background)
+        for (const hex of this.haloGrid) {
+            if (!hex.active) continue;
 
-        for (const line of this.haloLines) {
-            if (!line.active) continue;
+            const pulse = Math.sin(time * 1.5 + hex.pulseOffset) * 0.5 + 0.5;
+            const alpha = 0.03 + pulse * 0.05 * hex.glowIntensity;
 
-            line.progress += line.speed * this.speed;
-            if (line.progress > 1) {
-                line.progress = 0;
-                line.active = Math.random() > 0.3;
+            ctx.strokeStyle = colorScheme.primary;
+            ctx.lineWidth = 0.5;
+            ctx.globalAlpha = alpha;
+            this.drawHexagon(ctx, hex.x, hex.y, hex.size * 0.9);
+        }
+
+        // Draw expanding pulses
+        for (const pulse of this.haloPulses) {
+            pulse.radius += pulse.speed * this.speed;
+
+            if (pulse.radius > pulse.maxRadius) {
+                pulse.radius = 0;
+                pulse.x = Math.random() * width;
+                pulse.y = Math.random() * height;
+                pulse.maxRadius = 150 + Math.random() * 200;
             }
 
-            const startX = line.start.x;
-            const startY = line.start.y;
-            const endX = startX + (line.end.x - startX) * line.progress;
-            const endY = startY + (line.end.y - startY) * line.progress;
+            const alpha = (1 - pulse.radius / pulse.maxRadius) * 0.3;
+            ctx.strokeStyle = colorScheme.primary;
+            ctx.lineWidth = 2;
+            ctx.globalAlpha = alpha;
+            ctx.shadowBlur = 15;
+            ctx.shadowColor = colorScheme.primary;
 
+            // Draw expanding hexagon
             ctx.beginPath();
-            ctx.moveTo(startX, startY);
-            ctx.lineTo(endX, endY);
+            for (let i = 0; i < 6; i++) {
+                const angle = (Math.PI / 3) * i - Math.PI / 2;
+                const px = pulse.x + pulse.radius * Math.cos(angle);
+                const py = pulse.y + pulse.radius * Math.sin(angle);
+                if (i === 0) ctx.moveTo(px, py);
+                else ctx.lineTo(px, py);
+            }
+            ctx.closePath();
             ctx.stroke();
         }
 
-        // Draw hexagons
-        for (const hex of this.haloHexagons) {
-            hex.rotation += hex.rotationSpeed * this.speed;
-            const pulse = Math.sin(time * 2 + hex.pulseOffset) * 0.3 + 0.7;
+        // Draw scan lines
+        ctx.shadowBlur = 0;
+        for (const scan of this.haloScanlines) {
+            scan.y += scan.speed * this.speed;
+            if (scan.y > height) scan.y = -10;
+
+            const gradient = ctx.createLinearGradient(0, scan.y - 20, 0, scan.y + 20);
+            gradient.addColorStop(0, 'transparent');
+            gradient.addColorStop(0.5, colorScheme.primary.replace(')', `, ${scan.alpha})`).replace('rgb', 'rgba'));
+            gradient.addColorStop(1, 'transparent');
+
+            ctx.fillStyle = gradient;
+            ctx.globalAlpha = 1;
+            ctx.fillRect(0, scan.y - scan.width, width, scan.width * 2);
+        }
+
+        // Draw energy lines
+        for (const energy of this.haloEnergy) {
+            energy.progress += 0.01 * this.speed;
+            if (energy.progress > 1) {
+                energy.progress = 0;
+                energy.startX = Math.random() * width;
+                energy.startY = Math.random() * height;
+                energy.angle = Math.random() * Math.PI * 2;
+            }
+
+            const x1 = energy.startX;
+            const y1 = energy.startY;
+            const currentLength = energy.length * energy.progress;
+            const x2 = x1 + Math.cos(energy.angle) * currentLength;
+            const y2 = y1 + Math.sin(energy.angle) * currentLength;
+
+            // Create gradient along line
+            const gradient = ctx.createLinearGradient(x1, y1, x2, y2);
+            gradient.addColorStop(0, 'transparent');
+            gradient.addColorStop(0.3, colorScheme.primary);
+            gradient.addColorStop(0.7, colorScheme.primary);
+            gradient.addColorStop(1, 'transparent');
+
+            ctx.strokeStyle = gradient;
+            ctx.lineWidth = energy.width;
+            ctx.globalAlpha = 0.6;
+            ctx.shadowBlur = 10;
+            ctx.shadowColor = colorScheme.primary;
+
+            ctx.beginPath();
+            ctx.moveTo(x1, y1);
+            ctx.lineTo(x2, y2);
+            ctx.stroke();
+
+            // Draw energy node at tip
+            ctx.fillStyle = colorScheme.primary;
+            ctx.globalAlpha = 0.8;
+            ctx.beginPath();
+            ctx.arc(x2, y2, 3, 0, Math.PI * 2);
+            ctx.fill();
+        }
+
+        // Draw floating glyphs
+        ctx.shadowBlur = 20;
+        ctx.textAlign = 'center';
+        ctx.textBaseline = 'middle';
+
+        for (const glyph of this.haloGlyphs) {
+            // Fade in/out
+            if (glyph.fadeIn) {
+                glyph.alpha += glyph.fadeSpeed * this.speed;
+                if (glyph.alpha >= glyph.targetAlpha) {
+                    glyph.fadeIn = false;
+                }
+            } else {
+                glyph.alpha -= glyph.fadeSpeed * this.speed * 0.5;
+                if (glyph.alpha <= 0) {
+                    glyph.alpha = 0;
+                    glyph.fadeIn = true;
+                    glyph.x = Math.random() * width;
+                    glyph.y = Math.random() * height;
+                    glyph.glyph = this.forerunnerGlyphs[Math.floor(Math.random() * this.forerunnerGlyphs.length)];
+                }
+            }
+
+            glyph.rotation += glyph.rotationSpeed * this.speed;
 
             ctx.save();
-            ctx.translate(hex.x, hex.y);
-            ctx.rotate(hex.rotation);
+            ctx.translate(glyph.x, glyph.y);
+            ctx.rotate(glyph.rotation);
 
-            // Outer glow
-            ctx.strokeStyle = colorScheme.primary;
-            ctx.lineWidth = 2;
-            ctx.shadowBlur = 20;
+            ctx.font = `${glyph.size}px Arial`;
+            ctx.fillStyle = colorScheme.primary;
             ctx.shadowColor = colorScheme.primary;
-            ctx.globalAlpha = hex.alpha * pulse;
+            ctx.globalAlpha = glyph.alpha;
+            ctx.fillText(glyph.glyph, 0, 0);
 
-            this.drawHexagon(ctx, 0, 0, hex.size);
-
-            // Inner hexagon
-            ctx.strokeStyle = colorScheme.secondary;
+            // Draw circle around glyph
+            ctx.strokeStyle = colorScheme.primary;
             ctx.lineWidth = 1;
-            ctx.shadowBlur = 10;
-            ctx.globalAlpha = hex.alpha * pulse * 0.5;
-
-            this.drawHexagon(ctx, 0, 0, hex.size * 0.6);
+            ctx.globalAlpha = glyph.alpha * 0.5;
+            ctx.beginPath();
+            ctx.arc(0, 0, glyph.size * 0.8, 0, Math.PI * 2);
+            ctx.stroke();
 
             ctx.restore();
+        }
+
+        // Draw central Forerunner structure (large hexagon with details)
+        const centerX = width / 2;
+        const centerY = height / 2;
+        const mainPulse = Math.sin(time) * 0.2 + 0.8;
+
+        ctx.globalAlpha = 0.1 * mainPulse;
+        ctx.strokeStyle = colorScheme.primary;
+        ctx.lineWidth = 1;
+        ctx.shadowBlur = 30;
+        ctx.shadowColor = colorScheme.primary;
+
+        // Large outer hexagon
+        this.drawHexagon(ctx, centerX, centerY, Math.min(width, height) * 0.4);
+
+        // Inner geometric patterns
+        ctx.globalAlpha = 0.05 * mainPulse;
+        for (let i = 0; i < 6; i++) {
+            const angle = (Math.PI / 3) * i;
+            const x = centerX + Math.cos(angle) * Math.min(width, height) * 0.2;
+            const y = centerY + Math.sin(angle) * Math.min(width, height) * 0.2;
+            this.drawHexagon(ctx, x, y, 40);
         }
 
         ctx.globalAlpha = 1;
