@@ -55,11 +55,12 @@
 
         /* Product Guide Styles */
         .product-guide {
-            background: linear-gradient(135deg, rgba(0, 255, 136, 0.05), rgba(0, 170, 255, 0.05));
-            border: 1px solid rgba(0, 255, 136, 0.2);
+            background: rgba(5, 10, 20, 0.95);
+            border: 1px solid rgba(0, 255, 136, 0.3);
             border-radius: 16px;
             margin-bottom: 24px;
             overflow: hidden;
+            backdrop-filter: blur(10px);
         }
         .product-guide-header {
             display: flex;
@@ -68,9 +69,10 @@
             padding: 16px 20px;
             cursor: pointer;
             transition: background 0.3s;
+            background: rgba(0, 255, 136, 0.08);
         }
         .product-guide-header:hover {
-            background: rgba(0, 255, 136, 0.05);
+            background: rgba(0, 255, 136, 0.15);
         }
         .product-guide-title {
             display: flex;

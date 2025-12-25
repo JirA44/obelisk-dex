@@ -472,64 +472,214 @@ const BgAnimations = {
     // ==================== AVATAR BIOLUMINESCENCE ANIMATION ====================
     initAvatar() {
         this.avatarParticles = [];
-        const count = Math.floor((this.canvas.width * this.canvas.height) / 8000);
+        this.avatarSpores = [];
+        this.avatarWaves = [];
+        this.avatarTendrils = [];
 
-        for (let i = 0; i < count; i++) {
+        const particleCount = Math.floor((this.canvas.width * this.canvas.height) / 6000);
+
+        // Main bioluminescent particles
+        for (let i = 0; i < particleCount; i++) {
             this.avatarParticles.push({
                 x: Math.random() * this.canvas.width,
                 y: Math.random() * this.canvas.height,
-                vx: (Math.random() - 0.5) * 0.5,
-                vy: (Math.random() - 0.5) * 0.5,
-                size: 2 + Math.random() * 4,
-                hue: 180 + Math.random() * 60, // Cyan to purple range
+                vx: (Math.random() - 0.5) * 0.3,
+                vy: (Math.random() - 0.5) * 0.3 - 0.2, // Slight upward drift
+                size: 2 + Math.random() * 5,
+                hue: 170 + Math.random() * 80, // Cyan to magenta
                 pulseOffset: Math.random() * Math.PI * 2,
-                pulseSpeed: 0.5 + Math.random() * 1
+                pulseSpeed: 0.3 + Math.random() * 0.7,
+                type: Math.random() > 0.7 ? 'large' : 'small'
+            });
+        }
+
+        // Floating spores (like dandelion seeds)
+        for (let i = 0; i < 30; i++) {
+            this.avatarSpores.push({
+                x: Math.random() * this.canvas.width,
+                y: Math.random() * this.canvas.height,
+                vx: (Math.random() - 0.5) * 0.5,
+                vy: -0.3 - Math.random() * 0.5,
+                size: 3 + Math.random() * 4,
+                rotation: Math.random() * Math.PI * 2,
+                rotationSpeed: (Math.random() - 0.5) * 0.02,
+                alpha: 0.4 + Math.random() * 0.4,
+                hue: 180 + Math.random() * 40
+            });
+        }
+
+        // Bioluminescent waves
+        for (let i = 0; i < 5; i++) {
+            this.avatarWaves.push({
+                x: Math.random() * this.canvas.width,
+                y: this.canvas.height + 50,
+                radius: 0,
+                maxRadius: 300 + Math.random() * 200,
+                speed: 0.5 + Math.random() * 1,
+                hue: 180 + Math.random() * 60
+            });
+        }
+
+        // Organic tendrils
+        for (let i = 0; i < 8; i++) {
+            this.avatarTendrils.push({
+                baseX: Math.random() * this.canvas.width,
+                baseY: this.canvas.height,
+                segments: 15 + Math.floor(Math.random() * 10),
+                phase: Math.random() * Math.PI * 2,
+                amplitude: 20 + Math.random() * 30,
+                height: 150 + Math.random() * 200,
+                hue: 160 + Math.random() * 80
             });
         }
     },
 
     drawAvatar(ctx, width, height) {
-        ctx.fillStyle = 'rgba(2, 2, 8, 0.1)';
+        ctx.fillStyle = 'rgba(2, 2, 10, 0.06)';
         ctx.fillRect(0, 0, width, height);
 
         const time = Date.now() / 1000;
-        const connectionDistance = 150;
 
-        // Update and draw particles
+        // Draw organic tendrils from bottom
+        for (const tendril of this.avatarTendrils) {
+            ctx.beginPath();
+            ctx.moveTo(tendril.baseX, tendril.baseY);
+
+            const segmentHeight = tendril.height / tendril.segments;
+            let prevX = tendril.baseX;
+            let prevY = tendril.baseY;
+
+            for (let i = 1; i <= tendril.segments; i++) {
+                const progress = i / tendril.segments;
+                const wave = Math.sin(time * 2 + tendril.phase + i * 0.3) * tendril.amplitude * (1 - progress * 0.5);
+                const x = tendril.baseX + wave;
+                const y = tendril.baseY - i * segmentHeight;
+
+                const cpX = prevX + (x - prevX) * 0.5 + wave * 0.3;
+                const cpY = prevY + (y - prevY) * 0.5;
+
+                ctx.quadraticCurveTo(cpX, cpY, x, y);
+                prevX = x;
+                prevY = y;
+            }
+
+            const alpha = 0.15 + Math.sin(time + tendril.phase) * 0.05;
+            ctx.strokeStyle = `hsla(${tendril.hue}, 100%, 60%, ${alpha})`;
+            ctx.lineWidth = 3;
+            ctx.shadowBlur = 15;
+            ctx.shadowColor = `hsla(${tendril.hue}, 100%, 70%, 0.5)`;
+            ctx.stroke();
+
+            // Draw glow orb at tip
+            const tipY = tendril.baseY - tendril.height;
+            const tipX = tendril.baseX + Math.sin(time * 2 + tendril.phase) * tendril.amplitude * 0.5;
+            const gradient = ctx.createRadialGradient(tipX, tipY, 0, tipX, tipY, 15);
+            gradient.addColorStop(0, `hsla(${tendril.hue}, 100%, 80%, 0.8)`);
+            gradient.addColorStop(1, 'transparent');
+            ctx.fillStyle = gradient;
+            ctx.beginPath();
+            ctx.arc(tipX, tipY, 15, 0, Math.PI * 2);
+            ctx.fill();
+        }
+
+        // Draw expanding waves
+        ctx.shadowBlur = 0;
+        for (const wave of this.avatarWaves) {
+            wave.radius += wave.speed * this.speed;
+            wave.y -= wave.speed * 0.5;
+
+            if (wave.radius > wave.maxRadius || wave.y < -wave.maxRadius) {
+                wave.radius = 0;
+                wave.y = height + 50;
+                wave.x = Math.random() * width;
+            }
+
+            const alpha = (1 - wave.radius / wave.maxRadius) * 0.15;
+            ctx.strokeStyle = `hsla(${wave.hue}, 100%, 60%, ${alpha})`;
+            ctx.lineWidth = 2;
+            ctx.beginPath();
+            ctx.arc(wave.x, wave.y, wave.radius, 0, Math.PI * 2);
+            ctx.stroke();
+        }
+
+        // Draw floating spores
+        for (const spore of this.avatarSpores) {
+            spore.x += spore.vx * this.speed;
+            spore.y += spore.vy * this.speed;
+            spore.rotation += spore.rotationSpeed * this.speed;
+
+            if (spore.y < -20) {
+                spore.y = height + 20;
+                spore.x = Math.random() * width;
+            }
+            if (spore.x < -20) spore.x = width + 20;
+            if (spore.x > width + 20) spore.x = -20;
+
+            ctx.save();
+            ctx.translate(spore.x, spore.y);
+            ctx.rotate(spore.rotation);
+
+            // Draw spore with filaments
+            ctx.strokeStyle = `hsla(${spore.hue}, 100%, 80%, ${spore.alpha * 0.5})`;
+            ctx.lineWidth = 0.5;
+            for (let i = 0; i < 6; i++) {
+                const angle = (Math.PI / 3) * i;
+                ctx.beginPath();
+                ctx.moveTo(0, 0);
+                ctx.lineTo(Math.cos(angle) * spore.size * 2, Math.sin(angle) * spore.size * 2);
+                ctx.stroke();
+            }
+
+            // Center glow
+            const gradient = ctx.createRadialGradient(0, 0, 0, 0, 0, spore.size);
+            gradient.addColorStop(0, `hsla(${spore.hue}, 100%, 90%, ${spore.alpha})`);
+            gradient.addColorStop(1, 'transparent');
+            ctx.fillStyle = gradient;
+            ctx.beginPath();
+            ctx.arc(0, 0, spore.size, 0, Math.PI * 2);
+            ctx.fill();
+
+            ctx.restore();
+        }
+
+        // Draw main particles with connections
+        const connectionDistance = 120;
+
         for (const p of this.avatarParticles) {
-            // Update position
             p.x += p.vx * this.speed;
             p.y += p.vy * this.speed;
 
-            // Wrap around edges
+            // Gentle floating motion
+            p.x += Math.sin(time * 0.5 + p.pulseOffset) * 0.2;
+            p.y += Math.cos(time * 0.3 + p.pulseOffset) * 0.1;
+
             if (p.x < 0) p.x = width;
             if (p.x > width) p.x = 0;
-            if (p.y < 0) p.y = height;
-            if (p.y > height) p.y = 0;
+            if (p.y < -20) p.y = height + 20;
+            if (p.y > height + 20) p.y = -20;
 
-            // Calculate pulse
             const pulse = Math.sin(time * p.pulseSpeed + p.pulseOffset) * 0.5 + 0.5;
-            const size = p.size * (0.5 + pulse * 0.5);
+            const size = p.size * (0.6 + pulse * 0.4);
 
             // Draw glow
-            const gradient = ctx.createRadialGradient(p.x, p.y, 0, p.x, p.y, size * 5);
-            gradient.addColorStop(0, `hsla(${p.hue}, 100%, 70%, ${0.8 * pulse})`);
-            gradient.addColorStop(0.5, `hsla(${p.hue}, 100%, 50%, ${0.3 * pulse})`);
+            const gradient = ctx.createRadialGradient(p.x, p.y, 0, p.x, p.y, size * (p.type === 'large' ? 8 : 4));
+            gradient.addColorStop(0, `hsla(${p.hue}, 100%, 75%, ${0.9 * pulse})`);
+            gradient.addColorStop(0.3, `hsla(${p.hue}, 100%, 60%, ${0.4 * pulse})`);
             gradient.addColorStop(1, 'transparent');
 
             ctx.fillStyle = gradient;
             ctx.beginPath();
-            ctx.arc(p.x, p.y, size * 5, 0, Math.PI * 2);
+            ctx.arc(p.x, p.y, size * (p.type === 'large' ? 8 : 4), 0, Math.PI * 2);
             ctx.fill();
 
-            // Draw core
-            ctx.fillStyle = `hsla(${p.hue}, 100%, 80%, ${pulse})`;
+            // Draw bright core
+            ctx.fillStyle = `hsla(${p.hue}, 80%, 90%, ${pulse * 0.9})`;
             ctx.beginPath();
-            ctx.arc(p.x, p.y, size, 0, Math.PI * 2);
+            ctx.arc(p.x, p.y, size * 0.5, 0, Math.PI * 2);
             ctx.fill();
         }
 
-        // Draw connections
+        // Draw organic curved connections
         ctx.lineWidth = 1;
         for (let i = 0; i < this.avatarParticles.length; i++) {
             for (let j = i + 1; j < this.avatarParticles.length; j++) {
@@ -539,13 +689,18 @@ const BgAnimations = {
                 const dy = p2.y - p1.y;
                 const dist = Math.sqrt(dx * dx + dy * dy);
 
-                if (dist < connectionDistance) {
-                    const alpha = (1 - dist / connectionDistance) * 0.3;
+                if (dist < connectionDistance && dist > 30) {
+                    const alpha = (1 - dist / connectionDistance) * 0.25;
                     const hue = (p1.hue + p2.hue) / 2;
-                    ctx.strokeStyle = `hsla(${hue}, 100%, 60%, ${alpha})`;
+
+                    // Draw curved connection
+                    const midX = (p1.x + p2.x) / 2 + Math.sin(time + i) * 10;
+                    const midY = (p1.y + p2.y) / 2 + Math.cos(time + j) * 10;
+
+                    ctx.strokeStyle = `hsla(${hue}, 100%, 65%, ${alpha})`;
                     ctx.beginPath();
                     ctx.moveTo(p1.x, p1.y);
-                    ctx.lineTo(p2.x, p2.y);
+                    ctx.quadraticCurveTo(midX, midY, p2.x, p2.y);
                     ctx.stroke();
                 }
             }
@@ -555,66 +710,244 @@ const BgAnimations = {
     // ==================== PARTICLES ANIMATION ====================
     initParticles() {
         this.particles = [];
-        const count = Math.floor((this.canvas.width * this.canvas.height) / 5000);
+        this.shootingStars = [];
+        this.nebulaClouds = [];
+        this.constellations = [];
 
+        const count = Math.floor((this.canvas.width * this.canvas.height) / 4000);
+
+        // Stars
         for (let i = 0; i < count; i++) {
+            const starType = Math.random();
             this.particles.push({
                 x: Math.random() * this.canvas.width,
                 y: Math.random() * this.canvas.height,
-                vx: (Math.random() - 0.5) * 1,
-                vy: (Math.random() - 0.5) * 1,
-                size: 1 + Math.random() * 3,
+                size: starType > 0.95 ? 2 + Math.random() * 2 : 0.5 + Math.random() * 1.5,
                 alpha: 0.3 + Math.random() * 0.7,
-                twinkleSpeed: 1 + Math.random() * 2,
-                twinkleOffset: Math.random() * Math.PI * 2
+                twinkleSpeed: 0.5 + Math.random() * 2,
+                twinkleOffset: Math.random() * Math.PI * 2,
+                color: starType > 0.9 ? this.getStarColor() : '#ffffff',
+                isBright: starType > 0.95
+            });
+        }
+
+        // Nebula clouds
+        for (let i = 0; i < 4; i++) {
+            this.nebulaClouds.push({
+                x: Math.random() * this.canvas.width,
+                y: Math.random() * this.canvas.height,
+                radiusX: 150 + Math.random() * 200,
+                radiusY: 100 + Math.random() * 150,
+                rotation: Math.random() * Math.PI,
+                hue: Math.random() > 0.5 ? 260 + Math.random() * 40 : 180 + Math.random() * 40,
+                alpha: 0.03 + Math.random() * 0.04
+            });
+        }
+
+        // Initialize shooting stars
+        for (let i = 0; i < 3; i++) {
+            this.shootingStars.push(this.createShootingStar());
+        }
+
+        // Create constellations
+        this.createConstellations();
+    },
+
+    getStarColor() {
+        const colors = ['#ffffff', '#ffe4c4', '#b0c4ff', '#ffd700', '#ff6b6b'];
+        return colors[Math.floor(Math.random() * colors.length)];
+    },
+
+    createShootingStar() {
+        return {
+            x: Math.random() * this.canvas.width,
+            y: Math.random() * this.canvas.height * 0.5,
+            vx: 5 + Math.random() * 10,
+            vy: 2 + Math.random() * 5,
+            length: 50 + Math.random() * 100,
+            alpha: 0,
+            maxAlpha: 0.6 + Math.random() * 0.4,
+            active: false,
+            timer: Math.random() * 500
+        };
+    },
+
+    createConstellations() {
+        // Create a few constellation patterns
+        const patterns = [
+            // Orion-like
+            [{x: 0, y: 0}, {x: 20, y: 30}, {x: 40, y: 0}, {x: 20, y: -20}, {x: 0, y: 0}],
+            // Triangle
+            [{x: 0, y: 0}, {x: 30, y: 50}, {x: 60, y: 0}, {x: 0, y: 0}],
+            // W shape
+            [{x: 0, y: 0}, {x: 15, y: 25}, {x: 30, y: 0}, {x: 45, y: 25}, {x: 60, y: 0}]
+        ];
+
+        for (let i = 0; i < 3; i++) {
+            const pattern = patterns[i % patterns.length];
+            const baseX = 100 + Math.random() * (this.canvas.width - 200);
+            const baseY = 100 + Math.random() * (this.canvas.height - 200);
+
+            this.constellations.push({
+                points: pattern.map(p => ({
+                    x: baseX + p.x * 2,
+                    y: baseY + p.y * 2
+                })),
+                alpha: 0.1 + Math.random() * 0.1
             });
         }
     },
 
     drawParticles(ctx, width, height) {
-        ctx.fillStyle = 'rgba(10, 0, 21, 0.05)';
+        ctx.fillStyle = 'rgba(5, 2, 15, 0.04)';
         ctx.fillRect(0, 0, width, height);
 
         const time = Date.now() / 1000;
 
-        for (const p of this.particles) {
-            // Update position
-            p.x += p.vx * this.speed * 0.5;
-            p.y += p.vy * this.speed * 0.5;
+        // Draw nebula clouds
+        for (const nebula of this.nebulaClouds) {
+            ctx.save();
+            ctx.translate(nebula.x, nebula.y);
+            ctx.rotate(nebula.rotation + time * 0.01);
 
-            // Wrap around
-            if (p.x < 0) p.x = width;
-            if (p.x > width) p.x = 0;
-            if (p.y < 0) p.y = height;
-            if (p.y > height) p.y = 0;
+            const gradient = ctx.createRadialGradient(0, 0, 0, 0, 0, nebula.radiusX);
+            gradient.addColorStop(0, `hsla(${nebula.hue}, 70%, 50%, ${nebula.alpha})`);
+            gradient.addColorStop(0.5, `hsla(${nebula.hue + 20}, 60%, 40%, ${nebula.alpha * 0.5})`);
+            gradient.addColorStop(1, 'transparent');
 
-            // Twinkle effect
-            const twinkle = Math.sin(time * p.twinkleSpeed + p.twinkleOffset) * 0.5 + 0.5;
-            const alpha = p.alpha * twinkle;
-
-            // Draw star
-            ctx.fillStyle = `rgba(255, 255, 255, ${alpha})`;
-            ctx.shadowBlur = 10;
-            ctx.shadowColor = '#ffffff';
+            ctx.fillStyle = gradient;
             ctx.beginPath();
-            ctx.arc(p.x, p.y, p.size * twinkle, 0, Math.PI * 2);
+            ctx.ellipse(0, 0, nebula.radiusX, nebula.radiusY, 0, 0, Math.PI * 2);
             ctx.fill();
 
-            // Draw cross rays for larger stars
-            if (p.size > 2) {
-                ctx.strokeStyle = `rgba(255, 255, 255, ${alpha * 0.5})`;
-                ctx.lineWidth = 0.5;
-                const rayLength = p.size * 3 * twinkle;
+            ctx.restore();
+        }
+
+        // Draw constellations
+        for (const constellation of this.constellations) {
+            const pulse = Math.sin(time * 0.5) * 0.05 + constellation.alpha;
+
+            ctx.strokeStyle = `rgba(100, 150, 255, ${pulse})`;
+            ctx.lineWidth = 0.5;
+            ctx.setLineDash([5, 10]);
+            ctx.beginPath();
+
+            for (let i = 0; i < constellation.points.length; i++) {
+                const point = constellation.points[i];
+                if (i === 0) ctx.moveTo(point.x, point.y);
+                else ctx.lineTo(point.x, point.y);
+            }
+            ctx.stroke();
+            ctx.setLineDash([]);
+
+            // Draw constellation stars
+            for (const point of constellation.points) {
+                ctx.fillStyle = `rgba(200, 220, 255, ${pulse * 3})`;
+                ctx.beginPath();
+                ctx.arc(point.x, point.y, 2, 0, Math.PI * 2);
+                ctx.fill();
+            }
+        }
+
+        // Draw stars
+        for (const p of this.particles) {
+            const twinkle = Math.sin(time * p.twinkleSpeed + p.twinkleOffset) * 0.5 + 0.5;
+            const alpha = p.alpha * (0.5 + twinkle * 0.5);
+            const size = p.size * (0.8 + twinkle * 0.2);
+
+            if (p.isBright) {
+                // Bright star with glow
+                ctx.shadowBlur = 15;
+                ctx.shadowColor = p.color;
+
+                const gradient = ctx.createRadialGradient(p.x, p.y, 0, p.x, p.y, size * 4);
+                gradient.addColorStop(0, p.color);
+                gradient.addColorStop(0.2, `rgba(255, 255, 255, ${alpha * 0.5})`);
+                gradient.addColorStop(1, 'transparent');
+
+                ctx.fillStyle = gradient;
+                ctx.beginPath();
+                ctx.arc(p.x, p.y, size * 4, 0, Math.PI * 2);
+                ctx.fill();
+
+                // Draw cross sparkle
+                ctx.strokeStyle = `rgba(255, 255, 255, ${alpha * 0.3})`;
+                ctx.lineWidth = 1;
+                const rayLength = size * 6 * twinkle;
                 ctx.beginPath();
                 ctx.moveTo(p.x - rayLength, p.y);
                 ctx.lineTo(p.x + rayLength, p.y);
                 ctx.moveTo(p.x, p.y - rayLength);
                 ctx.lineTo(p.x, p.y + rayLength);
+                // Diagonal rays
+                ctx.moveTo(p.x - rayLength * 0.5, p.y - rayLength * 0.5);
+                ctx.lineTo(p.x + rayLength * 0.5, p.y + rayLength * 0.5);
+                ctx.moveTo(p.x + rayLength * 0.5, p.y - rayLength * 0.5);
+                ctx.lineTo(p.x - rayLength * 0.5, p.y + rayLength * 0.5);
                 ctx.stroke();
+
+                ctx.shadowBlur = 0;
+            } else {
+                // Regular star
+                ctx.fillStyle = `rgba(255, 255, 255, ${alpha})`;
+                ctx.beginPath();
+                ctx.arc(p.x, p.y, size, 0, Math.PI * 2);
+                ctx.fill();
             }
         }
 
-        ctx.shadowBlur = 0;
+        // Draw shooting stars
+        for (const star of this.shootingStars) {
+            if (!star.active) {
+                star.timer -= this.speed;
+                if (star.timer <= 0) {
+                    star.active = true;
+                    star.x = Math.random() * width * 0.5;
+                    star.y = Math.random() * height * 0.3;
+                    star.alpha = star.maxAlpha;
+                }
+                continue;
+            }
+
+            star.x += star.vx * this.speed;
+            star.y += star.vy * this.speed;
+            star.alpha -= 0.01 * this.speed;
+
+            if (star.alpha <= 0 || star.x > width || star.y > height) {
+                Object.assign(star, this.createShootingStar());
+                continue;
+            }
+
+            // Draw shooting star trail
+            const gradient = ctx.createLinearGradient(
+                star.x, star.y,
+                star.x - star.vx * star.length / star.vx,
+                star.y - star.vy * star.length / star.vx
+            );
+            gradient.addColorStop(0, `rgba(255, 255, 255, ${star.alpha})`);
+            gradient.addColorStop(0.3, `rgba(200, 220, 255, ${star.alpha * 0.5})`);
+            gradient.addColorStop(1, 'transparent');
+
+            ctx.strokeStyle = gradient;
+            ctx.lineWidth = 2;
+            ctx.lineCap = 'round';
+            ctx.beginPath();
+            ctx.moveTo(star.x, star.y);
+            ctx.lineTo(
+                star.x - star.vx * star.length / 10,
+                star.y - star.vy * star.length / 10
+            );
+            ctx.stroke();
+
+            // Bright head
+            ctx.fillStyle = `rgba(255, 255, 255, ${star.alpha})`;
+            ctx.shadowBlur = 10;
+            ctx.shadowColor = '#ffffff';
+            ctx.beginPath();
+            ctx.arc(star.x, star.y, 2, 0, Math.PI * 2);
+            ctx.fill();
+            ctx.shadowBlur = 0;
+        }
     },
 
     // ==================== ANIMATION LOOP ====================
