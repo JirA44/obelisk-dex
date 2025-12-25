@@ -191,266 +191,469 @@ const BgAnimations = {
     },
 
     // ==================== HALO FORERUNNERS ANIMATION ====================
-    // Forerunner glyphs/symbols
-    forerunnerGlyphs: ['⬡', '◇', '△', '▽', '○', '◎', '⊡', '⊕', '⊗', '⋈', '⌬', '⎔'],
-
     initHalo() {
-        this.haloGrid = [];
-        this.haloEnergy = [];
-        this.haloGlyphs = [];
-        this.haloScanlines = [];
-        this.haloPulses = [];
+        this.haloStructures = [];
+        this.haloCircuits = [];
+        this.haloLightBridges = [];
+        this.haloHolograms = [];
+        this.haloParticles = [];
+        this.haloAmbientLines = [];
 
-        const hexSize = 60;
-        const hexHeight = hexSize * Math.sqrt(3);
-        const cols = Math.ceil(this.canvas.width / (hexSize * 1.5)) + 2;
-        const rows = Math.ceil(this.canvas.height / hexHeight) + 2;
+        const w = this.canvas.width;
+        const h = this.canvas.height;
 
-        // Create hexagonal grid
-        for (let row = 0; row < rows; row++) {
-            for (let col = 0; col < cols; col++) {
-                const x = col * hexSize * 1.5;
-                const y = row * hexHeight + (col % 2) * (hexHeight / 2);
-                this.haloGrid.push({
-                    x, y,
-                    size: hexSize,
-                    active: Math.random() > 0.7,
-                    pulseOffset: Math.random() * Math.PI * 2,
-                    glowIntensity: Math.random()
-                });
-            }
-        }
+        // Massive background structures (like Forerunner walls)
+        this.haloStructures.push(
+            // Left pillar
+            { x: w * 0.1, y: 0, width: 80, height: h, type: 'pillar' },
+            // Right pillar
+            { x: w * 0.9 - 80, y: 0, width: 80, height: h, type: 'pillar' },
+            // Top beam
+            { x: 0, y: h * 0.15, width: w, height: 40, type: 'beam' },
+            // Bottom beam
+            { x: 0, y: h * 0.85, width: w, height: 40, type: 'beam' },
+            // Central structure
+            { x: w * 0.35, y: h * 0.3, width: w * 0.3, height: h * 0.4, type: 'central' }
+        );
 
-        // Create energy lines that travel along grid
-        for (let i = 0; i < 15; i++) {
-            this.haloEnergy.push({
-                startX: Math.random() * this.canvas.width,
-                startY: Math.random() * this.canvas.height,
-                angle: Math.random() * Math.PI * 2,
-                length: 100 + Math.random() * 200,
-                speed: 2 + Math.random() * 3,
+        // Energy circuits running through structures
+        for (let i = 0; i < 25; i++) {
+            const isVertical = Math.random() > 0.5;
+            this.haloCircuits.push({
+                x: isVertical ? (Math.random() > 0.5 ? w * 0.1 + Math.random() * 60 : w * 0.9 - 80 + Math.random() * 60) : Math.random() * w,
+                y: isVertical ? 0 : (Math.random() > 0.5 ? h * 0.15 : h * 0.85),
+                length: isVertical ? h : w * 0.3,
+                isVertical,
                 progress: Math.random(),
-                width: 1 + Math.random() * 2
+                speed: 0.002 + Math.random() * 0.004,
+                width: 1 + Math.random() * 2,
+                pulseOffset: Math.random() * Math.PI * 2
             });
         }
 
-        // Create floating glyphs
-        for (let i = 0; i < 12; i++) {
-            this.haloGlyphs.push({
-                x: Math.random() * this.canvas.width,
-                y: Math.random() * this.canvas.height,
-                glyph: this.forerunnerGlyphs[Math.floor(Math.random() * this.forerunnerGlyphs.length)],
-                size: 20 + Math.random() * 40,
-                rotation: 0,
-                rotationSpeed: (Math.random() - 0.5) * 0.01,
-                alpha: 0,
-                targetAlpha: 0.3 + Math.random() * 0.4,
-                fadeSpeed: 0.005 + Math.random() * 0.01,
-                fadeIn: true
-            });
-        }
-
-        // Create scan lines
+        // Hard light bridges
         for (let i = 0; i < 3; i++) {
-            this.haloScanlines.push({
-                y: Math.random() * this.canvas.height,
-                speed: 0.5 + Math.random() * 1,
-                width: 2 + Math.random() * 4,
-                alpha: 0.3 + Math.random() * 0.3
+            this.haloLightBridges.push({
+                x1: w * 0.1 + 40,
+                y1: h * 0.3 + Math.random() * h * 0.4,
+                x2: w * 0.9 - 40,
+                y2: h * 0.3 + Math.random() * h * 0.4,
+                alpha: 0,
+                targetAlpha: 0.4 + Math.random() * 0.3,
+                fadeIn: true,
+                segments: 20,
+                offset: Math.random() * 100
             });
         }
 
-        // Create expanding pulses
-        for (let i = 0; i < 5; i++) {
-            this.haloPulses.push({
-                x: Math.random() * this.canvas.width,
-                y: Math.random() * this.canvas.height,
-                radius: 0,
-                maxRadius: 150 + Math.random() * 200,
-                speed: 1 + Math.random() * 2,
-                alpha: 0.5
+        // Floating holographic displays
+        for (let i = 0; i < 6; i++) {
+            this.haloHolograms.push({
+                x: w * 0.2 + Math.random() * w * 0.6,
+                y: h * 0.2 + Math.random() * h * 0.6,
+                width: 60 + Math.random() * 80,
+                height: 40 + Math.random() * 60,
+                rotation: (Math.random() - 0.5) * 0.3,
+                rotationSpeed: (Math.random() - 0.5) * 0.001,
+                alpha: 0.1 + Math.random() * 0.2,
+                dataOffset: Math.random() * 1000,
+                type: Math.floor(Math.random() * 3) // 0: bars, 1: circles, 2: text
+            });
+        }
+
+        // Ambient floating particles
+        for (let i = 0; i < 50; i++) {
+            this.haloParticles.push({
+                x: Math.random() * w,
+                y: Math.random() * h,
+                vx: (Math.random() - 0.5) * 0.3,
+                vy: -0.2 - Math.random() * 0.3,
+                size: 1 + Math.random() * 2,
+                alpha: 0.2 + Math.random() * 0.4
+            });
+        }
+
+        // Ambient geometric lines
+        for (let i = 0; i < 8; i++) {
+            this.haloAmbientLines.push({
+                points: this.generateForerunnerPath(w, h),
+                progress: 0,
+                speed: 0.003 + Math.random() * 0.003,
+                active: Math.random() > 0.3
             });
         }
     },
 
+    generateForerunnerPath(w, h) {
+        const points = [];
+        let x = Math.random() * w;
+        let y = Math.random() * h;
+        points.push({ x, y });
+
+        for (let i = 0; i < 5 + Math.floor(Math.random() * 5); i++) {
+            // Forerunner paths are angular, not curved
+            const direction = Math.floor(Math.random() * 4);
+            const length = 50 + Math.random() * 150;
+
+            switch (direction) {
+                case 0: x += length; break;
+                case 1: x -= length; break;
+                case 2: y += length; break;
+                case 3: y -= length; break;
+            }
+
+            x = Math.max(0, Math.min(w, x));
+            y = Math.max(0, Math.min(h, y));
+            points.push({ x, y });
+        }
+
+        return points;
+    },
+
     drawHalo(ctx, width, height) {
-        // Dark fade with slight blue tint
-        ctx.fillStyle = 'rgba(0, 5, 15, 0.08)';
+        // Very dark blue-black background fade
+        ctx.fillStyle = 'rgba(0, 2, 8, 0.06)';
         ctx.fillRect(0, 0, width, height);
 
         const colorScheme = this.colors.halo[this.haloColor] || this.colors.halo.blue;
         const time = Date.now() / 1000;
 
-        // Draw hexagonal grid (subtle background)
-        for (const hex of this.haloGrid) {
-            if (!hex.active) continue;
+        // Draw massive structures (subtle, in background)
+        ctx.globalAlpha = 0.03;
+        for (const struct of this.haloStructures) {
+            if (struct.type === 'pillar') {
+                // Vertical pillars with internal patterns
+                ctx.fillStyle = colorScheme.primary;
+                ctx.fillRect(struct.x, struct.y, struct.width, struct.height);
 
-            const pulse = Math.sin(time * 1.5 + hex.pulseOffset) * 0.5 + 0.5;
-            const alpha = 0.03 + pulse * 0.05 * hex.glowIntensity;
-
-            ctx.strokeStyle = colorScheme.primary;
-            ctx.lineWidth = 0.5;
-            ctx.globalAlpha = alpha;
-            this.drawHexagon(ctx, hex.x, hex.y, hex.size * 0.9);
-        }
-
-        // Draw expanding pulses
-        for (const pulse of this.haloPulses) {
-            pulse.radius += pulse.speed * this.speed;
-
-            if (pulse.radius > pulse.maxRadius) {
-                pulse.radius = 0;
-                pulse.x = Math.random() * width;
-                pulse.y = Math.random() * height;
-                pulse.maxRadius = 150 + Math.random() * 200;
-            }
-
-            const alpha = (1 - pulse.radius / pulse.maxRadius) * 0.3;
-            ctx.strokeStyle = colorScheme.primary;
-            ctx.lineWidth = 2;
-            ctx.globalAlpha = alpha;
-            ctx.shadowBlur = 15;
-            ctx.shadowColor = colorScheme.primary;
-
-            // Draw expanding hexagon
-            ctx.beginPath();
-            for (let i = 0; i < 6; i++) {
-                const angle = (Math.PI / 3) * i - Math.PI / 2;
-                const px = pulse.x + pulse.radius * Math.cos(angle);
-                const py = pulse.y + pulse.radius * Math.sin(angle);
-                if (i === 0) ctx.moveTo(px, py);
-                else ctx.lineTo(px, py);
-            }
-            ctx.closePath();
-            ctx.stroke();
-        }
-
-        // Draw scan lines
-        ctx.shadowBlur = 0;
-        for (const scan of this.haloScanlines) {
-            scan.y += scan.speed * this.speed;
-            if (scan.y > height) scan.y = -10;
-
-            const gradient = ctx.createLinearGradient(0, scan.y - 20, 0, scan.y + 20);
-            gradient.addColorStop(0, 'transparent');
-            gradient.addColorStop(0.5, colorScheme.primary.replace(')', `, ${scan.alpha})`).replace('rgb', 'rgba'));
-            gradient.addColorStop(1, 'transparent');
-
-            ctx.fillStyle = gradient;
-            ctx.globalAlpha = 1;
-            ctx.fillRect(0, scan.y - scan.width, width, scan.width * 2);
-        }
-
-        // Draw energy lines
-        for (const energy of this.haloEnergy) {
-            energy.progress += 0.01 * this.speed;
-            if (energy.progress > 1) {
-                energy.progress = 0;
-                energy.startX = Math.random() * width;
-                energy.startY = Math.random() * height;
-                energy.angle = Math.random() * Math.PI * 2;
-            }
-
-            const x1 = energy.startX;
-            const y1 = energy.startY;
-            const currentLength = energy.length * energy.progress;
-            const x2 = x1 + Math.cos(energy.angle) * currentLength;
-            const y2 = y1 + Math.sin(energy.angle) * currentLength;
-
-            // Create gradient along line
-            const gradient = ctx.createLinearGradient(x1, y1, x2, y2);
-            gradient.addColorStop(0, 'transparent');
-            gradient.addColorStop(0.3, colorScheme.primary);
-            gradient.addColorStop(0.7, colorScheme.primary);
-            gradient.addColorStop(1, 'transparent');
-
-            ctx.strokeStyle = gradient;
-            ctx.lineWidth = energy.width;
-            ctx.globalAlpha = 0.6;
-            ctx.shadowBlur = 10;
-            ctx.shadowColor = colorScheme.primary;
-
-            ctx.beginPath();
-            ctx.moveTo(x1, y1);
-            ctx.lineTo(x2, y2);
-            ctx.stroke();
-
-            // Draw energy node at tip
-            ctx.fillStyle = colorScheme.primary;
-            ctx.globalAlpha = 0.8;
-            ctx.beginPath();
-            ctx.arc(x2, y2, 3, 0, Math.PI * 2);
-            ctx.fill();
-        }
-
-        // Draw floating glyphs
-        ctx.shadowBlur = 20;
-        ctx.textAlign = 'center';
-        ctx.textBaseline = 'middle';
-
-        for (const glyph of this.haloGlyphs) {
-            // Fade in/out
-            if (glyph.fadeIn) {
-                glyph.alpha += glyph.fadeSpeed * this.speed;
-                if (glyph.alpha >= glyph.targetAlpha) {
-                    glyph.fadeIn = false;
+                // Inner lines
+                ctx.strokeStyle = colorScheme.primary;
+                ctx.lineWidth = 1;
+                ctx.globalAlpha = 0.05;
+                for (let i = 0; i < 5; i++) {
+                    const lx = struct.x + (struct.width / 6) * (i + 1);
+                    ctx.beginPath();
+                    ctx.moveTo(lx, 0);
+                    ctx.lineTo(lx, height);
+                    ctx.stroke();
                 }
+            } else if (struct.type === 'beam') {
+                ctx.fillStyle = colorScheme.primary;
+                ctx.globalAlpha = 0.02;
+                ctx.fillRect(struct.x, struct.y, struct.width, struct.height);
+            } else if (struct.type === 'central') {
+                // Central hexagonal structure
+                ctx.globalAlpha = 0.02;
+                ctx.strokeStyle = colorScheme.primary;
+                ctx.lineWidth = 2;
+                const cx = struct.x + struct.width / 2;
+                const cy = struct.y + struct.height / 2;
+                const size = Math.min(struct.width, struct.height) * 0.4;
+
+                // Multiple nested hexagons
+                for (let i = 0; i < 4; i++) {
+                    this.drawHexagon(ctx, cx, cy, size * (1 - i * 0.2));
+                }
+            }
+        }
+
+        // Draw energy circuits
+        ctx.globalAlpha = 1;
+        for (const circuit of this.haloCircuits) {
+            circuit.progress += circuit.speed * this.speed;
+            if (circuit.progress > 1) circuit.progress = 0;
+
+            const pulse = Math.sin(time * 3 + circuit.pulseOffset) * 0.3 + 0.7;
+
+            if (circuit.isVertical) {
+                const startY = 0;
+                const currentY = circuit.length * circuit.progress;
+
+                const gradient = ctx.createLinearGradient(circuit.x, startY, circuit.x, currentY);
+                gradient.addColorStop(0, 'transparent');
+                gradient.addColorStop(0.7, colorScheme.primary);
+                gradient.addColorStop(1, colorScheme.primary);
+
+                ctx.strokeStyle = gradient;
+                ctx.lineWidth = circuit.width;
+                ctx.globalAlpha = 0.6 * pulse;
+                ctx.shadowBlur = 8;
+                ctx.shadowColor = colorScheme.primary;
+
+                ctx.beginPath();
+                ctx.moveTo(circuit.x, Math.max(0, currentY - 100));
+                ctx.lineTo(circuit.x, currentY);
+                ctx.stroke();
+
+                // Bright node at front
+                ctx.fillStyle = colorScheme.primary;
+                ctx.globalAlpha = pulse;
+                ctx.beginPath();
+                ctx.arc(circuit.x, currentY, 3, 0, Math.PI * 2);
+                ctx.fill();
             } else {
-                glyph.alpha -= glyph.fadeSpeed * this.speed * 0.5;
-                if (glyph.alpha <= 0) {
-                    glyph.alpha = 0;
-                    glyph.fadeIn = true;
-                    glyph.x = Math.random() * width;
-                    glyph.y = Math.random() * height;
-                    glyph.glyph = this.forerunnerGlyphs[Math.floor(Math.random() * this.forerunnerGlyphs.length)];
+                const currentX = circuit.x + circuit.length * circuit.progress;
+
+                ctx.strokeStyle = colorScheme.primary;
+                ctx.lineWidth = circuit.width;
+                ctx.globalAlpha = 0.5 * pulse;
+                ctx.shadowBlur = 8;
+                ctx.shadowColor = colorScheme.primary;
+
+                ctx.beginPath();
+                ctx.moveTo(Math.max(circuit.x, currentX - 80), circuit.y + 20);
+                ctx.lineTo(currentX, circuit.y + 20);
+                ctx.stroke();
+            }
+        }
+
+        // Draw hard light bridges
+        ctx.shadowBlur = 0;
+        for (const bridge of this.haloLightBridges) {
+            // Fade in/out
+            if (bridge.fadeIn) {
+                bridge.alpha += 0.005 * this.speed;
+                if (bridge.alpha >= bridge.targetAlpha) bridge.fadeIn = false;
+            } else {
+                bridge.alpha -= 0.002 * this.speed;
+                if (bridge.alpha <= 0) {
+                    bridge.fadeIn = true;
+                    bridge.y1 = height * 0.25 + Math.random() * height * 0.5;
+                    bridge.y2 = height * 0.25 + Math.random() * height * 0.5;
                 }
             }
 
-            glyph.rotation += glyph.rotationSpeed * this.speed;
+            if (bridge.alpha <= 0) continue;
+
+            // Draw segmented light bridge
+            const segments = bridge.segments;
+            const dx = (bridge.x2 - bridge.x1) / segments;
+
+            for (let i = 0; i < segments; i++) {
+                const x = bridge.x1 + dx * i;
+                const y = bridge.y1 + (bridge.y2 - bridge.y1) * (i / segments);
+                const segmentAlpha = bridge.alpha * (0.5 + Math.sin(time * 5 + i * 0.5 + bridge.offset) * 0.5);
+
+                // Hard light segment
+                ctx.fillStyle = colorScheme.primary;
+                ctx.globalAlpha = segmentAlpha;
+                ctx.shadowBlur = 15;
+                ctx.shadowColor = colorScheme.primary;
+
+                ctx.fillRect(x, y - 2, dx - 2, 4);
+
+                // Edge glow
+                ctx.globalAlpha = segmentAlpha * 0.3;
+                ctx.fillRect(x, y - 6, dx - 2, 12);
+            }
+        }
+
+        // Draw floating holograms
+        ctx.shadowBlur = 0;
+        for (const holo of this.haloHolograms) {
+            holo.rotation += holo.rotationSpeed * this.speed;
 
             ctx.save();
-            ctx.translate(glyph.x, glyph.y);
-            ctx.rotate(glyph.rotation);
+            ctx.translate(holo.x, holo.y);
+            ctx.rotate(holo.rotation);
 
-            ctx.font = `${glyph.size}px Arial`;
-            ctx.fillStyle = colorScheme.primary;
-            ctx.shadowColor = colorScheme.primary;
-            ctx.globalAlpha = glyph.alpha;
-            ctx.fillText(glyph.glyph, 0, 0);
-
-            // Draw circle around glyph
+            // Hologram frame
             ctx.strokeStyle = colorScheme.primary;
             ctx.lineWidth = 1;
-            ctx.globalAlpha = glyph.alpha * 0.5;
+            ctx.globalAlpha = holo.alpha;
+
+            // Outer frame
+            ctx.strokeRect(-holo.width / 2, -holo.height / 2, holo.width, holo.height);
+
+            // Corner accents
+            const cornerSize = 8;
+            ctx.lineWidth = 2;
+            ctx.globalAlpha = holo.alpha * 1.5;
+
+            // Top-left
             ctx.beginPath();
-            ctx.arc(0, 0, glyph.size * 0.8, 0, Math.PI * 2);
+            ctx.moveTo(-holo.width / 2, -holo.height / 2 + cornerSize);
+            ctx.lineTo(-holo.width / 2, -holo.height / 2);
+            ctx.lineTo(-holo.width / 2 + cornerSize, -holo.height / 2);
             ctx.stroke();
+
+            // Top-right
+            ctx.beginPath();
+            ctx.moveTo(holo.width / 2 - cornerSize, -holo.height / 2);
+            ctx.lineTo(holo.width / 2, -holo.height / 2);
+            ctx.lineTo(holo.width / 2, -holo.height / 2 + cornerSize);
+            ctx.stroke();
+
+            // Bottom corners
+            ctx.beginPath();
+            ctx.moveTo(-holo.width / 2, holo.height / 2 - cornerSize);
+            ctx.lineTo(-holo.width / 2, holo.height / 2);
+            ctx.lineTo(-holo.width / 2 + cornerSize, holo.height / 2);
+            ctx.stroke();
+
+            ctx.beginPath();
+            ctx.moveTo(holo.width / 2 - cornerSize, holo.height / 2);
+            ctx.lineTo(holo.width / 2, holo.height / 2);
+            ctx.lineTo(holo.width / 2, holo.height / 2 - cornerSize);
+            ctx.stroke();
+
+            // Hologram content
+            ctx.globalAlpha = holo.alpha * 0.6;
+            ctx.fillStyle = colorScheme.primary;
+
+            if (holo.type === 0) {
+                // Data bars
+                const barCount = 6;
+                const barWidth = (holo.width - 20) / barCount;
+                for (let i = 0; i < barCount; i++) {
+                    const barHeight = (Math.sin(time * 2 + holo.dataOffset + i) * 0.5 + 0.5) * (holo.height - 15);
+                    ctx.fillRect(
+                        -holo.width / 2 + 10 + i * barWidth,
+                        holo.height / 2 - 5 - barHeight,
+                        barWidth - 3,
+                        barHeight
+                    );
+                }
+            } else if (holo.type === 1) {
+                // Circular scanner
+                const radius = Math.min(holo.width, holo.height) * 0.35;
+                ctx.beginPath();
+                ctx.arc(0, 0, radius, 0, Math.PI * 2);
+                ctx.stroke();
+
+                // Rotating line
+                const angle = time * 2 + holo.dataOffset;
+                ctx.beginPath();
+                ctx.moveTo(0, 0);
+                ctx.lineTo(Math.cos(angle) * radius, Math.sin(angle) * radius);
+                ctx.stroke();
+
+                // Sweep effect
+                ctx.globalAlpha = holo.alpha * 0.2;
+                ctx.beginPath();
+                ctx.moveTo(0, 0);
+                ctx.arc(0, 0, radius, angle - 0.5, angle);
+                ctx.closePath();
+                ctx.fill();
+            } else {
+                // Forerunner text/symbols
+                ctx.font = '10px monospace';
+                ctx.textAlign = 'left';
+                const lines = 4;
+                for (let i = 0; i < lines; i++) {
+                    let text = '';
+                    for (let j = 0; j < 8; j++) {
+                        text += String.fromCharCode(0x25A0 + Math.floor((time * 10 + holo.dataOffset + i + j) % 20));
+                    }
+                    ctx.fillText(text, -holo.width / 2 + 8, -holo.height / 2 + 15 + i * 12);
+                }
+            }
 
             ctx.restore();
         }
 
-        // Draw central Forerunner structure (large hexagon with details)
-        const centerX = width / 2;
-        const centerY = height / 2;
-        const mainPulse = Math.sin(time) * 0.2 + 0.8;
+        // Draw ambient particles
+        ctx.shadowBlur = 5;
+        ctx.shadowColor = colorScheme.primary;
+        for (const p of this.haloParticles) {
+            p.x += p.vx * this.speed;
+            p.y += p.vy * this.speed;
 
-        ctx.globalAlpha = 0.1 * mainPulse;
+            if (p.y < -10) {
+                p.y = height + 10;
+                p.x = Math.random() * width;
+            }
+            if (p.x < -10) p.x = width + 10;
+            if (p.x > width + 10) p.x = -10;
+
+            ctx.fillStyle = colorScheme.primary;
+            ctx.globalAlpha = p.alpha * (0.5 + Math.sin(time * 3 + p.x) * 0.5);
+            ctx.fillRect(p.x - p.size / 2, p.y - p.size / 2, p.size, p.size);
+        }
+
+        // Draw ambient geometric lines
+        ctx.shadowBlur = 10;
+        for (const line of this.haloAmbientLines) {
+            if (!line.active) {
+                if (Math.random() > 0.998) line.active = true;
+                continue;
+            }
+
+            line.progress += line.speed * this.speed;
+            if (line.progress > 1) {
+                line.progress = 0;
+                line.active = Math.random() > 0.5;
+                line.points = this.generateForerunnerPath(width, height);
+            }
+
+            const totalLength = line.points.length - 1;
+            const currentSegment = Math.floor(line.progress * totalLength);
+            const segmentProgress = (line.progress * totalLength) % 1;
+
+            ctx.strokeStyle = colorScheme.primary;
+            ctx.lineWidth = 1.5;
+            ctx.globalAlpha = 0.4;
+
+            ctx.beginPath();
+            for (let i = 0; i <= currentSegment && i < line.points.length - 1; i++) {
+                const p1 = line.points[i];
+                const p2 = line.points[i + 1];
+
+                if (i === 0) ctx.moveTo(p1.x, p1.y);
+
+                if (i === currentSegment) {
+                    const x = p1.x + (p2.x - p1.x) * segmentProgress;
+                    const y = p1.y + (p2.y - p1.y) * segmentProgress;
+                    ctx.lineTo(x, y);
+
+                    // Draw node at current position
+                    ctx.stroke();
+                    ctx.fillStyle = colorScheme.primary;
+                    ctx.globalAlpha = 0.8;
+                    ctx.beginPath();
+                    ctx.arc(x, y, 4, 0, Math.PI * 2);
+                    ctx.fill();
+                } else {
+                    ctx.lineTo(p2.x, p2.y);
+                }
+            }
+            ctx.stroke();
+        }
+
+        // Central Forerunner symbol
+        const cx = width / 2;
+        const cy = height / 2;
+        const symbolSize = Math.min(width, height) * 0.15;
+        const symbolPulse = Math.sin(time * 0.5) * 0.3 + 0.7;
+
+        ctx.globalAlpha = 0.08 * symbolPulse;
         ctx.strokeStyle = colorScheme.primary;
-        ctx.lineWidth = 1;
+        ctx.lineWidth = 2;
         ctx.shadowBlur = 30;
         ctx.shadowColor = colorScheme.primary;
 
-        // Large outer hexagon
-        this.drawHexagon(ctx, centerX, centerY, Math.min(width, height) * 0.4);
+        // Outer ring
+        ctx.beginPath();
+        ctx.arc(cx, cy, symbolSize, 0, Math.PI * 2);
+        ctx.stroke();
 
-        // Inner geometric patterns
-        ctx.globalAlpha = 0.05 * mainPulse;
-        for (let i = 0; i < 6; i++) {
-            const angle = (Math.PI / 3) * i;
-            const x = centerX + Math.cos(angle) * Math.min(width, height) * 0.2;
-            const y = centerY + Math.sin(angle) * Math.min(width, height) * 0.2;
-            this.drawHexagon(ctx, x, y, 40);
+        // Inner triangular pattern (Reclaimer symbol inspired)
+        ctx.beginPath();
+        for (let i = 0; i < 3; i++) {
+            const angle = (Math.PI * 2 / 3) * i - Math.PI / 2;
+            const x = cx + Math.cos(angle) * symbolSize * 0.7;
+            const y = cy + Math.sin(angle) * symbolSize * 0.7;
+            if (i === 0) ctx.moveTo(x, y);
+            else ctx.lineTo(x, y);
         }
+        ctx.closePath();
+        ctx.stroke();
+
+        // Center dot
+        ctx.globalAlpha = 0.15 * symbolPulse;
+        ctx.beginPath();
+        ctx.arc(cx, cy, symbolSize * 0.1, 0, Math.PI * 2);
+        ctx.fill();
 
         ctx.globalAlpha = 1;
         ctx.shadowBlur = 0;
