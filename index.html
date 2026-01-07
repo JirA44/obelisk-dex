@@ -252,6 +252,7 @@
                     <button type="button" class="nav-tab" data-tab="tools">Tools</button>
                     <button type="button" class="nav-tab" data-tab="combos">Combos</button>
                     <button type="button" class="nav-tab" data-tab="investments" data-i18n="invest">💰 Invest</button>
+                    <button type="button" class="nav-tab" data-tab="products">🏦 Products</button>
                     <button type="button" class="nav-tab" data-tab="wallet">Wallet</button>
                     <button type="button" class="nav-tab" data-tab="portfolio">Portfolio</button>
                     <button type="button" class="nav-tab" data-tab="learn">Learn</button>
@@ -1695,6 +1696,162 @@
                     </div>
                 </div>
                 <div id="investments-content"></div>
+            </section>
+
+            
+            <!-- Products Hub Tab -->
+            <section class="tab-content" id="tab-products">
+                <div style="padding:20px;">
+                    <h2 style="color:#fff;margin-bottom:20px;font-size:1.5rem;">🏦 DeFi Products Hub</h2>
+
+                    <!-- Category: Yield -->
+                    <div style="margin-bottom:30px;">
+                        <h3 style="color:#00ff88;margin-bottom:15px;font-size:1.1rem;">📈 Yield & Savings</h3>
+                        <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(180px,1fr));gap:12px;">
+                            <div class="product-card" onclick="StakingModule.render('product-modal-content');document.getElementById('product-modal').style.display='flex'" style="background:linear-gradient(135deg,rgba(0,255,136,0.1),rgba(0,200,100,0.05));border:1px solid rgba(0,255,136,0.3);border-radius:12px;padding:16px;cursor:pointer;transition:all 0.3s;">
+                                <div style="font-size:24px;margin-bottom:8px;">🥩</div>
+                                <div style="color:#fff;font-weight:600;font-size:14px;">Staking</div>
+                                <div style="color:#888;font-size:11px;">ETH, SOL, AVAX...</div>
+                            </div>
+                            <div class="product-card" onclick="SavingsModule.render('product-modal-content');document.getElementById('product-modal').style.display='flex'" style="background:linear-gradient(135deg,rgba(0,255,136,0.1),rgba(0,200,100,0.05));border:1px solid rgba(0,255,136,0.3);border-radius:12px;padding:16px;cursor:pointer;transition:all 0.3s;">
+                                <div style="font-size:24px;margin-bottom:8px;">💰</div>
+                                <div style="color:#fff;font-weight:600;font-size:14px;">Savings</div>
+                                <div style="color:#888;font-size:11px;">Fixed & Flexible</div>
+                            </div>
+                            <div class="product-card" onclick="VaultsModule.render('product-modal-content');document.getElementById('product-modal').style.display='flex'" style="background:linear-gradient(135deg,rgba(0,255,136,0.1),rgba(0,200,100,0.05));border:1px solid rgba(0,255,136,0.3);border-radius:12px;padding:16px;cursor:pointer;transition:all 0.3s;">
+                                <div style="font-size:24px;margin-bottom:8px;">🏛️</div>
+                                <div style="color:#fff;font-weight:600;font-size:14px;">Vaults</div>
+                                <div style="color:#888;font-size:11px;">Auto-compound</div>
+                            </div>
+                            <div class="product-card" onclick="YieldFarmingModule.render('product-modal-content');document.getElementById('product-modal').style.display='flex'" style="background:linear-gradient(135deg,rgba(0,255,136,0.1),rgba(0,200,100,0.05));border:1px solid rgba(0,255,136,0.3);border-radius:12px;padding:16px;cursor:pointer;transition:all 0.3s;">
+                                <div style="font-size:24px;margin-bottom:8px;">🌾</div>
+                                <div style="color:#fff;font-weight:600;font-size:14px;">Yield Farming</div>
+                                <div style="color:#888;font-size:11px;">Multi-protocol</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Category: Liquidity -->
+                    <div style="margin-bottom:30px;">
+                        <h3 style="color:#3b82f6;margin-bottom:15px;font-size:1.1rem;">💧 Liquidity & Pools</h3>
+                        <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(180px,1fr));gap:12px;">
+                            <div class="product-card" onclick="LiquidityPoolsModule.render('product-modal-content');document.getElementById('product-modal').style.display='flex'" style="background:linear-gradient(135deg,rgba(59,130,246,0.1),rgba(59,130,246,0.05));border:1px solid rgba(59,130,246,0.3);border-radius:12px;padding:16px;cursor:pointer;transition:all 0.3s;">
+                                <div style="font-size:24px;margin-bottom:8px;">🌊</div>
+                                <div style="color:#fff;font-weight:600;font-size:14px;">Liquidity Pools</div>
+                                <div style="color:#888;font-size:11px;">Provide LP</div>
+                            </div>
+                            <div class="product-card" onclick="LendingModule.render('product-modal-content');document.getElementById('product-modal').style.display='flex'" style="background:linear-gradient(135deg,rgba(59,130,246,0.1),rgba(59,130,246,0.05));border:1px solid rgba(59,130,246,0.3);border-radius:12px;padding:16px;cursor:pointer;transition:all 0.3s;">
+                                <div style="font-size:24px;margin-bottom:8px;">🏦</div>
+                                <div style="color:#fff;font-weight:600;font-size:14px;">Lending</div>
+                                <div style="color:#888;font-size:11px;">Supply & Borrow</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Category: Trading -->
+                    <div style="margin-bottom:30px;">
+                        <h3 style="color:#f59e0b;margin-bottom:15px;font-size:1.1rem;">📊 Trading & Derivatives</h3>
+                        <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(180px,1fr));gap:12px;">
+                            <div class="product-card" onclick="PerpetualsModule.render('product-modal-content');document.getElementById('product-modal').style.display='flex'" style="background:linear-gradient(135deg,rgba(245,158,11,0.1),rgba(245,158,11,0.05));border:1px solid rgba(245,158,11,0.3);border-radius:12px;padding:16px;cursor:pointer;transition:all 0.3s;">
+                                <div style="font-size:24px;margin-bottom:8px;">📈</div>
+                                <div style="color:#fff;font-weight:600;font-size:14px;">Perpetuals</div>
+                                <div style="color:#888;font-size:11px;">Up to 100x</div>
+                            </div>
+                            <div class="product-card" onclick="OptionsModule.render('product-modal-content');document.getElementById('product-modal').style.display='flex'" style="background:linear-gradient(135deg,rgba(245,158,11,0.1),rgba(245,158,11,0.05));border:1px solid rgba(245,158,11,0.3);border-radius:12px;padding:16px;cursor:pointer;transition:all 0.3s;">
+                                <div style="font-size:24px;margin-bottom:8px;">🎯</div>
+                                <div style="color:#fff;font-weight:600;font-size:14px;">Options</div>
+                                <div style="color:#888;font-size:11px;">Calls & Puts</div>
+                            </div>
+                            <div class="product-card" onclick="DerivativesModule.render('product-modal-content');document.getElementById('product-modal').style.display='flex'" style="background:linear-gradient(135deg,rgba(245,158,11,0.1),rgba(245,158,11,0.05));border:1px solid rgba(245,158,11,0.3);border-radius:12px;padding:16px;cursor:pointer;transition:all 0.3s;">
+                                <div style="font-size:24px;margin-bottom:8px;">📉</div>
+                                <div style="color:#fff;font-weight:600;font-size:14px;">Derivatives</div>
+                                <div style="color:#888;font-size:11px;">Futures, Spreads</div>
+                            </div>
+                            <div class="product-card" onclick="LeveragedTokensModule.render('product-modal-content');document.getElementById('product-modal').style.display='flex'" style="background:linear-gradient(135deg,rgba(245,158,11,0.1),rgba(245,158,11,0.05));border:1px solid rgba(245,158,11,0.3);border-radius:12px;padding:16px;cursor:pointer;transition:all 0.3s;">
+                                <div style="font-size:24px;margin-bottom:8px;">⚡</div>
+                                <div style="color:#fff;font-weight:600;font-size:14px;">Leveraged Tokens</div>
+                                <div style="color:#888;font-size:11px;">2x/3x Long/Short</div>
+                            </div>
+                            <div class="product-card" onclick="CopyTradingModule.render('product-modal-content');document.getElementById('product-modal').style.display='flex'" style="background:linear-gradient(135deg,rgba(245,158,11,0.1),rgba(245,158,11,0.05));border:1px solid rgba(245,158,11,0.3);border-radius:12px;padding:16px;cursor:pointer;transition:all 0.3s;">
+                                <div style="font-size:24px;margin-bottom:8px;">👥</div>
+                                <div style="color:#fff;font-weight:600;font-size:14px;">Copy Trading</div>
+                                <div style="color:#888;font-size:11px;">Follow top traders</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Category: Structured -->
+                    <div style="margin-bottom:30px;">
+                        <h3 style="color:#a855f7;margin-bottom:15px;font-size:1.1rem;">🎰 Structured & Special</h3>
+                        <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(180px,1fr));gap:12px;">
+                            <div class="product-card" onclick="StructuredModule.render('product-modal-content');document.getElementById('product-modal').style.display='flex'" style="background:linear-gradient(135deg,rgba(168,85,247,0.1),rgba(168,85,247,0.05));border:1px solid rgba(168,85,247,0.3);border-radius:12px;padding:16px;cursor:pointer;transition:all 0.3s;">
+                                <div style="font-size:24px;margin-bottom:8px;">📦</div>
+                                <div style="color:#fff;font-weight:600;font-size:14px;">Structured</div>
+                                <div style="color:#888;font-size:11px;">Shark Fin, Snowball</div>
+                            </div>
+                            <div class="product-card" onclick="IndexFundsModule.render('product-modal-content');document.getElementById('product-modal').style.display='flex'" style="background:linear-gradient(135deg,rgba(168,85,247,0.1),rgba(168,85,247,0.05));border:1px solid rgba(168,85,247,0.3);border-radius:12px;padding:16px;cursor:pointer;transition:all 0.3s;">
+                                <div style="font-size:24px;margin-bottom:8px;">📊</div>
+                                <div style="color:#fff;font-weight:600;font-size:14px;">Index Funds</div>
+                                <div style="color:#888;font-size:11px;">DeFi, L1, Gaming...</div>
+                            </div>
+                            <div class="product-card" onclick="PredictionsModule.render('product-modal-content');document.getElementById('product-modal').style.display='flex'" style="background:linear-gradient(135deg,rgba(168,85,247,0.1),rgba(168,85,247,0.05));border:1px solid rgba(168,85,247,0.3);border-radius:12px;padding:16px;cursor:pointer;transition:all 0.3s;">
+                                <div style="font-size:24px;margin-bottom:8px;">🔮</div>
+                                <div style="color:#fff;font-weight:600;font-size:14px;">Predictions</div>
+                                <div style="color:#888;font-size:11px;">Binary markets</div>
+                            </div>
+                            <div class="product-card" onclick="LotteryModule.render('product-modal-content');document.getElementById('product-modal').style.display='flex'" style="background:linear-gradient(135deg,rgba(168,85,247,0.1),rgba(168,85,247,0.05));border:1px solid rgba(168,85,247,0.3);border-radius:12px;padding:16px;cursor:pointer;transition:all 0.3s;">
+                                <div style="font-size:24px;margin-bottom:8px;">🎰</div>
+                                <div style="color:#fff;font-weight:600;font-size:14px;">Lottery</div>
+                                <div style="color:#888;font-size:11px;">Daily/Weekly jackpots</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Category: Real Assets -->
+                    <div style="margin-bottom:30px;">
+                        <h3 style="color:#ec4899;margin-bottom:15px;font-size:1.1rem;">🏠 Real World Assets</h3>
+                        <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(180px,1fr));gap:12px;">
+                            <div class="product-card" onclick="RWAModule.render('product-modal-content');document.getElementById('product-modal').style.display='flex'" style="background:linear-gradient(135deg,rgba(236,72,153,0.1),rgba(236,72,153,0.05));border:1px solid rgba(236,72,153,0.3);border-radius:12px;padding:16px;cursor:pointer;transition:all 0.3s;">
+                                <div style="font-size:24px;margin-bottom:8px;">🏦</div>
+                                <div style="color:#fff;font-weight:600;font-size:14px;">RWA</div>
+                                <div style="color:#888;font-size:11px;">Bonds, Real Estate, Gold</div>
+                            </div>
+                            <div class="product-card" onclick="InsuranceModule.render('product-modal-content');document.getElementById('product-modal').style.display='flex'" style="background:linear-gradient(135deg,rgba(236,72,153,0.1),rgba(236,72,153,0.05));border:1px solid rgba(236,72,153,0.3);border-radius:12px;padding:16px;cursor:pointer;transition:all 0.3s;">
+                                <div style="font-size:24px;margin-bottom:8px;">🛡️</div>
+                                <div style="color:#fff;font-weight:600;font-size:14px;">Insurance</div>
+                                <div style="color:#888;font-size:11px;">Smart contract cover</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Category: Launch -->
+                    <div style="margin-bottom:30px;">
+                        <h3 style="color:#22d3ee;margin-bottom:15px;font-size:1.1rem;">🚀 Launchpad & NFT</h3>
+                        <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(180px,1fr));gap:12px;">
+                            <div class="product-card" onclick="LaunchpadModule.render('product-modal-content');document.getElementById('product-modal').style.display='flex'" style="background:linear-gradient(135deg,rgba(34,211,238,0.1),rgba(34,211,238,0.05));border:1px solid rgba(34,211,238,0.3);border-radius:12px;padding:16px;cursor:pointer;transition:all 0.3s;">
+                                <div style="font-size:24px;margin-bottom:8px;">🚀</div>
+                                <div style="color:#fff;font-weight:600;font-size:14px;">Launchpad</div>
+                                <div style="color:#888;font-size:11px;">IDO/ICO</div>
+                            </div>
+                            <div class="product-card" onclick="NFTStakingModule.render('product-modal-content');document.getElementById('product-modal').style.display='flex'" style="background:linear-gradient(135deg,rgba(34,211,238,0.1),rgba(34,211,238,0.05));border:1px solid rgba(34,211,238,0.3);border-radius:12px;padding:16px;cursor:pointer;transition:all 0.3s;">
+                                <div style="font-size:24px;margin-bottom:8px;">🖼️</div>
+                                <div style="color:#fff;font-weight:600;font-size:14px;">NFT Staking</div>
+                                <div style="color:#888;font-size:11px;">BAYC, Punks, Azuki</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Product Modal -->
+                <div id="product-modal" style="display:none;position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,0.8);z-index:9999;justify-content:center;align-items:center;" onclick="if(event.target===this)this.style.display='none'">
+                    <div style="background:#1a1a2e;border-radius:16px;padding:24px;max-width:800px;max-height:80vh;overflow-y:auto;margin:20px;width:calc(100% - 40px);">
+                        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:16px;">
+                            <span style="color:#888;font-size:12px;">Product Details</span>
+                            <button onclick="document.getElementById('product-modal').style.display='none'" style="background:none;border:none;color:#fff;font-size:20px;cursor:pointer;">✕</button>
+                        </div>
+                        <div id="product-modal-content"></div>
+                    </div>
+                </div>
             </section>
 
             <!-- Portfolio Tab -->
