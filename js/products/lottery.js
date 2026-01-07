@@ -45,8 +45,8 @@ const LotteryModule = {
     render(containerId) {
         const el = document.getElementById(containerId);
         if (!el) return;
-        el.innerHTML = '<h3>Lottery & Jackpots</h3><div class="lottery-grid">' + this.lotteries.map(l =>
-            '<div class="lottery-card' + (l.noLoss ? ' no-loss' : '') + '"><strong>' + l.name + '</strong><br>' + (l.jackpot ? 'Jackpot: $' + l.jackpot.toLocaleString() : 'Prize: ' + l.prize) + '<br>Ticket: $' + l.ticketPrice + '<br>Draw: ' + l.drawTime + '<br>Odds: ' + l.odds + '<br><button onclick="LotteryModule.quickBuy(\'' + l.id + '\')">' + (l.instant ? 'Play Now' : 'Buy Ticket') + '</button></div>'
+        el.innerHTML = '<h3 style="color:#00ff88;margin-bottom:16px;">Lottery & Jackpots</h3><div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:12px;">' + this.lotteries.map(l =>
+            '<div style="background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.1);border-radius:12px;padding:16px;"><strong>' + l.name + '</strong><br>' + (l.jackpot ? 'Jackpot: $' + l.jackpot.toLocaleString() : 'Prize: ' + l.prize) + '<br>Ticket: $' + l.ticketPrice + '<br>Draw: ' + l.drawTime + '<br>Odds: ' + l.odds + '<br><button onclick="LotteryModule.quickBuy(\'' + l.id + '\')" style="margin-top:10px;padding:8px 16px;background:#00ff88;border:none;border-radius:8px;color:#000;font-weight:bold;cursor:pointer;">' + (l.instant ? 'Play Now' : 'Buy Ticket') + '</button></div>'
         ).join('') + '</div>';
     },
     quickBuy(lotteryId) {

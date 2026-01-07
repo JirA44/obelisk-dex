@@ -47,8 +47,8 @@ const YieldFarmingModule = {
     render(containerId) {
         const el = document.getElementById(containerId);
         if (!el) return;
-        el.innerHTML = '<h3>Yield Farming</h3><div class="farms-grid">' + this.farms.map(f => 
-            '<div class="farm-card ' + f.risk + '"><strong>' + f.name + '</strong><br>' + f.protocol + '<br>' + f.apy + '% APY<br>Rewards: ' + f.rewards.join(', ') + '<br>TVL: $' + (f.tvl/1000000000).toFixed(2) + 'B<br><button onclick="YieldFarmingModule.quickDeposit(\'' + f.id + '\')">Farm</button></div>'
+        el.innerHTML = '<h3 style="color:#00ff88;margin-bottom:16px;">Yield Farming</h3><div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:12px;">' + this.farms.map(f => 
+            '<div style="background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.1);border-radius:12px;padding:16px;"><strong>' + f.name + '</strong><br>' + f.protocol + '<br>' + f.apy + '% APY<br>Rewards: ' + f.rewards.join(', ') + '<br>TVL: $' + (f.tvl/1000000000).toFixed(2) + 'B<br><button onclick="YieldFarmingModule.quickDeposit(\'' + f.id + '\')" style="margin-top:10px;padding:8px 16px;background:#00ff88;border:none;border-radius:8px;color:#000;font-weight:bold;cursor:pointer;">Farm</button></div>'
         ).join('') + '</div>';
     },
     quickDeposit(farmId) {

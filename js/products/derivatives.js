@@ -40,8 +40,8 @@ const DerivativesModule = {
     render(containerId) {
         const el = document.getElementById(containerId);
         if (!el) return;
-        el.innerHTML = '<h3>Derivatives</h3><div class="derivatives-grid">' + this.instruments.map(i =>
-            '<div class="deriv-card ' + i.type + '"><strong>' + i.name + '</strong><br>Type: ' + i.type.toUpperCase() + '<br>' + (i.expiry ? 'Expiry: ' + i.expiry : 'Perpetual') + '<br>Price: $' + i.price.toLocaleString() + '<br><button onclick="DerivativesModule.quickTrade(\'' + i.id + '\')">Trade</button></div>'
+        el.innerHTML = '<h3 style="color:#00ff88;margin-bottom:16px;">Derivatives</h3><div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:12px;">' + this.instruments.map(i =>
+            '<div style="background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.1);border-radius:12px;padding:16px;"><strong>' + i.name + '</strong><br>Type: ' + i.type.toUpperCase() + '<br>' + (i.expiry ? 'Expiry: ' + i.expiry : 'Perpetual') + '<br>Price: $' + i.price.toLocaleString() + '<br><button onclick="DerivativesModule.quickTrade(\'' + i.id + '\')" style="margin-top:10px;padding:8px 16px;background:#00ff88;border:none;border-radius:8px;color:#000;font-weight:bold;cursor:pointer;">Trade</button></div>'
         ).join('') + '</div>';
     },
     quickTrade(instrumentId) {

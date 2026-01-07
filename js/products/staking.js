@@ -37,8 +37,8 @@ const StakingModule = {
     render(containerId) {
         const el = document.getElementById(containerId);
         if (!el) return;
-        el.innerHTML = '<h3>Staking Pools</h3><div class="pools-grid">' + this.pools.map(p => 
-            '<div class="pool-card"><strong>' + p.icon + ' ' + p.name + '</strong><br>' + p.apy + '% APY<br>Min: ' + p.minStake + ' ' + p.token + '<br><button onclick="StakingModule.quickStake(\'' + p.id + '\')">Stake</button></div>'
+        el.innerHTML = '<h3 style="color:#00ff88;margin-bottom:16px;">Staking Pools</h3><div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:12px;">' + this.pools.map(p => 
+            '<div style="background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.1);border-radius:12px;padding:16px;"><strong>' + p.icon + ' ' + p.name + '</strong><br>' + p.apy + '% APY<br>Min: ' + p.minStake + ' ' + p.token + '<br><button onclick="StakingModule.quickStake(\'' + p.id + '\')" style="margin-top:10px;padding:8px 16px;background:#00ff88;border:none;border-radius:8px;color:#000;font-weight:bold;cursor:pointer;">Stake</button></div>'
         ).join('') + '</div>';
     },
     quickStake(poolId) {

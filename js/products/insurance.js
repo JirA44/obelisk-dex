@@ -35,8 +35,8 @@ const InsuranceModule = {
     render(containerId) {
         const el = document.getElementById(containerId);
         if (!el) return;
-        el.innerHTML = '<h3>Insurance Plans</h3><div class="plans-grid">' + this.plans.map(p => 
-            '<div class="plan-card"><strong>' + p.name + '</strong><br>Coverage: $' + (p.coverage/1000) + 'K<br>Premium: ' + p.premium + '%<br>Duration: ' + p.duration + ' days<br><button onclick="InsuranceModule.quickBuy(\'' + p.id + '\')">Get Covered</button></div>'
+        el.innerHTML = '<h3 style="color:#00ff88;margin-bottom:16px;">Insurance Plans</h3><div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:12px;">' + this.plans.map(p => 
+            '<div style="background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.1);border-radius:12px;padding:16px;"><strong>' + p.name + '</strong><br>Coverage: $' + (p.coverage/1000) + 'K<br>Premium: ' + p.premium + '%<br>Duration: ' + p.duration + ' days<br><button onclick="InsuranceModule.quickBuy(\'' + p.id + '\')" style="margin-top:10px;padding:8px 16px;background:#00ff88;border:none;border-radius:8px;color:#000;font-weight:bold;cursor:pointer;">Get Covered</button></div>'
         ).join('') + '</div>';
     },
     quickBuy(planId) {

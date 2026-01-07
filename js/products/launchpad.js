@@ -29,8 +29,8 @@ const LaunchpadModule = {
     render(containerId) {
         const el = document.getElementById(containerId);
         if (!el) return;
-        el.innerHTML = '<h3>Token Launchpad</h3><div class="launchpad-grid">' + this.projects.map(p => 
-            '<div class="project-card ' + p.status + '"><strong>' + p.name + '</strong> ($' + p.ticker + ')<br>Price: $' + p.price + '<br>Raised: $' + (p.raised/1000000).toFixed(1) + 'M / $' + (p.hardcap/1000000).toFixed(1) + 'M<br>TGE: ' + p.tge + '<br>Status: ' + p.status.toUpperCase() + '<br>' + (p.status === 'live' ? '<button onclick="LaunchpadModule.quickJoin(\'' + p.id + '\')">Participate</button>' : '') + '</div>'
+        el.innerHTML = '<h3 style="color:#00ff88;margin-bottom:16px;">Token Launchpad</h3><div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:12px;">' + this.projects.map(p => 
+            '<div style="background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.1);border-radius:12px;padding:16px;"><strong>' + p.name + '</strong> ($' + p.ticker + ')<br>Price: $' + p.price + '<br>Raised: $' + (p.raised/1000000).toFixed(1) + 'M / $' + (p.hardcap/1000000).toFixed(1) + 'M<br>TGE: ' + p.tge + '<br>Status: ' + p.status.toUpperCase() + '<br>' + (p.status === 'live' ? '<button onclick="LaunchpadModule.quickJoin(\'' + p.id + '\')" style="margin-top:10px;padding:8px 16px;background:#00ff88;border:none;border-radius:8px;color:#000;font-weight:bold;cursor:pointer;">Participate</button>' : '') + '</div>'
         ).join('') + '</div>';
     },
     quickJoin(projectId) {

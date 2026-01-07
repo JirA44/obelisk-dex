@@ -36,8 +36,8 @@ const NFTStakingModule = {
     render(containerId) {
         const el = document.getElementById(containerId);
         if (!el) return;
-        el.innerHTML = '<h3>NFT Staking</h3><div class="nft-grid">' + this.collections.map(c => 
-            '<div class="nft-card"><strong>' + c.name + '</strong><br>' + c.apy + '% APY in ' + c.token + '<br>Floor: ' + c.minFloor + ' ETH<br><button onclick="NFTStakingModule.quickStake(\'' + c.id + '\')">Stake NFT</button></div>'
+        el.innerHTML = '<h3 style="color:#00ff88;margin-bottom:16px;">NFT Staking</h3><div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:12px;">' + this.collections.map(c => 
+            '<div style="background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.1);border-radius:12px;padding:16px;"><strong>' + c.name + '</strong><br>' + c.apy + '% APY in ' + c.token + '<br>Floor: ' + c.minFloor + ' ETH<br><button onclick="NFTStakingModule.quickStake(\'' + c.id + '\')" style="margin-top:10px;padding:8px 16px;background:#00ff88;border:none;border-radius:8px;color:#000;font-weight:bold;cursor:pointer;">Stake NFT</button></div>'
         ).join('') + '</div>';
     },
     quickStake(collectionId) {

@@ -142,7 +142,7 @@ const CombosModule = {
         const riskColor = riskColors[combo.riskLevel] || '#888';
 
         return `
-            <div class="combo-card" data-id="${combo.id}" style="
+            <div style="background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.1);border-radius:12px;padding:16px;" data-id="${combo.id}" style="
                 background: linear-gradient(145deg, #1a1a2e, #0d0d1a);
                 border: 1px solid #333;
                 border-radius: 16px;

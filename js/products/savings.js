@@ -40,8 +40,8 @@ const SavingsModule = {
     render(containerId) {
         const el = document.getElementById(containerId);
         if (!el) return;
-        el.innerHTML = '<h3>Savings Accounts</h3><div class="savings-grid">' + this.accounts.map(a => 
-            '<div class="savings-card ' + a.type + '"><strong>' + a.name + '</strong><br>' + a.apy + '% APY<br>' + (a.type === 'fixed' ? 'Lock: ' + a.lockDays + ' days' : 'Flexible') + '<br>Min: ' + a.minDeposit + ' ' + a.token + '<br><button onclick="SavingsModule.quickDeposit(\'' + a.id + '\')">Deposit</button></div>'
+        el.innerHTML = '<h3 style="color:#00ff88;margin-bottom:16px;">Savings Accounts</h3><div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:12px;">' + this.accounts.map(a => 
+            '<div style="background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.1);border-radius:12px;padding:16px;"><strong>' + a.name + '</strong><br>' + a.apy + '% APY<br>' + (a.type === 'fixed' ? 'Lock: ' + a.lockDays + ' days' : 'Flexible') + '<br>Min: ' + a.minDeposit + ' ' + a.token + '<br><button onclick="SavingsModule.quickDeposit(\'' + a.id + '\')" style="margin-top:10px;padding:8px 16px;background:#00ff88;border:none;border-radius:8px;color:#000;font-weight:bold;cursor:pointer;">Deposit</button></div>'
         ).join('') + '</div>';
     },
     quickDeposit(accountId) {

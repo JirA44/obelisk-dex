@@ -34,8 +34,8 @@ const CopyTradingModule = {
     render(containerId) {
         const el = document.getElementById(containerId);
         if (!el) return;
-        el.innerHTML = '<h3>Copy Trading</h3><div class="traders-grid">' + this.traders.map(t => 
-            '<div class="trader-card"><strong>' + t.name + '</strong><br>30d PnL: <span class="' + (t.pnl30d > 0 ? 'green' : 'red') + '">+' + t.pnl30d + '%</span><br>Win Rate: ' + t.winRate + '%<br>Followers: ' + t.followers.toLocaleString() + '<br>Fee: ' + t.fee + '%<br><button onclick="CopyTradingModule.quickCopy(\'' + t.id + '\')">Copy</button></div>'
+        el.innerHTML = '<h3 style="color:#00ff88;margin-bottom:16px;">Copy Trading</h3><div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:12px;">' + this.traders.map(t => 
+            '<div style="background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.1);border-radius:12px;padding:16px;"><strong>' + t.name + '</strong><br>30d PnL: <span class="' + (t.pnl30d > 0 ? 'green' : 'red') + '">+' + t.pnl30d + '%</span><br>Win Rate: ' + t.winRate + '%<br>Followers: ' + t.followers.toLocaleString() + '<br>Fee: ' + t.fee + '%<br><button onclick="CopyTradingModule.quickCopy(\'' + t.id + '\')" style="margin-top:10px;padding:8px 16px;background:#00ff88;border:none;border-radius:8px;color:#000;font-weight:bold;cursor:pointer;">Copy</button></div>'
         ).join('') + '</div>';
     },
     quickCopy(traderId) {

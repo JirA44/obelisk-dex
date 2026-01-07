@@ -36,8 +36,8 @@ const LiquidityPoolsModule = {
     render(containerId) {
         const el = document.getElementById(containerId);
         if (!el) return;
-        el.innerHTML = '<h3>Liquidity Pools</h3><div class="pools-grid">' + this.pools.map(p => 
-            '<div class="pool-card ' + p.risk + '"><strong>' + p.name + '</strong><br>' + p.apy + '% APY<br>TVL: $' + (p.tvl/1000000).toFixed(1) + 'M<br>Fee: ' + p.fee + '%<br><button onclick="LiquidityPoolsModule.quickAdd(\'' + p.id + '\')">Add Liquidity</button></div>'
+        el.innerHTML = '<h3 style="color:#00ff88;margin-bottom:16px;">Liquidity Pools</h3><div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:12px;">' + this.pools.map(p => 
+            '<div style="background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.1);border-radius:12px;padding:16px;"><strong>' + p.name + '</strong><br>' + p.apy + '% APY<br>TVL: $' + (p.tvl/1000000).toFixed(1) + 'M<br>Fee: ' + p.fee + '%<br><button onclick="LiquidityPoolsModule.quickAdd(\'' + p.id + '\')" style="margin-top:10px;padding:8px 16px;background:#00ff88;border:none;border-radius:8px;color:#000;font-weight:bold;cursor:pointer;">Add Liquidity</button></div>'
         ).join('') + '</div>';
     },
     quickAdd(poolId) {

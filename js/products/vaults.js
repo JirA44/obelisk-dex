@@ -36,8 +36,8 @@ const VaultsModule = {
     render(containerId) {
         const el = document.getElementById(containerId);
         if (!el) return;
-        el.innerHTML = '<h3>Auto-Compound Vaults</h3><div class="vaults-grid">' + this.vaults.map(v => 
-            '<div class="vault-card ' + v.risk + '"><strong>' + v.name + '</strong><br>' + v.apy + '% APY<br>' + v.strategy + '<br>TVL: $' + (v.tvl/1000000).toFixed(1) + 'M<br><button onclick="VaultsModule.quickDeposit(\'' + v.id + '\')">Deposit</button></div>'
+        el.innerHTML = '<h3 style="color:#00ff88;margin-bottom:16px;">Auto-Compound Vaults</h3><div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:12px;">' + this.vaults.map(v => 
+            '<div style="background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.1);border-radius:12px;padding:16px;"><strong>' + v.name + '</strong><br>' + v.apy + '% APY<br>' + v.strategy + '<br>TVL: $' + (v.tvl/1000000).toFixed(1) + 'M<br><button onclick="VaultsModule.quickDeposit(\'' + v.id + '\')" style="margin-top:10px;padding:8px 16px;background:#00ff88;border:none;border-radius:8px;color:#000;font-weight:bold;cursor:pointer;">Deposit</button></div>'
         ).join('') + '</div>';
     },
     quickDeposit(vaultId) {

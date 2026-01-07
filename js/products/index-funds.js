@@ -43,8 +43,8 @@ const IndexFundsModule = {
     render(containerId) {
         const el = document.getElementById(containerId);
         if (!el) return;
-        el.innerHTML = '<h3>Index Funds</h3><div class="index-grid">' + this.funds.map(f =>
-            '<div class="index-card"><strong>' + f.name + '</strong> ($' + f.ticker + ')<br>Assets: ' + f.assets.slice(0, 3).join(', ') + '...<br>APY: ' + f.apy + '% | Fee: ' + f.fee + '%<br>TVL: $' + (f.tvl/1000000).toFixed(0) + 'M<br>Min: $' + f.minInvest + '<br><button onclick="IndexFundsModule.quickInvest(\'' + f.id + '\')">Invest</button></div>'
+        el.innerHTML = '<h3 style="color:#00ff88;margin-bottom:16px;">Index Funds</h3><div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:12px;">' + this.funds.map(f =>
+            '<div style="background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.1);border-radius:12px;padding:16px;"><strong>' + f.name + '</strong> ($' + f.ticker + ')<br>Assets: ' + f.assets.slice(0, 3).join(', ') + '...<br>APY: ' + f.apy + '% | Fee: ' + f.fee + '%<br>TVL: $' + (f.tvl/1000000).toFixed(0) + 'M<br>Min: $' + f.minInvest + '<br><button onclick="IndexFundsModule.quickInvest(\'' + f.id + '\')" style="margin-top:10px;padding:8px 16px;background:#00ff88;border:none;border-radius:8px;color:#000;font-weight:bold;cursor:pointer;">Invest</button></div>'
         ).join('') + '</div>';
     },
     quickInvest(fundId) {

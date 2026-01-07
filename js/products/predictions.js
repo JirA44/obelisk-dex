@@ -26,8 +26,8 @@ const PredictionsModule = {
     render(containerId) {
         const el = document.getElementById(containerId);
         if (!el) return;
-        el.innerHTML = '<h3>Prediction Markets</h3><div class="predictions-grid">' + this.markets.map(m => 
-            '<div class="prediction-card"><strong>' + m.question + '</strong><br>YES: ' + m.yesOdds + 'x | NO: ' + m.noOdds + 'x<br>Volume: $' + (m.volume/1000000).toFixed(1) + 'M<br>Ends: ' + m.endDate + '<br><button onclick="PredictionsModule.quickBet(\'' + m.id + '\',\'yes\')">YES</button> <button onclick="PredictionsModule.quickBet(\'' + m.id + '\',\'no\')">NO</button></div>'
+        el.innerHTML = '<h3 style="color:#00ff88;margin-bottom:16px;">Prediction Markets</h3><div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:12px;">' + this.markets.map(m => 
+            '<div style="background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.1);border-radius:12px;padding:16px;"><strong>' + m.question + '</strong><br>YES: ' + m.yesOdds + 'x | NO: ' + m.noOdds + 'x<br>Volume: $' + (m.volume/1000000).toFixed(1) + 'M<br>Ends: ' + m.endDate + '<br><button onclick="PredictionsModule.quickBet(\'' + m.id + '\',\'yes\')" style="margin-top:10px;padding:8px 16px;background:#00ff88;border:none;border-radius:8px;color:#000;font-weight:bold;cursor:pointer;">YES</button> <button onclick="PredictionsModule.quickBet(\'' + m.id + '\',\'no\')" style="margin-top:10px;padding:8px 16px;background:#00ff88;border:none;border-radius:8px;color:#000;font-weight:bold;cursor:pointer;">NO</button></div>'
         ).join('') + '</div>';
     },
     quickBet(marketId, side) {

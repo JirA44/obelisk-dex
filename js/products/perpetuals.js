@@ -38,8 +38,8 @@ const PerpetualsModule = {
     render(containerId) {
         const el = document.getElementById(containerId);
         if (!el) return;
-        el.innerHTML = '<h3>Perpetual Futures</h3><div class="perps-grid">' + this.markets.map(m => 
-            '<div class="perp-card"><strong>' + m.symbol + '</strong><br>$' + m.price.toLocaleString() + '<br>Funding: ' + m.fundingRate + '%<br>Max: ' + m.maxLeverage + 'x<br><button onclick="PerpetualsModule.quickTrade(\'' + m.id + '\',\'long\')">Long</button> <button onclick="PerpetualsModule.quickTrade(\'' + m.id + '\',\'short\')">Short</button></div>'
+        el.innerHTML = '<h3 style="color:#00ff88;margin-bottom:16px;">Perpetual Futures</h3><div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:12px;">' + this.markets.map(m => 
+            '<div style="background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.1);border-radius:12px;padding:16px;"><strong>' + m.symbol + '</strong><br>$' + m.price.toLocaleString() + '<br>Funding: ' + m.fundingRate + '%<br>Max: ' + m.maxLeverage + 'x<br><button onclick="PerpetualsModule.quickTrade(\'' + m.id + '\',\'long\')" style="margin-top:10px;padding:8px 16px;background:#00ff88;border:none;border-radius:8px;color:#000;font-weight:bold;cursor:pointer;">Long</button> <button onclick="PerpetualsModule.quickTrade(\'' + m.id + '\',\'short\')" style="margin-top:10px;padding:8px 16px;background:#00ff88;border:none;border-radius:8px;color:#000;font-weight:bold;cursor:pointer;">Short</button></div>'
         ).join('') + '</div>';
     },
     quickTrade(marketId, side) {

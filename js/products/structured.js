@@ -39,8 +39,8 @@ const StructuredModule = {
     render(containerId) {
         const el = document.getElementById(containerId);
         if (!el) return;
-        el.innerHTML = '<h3>Structured Products</h3><div class="structured-grid">' + this.products.map(p => 
-            '<div class="structured-card"><strong>' + p.name + '</strong><br>Type: ' + p.type + '<br>Base APY: ' + p.baseAPY + '%' + (p.bonusAPY ? ' (up to ' + p.bonusAPY + '%)' : '') + '<br>Duration: ' + p.duration + ' days<br>Min: $' + p.minInvest + '<br><button onclick="StructuredModule.quickInvest(\'' + p.id + '\')">Invest</button></div>'
+        el.innerHTML = '<h3 style="color:#00ff88;margin-bottom:16px;">Structured Products</h3><div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:12px;">' + this.products.map(p => 
+            '<div style="background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.1);border-radius:12px;padding:16px;"><strong>' + p.name + '</strong><br>Type: ' + p.type + '<br>Base APY: ' + p.baseAPY + '%' + (p.bonusAPY ? ' (up to ' + p.bonusAPY + '%)' : '') + '<br>Duration: ' + p.duration + ' days<br>Min: $' + p.minInvest + '<br><button onclick="StructuredModule.quickInvest(\'' + p.id + '\')" style="margin-top:10px;padding:8px 16px;background:#00ff88;border:none;border-radius:8px;color:#000;font-weight:bold;cursor:pointer;">Invest</button></div>'
         ).join('') + '</div>';
     },
     quickInvest(productId) {
