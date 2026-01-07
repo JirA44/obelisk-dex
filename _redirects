@@ -1,0 +1,8 @@
+# Cloudflare Pages Redirects
+# https://developers.cloudflare.com/pages/configuration/redirects/
+
+# SPA fallback - all routes to index.html
+/*  /index.html  200
+
+# API proxy to backend (if using Cloudflare Workers)
+# /api/*  https://api.obelisk.io/:splat  200

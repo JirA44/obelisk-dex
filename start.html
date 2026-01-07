@@ -1,0 +1,682 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Obelisk DEX - Commencer en 3 Minutes</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', system-ui, sans-serif;
+            background: linear-gradient(135deg, #0a0a0f 0%, #1a1a2e 50%, #0a0a0f 100%);
+            color: #fff;
+            min-height: 100vh;
+            line-height: 1.6;
+        }
+
+        .hero {
+            text-align: center;
+            padding: 60px 20px 40px;
+            background: radial-gradient(ellipse at top, rgba(0, 212, 170, 0.1) 0%, transparent 60%);
+        }
+
+        .hero h1 {
+            font-size: 3rem;
+            margin-bottom: 20px;
+            background: linear-gradient(135deg, #00d4aa, #00a8ff);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .hero p {
+            font-size: 1.3rem;
+            color: #aaa;
+            max-width: 600px;
+            margin: 0 auto;
+        }
+
+        .container {
+            max-width: 1000px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+
+        /* Steps Section */
+        .steps {
+            padding: 40px 0;
+        }
+
+        .steps h2 {
+            text-align: center;
+            font-size: 2rem;
+            margin-bottom: 40px;
+            color: #00d4aa;
+        }
+
+        .step-cards {
+            display: flex;
+            gap: 30px;
+            flex-wrap: wrap;
+            justify-content: center;
+        }
+
+        .step-card {
+            background: rgba(255,255,255,0.03);
+            border: 1px solid rgba(0, 212, 170, 0.2);
+            border-radius: 20px;
+            padding: 30px;
+            flex: 1;
+            min-width: 280px;
+            max-width: 300px;
+            text-align: center;
+            transition: all 0.3s ease;
+        }
+
+        .step-card:hover {
+            transform: translateY(-5px);
+            border-color: #00d4aa;
+            box-shadow: 0 10px 40px rgba(0, 212, 170, 0.2);
+        }
+
+        .step-number {
+            width: 60px;
+            height: 60px;
+            background: linear-gradient(135deg, #00d4aa, #00a8ff);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+            font-weight: bold;
+            margin: 0 auto 20px;
+        }
+
+        .step-card h3 {
+            font-size: 1.3rem;
+            margin-bottom: 15px;
+        }
+
+        .step-card p {
+            color: #888;
+            font-size: 0.95rem;
+        }
+
+        .step-card .action-btn {
+            display: inline-block;
+            margin-top: 20px;
+            padding: 12px 25px;
+            background: linear-gradient(135deg, #00d4aa, #00a8ff);
+            color: #000;
+            text-decoration: none;
+            border-radius: 25px;
+            font-weight: 600;
+            transition: all 0.3s ease;
+        }
+
+        .step-card .action-btn:hover {
+            transform: scale(1.05);
+            box-shadow: 0 5px 20px rgba(0, 212, 170, 0.4);
+        }
+
+        /* Security Section */
+        .security {
+            padding: 60px 0;
+            background: rgba(0, 212, 170, 0.02);
+            margin: 40px 0;
+        }
+
+        .security h2 {
+            text-align: center;
+            font-size: 2rem;
+            margin-bottom: 20px;
+        }
+
+        .security .subtitle {
+            text-align: center;
+            color: #888;
+            margin-bottom: 40px;
+            font-size: 1.1rem;
+        }
+
+        .security-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 25px;
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+
+        .security-item {
+            background: rgba(0,0,0,0.3);
+            border: 1px solid rgba(0, 212, 170, 0.15);
+            border-radius: 15px;
+            padding: 25px;
+        }
+
+        .security-item .icon {
+            font-size: 2.5rem;
+            margin-bottom: 15px;
+        }
+
+        .security-item h3 {
+            color: #00d4aa;
+            margin-bottom: 10px;
+            font-size: 1.1rem;
+        }
+
+        .security-item p {
+            color: #999;
+            font-size: 0.9rem;
+        }
+
+        /* How Funds Protected */
+        .protection {
+            padding: 60px 20px;
+        }
+
+        .protection h2 {
+            text-align: center;
+            font-size: 2rem;
+            margin-bottom: 40px;
+            color: #00d4aa;
+        }
+
+        .protection-box {
+            background: linear-gradient(135deg, rgba(0, 212, 170, 0.1), rgba(0, 168, 255, 0.1));
+            border: 2px solid rgba(0, 212, 170, 0.3);
+            border-radius: 25px;
+            padding: 40px;
+            max-width: 800px;
+            margin: 0 auto;
+        }
+
+        .protection-list {
+            list-style: none;
+        }
+
+        .protection-list li {
+            display: flex;
+            align-items: flex-start;
+            gap: 15px;
+            padding: 20px 0;
+            border-bottom: 1px solid rgba(255,255,255,0.1);
+        }
+
+        .protection-list li:last-child {
+            border-bottom: none;
+        }
+
+        .protection-list .check {
+            width: 30px;
+            height: 30px;
+            background: #00d4aa;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+            font-size: 1rem;
+        }
+
+        .protection-list h4 {
+            color: #fff;
+            margin-bottom: 5px;
+        }
+
+        .protection-list p {
+            color: #888;
+            font-size: 0.9rem;
+        }
+
+        /* FAQ */
+        .faq {
+            padding: 60px 20px;
+        }
+
+        .faq h2 {
+            text-align: center;
+            font-size: 2rem;
+            margin-bottom: 40px;
+        }
+
+        .faq-list {
+            max-width: 700px;
+            margin: 0 auto;
+        }
+
+        .faq-item {
+            background: rgba(255,255,255,0.03);
+            border: 1px solid rgba(255,255,255,0.1);
+            border-radius: 15px;
+            margin-bottom: 15px;
+            overflow: hidden;
+        }
+
+        .faq-question {
+            padding: 20px 25px;
+            cursor: pointer;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-weight: 600;
+            transition: background 0.3s;
+        }
+
+        .faq-question:hover {
+            background: rgba(0, 212, 170, 0.1);
+        }
+
+        .faq-question .arrow {
+            transition: transform 0.3s;
+        }
+
+        .faq-item.open .faq-question .arrow {
+            transform: rotate(180deg);
+        }
+
+        .faq-answer {
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.3s ease;
+        }
+
+        .faq-item.open .faq-answer {
+            max-height: 300px;
+        }
+
+        .faq-answer-content {
+            padding: 0 25px 20px;
+            color: #888;
+        }
+
+        /* Products Overview */
+        .products {
+            padding: 60px 20px;
+            background: rgba(0,0,0,0.3);
+        }
+
+        .products h2 {
+            text-align: center;
+            font-size: 2rem;
+            margin-bottom: 40px;
+        }
+
+        .products-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 20px;
+            max-width: 900px;
+            margin: 0 auto;
+        }
+
+        .product-mini {
+            background: rgba(255,255,255,0.03);
+            border: 1px solid rgba(255,255,255,0.1);
+            border-radius: 15px;
+            padding: 25px;
+            text-align: center;
+            transition: all 0.3s;
+        }
+
+        .product-mini:hover {
+            border-color: #00d4aa;
+            transform: translateY(-3px);
+        }
+
+        .product-mini .icon {
+            font-size: 2rem;
+            margin-bottom: 10px;
+        }
+
+        .product-mini h4 {
+            margin-bottom: 8px;
+        }
+
+        .product-mini .apy {
+            color: #00d4aa;
+            font-size: 1.2rem;
+            font-weight: bold;
+        }
+
+        .product-mini .protection-badge {
+            display: inline-block;
+            background: rgba(0, 212, 170, 0.2);
+            color: #00d4aa;
+            padding: 3px 10px;
+            border-radius: 10px;
+            font-size: 0.75rem;
+            margin-top: 8px;
+        }
+
+        /* CTA */
+        .cta {
+            text-align: center;
+            padding: 80px 20px;
+            background: radial-gradient(ellipse at bottom, rgba(0, 212, 170, 0.15) 0%, transparent 60%);
+        }
+
+        .cta h2 {
+            font-size: 2.5rem;
+            margin-bottom: 20px;
+        }
+
+        .cta p {
+            color: #888;
+            margin-bottom: 30px;
+            font-size: 1.1rem;
+        }
+
+        .cta .main-btn {
+            display: inline-block;
+            padding: 18px 50px;
+            background: linear-gradient(135deg, #00d4aa, #00a8ff);
+            color: #000;
+            text-decoration: none;
+            border-radius: 30px;
+            font-size: 1.2rem;
+            font-weight: bold;
+            transition: all 0.3s;
+        }
+
+        .cta .main-btn:hover {
+            transform: scale(1.05);
+            box-shadow: 0 10px 40px rgba(0, 212, 170, 0.4);
+        }
+
+        /* Footer */
+        footer {
+            text-align: center;
+            padding: 40px 20px;
+            border-top: 1px solid rgba(255,255,255,0.1);
+            color: #666;
+        }
+
+        footer a {
+            color: #00d4aa;
+            text-decoration: none;
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .hero h1 { font-size: 2rem; }
+            .step-cards { flex-direction: column; align-items: center; }
+            .step-card { max-width: 100%; }
+        }
+    </style>
+</head>
+<body>
+    <!-- Hero -->
+    <section class="hero">
+        <h1>Investir en 3 Minutes</h1>
+        <p>Pas besoin d'etre expert. On vous guide pas a pas, vos fonds sont proteges.</p>
+    </section>
+
+    <!-- 3 Steps -->
+    <section class="steps container">
+        <h2>Comment ca marche ?</h2>
+        <div class="step-cards">
+            <div class="step-card">
+                <div class="step-number">1</div>
+                <h3>Connectez votre Wallet</h3>
+                <p>Utilisez MetaMask ou n'importe quel wallet compatible. Vos cles restent chez vous, on ne peut jamais y acceder.</p>
+                <a href="https://metamask.io/download/" target="_blank" class="action-btn">Installer MetaMask</a>
+            </div>
+
+            <div class="step-card">
+                <div class="step-number">2</div>
+                <h3>Choisissez un Produit</h3>
+                <p>Du plus sur (4% APY, capital 100% protege) au plus dynamique (20% APY). Chaque produit explique clairement les risques.</p>
+                <a href="combos.html" class="action-btn">Voir les Produits</a>
+            </div>
+
+            <div class="step-card">
+                <div class="step-number">3</div>
+                <h3>Deposez et Gagnez</h3>
+                <p>Deposez vos USDC/ETH. Les gains s'accumulent automatiquement. Retirez quand vous voulez, sans frais caches.</p>
+                <a href="app.html" class="action-btn">Commencer</a>
+            </div>
+        </div>
+    </section>
+
+    <!-- Security -->
+    <section class="security">
+        <div class="container">
+            <h2>Securite Maximum</h2>
+            <p class="subtitle">Voici comment nous protegeions votre argent et vos donnees</p>
+
+            <div class="security-grid">
+                <div class="security-item">
+                    <div class="icon">🔐</div>
+                    <h3>Non-Custodial</h3>
+                    <p>Vos fonds restent dans VOTRE wallet. On ne detient jamais vos cryptos. Meme si on se fait hacker, vos fonds sont safe.</p>
+                </div>
+
+                <div class="security-item">
+                    <div class="icon">🛡️</div>
+                    <h3>Smart Contracts Audites</h3>
+                    <p>Tout le code est open-source et verifie par des experts en securite. Pas de backdoor, pas de surprises.</p>
+                </div>
+
+                <div class="security-item">
+                    <div class="icon">🔒</div>
+                    <h3>Chiffrement End-to-End</h3>
+                    <p>Toutes les communications sont chiffrees. Vos donnees personnelles sont protegees par cryptographie militaire.</p>
+                </div>
+
+                <div class="security-item">
+                    <div class="icon">🚨</div>
+                    <h3>Detection Anti-Hack</h3>
+                    <p>Systeme de detection en temps reel des tentatives d'intrusion. Alertes automatiques et blocage immediat.</p>
+                </div>
+
+                <div class="security-item">
+                    <div class="icon">⚡</div>
+                    <h3>Rate Limiting</h3>
+                    <p>Protection contre les attaques DDoS et bruteforce. Impossible de spammer ou surcharger le systeme.</p>
+                </div>
+
+                <div class="security-item">
+                    <div class="icon">📝</div>
+                    <h3>Audit Trail Complet</h3>
+                    <p>Chaque action est enregistree. En cas de probleme, on peut retracer exactement ce qui s'est passe.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- How Funds Protected -->
+    <section class="protection container">
+        <h2>Comment vos fonds sont-ils proteges ?</h2>
+
+        <div class="protection-box">
+            <ul class="protection-list">
+                <li>
+                    <span class="check">✓</span>
+                    <div>
+                        <h4>Vous gardez vos cles privees</h4>
+                        <p>Contrairement aux exchanges centralises (Binance, Coinbase), nous n'avons JAMAIS acces a vos cles. Vos cryptos restent sous votre controle total.</p>
+                    </div>
+                </li>
+                <li>
+                    <span class="check">✓</span>
+                    <div>
+                        <h4>Capital protege jusqu'a 100%</h4>
+                        <p>Nos produits "Protected Vaults" garantissent votre capital initial. Meme si le marche baisse, vous recuperez au minimum ce que vous avez depose.</p>
+                    </div>
+                </li>
+                <li>
+                    <span class="check">✓</span>
+                    <div>
+                        <h4>Assurance DeFi integree</h4>
+                        <p>Une partie des fonds alimente un pool d'assurance. En cas de probleme technique ou de hack, les utilisateurs sont indemnises.</p>
+                    </div>
+                </li>
+                <li>
+                    <span class="check">✓</span>
+                    <div>
+                        <h4>Retrait instantane 24/7</h4>
+                        <p>Pas de periode de blocage. Retirez vos fonds a tout moment, en quelques secondes. Pas besoin d'attendre ou de demander une autorisation.</p>
+                    </div>
+                </li>
+                <li>
+                    <span class="check">✓</span>
+                    <div>
+                        <h4>Pas de frais caches</h4>
+                        <p>Tous les frais sont affiches clairement AVANT que vous confirmiez. Pas de mauvaise surprise sur votre releve.</p>
+                    </div>
+                </li>
+            </ul>
+        </div>
+    </section>
+
+    <!-- Products Preview -->
+    <section class="products">
+        <div class="container">
+            <h2>Nos Produits d'Investissement</h2>
+
+            <div class="products-grid">
+                <div class="product-mini">
+                    <div class="icon">🛡️</div>
+                    <h4>Safe Haven</h4>
+                    <div class="apy">4-5% APY</div>
+                    <div class="protection-badge">100% Protege</div>
+                </div>
+
+                <div class="product-mini">
+                    <div class="icon">⚖️</div>
+                    <h4>Balanced Growth</h4>
+                    <div class="apy">7-10% APY</div>
+                    <div class="protection-badge">90% Protege</div>
+                </div>
+
+                <div class="product-mini">
+                    <div class="icon">📈</div>
+                    <h4>Yield Optimizer</h4>
+                    <div class="apy">10-15% APY</div>
+                    <div class="protection-badge">80% Protege</div>
+                </div>
+
+                <div class="product-mini">
+                    <div class="icon">🚀</div>
+                    <h4>Growth Plus</h4>
+                    <div class="apy">12-18% APY</div>
+                    <div class="protection-badge">70% Protege</div>
+                </div>
+
+                <div class="product-mini">
+                    <div class="icon">💎</div>
+                    <h4>DCA Master</h4>
+                    <div class="apy">Variable</div>
+                    <div class="protection-badge">Auto-Invest</div>
+                </div>
+
+                <div class="product-mini">
+                    <div class="icon">🏦</div>
+                    <h4>Staking ETH</h4>
+                    <div class="apy">3-5% APY</div>
+                    <div class="protection-badge">Liquid Staking</div>
+                </div>
+            </div>
+
+            <div style="text-align: center; margin-top: 30px;">
+                <a href="combos.html" style="color: #00d4aa; font-size: 1.1rem;">Voir tous les produits en detail →</a>
+            </div>
+        </div>
+    </section>
+
+    <!-- FAQ -->
+    <section class="faq container">
+        <h2>Questions Frequentes</h2>
+
+        <div class="faq-list">
+            <div class="faq-item">
+                <div class="faq-question">
+                    <span>C'est quoi un wallet et pourquoi j'en ai besoin ?</span>
+                    <span class="arrow">▼</span>
+                </div>
+                <div class="faq-answer">
+                    <div class="faq-answer-content">
+                        Un wallet (portefeuille) est comme un coffre-fort numerique pour vos cryptos. MetaMask est le plus populaire - c'est une extension de navigateur gratuite. Vous creez un mot de passe et une "phrase secrete" de 12 mots. GARDEZ CETTE PHRASE EN SECURITE - c'est la seule facon de recuperer vos fonds si vous perdez acces.
+                    </div>
+                </div>
+            </div>
+
+            <div class="faq-item">
+                <div class="faq-question">
+                    <span>Est-ce que je peux perdre mon argent ?</span>
+                    <span class="arrow">▼</span>
+                </div>
+                <div class="faq-answer">
+                    <div class="faq-answer-content">
+                        Avec nos produits "100% proteges", vous recuperez au minimum votre capital initial. Pour les produits plus risques (8-20% APY), une partie du capital peut etre exposee aux fluctuations du marche, mais c'est toujours clairement indique avant investissement.
+                    </div>
+                </div>
+            </div>
+
+            <div class="faq-item">
+                <div class="faq-question">
+                    <span>Comment vous gagnez de l'argent ?</span>
+                    <span class="arrow">▼</span>
+                </div>
+                <div class="faq-answer">
+                    <div class="faq-answer-content">
+                        On prend une petite commission (0.1-0.5%) sur les gains generes, pas sur votre capital. Si vous ne gagnez rien, on ne gagne rien. Nos interets sont alignes avec les votres.
+                    </div>
+                </div>
+            </div>
+
+            <div class="faq-item">
+                <div class="faq-question">
+                    <span>Et si Obelisk se fait hacker ?</span>
+                    <span class="arrow">▼</span>
+                </div>
+                <div class="faq-answer">
+                    <div class="faq-answer-content">
+                        Vos fonds sont dans VOTRE wallet, pas chez nous. Meme si notre site est compromis, un hacker ne peut pas acceder a vos cryptos. C'est l'avantage d'etre "non-custodial". De plus, nous avons un pool d'assurance pour couvrir les pertes en cas de bug technique.
+                    </div>
+                </div>
+            </div>
+
+            <div class="faq-item">
+                <div class="faq-question">
+                    <span>Combien de temps pour retirer mes fonds ?</span>
+                    <span class="arrow">▼</span>
+                </div>
+                <div class="faq-answer">
+                    <div class="faq-answer-content">
+                        Instantane. Cliquez sur "Retirer", confirmez dans votre wallet, et vos fonds sont disponibles en quelques secondes. Pas de delai d'attente, pas de demande a approuver.
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- CTA -->
+    <section class="cta">
+        <h2>Pret a commencer ?</h2>
+        <p>Rejoignez des milliers d'investisseurs qui font fructifier leur capital en toute securite.</p>
+        <a href="app.html" class="main-btn">Lancer l'Application</a>
+    </section>
+
+    <!-- Footer -->
+    <footer>
+        <p>&copy; 2024 Obelisk DEX - <a href="docs.html">Documentation</a> | <a href="tools.html">Outils</a> | <a href="combos.html">Produits</a></p>
+    </footer>
+
+    <script>
+        // FAQ Toggle
+        document.querySelectorAll('.faq-question').forEach(question => {
+            question.addEventListener('click', () => {
+                const item = question.parentElement;
+                item.classList.toggle('open');
+            });
+        });
+    </script>
+</body>
+</html>

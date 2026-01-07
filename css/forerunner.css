@@ -1,0 +1,1080 @@
+/* ═══════════════════════════════════════════════════════════════════════════
+   FORERUNNER THEME - HALO INSPIRED GRANDEUR
+   Ancient Technology - Gold/Bronze/Cyan - Monumentale Architecture
+   ═══════════════════════════════════════════════════════════════════════════ */
+
+/* Forerunner Background Container */
+.forerunner-bg {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: -1;
+    background: #000000;
+    overflow: hidden;
+}
+
+/* Animated Hexagonal Grid */
+.forerunner-grid {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-image:
+        /* Hexagon pattern */
+        url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='56' height='100' viewBox='0 0 56 100'%3E%3Cpath d='M28 66L0 50L0 16L28 0L56 16L56 50L28 66Z' fill='none' stroke='rgba(201,162,39,0.08)' stroke-width='0.5'/%3E%3Cpath d='M28 100L0 84L0 50L28 34L56 50L56 84L28 100Z' fill='none' stroke='rgba(201,162,39,0.08)' stroke-width='0.5'/%3E%3C/svg%3E");
+    background-size: 56px 100px;
+    opacity: 0.8;
+    animation: gridPulse 8s ease-in-out infinite;
+}
+
+@keyframes gridPulse {
+    0%, 100% { opacity: 0.5; }
+    50% { opacity: 0.9; }
+}
+
+/* Central Monumental Glow */
+.forerunner-central-glow {
+    position: absolute;
+    top: 20%;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 800px;
+    height: 600px;
+    background: radial-gradient(ellipse, rgba(201, 162, 39, 0.15) 0%, transparent 60%);
+    animation: centralPulse 6s ease-in-out infinite;
+}
+
+@keyframes centralPulse {
+    0%, 100% { transform: translateX(-50%) scale(1); opacity: 0.6; }
+    50% { transform: translateX(-50%) scale(1.1); opacity: 1; }
+}
+
+/* Floating Energy Orbs */
+.forerunner-orb {
+    position: absolute;
+    border-radius: 50%;
+    filter: blur(40px);
+    animation: floatOrb 20s ease-in-out infinite;
+}
+
+.forerunner-orb-1 {
+    top: 10%;
+    left: 15%;
+    width: 200px;
+    height: 200px;
+    background: radial-gradient(circle, rgba(201, 162, 39, 0.3) 0%, transparent 70%);
+    animation-delay: 0s;
+}
+
+.forerunner-orb-2 {
+    top: 60%;
+    right: 10%;
+    width: 150px;
+    height: 150px;
+    background: radial-gradient(circle, rgba(0, 212, 255, 0.25) 0%, transparent 70%);
+    animation-delay: -5s;
+}
+
+.forerunner-orb-3 {
+    bottom: 20%;
+    left: 20%;
+    width: 180px;
+    height: 180px;
+    background: radial-gradient(circle, rgba(201, 162, 39, 0.2) 0%, transparent 70%);
+    animation-delay: -10s;
+}
+
+.forerunner-orb-4 {
+    top: 30%;
+    right: 25%;
+    width: 120px;
+    height: 120px;
+    background: radial-gradient(circle, rgba(0, 212, 255, 0.2) 0%, transparent 70%);
+    animation-delay: -15s;
+}
+
+@keyframes floatOrb {
+    0%, 100% { transform: translate(0, 0); }
+    25% { transform: translate(30px, -40px); }
+    50% { transform: translate(-20px, 30px); }
+    75% { transform: translate(-40px, -20px); }
+}
+
+/* Vertical Energy Pillars */
+.forerunner-pillar {
+    position: absolute;
+    bottom: 0;
+    width: 2px;
+    background: linear-gradient(to top,
+        transparent 0%,
+        rgba(201, 162, 39, 0.1) 20%,
+        rgba(201, 162, 39, 0.4) 50%,
+        rgba(0, 212, 255, 0.6) 70%,
+        rgba(0, 212, 255, 0.3) 85%,
+        transparent 100%
+    );
+    animation: pillarGlow 4s ease-in-out infinite;
+}
+
+.forerunner-pillar-1 { left: 10%; height: 60%; animation-delay: 0s; }
+.forerunner-pillar-2 { left: 25%; height: 80%; animation-delay: -1s; }
+.forerunner-pillar-3 { right: 25%; height: 75%; animation-delay: -2s; }
+.forerunner-pillar-4 { right: 10%; height: 65%; animation-delay: -3s; }
+
+@keyframes pillarGlow {
+    0%, 100% { opacity: 0.3; }
+    50% { opacity: 0.8; }
+}
+
+/* Horizontal Energy Lines */
+.forerunner-lines {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    pointer-events: none;
+}
+
+.forerunner-line {
+    position: absolute;
+    left: 0;
+    right: 0;
+    height: 1px;
+    background: linear-gradient(90deg,
+        transparent 0%,
+        rgba(201, 162, 39, 0.1) 10%,
+        rgba(201, 162, 39, 0.3) 30%,
+        rgba(0, 212, 255, 0.5) 50%,
+        rgba(201, 162, 39, 0.3) 70%,
+        rgba(201, 162, 39, 0.1) 90%,
+        transparent 100%
+    );
+    animation: lineTravel 8s linear infinite;
+}
+
+.forerunner-line-1 { top: 20%; animation-delay: 0s; }
+.forerunner-line-2 { top: 40%; animation-delay: -2s; }
+.forerunner-line-3 { top: 60%; animation-delay: -4s; }
+.forerunner-line-4 { top: 80%; animation-delay: -6s; }
+
+@keyframes lineTravel {
+    0% { transform: scaleX(0); transform-origin: left; opacity: 0; }
+    10% { transform: scaleX(1); opacity: 1; }
+    90% { transform: scaleX(1); opacity: 1; }
+    100% { transform: scaleX(0); transform-origin: right; opacity: 0; }
+}
+
+/* Floating Particles */
+.forerunner-particles {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    overflow: hidden;
+}
+
+.forerunner-particle {
+    position: absolute;
+    width: 4px;
+    height: 4px;
+    border-radius: 50%;
+    background: #c9a227;
+    box-shadow: 0 0 10px rgba(201, 162, 39, 0.8), 0 0 20px rgba(0, 212, 255, 0.4);
+    animation: particleFloat 15s linear infinite;
+}
+
+@keyframes particleFloat {
+    0% { transform: translateY(100vh) rotate(0deg); opacity: 0; }
+    10% { opacity: 1; }
+    90% { opacity: 1; }
+    100% { transform: translateY(-100px) rotate(720deg); opacity: 0; }
+}
+
+/* Forerunner Glyphs */
+.forerunner-glyph {
+    position: absolute;
+    font-size: 48px;
+    color: rgba(201, 162, 39, 0.15);
+    text-shadow: 0 0 30px rgba(201, 162, 39, 0.3);
+    animation: glyphPulse 5s ease-in-out infinite;
+    font-family: 'JetBrains Mono', monospace;
+    pointer-events: none;
+}
+
+.glyph-1 { top: 15%; left: 8%; animation-delay: 0s; }
+.glyph-2 { top: 45%; right: 5%; animation-delay: -1.5s; }
+.glyph-3 { bottom: 25%; left: 12%; animation-delay: -3s; }
+.glyph-4 { top: 70%; right: 15%; animation-delay: -4s; }
+
+@keyframes glyphPulse {
+    0%, 100% { opacity: 0.1; transform: scale(1); }
+    50% { opacity: 0.4; transform: scale(1.05); }
+}
+
+/* Top Energy Bar - Grandiose */
+.forerunner-top-bar {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 3px;
+    z-index: 10001;
+    background: linear-gradient(90deg,
+        transparent 0%,
+        #8b6914 15%,
+        #c9a227 30%,
+        #d4af37 45%,
+        #00d4ff 50%,
+        #d4af37 55%,
+        #c9a227 70%,
+        #8b6914 85%,
+        transparent 100%
+    );
+    box-shadow:
+        0 0 20px rgba(201, 162, 39, 0.8),
+        0 0 40px rgba(0, 212, 255, 0.5),
+        0 0 60px rgba(201, 162, 39, 0.3);
+    animation: topBarPulse 3s ease-in-out infinite;
+}
+
+@keyframes topBarPulse {
+    0%, 100% { opacity: 0.8; }
+    50% { opacity: 1; box-shadow: 0 0 30px rgba(201, 162, 39, 1), 0 0 60px rgba(0, 212, 255, 0.8), 0 0 90px rgba(201, 162, 39, 0.5); }
+}
+
+/* Corner Decorations */
+.forerunner-corner {
+    position: fixed;
+    width: 150px;
+    height: 150px;
+    z-index: 1;
+    pointer-events: none;
+    opacity: 0.4;
+}
+
+.forerunner-corner-tl {
+    top: 0;
+    left: 0;
+    background: linear-gradient(135deg, rgba(201, 162, 39, 0.3) 0%, transparent 60%);
+    border-left: 2px solid rgba(201, 162, 39, 0.4);
+    border-top: 2px solid rgba(201, 162, 39, 0.4);
+}
+
+.forerunner-corner-tr {
+    top: 0;
+    right: 0;
+    background: linear-gradient(-135deg, rgba(201, 162, 39, 0.3) 0%, transparent 60%);
+    border-right: 2px solid rgba(201, 162, 39, 0.4);
+    border-top: 2px solid rgba(201, 162, 39, 0.4);
+}
+
+.forerunner-corner-bl {
+    bottom: 0;
+    left: 0;
+    background: linear-gradient(45deg, rgba(0, 212, 255, 0.2) 0%, transparent 60%);
+    border-left: 2px solid rgba(0, 212, 255, 0.3);
+    border-bottom: 2px solid rgba(0, 212, 255, 0.3);
+}
+
+.forerunner-corner-br {
+    bottom: 0;
+    right: 0;
+    background: linear-gradient(-45deg, rgba(0, 212, 255, 0.2) 0%, transparent 60%);
+    border-right: 2px solid rgba(0, 212, 255, 0.3);
+    border-bottom: 2px solid rgba(0, 212, 255, 0.3);
+}
+
+/* Metallic Panel Overlays */
+.panel, .card, .glass-panel, .order-panel {
+    background:
+        linear-gradient(180deg,
+            rgba(201, 162, 39, 0.05) 0%,
+            rgba(0, 0, 0, 0.95) 3%,
+            rgba(0, 0, 0, 0.98) 97%,
+            rgba(0, 212, 255, 0.05) 100%
+        ) !important;
+    border: 1px solid rgba(201, 162, 39, 0.3) !important;
+    box-shadow:
+        0 0 40px rgba(201, 162, 39, 0.1),
+        inset 0 1px 0 rgba(201, 162, 39, 0.2),
+        inset 0 -1px 0 rgba(0, 212, 255, 0.1) !important;
+}
+
+.panel:hover, .card:hover {
+    border-color: rgba(201, 162, 39, 0.5) !important;
+    box-shadow:
+        0 0 60px rgba(201, 162, 39, 0.2),
+        0 0 30px rgba(0, 212, 255, 0.1),
+        inset 0 1px 0 rgba(201, 162, 39, 0.3),
+        inset 0 -1px 0 rgba(0, 212, 255, 0.15) !important;
+}
+
+/* Grand Title Styling */
+.logo-text {
+    font-size: 1.8rem !important;
+    font-weight: 800 !important;
+    letter-spacing: 4px !important;
+    background: linear-gradient(135deg,
+        #8b6914 0%,
+        #c9a227 25%,
+        #d4af37 45%,
+        #f5e6a3 50%,
+        #d4af37 55%,
+        #c9a227 75%,
+        #8b6914 100%
+    ) !important;
+    background-size: 200% auto !important;
+    -webkit-background-clip: text !important;
+    -webkit-text-fill-color: transparent !important;
+    background-clip: text !important;
+    animation: grandLogoShine 4s linear infinite !important;
+    text-shadow: none !important;
+    filter: drop-shadow(0 0 20px rgba(201, 162, 39, 0.5)) !important;
+}
+
+@keyframes grandLogoShine {
+    0% { background-position: 0% center; }
+    100% { background-position: 200% center; }
+}
+
+/* Value displays with Forerunner styling */
+.price, .value, .stat-value, .card-value {
+    color: #00d4ff !important;
+    text-shadow:
+        0 0 10px rgba(0, 212, 255, 0.6),
+        0 0 20px rgba(0, 212, 255, 0.3) !important;
+}
+
+/* Positive values */
+.positive, .success, .green {
+    color: #00d4ff !important;
+    text-shadow: 0 0 15px rgba(0, 212, 255, 0.5) !important;
+}
+
+/* Negative values */
+.negative, .danger, .red {
+    color: #ff4444 !important;
+    text-shadow: 0 0 15px rgba(255, 68, 68, 0.5) !important;
+}
+
+/* ═══════════════════════════════════════════════════════════════════════════
+   LEARN / TUTORIAL SECTION - FORERUNNER ACADEMY
+   ═══════════════════════════════════════════════════════════════════════════ */
+
+.learn-container {
+    padding: 20px;
+    max-width: 1400px;
+    margin: 0 auto;
+}
+
+/* Hero Section */
+.learn-hero {
+    background: linear-gradient(135deg,
+        rgba(201, 162, 39, 0.1) 0%,
+        rgba(0, 0, 0, 0.95) 50%,
+        rgba(0, 212, 255, 0.05) 100%
+    );
+    border: 2px solid rgba(201, 162, 39, 0.4);
+    border-radius: 24px;
+    padding: 60px 40px;
+    text-align: center;
+    position: relative;
+    overflow: hidden;
+    margin-bottom: 40px;
+}
+
+.learn-hero::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='56' height='100' viewBox='0 0 56 100'%3E%3Cpath d='M28 66L0 50L0 16L28 0L56 16L56 50L28 66Z' fill='none' stroke='rgba(201,162,39,0.1)' stroke-width='0.5'/%3E%3C/svg%3E");
+    background-size: 40px 70px;
+    opacity: 0.5;
+    animation: heroGridPulse 6s ease-in-out infinite;
+}
+
+@keyframes heroGridPulse {
+    0%, 100% { opacity: 0.3; }
+    50% { opacity: 0.6; }
+}
+
+.learn-hero-content {
+    position: relative;
+    z-index: 2;
+}
+
+.learn-hero-glyph {
+    font-size: 80px;
+    color: #c9a227;
+    text-shadow:
+        0 0 30px rgba(201, 162, 39, 0.8),
+        0 0 60px rgba(0, 212, 255, 0.4);
+    animation: glyphFloat 4s ease-in-out infinite;
+    margin-bottom: 20px;
+}
+
+@keyframes glyphFloat {
+    0%, 100% { transform: translateY(0); }
+    50% { transform: translateY(-10px); }
+}
+
+.learn-title {
+    font-size: 3rem;
+    font-weight: 800;
+    letter-spacing: 6px;
+    text-transform: uppercase;
+    background: linear-gradient(135deg,
+        #8b6914 0%,
+        #c9a227 25%,
+        #d4af37 45%,
+        #f5e6a3 50%,
+        #d4af37 55%,
+        #c9a227 75%,
+        #8b6914 100%
+    );
+    background-size: 200% auto;
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    animation: titleShine 4s linear infinite;
+    margin: 0 0 15px;
+}
+
+@keyframes titleShine {
+    0% { background-position: 0% center; }
+    100% { background-position: 200% center; }
+}
+
+.learn-subtitle {
+    color: #00d4ff;
+    font-size: 1.2rem;
+    text-shadow: 0 0 20px rgba(0, 212, 255, 0.5);
+    margin: 0 0 30px;
+}
+
+/* Progress Ring */
+.learn-progress-overview {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 20px;
+}
+
+.progress-ring {
+    position: relative;
+    width: 80px;
+    height: 80px;
+}
+
+.progress-ring svg {
+    transform: rotate(-90deg);
+}
+
+.progress-ring .progress-bg {
+    fill: none;
+    stroke: rgba(201, 162, 39, 0.2);
+    stroke-width: 8;
+}
+
+.progress-ring .progress-fill {
+    fill: none;
+    stroke: url(#progressGradient);
+    stroke: #c9a227;
+    stroke-width: 8;
+    stroke-linecap: round;
+    stroke-dasharray: 283;
+    stroke-dashoffset: 283;
+    transition: stroke-dashoffset 1s ease;
+}
+
+.progress-text {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    color: #c9a227;
+    font-size: 18px;
+    font-weight: 700;
+}
+
+.progress-details {
+    color: #888;
+    font-size: 14px;
+}
+
+/* Category Tabs */
+.learn-categories {
+    display: flex;
+    gap: 10px;
+    justify-content: center;
+    flex-wrap: wrap;
+    margin-bottom: 30px;
+}
+
+.category-tab {
+    padding: 12px 24px;
+    background: rgba(0, 0, 0, 0.6);
+    border: 1px solid rgba(201, 162, 39, 0.3);
+    border-radius: 30px;
+    color: #888;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.category-tab:hover {
+    border-color: rgba(201, 162, 39, 0.6);
+    color: #c9a227;
+}
+
+.category-tab.active {
+    background: linear-gradient(135deg, rgba(201, 162, 39, 0.2), rgba(0, 212, 255, 0.1));
+    border-color: #c9a227;
+    color: #c9a227;
+    box-shadow: 0 0 20px rgba(201, 162, 39, 0.3);
+}
+
+/* Course Grid */
+.learn-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+    gap: 24px;
+    margin-bottom: 50px;
+}
+
+/* Course Cards */
+.learn-card {
+    background: linear-gradient(180deg,
+        rgba(201, 162, 39, 0.08) 0%,
+        rgba(0, 0, 0, 0.95) 5%,
+        rgba(0, 0, 0, 0.98) 95%,
+        rgba(0, 212, 255, 0.05) 100%
+    );
+    border: 1px solid rgba(201, 162, 39, 0.3);
+    border-radius: 20px;
+    padding: 24px;
+    transition: all 0.4s ease;
+    position: relative;
+    overflow: hidden;
+}
+
+.learn-card::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(201, 162, 39, 0.1), transparent);
+    transition: left 0.6s ease;
+}
+
+.learn-card:hover::before {
+    left: 100%;
+}
+
+.learn-card:hover {
+    border-color: #c9a227;
+    transform: translateY(-5px);
+    box-shadow:
+        0 20px 40px rgba(0, 0, 0, 0.5),
+        0 0 30px rgba(201, 162, 39, 0.2);
+}
+
+.learn-card.featured {
+    border: 2px solid #c9a227;
+    box-shadow: 0 0 30px rgba(201, 162, 39, 0.3);
+}
+
+.learn-card-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 16px;
+}
+
+.course-icon {
+    width: 50px;
+    height: 50px;
+    border-radius: 12px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 24px;
+}
+
+.course-icon.beginner {
+    background: linear-gradient(135deg, rgba(0, 212, 255, 0.2), rgba(0, 212, 255, 0.05));
+    border: 1px solid rgba(0, 212, 255, 0.4);
+    color: #00d4ff;
+}
+
+.course-icon.intermediate {
+    background: linear-gradient(135deg, rgba(201, 162, 39, 0.2), rgba(201, 162, 39, 0.05));
+    border: 1px solid rgba(201, 162, 39, 0.4);
+    color: #c9a227;
+}
+
+.course-icon.advanced {
+    background: linear-gradient(135deg, rgba(255, 100, 100, 0.2), rgba(255, 100, 100, 0.05));
+    border: 1px solid rgba(255, 100, 100, 0.4);
+    color: #ff6464;
+}
+
+.course-icon.security {
+    background: linear-gradient(135deg, rgba(0, 255, 136, 0.2), rgba(0, 255, 136, 0.05));
+    border: 1px solid rgba(0, 255, 136, 0.4);
+    color: #00ff88;
+}
+
+.course-level {
+    font-size: 11px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    padding: 4px 12px;
+    border-radius: 20px;
+    background: rgba(201, 162, 39, 0.1);
+    border: 1px solid rgba(201, 162, 39, 0.3);
+    color: #c9a227;
+}
+
+.course-level.featured {
+    background: linear-gradient(135deg, #c9a227, #d4af37);
+    color: #000;
+    border: none;
+}
+
+.learn-card h3 {
+    color: #fff;
+    font-size: 1.3rem;
+    margin: 0 0 8px;
+}
+
+.learn-card p {
+    color: #888;
+    font-size: 0.9rem;
+    margin: 0 0 16px;
+    line-height: 1.5;
+}
+
+.course-meta {
+    display: flex;
+    gap: 16px;
+    margin-bottom: 16px;
+}
+
+.course-meta span {
+    color: #666;
+    font-size: 12px;
+    display: flex;
+    align-items: center;
+    gap: 4px;
+}
+
+.course-progress {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 16px;
+}
+
+.course-progress .progress-bar {
+    flex: 1;
+    height: 6px;
+    background: rgba(201, 162, 39, 0.1);
+    border-radius: 3px;
+    overflow: hidden;
+}
+
+.course-progress .progress-fill {
+    height: 100%;
+    background: linear-gradient(90deg, #c9a227, #00d4ff);
+    border-radius: 3px;
+    transition: width 0.5s ease;
+}
+
+.course-progress .progress-label {
+    color: #c9a227;
+    font-size: 12px;
+    font-weight: 600;
+    min-width: 35px;
+}
+
+.btn-start-course {
+    width: 100%;
+    padding: 14px;
+    background: linear-gradient(135deg, rgba(201, 162, 39, 0.2), rgba(0, 212, 255, 0.1));
+    border: 1px solid rgba(201, 162, 39, 0.5);
+    border-radius: 12px;
+    color: #c9a227;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.btn-start-course:hover {
+    background: linear-gradient(135deg, #c9a227, #d4af37);
+    color: #000;
+    border-color: transparent;
+    transform: scale(1.02);
+    box-shadow: 0 0 30px rgba(201, 162, 39, 0.4);
+}
+
+/* Tips Section */
+.learn-tips-section {
+    margin-bottom: 50px;
+}
+
+.section-title {
+    color: #c9a227;
+    font-size: 1.5rem;
+    font-weight: 700;
+    text-align: center;
+    margin-bottom: 24px;
+    text-shadow: 0 0 20px rgba(201, 162, 39, 0.3);
+}
+
+.tips-carousel {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: 20px;
+}
+
+.tip-card {
+    background: linear-gradient(135deg,
+        rgba(201, 162, 39, 0.05) 0%,
+        rgba(0, 0, 0, 0.9) 100%
+    );
+    border: 1px solid rgba(201, 162, 39, 0.2);
+    border-radius: 16px;
+    padding: 24px;
+    text-align: center;
+    transition: all 0.3s ease;
+}
+
+.tip-card:hover {
+    border-color: rgba(201, 162, 39, 0.5);
+    transform: translateY(-3px);
+}
+
+.tip-icon {
+    font-size: 32px;
+    margin-bottom: 12px;
+}
+
+.tip-card h4 {
+    color: #00d4ff;
+    font-size: 1rem;
+    margin: 0 0 8px;
+}
+
+.tip-card p {
+    color: #888;
+    font-size: 0.85rem;
+    margin: 0;
+    line-height: 1.5;
+}
+
+/* Glossary */
+.learn-glossary {
+    margin-bottom: 40px;
+}
+
+.glossary-search {
+    max-width: 400px;
+    margin: 0 auto 24px;
+}
+
+.glossary-search input {
+    width: 100%;
+    padding: 14px 20px;
+    background: rgba(0, 0, 0, 0.6);
+    border: 1px solid rgba(201, 162, 39, 0.3);
+    border-radius: 30px;
+    color: #fff;
+    font-size: 14px;
+}
+
+.glossary-search input:focus {
+    outline: none;
+    border-color: #c9a227;
+    box-shadow: 0 0 20px rgba(201, 162, 39, 0.2);
+}
+
+.glossary-search input::placeholder {
+    color: #666;
+}
+
+.glossary-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    gap: 16px;
+}
+
+.glossary-item {
+    background: rgba(0, 0, 0, 0.6);
+    border: 1px solid rgba(201, 162, 39, 0.15);
+    border-radius: 12px;
+    padding: 16px 20px;
+    transition: all 0.3s ease;
+}
+
+.glossary-item:hover {
+    border-color: rgba(201, 162, 39, 0.4);
+    background: rgba(201, 162, 39, 0.05);
+}
+
+.glossary-item h4 {
+    color: #c9a227;
+    font-size: 1rem;
+    margin: 0 0 6px;
+}
+
+.glossary-item p {
+    color: #888;
+    font-size: 0.85rem;
+    margin: 0;
+    line-height: 1.4;
+}
+
+/* Course Modal */
+.course-modal {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(0, 0, 0, 0.95);
+    z-index: 10000;
+    display: none;
+    align-items: center;
+    justify-content: center;
+    padding: 20px;
+}
+
+.course-modal.active {
+    display: flex;
+}
+
+.course-modal-content {
+    background: linear-gradient(180deg,
+        rgba(201, 162, 39, 0.1) 0%,
+        rgba(0, 0, 0, 0.98) 5%,
+        rgba(0, 0, 0, 0.99) 100%
+    );
+    border: 2px solid rgba(201, 162, 39, 0.5);
+    border-radius: 24px;
+    max-width: 800px;
+    width: 100%;
+    max-height: 90vh;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+    box-shadow:
+        0 0 60px rgba(201, 162, 39, 0.3),
+        0 0 120px rgba(0, 212, 255, 0.1);
+}
+
+.course-modal .modal-close {
+    position: absolute;
+    top: 20px;
+    right: 24px;
+    background: none;
+    border: none;
+    color: #888;
+    font-size: 32px;
+    cursor: pointer;
+    transition: color 0.3s;
+    z-index: 10;
+}
+
+.course-modal .modal-close:hover {
+    color: #ff4444;
+}
+
+.course-modal-header {
+    padding: 30px 30px 20px;
+    border-bottom: 1px solid rgba(201, 162, 39, 0.2);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.course-modal-header h2 {
+    color: #c9a227;
+    font-size: 1.5rem;
+    margin: 0;
+}
+
+.modal-progress {
+    color: #00d4ff;
+    font-size: 14px;
+}
+
+.course-modal-body {
+    padding: 30px;
+    flex: 1;
+    overflow-y: auto;
+    color: #ddd;
+    font-size: 1rem;
+    line-height: 1.8;
+}
+
+.course-modal-body h3 {
+    color: #c9a227;
+    margin: 0 0 16px;
+}
+
+.course-modal-body p {
+    margin: 0 0 16px;
+}
+
+.course-modal-body ul, .course-modal-body ol {
+    margin: 0 0 16px;
+    padding-left: 24px;
+}
+
+.course-modal-body li {
+    margin-bottom: 8px;
+}
+
+.course-modal-body code {
+    background: rgba(201, 162, 39, 0.1);
+    padding: 2px 8px;
+    border-radius: 4px;
+    color: #00d4ff;
+}
+
+.course-modal-nav {
+    padding: 20px 30px;
+    border-top: 1px solid rgba(201, 162, 39, 0.2);
+    display: flex;
+    justify-content: space-between;
+    gap: 16px;
+}
+
+.btn-prev-lesson, .btn-next-lesson {
+    padding: 14px 30px;
+    border-radius: 12px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.btn-prev-lesson {
+    background: transparent;
+    border: 1px solid rgba(201, 162, 39, 0.3);
+    color: #888;
+}
+
+.btn-prev-lesson:hover {
+    border-color: #c9a227;
+    color: #c9a227;
+}
+
+.btn-next-lesson {
+    background: linear-gradient(135deg, #c9a227, #d4af37);
+    border: none;
+    color: #000;
+    flex: 1;
+    max-width: 200px;
+}
+
+.btn-next-lesson:hover {
+    transform: scale(1.02);
+    box-shadow: 0 0 30px rgba(201, 162, 39, 0.5);
+}
+
+/* Update Tutorial System Styles for Forerunner */
+#tutorial-overlay .tutorial-tooltip {
+    background: linear-gradient(135deg, rgba(0, 0, 0, 0.98), rgba(10, 5, 0, 0.98)) !important;
+    border: 2px solid #c9a227 !important;
+    box-shadow: 0 20px 60px rgba(201, 162, 39, 0.3) !important;
+}
+
+#tutorial-overlay .tutorial-title {
+    color: #c9a227 !important;
+}
+
+#tutorial-overlay .tutorial-step-indicator {
+    color: #00d4ff !important;
+}
+
+#tutorial-overlay .tutorial-next {
+    background: linear-gradient(135deg, #c9a227, #d4af37) !important;
+}
+
+#tutorial-overlay .tutorial-prev:hover {
+    border-color: #c9a227 !important;
+    color: #c9a227 !important;
+}
+
+#tutorial-welcome .welcome-modal {
+    background: linear-gradient(135deg, rgba(0, 0, 0, 0.98), rgba(10, 5, 0, 0.98)) !important;
+    border: 2px solid #c9a227 !important;
+}
+
+#tutorial-welcome .welcome-btn.primary {
+    background: linear-gradient(135deg, #c9a227, #d4af37) !important;
+}
+
+#tutorial-welcome .welcome-btn.secondary:hover {
+    border-color: #c9a227 !important;
+    color: #c9a227 !important;
+}
+
+#tutorial-help-btn {
+    background: linear-gradient(135deg, #c9a227, #d4af37) !important;
+    box-shadow: 0 4px 20px rgba(201, 162, 39, 0.4) !important;
+}
+
+#tutorial-menu {
+    background: linear-gradient(135deg, rgba(0, 0, 0, 0.98), rgba(10, 5, 0, 0.98)) !important;
+    border: 1px solid #c9a227 !important;
+}
+
+#tutorial-menu .menu-header h3 {
+    color: #c9a227 !important;
+}
+
+.tutorial-toast {
+    background: linear-gradient(135deg, #c9a227, #d4af37) !important;
+}
+
+.tutorial-highlight {
+    animation: forerunner-pulse 2s infinite !important;
+}
+
+@keyframes forerunner-pulse {
+    0%, 100% { box-shadow: 0 0 0 4px rgba(201, 162, 39, 0.3); }
+    50% { box-shadow: 0 0 0 8px rgba(201, 162, 39, 0.1); }
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+    .learn-hero {
+        padding: 40px 20px;
+    }
+
+    .learn-title {
+        font-size: 2rem;
+        letter-spacing: 3px;
+    }
+
+    .learn-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .course-modal-content {
+        border-radius: 16px;
+    }
+}

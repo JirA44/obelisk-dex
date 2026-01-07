@@ -1,0 +1,226 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>OBELISK Debug Panel</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: 'Courier New', monospace;
+            background: #0a0a0f;
+            color: #00ff88;
+            padding: 20px;
+            line-height: 1.6;
+        }
+        h1 { color: #00aaff; margin-bottom: 20px; }
+        h2 { color: #8a2be2; margin: 20px 0 10px; border-bottom: 1px solid #333; padding-bottom: 5px; }
+        .section { background: #111; padding: 15px; margin: 10px 0; border-radius: 8px; border: 1px solid #333; }
+        .ok { color: #00ff88; }
+        .error { color: #ff4466; }
+        .warn { color: #ffaa00; }
+        .info { color: #00aaff; }
+        table { width: 100%; border-collapse: collapse; margin: 10px 0; }
+        th, td { padding: 8px; text-align: left; border: 1px solid #333; }
+        th { background: #1a1a2e; color: #00aaff; }
+        .screenshot { max-width: 100%; border: 2px solid #00ff88; margin: 10px 0; }
+        #log { background: #000; padding: 10px; max-height: 300px; overflow-y: auto; font-size: 12px; }
+        .log-entry { margin: 2px 0; }
+        button { background: #00ff88; color: #000; border: none; padding: 10px 20px; cursor: pointer; margin: 5px; border-radius: 4px; font-weight: bold; }
+        button:hover { background: #00cc66; }
+        iframe { width: 100%; height: 600px; border: 2px solid #00aaff; margin: 10px 0; }
+    </style>
+</head>
+<body>
+    <h1>🔧 OBELISK Debug Panel</h1>
+
+    <div class="section">
+        <h2>📊 Layout Check</h2>
+        <div id="layout-results"></div>
+    </div>
+
+    <div class="section">
+        <h2>🎯 Element Positions</h2>
+        <table id="elements-table">
+            <tr><th>Element</th><th>Exists</th><th>Position</th><th>Size</th><th>Visible</th></tr>
+        </table>
+    </div>
+
+    <div class="section">
+        <h2>🌐 Live Preview</h2>
+        <button onclick="loadPreview()">Load index.html</button>
+        <button onclick="runAllChecks()">Run All Checks</button>
+        <iframe id="preview" src="about:blank"></iframe>
+    </div>
+
+    <div class="section">
+        <h2>📝 Console Log</h2>
+        <div id="log"></div>
+    </div>
+
+    <div class="section">
+        <h2>📁 File Check</h2>
+        <div id="file-check"></div>
+    </div>
+
+    <script>
+        const log = (msg, type = 'info') => {
+            const logEl = document.getElementById('log');
+            const entry = document.createElement('div');
+            entry.className = `log-entry ${type}`;
+            entry.textContent = `[${new Date().toLocaleTimeString()}] ${msg}`;
+            logEl.appendChild(entry);
+            logEl.scrollTop = logEl.scrollHeight;
+        };
+
+        const checkElement = (doc, selector, name) => {
+            const el = doc.querySelector(selector);
+            const table = document.getElementById('elements-table');
+            const row = document.createElement('tr');
+
+            if (el) {
+                const rect = el.getBoundingClientRect();
+                const style = window.getComputedStyle(el);
+                const visible = style.display !== 'none' && style.visibility !== 'hidden' && rect.width > 0;
+
+                row.innerHTML = `
+                    <td>${name}</td>
+                    <td class="ok">✓ YES</td>
+                    <td>Top: ${Math.round(rect.top)}px, Left: ${Math.round(rect.left)}px</td>
+                    <td>${Math.round(rect.width)} x ${Math.round(rect.height)}px</td>
+                    <td class="${visible ? 'ok' : 'error'}">${visible ? '✓ Visible' : '✗ Hidden'}</td>
+                `;
+                log(`${name}: Found at (${Math.round(rect.left)}, ${Math.round(rect.top)}) - ${Math.round(rect.width)}x${Math.round(rect.height)}px`, 'ok');
+            } else {
+                row.innerHTML = `
+                    <td>${name}</td>
+                    <td class="error">✗ NO</td>
+                    <td>-</td>
+                    <td>-</td>
+                    <td class="error">N/A</td>
+                `;
+                log(`${name}: NOT FOUND!`, 'error');
+            }
+            table.appendChild(row);
+            return el;
+        };
+
+        const loadPreview = () => {
+            log('Loading index.html...', 'info');
+            document.getElementById('preview').src = 'index.html';
+        };
+
+        const runAllChecks = () => {
+            log('Starting layout checks...', 'info');
+            const iframe = document.getElementById('preview');
+
+            if (iframe.src === 'about:blank') {
+                log('Please load preview first!', 'warn');
+                return;
+            }
+
+            try {
+                const doc = iframe.contentDocument || iframe.contentWindow.document;
+
+                // Clear previous results
+                const table = document.getElementById('elements-table');
+                table.innerHTML = '<tr><th>Element</th><th>Exists</th><th>Position</th><th>Size</th><th>Visible</th></tr>';
+
+                // Check critical elements
+                const checks = [
+                    ['.header', 'Header'],
+                    ['.lang-selector', 'Language Selector'],
+                    ['.lang-dropdown', 'Language Dropdown'],
+                    ['#chart-container', 'Chart Container'],
+                    ['.chart-panel', 'Chart Panel'],
+                    ['canvas', 'Chart Canvas'],
+                    ['.order-book', 'Order Book'],
+                    ['#order-book-container', 'Order Book Container'],
+                    ['.trading-panel', 'Trading Panel'],
+                    ['.main-content', 'Main Content'],
+                    ['.sidebar', 'Sidebar'],
+                    ['#wallet-btn', 'Wallet Button'],
+                ];
+
+                checks.forEach(([sel, name]) => checkElement(doc, sel, name));
+
+                // Layout analysis
+                const results = document.getElementById('layout-results');
+                const header = doc.querySelector('.header');
+                const langSel = doc.querySelector('.lang-selector');
+                const chart = doc.querySelector('#chart-container, .chart-panel, .chart-section');
+                const orderBook = doc.querySelector('.order-book, #order-book-container');
+
+                let html = '<table>';
+
+                // Language selector position check
+                if (langSel && header) {
+                    const langRect = langSel.getBoundingClientRect();
+                    const headerRect = header.getBoundingClientRect();
+                    const inHeader = langRect.top >= headerRect.top && langRect.bottom <= headerRect.bottom + 50;
+                    html += `<tr><td>Lang Selector in Header</td><td class="${inHeader ? 'ok' : 'error'}">${inHeader ? '✓ OK' : '✗ WRONG - at bottom!'}</td></tr>`;
+                    log(`Language selector: ${inHeader ? 'In header ✓' : 'NOT in header! Top=' + langRect.top}`, inHeader ? 'ok' : 'error');
+                }
+
+                // Chart size check
+                if (chart) {
+                    const chartRect = chart.getBoundingClientRect();
+                    const goodSize = chartRect.width > 300 && chartRect.height > 200;
+                    html += `<tr><td>Chart Size</td><td class="${goodSize ? 'ok' : 'error'}">${chartRect.width}x${chartRect.height}px ${goodSize ? '✓' : '✗ Too small!'}</td></tr>`;
+                    log(`Chart: ${chartRect.width}x${chartRect.height}px`, goodSize ? 'ok' : 'error');
+                }
+
+                // Order book check
+                if (orderBook) {
+                    const obRect = orderBook.getBoundingClientRect();
+                    const visible = obRect.height > 100;
+                    html += `<tr><td>Order Book</td><td class="${visible ? 'ok' : 'error'}">${obRect.width}x${obRect.height}px ${visible ? '✓' : '✗ Cut off!'}</td></tr>`;
+                    log(`Order Book: ${obRect.width}x${obRect.height}px`, visible ? 'ok' : 'error');
+                }
+
+                html += '</table>';
+                results.innerHTML = html;
+
+                log('Checks complete!', 'ok');
+
+            } catch (e) {
+                log('Error: ' + e.message, 'error');
+            }
+        };
+
+        // Check files
+        const checkFiles = async () => {
+            const files = ['index.html', 'css/main.css', 'js/i18n.js', 'js/app.js'];
+            const results = document.getElementById('file-check');
+            let html = '<table><tr><th>File</th><th>Status</th><th>Size</th></tr>';
+
+            for (const file of files) {
+                try {
+                    const res = await fetch(file);
+                    const text = await res.text();
+                    html += `<tr><td>${file}</td><td class="ok">✓ OK</td><td>${(text.length / 1024).toFixed(1)} KB</td></tr>`;
+                } catch (e) {
+                    html += `<tr><td>${file}</td><td class="error">✗ Error</td><td>-</td></tr>`;
+                }
+            }
+
+            html += '</table>';
+            results.innerHTML = html;
+        };
+
+        // Auto-run on load
+        window.onload = () => {
+            log('Debug panel loaded', 'ok');
+            checkFiles();
+        };
+
+        // Listen for iframe load
+        document.getElementById('preview').onload = function() {
+            if (this.src !== 'about:blank') {
+                log('Preview loaded, running checks...', 'info');
+                setTimeout(runAllChecks, 500);
+            }
+        };
+    </script>
+</body>
+</html>

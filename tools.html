@@ -892,8 +892,291 @@
 
         </div>
 
-        <!-- INVESTMENT TOOLS -->
-        <h2 class="category-title">Investment Tools</h2>
+        <!-- SIMPLE INVESTMENTS -->
+        <h2 class="category-title">Simple Investments (No IL Risk)</h2>
+        <div class="tools-grid">
+
+            <!-- ROI Calculator -->
+            <div class="tool-card">
+                <div class="tool-header">
+                    <div class="tool-icon">💰</div>
+                    <div class="tool-title">ROI Calculator</div>
+                </div>
+                <p class="tool-desc">Calculate return on investment for any asset.</p>
+                <div class="tool-content">
+                    <input type="number" id="roi-invested" placeholder="Amount invested ($)" value="1000">
+                    <input type="number" id="roi-current" placeholder="Current value ($)" value="1500">
+                    <input type="number" id="roi-days" placeholder="Holding period (days)" value="365">
+                    <button type="button" class="btn" onclick="calculateROI()">Calculate ROI</button>
+                    <div class="result" id="roi-result" style="display:none;">
+                        <div class="result-row">
+                            <span class="result-label">Total ROI</span>
+                            <span class="result-value green" id="roi-total">+50%</span>
+                        </div>
+                        <div class="result-row">
+                            <span class="result-label">Profit/Loss</span>
+                            <span class="result-value" id="roi-profit">+$500</span>
+                        </div>
+                        <div class="result-row">
+                            <span class="result-label">Annualized ROI</span>
+                            <span class="result-value" id="roi-annual">+50%</span>
+                        </div>
+                        <div class="result-row">
+                            <span class="result-label">Daily Average</span>
+                            <span class="result-value" id="roi-daily">+$1.37</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- HODL Calculator -->
+            <div class="tool-card">
+                <div class="tool-header">
+                    <div class="tool-icon">💎</div>
+                    <div class="tool-title">HODL vs Sell Simulator</div>
+                </div>
+                <p class="tool-desc">Compare holding vs selling at different price targets.</p>
+                <div class="tool-content">
+                    <input type="number" id="hodl-tokens" placeholder="Number of tokens" value="100">
+                    <input type="number" id="hodl-buy" placeholder="Buy price ($)" value="50">
+                    <input type="number" id="hodl-current" placeholder="Current price ($)" value="75">
+                    <input type="number" id="hodl-target" placeholder="Target price ($)" value="150">
+                    <button type="button" class="btn" onclick="calculateHODL()">Compare</button>
+                    <div class="result" id="hodl-result" style="display:none;">
+                        <div class="result-row">
+                            <span class="result-label">Initial Investment</span>
+                            <span class="result-value" id="hodl-initial">$5,000</span>
+                        </div>
+                        <div class="result-row">
+                            <span class="result-label">Sell Now</span>
+                            <span class="result-value green" id="hodl-now">$7,500 (+50%)</span>
+                        </div>
+                        <div class="result-row">
+                            <span class="result-label">HODL to Target</span>
+                            <span class="result-value green" id="hodl-future">$15,000 (+200%)</span>
+                        </div>
+                        <div class="result-row">
+                            <span class="result-label">Upside Remaining</span>
+                            <span class="result-value yellow" id="hodl-upside">+$7,500 (+100%)</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Average Buy Price -->
+            <div class="tool-card">
+                <div class="tool-header">
+                    <div class="tool-icon">📊</div>
+                    <div class="tool-title">Average Buy Price</div>
+                </div>
+                <p class="tool-desc">Calculate your average entry price across multiple buys.</p>
+                <div class="tool-content">
+                    <div class="input-group">
+                        <input type="number" id="avg-qty1" placeholder="Qty 1" value="10">
+                        <input type="number" id="avg-price1" placeholder="Price 1" value="100">
+                    </div>
+                    <div class="input-group">
+                        <input type="number" id="avg-qty2" placeholder="Qty 2" value="20">
+                        <input type="number" id="avg-price2" placeholder="Price 2" value="80">
+                    </div>
+                    <div class="input-group">
+                        <input type="number" id="avg-qty3" placeholder="Qty 3" value="15">
+                        <input type="number" id="avg-price3" placeholder="Price 3" value="60">
+                    </div>
+                    <button type="button" class="btn" onclick="calculateAvgPrice()">Calculate Average</button>
+                    <div class="result" id="avg-result" style="display:none;">
+                        <div class="result-row">
+                            <span class="result-label">Total Tokens</span>
+                            <span class="result-value" id="avg-total-qty">45</span>
+                        </div>
+                        <div class="result-row">
+                            <span class="result-label">Total Invested</span>
+                            <span class="result-value" id="avg-total-inv">$3,500</span>
+                        </div>
+                        <div class="result-row">
+                            <span class="result-label">Average Price</span>
+                            <span class="result-value green" id="avg-price">$77.78</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Investment Goal -->
+            <div class="tool-card">
+                <div class="tool-header">
+                    <div class="tool-icon">🎯</div>
+                    <div class="tool-title">Investment Goal Planner</div>
+                </div>
+                <p class="tool-desc">Calculate how much to invest to reach your goal.</p>
+                <div class="tool-content">
+                    <input type="number" id="goal-target" placeholder="Target amount ($)" value="100000">
+                    <input type="number" id="goal-current" placeholder="Current savings ($)" value="10000">
+                    <input type="number" id="goal-years" placeholder="Time frame (years)" value="5">
+                    <input type="number" id="goal-return" placeholder="Expected annual return (%)" value="20">
+                    <button type="button" class="btn" onclick="calculateGoal()">Calculate</button>
+                    <div class="result" id="goal-result" style="display:none;">
+                        <div class="result-row">
+                            <span class="result-label">Monthly Investment</span>
+                            <span class="result-value green" id="goal-monthly">$842</span>
+                        </div>
+                        <div class="result-row">
+                            <span class="result-label">Total Contributions</span>
+                            <span class="result-value" id="goal-contrib">$60,520</span>
+                        </div>
+                        <div class="result-row">
+                            <span class="result-label">Growth from Returns</span>
+                            <span class="result-value green" id="goal-growth">$39,480</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Profit Taking Strategy -->
+            <div class="tool-card">
+                <div class="tool-header">
+                    <div class="tool-icon">🎰</div>
+                    <div class="tool-title">Profit Taking Strategy</div>
+                </div>
+                <p class="tool-desc">Plan your exit strategy with tiered profit taking.</p>
+                <div class="tool-content">
+                    <input type="number" id="pt-tokens" placeholder="Total tokens" value="1000">
+                    <input type="number" id="pt-entry" placeholder="Entry price ($)" value="1">
+                    <input type="number" id="pt-target1" placeholder="Target 1 (2x)" value="2">
+                    <input type="number" id="pt-target2" placeholder="Target 2 (5x)" value="5">
+                    <input type="number" id="pt-target3" placeholder="Target 3 (10x)" value="10">
+                    <button type="button" class="btn" onclick="calculateProfitTaking()">Plan Exit</button>
+                    <div class="result" id="pt-result" style="display:none;">
+                        <div class="result-row">
+                            <span class="result-label">At 2x: Sell 25%</span>
+                            <span class="result-value" id="pt-sell1">250 tokens = $500</span>
+                        </div>
+                        <div class="result-row">
+                            <span class="result-label">At 5x: Sell 25%</span>
+                            <span class="result-value" id="pt-sell2">250 tokens = $1,250</span>
+                        </div>
+                        <div class="result-row">
+                            <span class="result-label">At 10x: Sell 25%</span>
+                            <span class="result-value" id="pt-sell3">250 tokens = $2,500</span>
+                        </div>
+                        <div class="result-row">
+                            <span class="result-label">Moon Bag (25%)</span>
+                            <span class="result-value green" id="pt-moon">250 tokens held</span>
+                        </div>
+                        <div class="result-row">
+                            <span class="result-label">Total Secured</span>
+                            <span class="result-value green" id="pt-total">$4,250 (4.25x)</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Savings Yield Calculator -->
+            <div class="tool-card">
+                <div class="tool-header">
+                    <div class="tool-icon">🏦</div>
+                    <div class="tool-title">Fixed Yield Calculator</div>
+                </div>
+                <p class="tool-desc">Calculate earnings from fixed yield products (no IL).</p>
+                <div class="tool-content">
+                    <input type="number" id="fy-amount" placeholder="Deposit amount ($)" value="10000">
+                    <input type="number" id="fy-apy" placeholder="Fixed APY (%)" value="8">
+                    <select id="fy-payout">
+                        <option value="daily">Daily payout</option>
+                        <option value="weekly">Weekly payout</option>
+                        <option value="monthly" selected>Monthly payout</option>
+                    </select>
+                    <input type="number" id="fy-months" placeholder="Duration (months)" value="12">
+                    <button type="button" class="btn" onclick="calculateFixedYield()">Calculate</button>
+                    <div class="result" id="fy-result" style="display:none;">
+                        <div class="result-row">
+                            <span class="result-label">Payout Amount</span>
+                            <span class="result-value" id="fy-payout-val">$66.67/month</span>
+                        </div>
+                        <div class="result-row">
+                            <span class="result-label">Total Earned</span>
+                            <span class="result-value green" id="fy-total-earned">$800</span>
+                        </div>
+                        <div class="result-row">
+                            <span class="result-label">Final Balance</span>
+                            <span class="result-value green" id="fy-final">$10,800</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Tax Estimator -->
+            <div class="tool-card">
+                <div class="tool-header">
+                    <div class="tool-icon">📋</div>
+                    <div class="tool-title">Capital Gains Estimator</div>
+                </div>
+                <p class="tool-desc">Estimate taxes on your crypto profits.</p>
+                <div class="tool-content">
+                    <input type="number" id="tax-profit" placeholder="Total profit ($)" value="10000">
+                    <select id="tax-term">
+                        <option value="short">Short-term (&lt;1 year)</option>
+                        <option value="long">Long-term (&gt;1 year)</option>
+                    </select>
+                    <select id="tax-bracket">
+                        <option value="0">0% bracket</option>
+                        <option value="15">15% bracket</option>
+                        <option value="20">20% bracket</option>
+                        <option value="22" selected>22% bracket</option>
+                        <option value="32">32% bracket</option>
+                        <option value="37">37% bracket</option>
+                    </select>
+                    <button type="button" class="btn" onclick="calculateTax()">Estimate Tax</button>
+                    <div class="result" id="tax-result" style="display:none;">
+                        <div class="result-row">
+                            <span class="result-label">Tax Rate</span>
+                            <span class="result-value" id="tax-rate">22%</span>
+                        </div>
+                        <div class="result-row">
+                            <span class="result-label">Estimated Tax</span>
+                            <span class="result-value red" id="tax-amount">$2,200</span>
+                        </div>
+                        <div class="result-row">
+                            <span class="result-label">Net Profit</span>
+                            <span class="result-value green" id="tax-net">$7,800</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- FIRE Calculator -->
+            <div class="tool-card">
+                <div class="tool-header">
+                    <div class="tool-icon">🔥</div>
+                    <div class="tool-title">Crypto FIRE Calculator</div>
+                </div>
+                <p class="tool-desc">Calculate when you can retire with crypto.</p>
+                <div class="tool-content">
+                    <input type="number" id="fire-portfolio" placeholder="Current portfolio ($)" value="50000">
+                    <input type="number" id="fire-monthly" placeholder="Monthly contribution ($)" value="1000">
+                    <input type="number" id="fire-expenses" placeholder="Monthly expenses ($)" value="3000">
+                    <input type="number" id="fire-return" placeholder="Expected return (%)" value="15">
+                    <button type="button" class="btn" onclick="calculateFIRE()">Calculate</button>
+                    <div class="result" id="fire-result" style="display:none;">
+                        <div class="result-row">
+                            <span class="result-label">FIRE Number (25x)</span>
+                            <span class="result-value" id="fire-target">$900,000</span>
+                        </div>
+                        <div class="result-row">
+                            <span class="result-label">Years to FIRE</span>
+                            <span class="result-value yellow" id="fire-years">8.5 years</span>
+                        </div>
+                        <div class="result-row">
+                            <span class="result-label">Passive Income</span>
+                            <span class="result-value green" id="fire-passive">$3,000/month</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+
+        <!-- ADVANCED INVESTMENT TOOLS -->
+        <h2 class="category-title">Advanced Investment Tools</h2>
         <div class="tools-grid">
 
             <!-- Staking Rewards Calculator -->
@@ -1473,7 +1756,183 @@
             document.getElementById('fg-label').style.color = color;
         }
 
-        // ==================== INVESTMENT TOOLS ====================
+        // ==================== SIMPLE INVESTMENTS ====================
+
+        // ROI Calculator
+        function calculateROI() {
+            const invested = parseFloat(document.getElementById('roi-invested').value);
+            const current = parseFloat(document.getElementById('roi-current').value);
+            const days = parseFloat(document.getElementById('roi-days').value);
+
+            const profit = current - invested;
+            const roiPercent = (profit / invested) * 100;
+            const annualizedROI = (Math.pow(current / invested, 365 / days) - 1) * 100;
+            const dailyAvg = profit / days;
+
+            const profitEl = document.getElementById('roi-profit');
+            const totalEl = document.getElementById('roi-total');
+
+            totalEl.textContent = (roiPercent >= 0 ? '+' : '') + roiPercent.toFixed(1) + '%';
+            totalEl.className = 'result-value ' + (roiPercent >= 0 ? 'green' : 'red');
+
+            profitEl.textContent = (profit >= 0 ? '+' : '') + '$' + profit.toLocaleString(undefined, {maximumFractionDigits: 0});
+            profitEl.className = 'result-value ' + (profit >= 0 ? 'green' : 'red');
+
+            document.getElementById('roi-annual').textContent = (annualizedROI >= 0 ? '+' : '') + annualizedROI.toFixed(1) + '%';
+            document.getElementById('roi-daily').textContent = (dailyAvg >= 0 ? '+' : '') + '$' + dailyAvg.toFixed(2);
+            document.getElementById('roi-result').style.display = 'block';
+        }
+
+        // HODL Calculator
+        function calculateHODL() {
+            const tokens = parseFloat(document.getElementById('hodl-tokens').value);
+            const buyPrice = parseFloat(document.getElementById('hodl-buy').value);
+            const currentPrice = parseFloat(document.getElementById('hodl-current').value);
+            const targetPrice = parseFloat(document.getElementById('hodl-target').value);
+
+            const initial = tokens * buyPrice;
+            const currentValue = tokens * currentPrice;
+            const targetValue = tokens * targetPrice;
+            const currentGain = ((currentValue - initial) / initial) * 100;
+            const targetGain = ((targetValue - initial) / initial) * 100;
+            const upside = targetValue - currentValue;
+            const upsidePct = ((targetPrice - currentPrice) / currentPrice) * 100;
+
+            document.getElementById('hodl-initial').textContent = '$' + initial.toLocaleString();
+            document.getElementById('hodl-now').textContent = '$' + currentValue.toLocaleString() + ' (' + (currentGain >= 0 ? '+' : '') + currentGain.toFixed(0) + '%)';
+            document.getElementById('hodl-future').textContent = '$' + targetValue.toLocaleString() + ' (+' + targetGain.toFixed(0) + '%)';
+            document.getElementById('hodl-upside').textContent = '+$' + upside.toLocaleString() + ' (+' + upsidePct.toFixed(0) + '%)';
+            document.getElementById('hodl-result').style.display = 'block';
+        }
+
+        // Average Buy Price
+        function calculateAvgPrice() {
+            const qty1 = parseFloat(document.getElementById('avg-qty1').value) || 0;
+            const price1 = parseFloat(document.getElementById('avg-price1').value) || 0;
+            const qty2 = parseFloat(document.getElementById('avg-qty2').value) || 0;
+            const price2 = parseFloat(document.getElementById('avg-price2').value) || 0;
+            const qty3 = parseFloat(document.getElementById('avg-qty3').value) || 0;
+            const price3 = parseFloat(document.getElementById('avg-price3').value) || 0;
+
+            const totalQty = qty1 + qty2 + qty3;
+            const totalInv = qty1 * price1 + qty2 * price2 + qty3 * price3;
+            const avgPrice = totalInv / totalQty;
+
+            document.getElementById('avg-total-qty').textContent = totalQty.toLocaleString();
+            document.getElementById('avg-total-inv').textContent = '$' + totalInv.toLocaleString(undefined, {maximumFractionDigits: 0});
+            document.getElementById('avg-price').textContent = '$' + avgPrice.toFixed(2);
+            document.getElementById('avg-result').style.display = 'block';
+        }
+
+        // Investment Goal
+        function calculateGoal() {
+            const target = parseFloat(document.getElementById('goal-target').value);
+            const current = parseFloat(document.getElementById('goal-current').value);
+            const years = parseFloat(document.getElementById('goal-years').value);
+            const annualReturn = parseFloat(document.getElementById('goal-return').value) / 100;
+
+            const monthlyRate = annualReturn / 12;
+            const months = years * 12;
+            const futureValueCurrent = current * Math.pow(1 + monthlyRate, months);
+            const remaining = target - futureValueCurrent;
+
+            const monthlyPayment = remaining > 0 ?
+                remaining * monthlyRate / (Math.pow(1 + monthlyRate, months) - 1) : 0;
+
+            const totalContrib = current + monthlyPayment * months;
+            const growth = target - totalContrib;
+
+            document.getElementById('goal-monthly').textContent = '$' + Math.max(0, monthlyPayment).toFixed(0);
+            document.getElementById('goal-contrib').textContent = '$' + totalContrib.toLocaleString(undefined, {maximumFractionDigits: 0});
+            document.getElementById('goal-growth').textContent = '$' + Math.max(0, growth).toLocaleString(undefined, {maximumFractionDigits: 0});
+            document.getElementById('goal-result').style.display = 'block';
+        }
+
+        // Profit Taking Strategy
+        function calculateProfitTaking() {
+            const tokens = parseFloat(document.getElementById('pt-tokens').value);
+            const entry = parseFloat(document.getElementById('pt-entry').value);
+            const t1 = parseFloat(document.getElementById('pt-target1').value);
+            const t2 = parseFloat(document.getElementById('pt-target2').value);
+            const t3 = parseFloat(document.getElementById('pt-target3').value);
+
+            const portion = tokens * 0.25;
+            const sell1 = portion * t1;
+            const sell2 = portion * t2;
+            const sell3 = portion * t3;
+            const total = sell1 + sell2 + sell3;
+            const multiple = total / (tokens * entry);
+
+            document.getElementById('pt-sell1').textContent = portion.toLocaleString() + ' tokens = $' + sell1.toLocaleString();
+            document.getElementById('pt-sell2').textContent = portion.toLocaleString() + ' tokens = $' + sell2.toLocaleString();
+            document.getElementById('pt-sell3').textContent = portion.toLocaleString() + ' tokens = $' + sell3.toLocaleString();
+            document.getElementById('pt-moon').textContent = portion.toLocaleString() + ' tokens held';
+            document.getElementById('pt-total').textContent = '$' + total.toLocaleString() + ' (' + multiple.toFixed(2) + 'x)';
+            document.getElementById('pt-result').style.display = 'block';
+        }
+
+        // Fixed Yield Calculator
+        function calculateFixedYield() {
+            const amount = parseFloat(document.getElementById('fy-amount').value);
+            const apy = parseFloat(document.getElementById('fy-apy').value) / 100;
+            const payout = document.getElementById('fy-payout').value;
+            const months = parseFloat(document.getElementById('fy-months').value);
+
+            const totalEarned = amount * apy * (months / 12);
+            const payoutPeriods = payout === 'daily' ? months * 30 : payout === 'weekly' ? months * 4 : months;
+            const payoutAmount = totalEarned / payoutPeriods;
+            const payoutLabel = payout === 'daily' ? '/day' : payout === 'weekly' ? '/week' : '/month';
+
+            document.getElementById('fy-payout-val').textContent = '$' + payoutAmount.toFixed(2) + payoutLabel;
+            document.getElementById('fy-total-earned').textContent = '$' + totalEarned.toLocaleString(undefined, {maximumFractionDigits: 0});
+            document.getElementById('fy-final').textContent = '$' + (amount + totalEarned).toLocaleString(undefined, {maximumFractionDigits: 0});
+            document.getElementById('fy-result').style.display = 'block';
+        }
+
+        // Tax Calculator
+        function calculateTax() {
+            const profit = parseFloat(document.getElementById('tax-profit').value);
+            const term = document.getElementById('tax-term').value;
+            const bracket = parseFloat(document.getElementById('tax-bracket').value);
+
+            // Long-term has lower rates
+            const rate = term === 'long' ? Math.min(bracket, 20) : bracket;
+            const taxAmount = profit * (rate / 100);
+            const netProfit = profit - taxAmount;
+
+            document.getElementById('tax-rate').textContent = rate + '%';
+            document.getElementById('tax-amount').textContent = '$' + taxAmount.toLocaleString(undefined, {maximumFractionDigits: 0});
+            document.getElementById('tax-net').textContent = '$' + netProfit.toLocaleString(undefined, {maximumFractionDigits: 0});
+            document.getElementById('tax-result').style.display = 'block';
+        }
+
+        // FIRE Calculator
+        function calculateFIRE() {
+            const portfolio = parseFloat(document.getElementById('fire-portfolio').value);
+            const monthly = parseFloat(document.getElementById('fire-monthly').value);
+            const expenses = parseFloat(document.getElementById('fire-expenses').value);
+            const annualReturn = parseFloat(document.getElementById('fire-return').value) / 100;
+
+            const fireTarget = expenses * 12 * 25; // 4% rule
+            const monthlyRate = annualReturn / 12;
+
+            // Calculate years to reach FIRE
+            let balance = portfolio;
+            let years = 0;
+            while (balance < fireTarget && years < 100) {
+                balance = balance * (1 + monthlyRate) + monthly;
+                years += 1/12;
+            }
+
+            const passiveIncome = fireTarget * 0.04 / 12;
+
+            document.getElementById('fire-target').textContent = '$' + fireTarget.toLocaleString(undefined, {maximumFractionDigits: 0});
+            document.getElementById('fire-years').textContent = years.toFixed(1) + ' years';
+            document.getElementById('fire-passive').textContent = '$' + passiveIncome.toLocaleString(undefined, {maximumFractionDigits: 0}) + '/month';
+            document.getElementById('fire-result').style.display = 'block';
+        }
+
+        // ==================== ADVANCED INVESTMENT TOOLS ====================
 
         // Staking Rewards Calculator
         function calculateStaking() {
