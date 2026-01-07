@@ -1,0 +1,51 @@
+/**
+ * PERPETUALS MODULE - Perpetual Futures Trading
+ */
+const PerpetualsModule = {
+    markets: [
+        { id: 'btc-perp', symbol: 'BTC-PERP', price: 92000, fundingRate: 0.01, openInterest: 500000000, maxLeverage: 100 },
+        { id: 'eth-perp', symbol: 'ETH-PERP', price: 3200, fundingRate: 0.008, openInterest: 200000000, maxLeverage: 100 },
+        { id: 'sol-perp', symbol: 'SOL-PERP', price: 140, fundingRate: 0.015, openInterest: 50000000, maxLeverage: 50 },
+        { id: 'avax-perp', symbol: 'AVAX-PERP', price: 35, fundingRate: 0.012, openInterest: 20000000, maxLeverage: 50 },
+        { id: 'arb-perp', symbol: 'ARB-PERP', price: 0.8, fundingRate: 0.02, openInterest: 15000000, maxLeverage: 25 },
+        { id: 'doge-perp', symbol: 'DOGE-PERP', price: 0.32, fundingRate: 0.025, openInterest: 30000000, maxLeverage: 25 }
+    ],
+    positions: [],
+    init() { this.load(); console.log('Perpetuals initialized'); },
+    load() { const s = localStorage.getItem('obelisk_perps'); if (s) this.positions = JSON.parse(s); },
+    save() { localStorage.setItem('obelisk_perps', JSON.stringify(this.positions)); },
+    openPosition(marketId, side, size, leverage) {
+        const market = this.markets.find(m => m.id === marketId);
+        if (!market) return { success: false, error: 'Market not found' };
+        if (leverage > market.maxLeverage) return { success: false, error: 'Max leverage: ' + market.maxLeverage + 'x' };
+        const margin = size / leverage;
+        const pos = { id: 'perp-' + Date.now(), marketId, symbol: market.symbol, side, size, leverage, margin, entryPrice: market.price, openTime: Date.now() };
+        this.positions.push(pos);
+        this.save();
+        return { success: true, position: pos };
+    },
+    closePosition(posId) {
+        const idx = this.positions.findIndex(p => p.id === posId);
+        if (idx === -1) return { success: false };
+        const pos = this.positions[idx];
+        const market = this.markets.find(m => m.id === pos.marketId);
+        const priceDiff = market.price - pos.entryPrice;
+        const pnl = (pos.side === 'long' ? priceDiff : -priceDiff) / pos.entryPrice * pos.size;
+        this.positions.splice(idx, 1);
+        this.save();
+        return { success: true, pnl, margin: pos.margin };
+    },
+    render(containerId) {
+        const el = document.getElementById(containerId);
+        if (!el) return;
+        el.innerHTML = '<h3>Perpetual Futures</h3><div class="perps-grid">' + this.markets.map(m => 
+            '<div class="perp-card"><strong>' + m.symbol + '</strong><br>$' + m.price.toLocaleString() + '<br>Funding: ' + m.fundingRate + '%<br>Max: ' + m.maxLeverage + 'x<br><button onclick="PerpetualsModule.quickTrade(\'' + m.id + '\',\'long\')">Long</button> <button onclick="PerpetualsModule.quickTrade(\'' + m.id + '\',\'short\')">Short</button></div>'
+        ).join('') + '</div>';
+    },
+    quickTrade(marketId, side) {
+        const size = parseFloat(prompt('Position size USD:'));
+        const leverage = parseFloat(prompt('Leverage (1-100):'));
+        if (size && leverage) { const r = this.openPosition(marketId, side, size, leverage); alert(r.success ? 'Position opened!' : r.error); }
+    }
+};
+document.addEventListener('DOMContentLoaded', () => PerpetualsModule.init());
