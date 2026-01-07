@@ -14,8 +14,8 @@ const IndexFundsModule = {
     ],
     holdings: [],
     init() { this.load(); console.log('Index Funds initialized'); },
-    load() { const s = localStorage.getItem('obelisk_indexfunds'); if (s) this.holdings = JSON.parse(s); },
-    save() { localStorage.setItem('obelisk_indexfunds', JSON.stringify(this.holdings)); },
+    load() { this.holdings = SafeOps.getStorage('obelisk_indexfunds', []); },
+    save() { SafeOps.setStorage('obelisk_indexfunds', this.holdings); },
     invest(fundId, amount) {
         const fund = this.funds.find(f => f.id === fundId);
         if (!fund) return { success: false, error: 'Fund not found' };
@@ -50,7 +50,7 @@ const IndexFundsModule = {
     quickInvest(fundId) {
         const fund = this.funds.find(f => f.id === fundId);
         const amount = parseFloat(prompt('Amount (min $' + fund.minInvest + '):'));
-        if (amount) { const r = this.invest(fundId, amount); alert(r.success ? 'Invested in ' + fund.name + '!' : r.error); }
+        if (amount !== null && amount > 0) { const r = this.invest(fundId, amount); alert(r.success ? 'Invested in ' + fund.name + '!' : r.error); }
     }
 };
 document.addEventListener('DOMContentLoaded', () => IndexFundsModule.init());

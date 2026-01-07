@@ -12,8 +12,8 @@ const StructuredModule = {
     ],
     positions: [],
     init() { this.load(); console.log('Structured Products initialized'); },
-    load() { const s = localStorage.getItem('obelisk_structured'); if (s) this.positions = JSON.parse(s); },
-    save() { localStorage.setItem('obelisk_structured', JSON.stringify(this.positions)); },
+    load() { this.positions = SafeOps.getStorage('obelisk_structured', []); },
+    save() { SafeOps.setStorage('obelisk_structured', this.positions); },
     invest(productId, amount) {
         const prod = this.products.find(p => p.id === productId);
         if (!prod) return { success: false, error: 'Product not found' };
@@ -46,7 +46,7 @@ const StructuredModule = {
     quickInvest(productId) {
         const prod = this.products.find(p => p.id === productId);
         const amount = parseFloat(prompt('Amount (min $' + prod.minInvest + '):'));
-        if (amount) { const r = this.invest(productId, amount); alert(r.success ? 'Invested!' : r.error); }
+        if (amount !== null && amount > 0) { const r = this.invest(productId, amount); alert(r.success ? 'Invested!' : r.error); }
     }
 };
 document.addEventListener('DOMContentLoaded', () => StructuredModule.init());

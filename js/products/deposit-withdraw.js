@@ -449,7 +449,7 @@ const DepositWithdraw = {
         if (this.history.length > 100) {
             this.history = this.history.slice(0, 100);
         }
-        localStorage.setItem('obelisk_tx_history', JSON.stringify(this.history));
+        SafeOps.setStorage('obelisk_tx_history', this.history);
     },
 
     /**

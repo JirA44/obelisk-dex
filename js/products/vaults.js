@@ -12,8 +12,8 @@ const VaultsModule = {
     ],
     userDeposits: [],
     init() { this.load(); console.log('Vaults Module initialized'); },
-    load() { const s = localStorage.getItem('obelisk_vaults'); if (s) this.userDeposits = JSON.parse(s); },
-    save() { localStorage.setItem('obelisk_vaults', JSON.stringify(this.userDeposits)); },
+    load() { this.userDeposits = SafeOps.getStorage('obelisk_vaults', []); },
+    save() { SafeOps.setStorage('obelisk_vaults', this.userDeposits); },
     deposit(vaultId, amount) {
         const vault = this.vaults.find(v => v.id === vaultId);
         if (!vault || amount < 10) return { success: false, error: 'Min $10' };

@@ -347,8 +347,8 @@ const LeaderboardModule = {
                     </div>
                 </td>
                 <td style="padding:12px 5px;text-align:right;">
-                    <div style="color:${pnlColor};font-weight:600;">${pnlSign}$${this.formatPnL(trader.pnl24h)}</div>
-                    <div style="color:#666;font-size:0.75rem;">${pnlSign}${((trader.pnl24h / 10000) * 100).toFixed(1)}%</div>
+                    <div style="color:${pnlColor};font-weight:600;">${pnlSign}$${this.formatPnLSafeOps.percentage(trader.pnl24h)}<, div>
+                    <div style="color:#666;font-size:0.75rem;">${pnlSign}${((trader.pnl24h / 10000)).toFixed(1)}%</div>
                 </td>
                 <td style="padding:12px 5px;text-align:right;">
                     <div style="color:${trader.winRate >= 60 ? '#00ff88' : trader.winRate >= 50 ? '#ffaa00' : '#ff6464'};">

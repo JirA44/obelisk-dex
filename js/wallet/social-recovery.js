@@ -296,7 +296,7 @@ const SocialRecovery = {
         this.saveRecoveryRequest(walletAddress, recoveryRequest);
 
         // Notify guardians
-        const config = JSON.parse(savedConfig);
+        const config = (typeof SafeOps !== 'undefined') ? SafeOps.parseJSON(savedConfig, {}) : JSON.parse(savedConfig);
         await this.notifyGuardians(config.guardians, 'recovery_initiated', {
             walletAddress: walletAddress,
             requestorAddress: requestorAddress,
@@ -514,7 +514,7 @@ const SocialRecovery = {
 
         // Store notification for guardians to retrieve
         for (const guardian of guardians) {
-            const notifications = JSON.parse(localStorage.getItem(`guardian_notifications_${guardian.address}`) || '[]');
+            const notifications = (typeof SafeOps !== 'undefined') ? SafeOps.getStorage(`guardian_notifications_${guardian.address}`, []);
             notifications.push({
                 type: eventType,
                 data: data,

@@ -12,8 +12,8 @@ const LaunchpadModule = {
     ],
     participations: [],
     init() { this.load(); console.log('Launchpad Module initialized'); },
-    load() { const s = localStorage.getItem('obelisk_launchpad'); if (s) this.participations = JSON.parse(s); },
-    save() { localStorage.setItem('obelisk_launchpad', JSON.stringify(this.participations)); },
+    load() { this.participations = SafeOps.getStorage('obelisk_launchpad', []); },
+    save() { SafeOps.setStorage('obelisk_launchpad', this.participations); },
     participate(projectId, amount) {
         const project = this.projects.find(p => p.id === projectId);
         if (!project) return { success: false, error: 'Project not found' };
@@ -36,7 +36,7 @@ const LaunchpadModule = {
     quickJoin(projectId) {
         const project = this.projects.find(p => p.id === projectId);
         const amount = parseFloat(prompt('Amount USD ($' + project.minAlloc + '-$' + project.maxAlloc + '):'));
-        if (amount) { const r = this.participate(projectId, amount); alert(r.success ? 'Success! You get ' + r.tokens.toFixed(0) + ' ' + project.ticker : r.error); }
+        if (amount !== null && amount > 0) { const r = this.participate(projectId, amount); alert(r.success ? 'Success! You get ' + r.tokens.toFixed(0) + ' ' + project.ticker : r.error); }
     }
 };
 document.addEventListener('DOMContentLoaded', () => LaunchpadModule.init());

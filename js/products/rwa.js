@@ -16,8 +16,8 @@ const RWAModule = {
     ],
     holdings: [],
     init() { this.load(); console.log('RWA Module initialized'); },
-    load() { const s = localStorage.getItem('obelisk_rwa'); if (s) this.holdings = JSON.parse(s); },
-    save() { localStorage.setItem('obelisk_rwa', JSON.stringify(this.holdings)); },
+    load() { this.holdings = SafeOps.getStorage('obelisk_rwa', []); },
+    save() { SafeOps.setStorage('obelisk_rwa', this.holdings); },
     invest(assetId, amount) {
         const asset = this.assets.find(a => a.id === assetId);
         if (!asset) return { success: false, error: 'Asset not found' };
@@ -48,7 +48,7 @@ const RWAModule = {
     quickInvest(assetId) {
         const asset = this.assets.find(a => a.id === assetId);
         const amount = parseFloat(prompt('Amount (min $' + asset.minInvest.toLocaleString() + '):'));
-        if (amount) { const r = this.invest(assetId, amount); alert(r.success ? 'Invested in ' + asset.name + '!' : r.error); }
+        if (amount !== null && amount > 0) { const r = this.invest(assetId, amount); alert(r.success ? 'Invested in ' + asset.name + '!' : r.error); }
     }
 };
 document.addEventListener('DOMContentLoaded', () => RWAModule.init());

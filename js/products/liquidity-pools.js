@@ -12,8 +12,8 @@ const LiquidityPoolsModule = {
     ],
     userLPs: [],
     init() { this.load(); console.log('LP Module initialized'); },
-    load() { const s = localStorage.getItem('obelisk_lp'); if (s) this.userLPs = JSON.parse(s); },
-    save() { localStorage.setItem('obelisk_lp', JSON.stringify(this.userLPs)); },
+    load() { this.userLPs = SafeOps.getStorage('obelisk_lp', []); },
+    save() { SafeOps.setStorage('obelisk_lp', this.userLPs); },
     addLiquidity(poolId, amount) {
         const pool = this.pools.find(p => p.id === poolId);
         if (!pool || amount < 10) return { success: false, error: 'Min $10' };

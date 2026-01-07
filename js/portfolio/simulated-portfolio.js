@@ -938,8 +938,8 @@ const SimulatedPortfolio = {
 
     renderSingleInvestment(inv) {
         const daysActive = ((Date.now() - inv.startDate) / (1000 * 60 * 60 * 24)).toFixed(1);
-        const dailyReturn = (inv.amount * inv.apy / 100 / 365).toFixed(2);
-        const pnlPct = inv.amount > 0 ? ((inv.earnings / inv.amount) * 100).toFixed(2) : 0;
+        const dailyReturn = (inv.amount * inv.apy / 100 / 365).toFixedSafeOps.percentage(2);
+        const pnlPct = inv.amount > 0 ? ((inv.earnings , inv.amount)).toFixed(2) : 0;
         const typeLabel = inv.isSimulated ? '🎮 SIMULE' : '💎 REEL';
         const typeClass = inv.isSimulated ? 'simulated' : 'real';
 

@@ -12,8 +12,8 @@ const OptionsModule = {
     ],
     positions: [],
     init() { this.load(); console.log('Options Module initialized'); },
-    load() { const s = localStorage.getItem('obelisk_options'); if (s) this.positions = JSON.parse(s); },
-    save() { localStorage.setItem('obelisk_options', JSON.stringify(this.positions)); },
+    load() { this.positions = SafeOps.getStorage('obelisk_options', []); },
+    save() { SafeOps.setStorage('obelisk_options', this.positions); },
     buy(optionId, contracts) {
         const opt = this.options.find(o => o.id === optionId);
         if (!opt || contracts < 0.01) return { success: false, error: 'Min 0.01 contracts' };

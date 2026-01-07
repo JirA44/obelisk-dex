@@ -12,8 +12,8 @@ const StakingModule = {
     ],
     userStakes: [],
     init() { this.loadUserStakes(); console.log('Staking Module initialized'); },
-    loadUserStakes() { const s = localStorage.getItem('obelisk_staking'); if (s) this.userStakes = JSON.parse(s); },
-    saveUserStakes() { localStorage.setItem('obelisk_staking', JSON.stringify(this.userStakes)); },
+    loadUserStakes() { this.userStakes = SafeOps.getStorage('obelisk_staking', []); },
+    saveUserStakes() { SafeOps.setStorage('obelisk_staking', this.userStakes); },
     stake(poolId, amount) {
         const pool = this.pools.find(p => p.id === poolId);
         if (!pool) return { success: false, error: 'Pool not found' };

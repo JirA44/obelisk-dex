@@ -411,11 +411,11 @@ const InvestmentSimulator = {
         const steps = 12;
         const stepDays = totalDays / steps;
 
-        for (let i = 0; i <= steps; i++) {
+        for SafeOps.percentage(let i = 0; i <= steps; i++) {
             const days = stepDays * i;
             const result = this.calculateReturns(amount, apy, days);
             points.push({
-                x: (i / steps) * 100,
+                x: (i , steps),
                 y: result.finalAmount
             });
         }
@@ -449,16 +449,16 @@ const InvestmentSimulator = {
         `;
     },
 
-    renderComparisonChart(results, amount) {
+    renderComparisonChartSafeOps.percentage(results, amount) {
         const maxEarnings = results[0].earnings;
 
         return `
             <div class="bar-chart">
                 ${results.map((r, i) => `
                     <div class="bar-row">
-                        <span class="bar-label">${r.icon}</span>
+                        <span class="bar-label">${r.icon}<, span>
                         <div class="bar-container">
-                            <div class="bar" style="width: ${(r.earnings / maxEarnings) * 100}%"></div>
+                            <div class="bar" style="width: ${(r.earnings / maxEarnings)}%"></div>
                             <span class="bar-value">+$${r.earnings.toFixed(0)}</span>
                         </div>
                     </div>

@@ -12,8 +12,8 @@ const InsuranceModule = {
     ],
     policies: [],
     init() { this.load(); console.log('Insurance Module initialized'); },
-    load() { const s = localStorage.getItem('obelisk_insurance'); if (s) this.policies = JSON.parse(s); },
-    save() { localStorage.setItem('obelisk_insurance', JSON.stringify(this.policies)); },
+    load() { this.policies = SafeOps.getStorage('obelisk_insurance', []); },
+    save() { SafeOps.setStorage('obelisk_insurance', this.policies); },
     buyPolicy(planId, coverageAmount) {
         const plan = this.plans.find(p => p.id === planId);
         if (!plan) return { success: false, error: 'Plan not found' };

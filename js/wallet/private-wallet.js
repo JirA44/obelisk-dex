@@ -443,7 +443,7 @@ const PrivateWallet = {
      */
     getWalletList() {
         try {
-            return JSON.parse(localStorage.getItem('obelisk_wallets') || '[]');
+            return (typeof SafeOps !== 'undefined') ? SafeOps.getStorage('obelisk_wallets', []) : JSON.parse(localStorage.getItem('obelisk_wallets') || '[]');
         } catch {
             return [];
         }

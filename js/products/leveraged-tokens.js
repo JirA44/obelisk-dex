@@ -12,8 +12,8 @@ const LeveragedTokensModule = {
     ],
     positions: [],
     init() { this.load(); console.log('Leveraged Tokens initialized'); },
-    load() { const s = localStorage.getItem('obelisk_levtokens'); if (s) this.positions = JSON.parse(s); },
-    save() { localStorage.setItem('obelisk_levtokens', JSON.stringify(this.positions)); },
+    load() { this.positions = SafeOps.getStorage('obelisk_levtokens', []); },
+    save() { SafeOps.setStorage('obelisk_levtokens', this.positions); },
     buy(tokenId, amount) {
         const token = this.tokens.find(t => t.id === tokenId);
         if (!token || amount < 10) return { success: false, error: 'Min $10' };

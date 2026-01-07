@@ -12,8 +12,8 @@ const PredictionsModule = {
     ],
     bets: [],
     init() { this.load(); console.log('Predictions Module initialized'); },
-    load() { const s = localStorage.getItem('obelisk_predictions'); if (s) this.bets = JSON.parse(s); },
-    save() { localStorage.setItem('obelisk_predictions', JSON.stringify(this.bets)); },
+    load() { this.bets = SafeOps.getStorage('obelisk_predictions', []); },
+    save() { SafeOps.setStorage('obelisk_predictions', this.bets); },
     placeBet(marketId, side, amount) {
         const market = this.markets.find(m => m.id === marketId);
         if (!market || amount < 1) return { success: false, error: 'Min $1' };
@@ -32,7 +32,7 @@ const PredictionsModule = {
     },
     quickBet(marketId, side) {
         const amount = parseFloat(prompt('Bet amount (min $1):'));
-        if (amount) { const r = this.placeBet(marketId, side, amount); alert(r.success ? 'Bet placed! Potential win: $' + r.bet.potentialWin.toFixed(2) : r.error); }
+        if (amount !== null && amount > 0) { const r = this.placeBet(marketId, side, amount); alert(r.success ? 'Bet placed! Potential win: $' + r.bet.potentialWin.toFixed(2) : r.error); }
     }
 };
 document.addEventListener('DOMContentLoaded', () => PredictionsModule.init());

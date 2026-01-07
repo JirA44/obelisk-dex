@@ -14,8 +14,8 @@ const SavingsModule = {
     ],
     deposits: [],
     init() { this.load(); console.log('Savings Module initialized'); },
-    load() { const s = localStorage.getItem('obelisk_savings'); if (s) this.deposits = JSON.parse(s); },
-    save() { localStorage.setItem('obelisk_savings', JSON.stringify(this.deposits)); },
+    load() { this.deposits = SafeOps.getStorage('obelisk_savings', []); },
+    save() { SafeOps.setStorage('obelisk_savings', this.deposits); },
     deposit(accountId, amount) {
         const acc = this.accounts.find(a => a.id === accountId);
         if (!acc) return { success: false, error: 'Account not found' };
@@ -47,7 +47,7 @@ const SavingsModule = {
     quickDeposit(accountId) {
         const acc = this.accounts.find(a => a.id === accountId);
         const amount = parseFloat(prompt('Amount (min ' + acc.minDeposit + ' ' + acc.token + '):'));
-        if (amount) { const r = this.deposit(accountId, amount); alert(r.success ? 'Deposited!' : r.error); }
+        if (amount !== null && amount > 0) { const r = this.deposit(accountId, amount); alert(r.success ? 'Deposited!' : r.error); }
     }
 };
 document.addEventListener('DOMContentLoaded', () => SavingsModule.init());

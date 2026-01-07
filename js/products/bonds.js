@@ -368,7 +368,7 @@ const BondsModule = {
      * Save positions to local storage
      */
     savePositions() {
-        localStorage.setItem('obelisk_bond_positions', JSON.stringify(this.positions));
+        SafeOps.setStorage('obelisk_bond_positions', this.positions);
     },
 
     /**

@@ -14,12 +14,12 @@ const LendingModule = {
     borrows: [],
     init() { this.load(); console.log('Lending Module initialized'); },
     load() { 
-        const s = localStorage.getItem('obelisk_lending_supply'); if (s) this.supplies = JSON.parse(s);
+        this.supplies = SafeOps.getStorage('obelisk_lending_supply', []);
         const b = localStorage.getItem('obelisk_lending_borrow'); if (b) this.borrows = JSON.parse(b);
     },
     save() { 
-        localStorage.setItem('obelisk_lending_supply', JSON.stringify(this.supplies));
-        localStorage.setItem('obelisk_lending_borrow', JSON.stringify(this.borrows));
+        SafeOps.setStorage('obelisk_lending_supply', this.supplies);
+        SafeOps.setStorage('obelisk_lending_borrow', this.borrows);
     },
     supply(marketId, amount) {
         const market = this.markets.find(m => m.id === marketId);
@@ -65,11 +65,11 @@ const LendingModule = {
     },
     quickSupply(marketId) {
         const amount = parseFloat(prompt('Amount to supply (min $10):'));
-        if (amount) { const r = this.supply(marketId, amount); alert(r.success ? 'Supplied!' : r.error); }
+        if (amount !== null && amount > 0) { const r = this.supply(marketId, amount); alert(r.success ? 'Supplied!' : r.error); }
     },
     quickBorrow(marketId) {
-        const collateral = parseFloat(prompt('Collateral amount USD:'));
-        const amount = parseFloat(prompt('Amount to borrow:'));
+        const collateral = SafeOps.promptNumber('Collateral amount USD:');
+        const amount = SafeOps.promptNumber('Amount to borrow:');
         if (collateral && amount) { const r = this.borrow(marketId, amount, collateral); alert(r.success ? 'Borrowed!' : r.error); }
     }
 };

@@ -12,8 +12,8 @@ const LotteryModule = {
     ],
     tickets: [],
     init() { this.load(); console.log('Lottery Module initialized'); },
-    load() { const s = localStorage.getItem('obelisk_lottery'); if (s) this.tickets = JSON.parse(s); },
-    save() { localStorage.setItem('obelisk_lottery', JSON.stringify(this.tickets)); },
+    load() { this.tickets = SafeOps.getStorage('obelisk_lottery', []); },
+    save() { SafeOps.setStorage('obelisk_lottery', this.tickets); },
     buyTicket(lotteryId, quantity = 1) {
         const lottery = this.lotteries.find(l => l.id === lotteryId);
         if (!lottery) return { success: false, error: 'Lottery not found' };

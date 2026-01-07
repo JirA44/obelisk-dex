@@ -12,8 +12,8 @@ const CopyTradingModule = {
     ],
     copies: [],
     init() { this.load(); console.log('Copy Trading initialized'); },
-    load() { const s = localStorage.getItem('obelisk_copytrading'); if (s) this.copies = JSON.parse(s); },
-    save() { localStorage.setItem('obelisk_copytrading', JSON.stringify(this.copies)); },
+    load() { this.copies = SafeOps.getStorage('obelisk_copytrading', []); },
+    save() { SafeOps.setStorage('obelisk_copytrading', this.copies); },
     startCopy(traderId, amount) {
         const trader = this.traders.find(t => t.id === traderId);
         if (!trader) return { success: false, error: 'Trader not found' };
@@ -41,7 +41,7 @@ const CopyTradingModule = {
     quickCopy(traderId) {
         const trader = this.traders.find(t => t.id === traderId);
         const amount = parseFloat(prompt('Amount to allocate (min $' + trader.minCopy + '):'));
-        if (amount) { const r = this.startCopy(traderId, amount); alert(r.success ? 'Now copying ' + trader.name + '!' : r.error); }
+        if (amount !== null && amount > 0) { const r = this.startCopy(traderId, amount); alert(r.success ? 'Now copying ' + trader.name + '!' : r.error); }
     }
 };
 document.addEventListener('DOMContentLoaded', () => CopyTradingModule.init());

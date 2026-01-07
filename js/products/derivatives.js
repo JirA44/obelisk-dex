@@ -14,8 +14,8 @@ const DerivativesModule = {
     ],
     positions: [],
     init() { this.load(); console.log('Derivatives initialized'); },
-    load() { const s = localStorage.getItem('obelisk_derivatives'); if (s) this.positions = JSON.parse(s); },
-    save() { localStorage.setItem('obelisk_derivatives', JSON.stringify(this.positions)); },
+    load() { this.positions = SafeOps.getStorage('obelisk_derivatives', []); },
+    save() { SafeOps.setStorage('obelisk_derivatives', this.positions); },
     openPosition(instrumentId, side, contracts, leverage = 1) {
         const inst = this.instruments.find(i => i.id === instrumentId);
         if (!inst) return { success: false, error: 'Instrument not found' };
@@ -47,7 +47,7 @@ const DerivativesModule = {
     quickTrade(instrumentId) {
         const inst = this.instruments.find(i => i.id === instrumentId);
         const side = prompt('Side (long/short):');
-        const contracts = parseFloat(prompt('Contracts:'));
+        const contracts = SafeOps.promptNumber('Contracts:');
         if (side && contracts) { const r = this.openPosition(instrumentId, side, contracts); alert(r.success ? 'Position opened!' : r.error); }
     }
 };

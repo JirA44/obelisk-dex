@@ -12,8 +12,8 @@ const NFTStakingModule = {
     ],
     stakedNFTs: [],
     init() { this.load(); console.log('NFT Staking initialized'); },
-    load() { const s = localStorage.getItem('obelisk_nftstaking'); if (s) this.stakedNFTs = JSON.parse(s); },
-    save() { localStorage.setItem('obelisk_nftstaking', JSON.stringify(this.stakedNFTs)); },
+    load() { this.stakedNFTs = SafeOps.getStorage('obelisk_nftstaking', []); },
+    save() { SafeOps.setStorage('obelisk_nftstaking', this.stakedNFTs); },
     stakeNFT(collectionId, nftValue) {
         const col = this.collections.find(c => c.id === collectionId);
         if (!col) return { success: false, error: 'Collection not found' };

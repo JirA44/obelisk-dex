@@ -14,8 +14,8 @@ const YieldFarmingModule = {
     ],
     positions: [],
     init() { this.load(); console.log('Yield Farming initialized'); },
-    load() { const s = localStorage.getItem('obelisk_farming'); if (s) this.positions = JSON.parse(s); },
-    save() { localStorage.setItem('obelisk_farming', JSON.stringify(this.positions)); },
+    load() { this.positions = SafeOps.getStorage('obelisk_farming', []); },
+    save() { SafeOps.setStorage('obelisk_farming', this.positions); },
     deposit(farmId, amount) {
         const farm = this.farms.find(f => f.id === farmId);
         if (!farm || amount < 10) return { success: false, error: 'Min $10' };

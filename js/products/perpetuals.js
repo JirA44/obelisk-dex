@@ -12,8 +12,8 @@ const PerpetualsModule = {
     ],
     positions: [],
     init() { this.load(); console.log('Perpetuals initialized'); },
-    load() { const s = localStorage.getItem('obelisk_perps'); if (s) this.positions = JSON.parse(s); },
-    save() { localStorage.setItem('obelisk_perps', JSON.stringify(this.positions)); },
+    load() { this.positions = SafeOps.getStorage('obelisk_perps', []); },
+    save() { SafeOps.setStorage('obelisk_perps', this.positions); },
     openPosition(marketId, side, size, leverage) {
         const market = this.markets.find(m => m.id === marketId);
         if (!market) return { success: false, error: 'Market not found' };
@@ -43,7 +43,7 @@ const PerpetualsModule = {
         ).join('') + '</div>';
     },
     quickTrade(marketId, side) {
-        const size = parseFloat(prompt('Position size USD:'));
+        const size = SafeOps.promptNumber('Position size USD:');
         const leverage = parseFloat(prompt('Leverage (1-100):'));
         if (size && leverage) { const r = this.openPosition(marketId, side, size, leverage); alert(r.success ? 'Position opened!' : r.error); }
     }
