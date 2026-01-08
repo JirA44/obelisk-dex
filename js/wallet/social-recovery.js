@@ -514,7 +514,7 @@ const SocialRecovery = {
 
         // Store notification for guardians to retrieve
         for (const guardian of guardians) {
-            const notifications = (typeof SafeOps !== 'undefined') ? SafeOps.getStorage(`guardian_notifications_${guardian.address}`, []);
+            const notifications = JSON.parse(localStorage.getItem('guardian_notifications_' + guardian.address) || '[]');
             notifications.push({
                 type: eventType,
                 data: data,

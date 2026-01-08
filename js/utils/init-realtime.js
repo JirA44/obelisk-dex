@@ -457,7 +457,7 @@ window.switchChartSource = function(source) {
         if (c) c.innerHTML = '<iframe src="https://s.tradingview.com/widgetembed/?symbol=BINANCE:BTCUSDT&interval=15&theme=dark&style=1" style="width:100%;height:100%;border:none"></iframe>';
     } else {
         var c = document.getElementById('trading-chart');
-        if (c) { c.innerHTML = '<canvas id="main-chart"></canvas>'; if (typeof RealtimePrices \!== 'undefined') RealtimePrices.createChart('trading-chart', 'BTC', {width: c.clientWidth||800, height:400}); }
+        if (c) { c.innerHTML = '<canvas id="main-chart"></canvas>'; if (typeof RealtimePrices !== 'undefined') RealtimePrices.createChart('trading-chart', 'BTC', {width: c.clientWidth||800, height:400}); }
     }
 };
 window.currentChartSource = 'obelisk';
@@ -466,7 +466,7 @@ window.currentChartSource = 'obelisk';
 // Theme Switcher - Forerunner Halo 4 Theme
 window.setTheme = function(theme) {
     document.body.classList.remove("theme-forerunner", "theme-default", "theme-cyber");
-    if (theme && theme \!== "default") {
+    if (theme && theme !== "default") {
         document.body.classList.add("theme-" + theme);
     }
     localStorage.setItem("obelisk_theme", theme || "default");
@@ -481,7 +481,7 @@ document.addEventListener("DOMContentLoaded", function() {
     // Add theme toggle button to header
     setTimeout(function() {
         var header = document.querySelector(".header-actions") || document.querySelector("header");
-        if (header && \!document.getElementById("theme-toggle")) {
+        if (header && !document.getElementById("theme-toggle")) {
             var btn = document.createElement("button");
             btn.id = "theme-toggle";
             btn.innerHTML = "🎨 Theme";

@@ -60,12 +60,12 @@ const InvestmentTracker = {
 
         // Calculate growth
         const growth = investment.amount * (avgApy / 100) * yearsElapsed;
-        const currentValue = investment.amount + growth + SafeOps.percentage(investment.amount * dailyVariance);
+        const currentValue = investment.amount + growth + (investment.amount * dailyVariance);
 
         return {
             currentValue: Math.max(0, currentValue),
             pnl: currentValue - investment.amount,
-            pnlPercent: ((currentValue - investment.amount) , investment.amount),
+            pnlPercent: ((currentValue - investment.amount) / investment.amount) * 100,
             daysElapsed: Math.floor(daysElapsed),
             yearsElapsed
         };
@@ -94,9 +94,9 @@ const InvestmentTracker = {
 
             // Net return (gain - potential loss weighted by risk)
             const riskWeight = 0.3; // 30% weight to worst case
-            const netMin = minGain - SafeOps.percentage(maxLoss * riskWeight);
+            const netMin = minGain - (maxLoss * riskWeight);
             const netMax = maxGain - (maxLoss * riskWeight * 0.5);
-            const netAvg = (netMin + netMax) , 2;
+            const netAvg = (netMin + netMax) / 2;
 
             projections[period] = {
                 minGain,
@@ -107,8 +107,8 @@ const InvestmentTracker = {
                 netMax,
                 netAvg,
                 netMinPercent: (netMin / amount),
-                netMaxPercent: SafeOps.percentage(netMax , amount),
-                netAvgPercent: SafeOps.percentage(netAvg , amount)
+                netMaxPercent: (netMax / amount) * 100,
+                netAvgPercent: (netAvg / amount) * 100
             };
         }
 
@@ -116,7 +116,7 @@ const InvestmentTracker = {
     },
 
     // Get total portfolio stats
-    getPortfolioStatsSafeOps.percentage() {
+    getPortfolioStats() {
         if (this.investments.length === 0) {
             return { totalInvested: 0, currentValue: 0, totalPnl: 0, totalPnlPercent: 0 };
         }
