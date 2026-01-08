@@ -470,6 +470,252 @@ const CombosModule = {
                 { product: 'Unslashed', percent: 30, color: '#6366f1', apy: '5-10%', maxLoss: 4 }
             ]
         }
+,
+        {
+            id: "YIELD_MAXIMIZER",
+            name: "Yield Maximizer",
+            icon: "💹",
+            description: "Maximum yield across all protocols",
+            riskLevel: "High",
+            expectedApy: "40-100%",
+            capitalProtection: "50%",
+            minInvestment: 500,
+            rebalanceFrequency: "Daily",
+            allocation: [
+                { product: "Leveraged Farming", percent: 40, color: "#ff6464", apy: "50-120%", maxLoss: 60 },
+                { product: "Options Premium", percent: 30, color: "#ffaa00", apy: "30-80%", maxLoss: 40 },
+                { product: "Perp Funding", percent: 30, color: "#00ff88", apy: "25-60%", maxLoss: 35 }
+            ]
+        },
+        {
+            id: "SMART_DCA",
+            name: "Smart DCA",
+            icon: "📅",
+            description: "Automated dollar cost averaging",
+            riskLevel: "Medium",
+            expectedApy: "15-40%",
+            capitalProtection: "70%",
+            minInvestment: 100,
+            rebalanceFrequency: "Daily",
+            allocation: [
+                { product: "BTC Weekly DCA", percent: 40, color: "#f7931a", apy: "10-30%", maxLoss: 35 },
+                { product: "ETH Weekly DCA", percent: 35, color: "#627eea", apy: "12-35%", maxLoss: 30 },
+                { product: "Altcoin DCA", percent: 25, color: "#00d4aa", apy: "20-50%", maxLoss: 45 }
+            ]
+        },
+        {
+            id: "GRID_TRADER",
+            name: "Grid Trader Pro",
+            icon: "📊",
+            description: "Automated grid trading strategies",
+            riskLevel: "Medium",
+            expectedApy: "20-45%",
+            capitalProtection: "75%",
+            minInvestment: 300,
+            rebalanceFrequency: "Daily",
+            allocation: [
+                { product: "BTC Grid", percent: 40, color: "#f7931a", apy: "15-35%", maxLoss: 25 },
+                { product: "ETH Grid", percent: 35, color: "#627eea", apy: "18-40%", maxLoss: 28 },
+                { product: "Range Trading", percent: 25, color: "#ff6b9d", apy: "25-50%", maxLoss: 30 }
+            ]
+        },
+        {
+            id: "STAKING_KING",
+            name: "Staking Kingdom",
+            icon: "👑",
+            description: "Best staking yields across chains",
+            riskLevel: "Low",
+            expectedApy: "8-18%",
+            capitalProtection: "90%",
+            minInvestment: 100,
+            rebalanceFrequency: "Weekly",
+            allocation: [
+                { product: "ETH 2.0 Staking", percent: 30, color: "#627eea", apy: "4-5%", maxLoss: 10 },
+                { product: "SOL Staking", percent: 25, color: "#9945ff", apy: "7-9%", maxLoss: 15 },
+                { product: "ATOM Staking", percent: 25, color: "#2e3148", apy: "12-18%", maxLoss: 15 },
+                { product: "DOT Staking", percent: 20, color: "#e6007a", apy: "10-15%", maxLoss: 18 }
+            ]
+        },
+        {
+            id: "LP_MASTER",
+            name: "LP Master",
+            icon: "🌊",
+            description: "Liquidity provision optimization",
+            riskLevel: "Medium",
+            expectedApy: "15-35%",
+            capitalProtection: "75%",
+            minInvestment: 250,
+            rebalanceFrequency: "Weekly",
+            allocation: [
+                { product: "Stable-Stable LP", percent: 35, color: "#26a17b", apy: "8-15%", maxLoss: 5 },
+                { product: "ETH-USDC LP", percent: 30, color: "#627eea", apy: "15-30%", maxLoss: 25 },
+                { product: "Concentrated LP", percent: 35, color: "#ff007a", apy: "25-50%", maxLoss: 35 }
+            ]
+        },
+        {
+            id: "ARBITRAGE_BOT",
+            name: "Arbitrage Hunter",
+            icon: "🎯",
+            description: "Cross-exchange arbitrage",
+            riskLevel: "Low",
+            expectedApy: "10-25%",
+            capitalProtection: "95%",
+            minInvestment: 1000,
+            rebalanceFrequency: "Daily",
+            allocation: [
+                { product: "CEX-DEX Arb", percent: 40, color: "#00d4aa", apy: "8-20%", maxLoss: 5 },
+                { product: "Triangular Arb", percent: 35, color: "#4a9eff", apy: "10-25%", maxLoss: 8 },
+                { product: "Flash Arb", percent: 25, color: "#ff6b9d", apy: "15-30%", maxLoss: 10 }
+            ]
+        },
+        {
+            id: "MARKET_NEUTRAL",
+            name: "Market Neutral",
+            icon: "⚖️",
+            description: "Delta-neutral strategies",
+            riskLevel: "Low",
+            expectedApy: "12-25%",
+            capitalProtection: "90%",
+            minInvestment: 500,
+            rebalanceFrequency: "Daily",
+            allocation: [
+                { product: "Cash & Carry", percent: 40, color: "#00ff88", apy: "10-20%", maxLoss: 8 },
+                { product: "Basis Trade", percent: 35, color: "#4a9eff", apy: "12-25%", maxLoss: 10 },
+                { product: "Funding Arb", percent: 25, color: "#ffaa00", apy: "15-30%", maxLoss: 12 }
+            ]
+        },
+        {
+            id: "EMERGING_CHAINS",
+            name: "Emerging Chains",
+            icon: "🌱",
+            description: "New L1/L2 ecosystem exposure",
+            riskLevel: "High",
+            expectedApy: "30-80%",
+            capitalProtection: "55%",
+            minInvestment: 200,
+            rebalanceFrequency: "Weekly",
+            allocation: [
+                { product: "Sui Ecosystem", percent: 25, color: "#6fbcf0", apy: "25-60%", maxLoss: 50 },
+                { product: "Aptos DeFi", percent: 25, color: "#2dd4bf", apy: "20-50%", maxLoss: 45 },
+                { product: "Sei Network", percent: 25, color: "#ff6b6b", apy: "30-70%", maxLoss: 55 },
+                { product: "Monad Prep", percent: 25, color: "#a855f7", apy: "40-100%", maxLoss: 60 }
+            ]
+        },
+        {
+            id: "BTC_DEFI",
+            name: "Bitcoin DeFi",
+            icon: "₿",
+            description: "Bitcoin L2 and DeFi",
+            riskLevel: "Medium",
+            expectedApy: "12-30%",
+            capitalProtection: "75%",
+            minInvestment: 500,
+            rebalanceFrequency: "Weekly",
+            allocation: [
+                { product: "Lightning LP", percent: 30, color: "#f7931a", apy: "8-15%", maxLoss: 20 },
+                { product: "Stacks STX", percent: 25, color: "#5546ff", apy: "10-20%", maxLoss: 30 },
+                { product: "RGB Assets", percent: 25, color: "#00d4aa", apy: "15-30%", maxLoss: 35 },
+                { product: "Ordinals Yield", percent: 20, color: "#ff6b9d", apy: "20-40%", maxLoss: 40 }
+            ]
+        },
+        {
+            id: "DEPIN_INFRA",
+            name: "DePIN Infrastructure",
+            icon: "🔌",
+            description: "Decentralized physical infrastructure",
+            riskLevel: "Medium",
+            expectedApy: "15-40%",
+            capitalProtection: "70%",
+            minInvestment: 300,
+            rebalanceFrequency: "Monthly",
+            allocation: [
+                { product: "Filecoin Storage", percent: 30, color: "#0090ff", apy: "10-25%", maxLoss: 30 },
+                { product: "Helium IoT", percent: 25, color: "#474dff", apy: "12-30%", maxLoss: 35 },
+                { product: "Render GPU", percent: 25, color: "#cc0000", apy: "20-45%", maxLoss: 40 },
+                { product: "Akash Compute", percent: 20, color: "#ff4444", apy: "15-35%", maxLoss: 35 }
+            ]
+        },
+        {
+            id: "WHALE_PORTFOLIO",
+            name: "Whale Portfolio",
+            icon: "🐋",
+            description: "For high net worth investors",
+            riskLevel: "Medium",
+            expectedApy: "18-35%",
+            capitalProtection: "80%",
+            minInvestment: 10000,
+            rebalanceFrequency: "Weekly",
+            allocation: [
+                { product: "BTC Institutional", percent: 35, color: "#f7931a", apy: "10-20%", maxLoss: 25 },
+                { product: "ETH Prime", percent: 30, color: "#627eea", apy: "12-25%", maxLoss: 20 },
+                { product: "Private Deals", percent: 20, color: "#a855f7", apy: "30-50%", maxLoss: 35 },
+                { product: "OTC Desk", percent: 15, color: "#00d4aa", apy: "25-40%", maxLoss: 30 }
+            ]
+        },
+        {
+            id: "MICRO_STARTER",
+            name: "Micro Starter",
+            icon: "🌟",
+            description: "Perfect for beginners with small capital",
+            riskLevel: "Low",
+            expectedApy: "6-12%",
+            capitalProtection: "95%",
+            minInvestment: 10,
+            rebalanceFrequency: "Monthly",
+            allocation: [
+                { product: "USDC Earn", percent: 50, color: "#2775ca", apy: "5-8%", maxLoss: 2 },
+                { product: "BTC Sats Stack", percent: 30, color: "#f7931a", apy: "0%", maxLoss: 30 },
+                { product: "Learn & Earn", percent: 20, color: "#00ff88", apy: "10-20%", maxLoss: 5 }
+            ]
+        },
+        {
+            id: "DIVIDEND_HUNTER",
+            name: "Dividend Hunter",
+            icon: "💸",
+            description: "High dividend yield tokens",
+            riskLevel: "Medium",
+            expectedApy: "20-45%",
+            capitalProtection: "70%",
+            minInvestment: 500,
+            rebalanceFrequency: "Weekly",
+            allocation: [
+                { product: "Real Yield Tokens", percent: 40, color: "#00ff88", apy: "15-30%", maxLoss: 30 },
+                { product: "Revenue Share", percent: 35, color: "#4a9eff", apy: "20-40%", maxLoss: 35 },
+                { product: "Buyback Tokens", percent: 25, color: "#ff6b9d", apy: "25-50%", maxLoss: 40 }
+            ]
+        },
+        {
+            id: "METAVERSE_LAND",
+            name: "Metaverse Land",
+            icon: "🏝️",
+            description: "Virtual real estate investment",
+            riskLevel: "High",
+            expectedApy: "25-80%",
+            capitalProtection: "40%",
+            minInvestment: 200,
+            rebalanceFrequency: "Monthly",
+            allocation: [
+                { product: "Decentraland LAND", percent: 35, color: "#ff2d55", apy: "20-60%", maxLoss: 70 },
+                { product: "Sandbox LAND", percent: 35, color: "#00adef", apy: "25-70%", maxLoss: 65 },
+                { product: "Otherside Deeds", percent: 30, color: "#6c5ce7", apy: "30-100%", maxLoss: 75 }
+            ]
+        },
+        {
+            id: "SPORTS_FAN",
+            name: "Sports Fan Token",
+            icon: "⚽",
+            description: "Sports and fan tokens portfolio",
+            riskLevel: "High",
+            expectedApy: "20-60%",
+            capitalProtection: "50%",
+            minInvestment: 100,
+            rebalanceFrequency: "Weekly",
+            allocation: [
+                { product: "Soccer Tokens", percent: 40, color: "#00ff88", apy: "15-50%", maxLoss: 60 },
+                { product: "NBA Top Shot", percent: 30, color: "#ff6b00", apy: "20-60%", maxLoss: 55 },
+                { product: "F1 Tokens", percent: 30, color: "#e10600", apy: "25-70%", maxLoss: 65 }
+            ]
+        }
     ],
 
     init() {
