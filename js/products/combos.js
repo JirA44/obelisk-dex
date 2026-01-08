@@ -108,6 +108,367 @@ const CombosModule = {
                 { product: 'Momentum', percent: 25, color: '#ffaa00', apy: '30-50%', maxLoss: 35 },
                 { product: 'Arbitrage', percent: 20, color: '#ff6b9d', apy: '15-25%', maxLoss: 15 }
             ]
+        },
+        {
+            id: 'STABLECOIN_FORTRESS',
+            name: 'Stablecoin Fortress',
+            icon: '🏰',
+            description: 'Ultra-safe stablecoin yields across protocols',
+            riskLevel: 'Low',
+            expectedApy: '6-10%',
+            capitalProtection: '99%',
+            minInvestment: 50,
+            rebalanceFrequency: 'Monthly',
+            allocation: [
+                { product: 'USDC Lending', percent: 40, color: '#2775ca', apy: '5-8%', maxLoss: 1 },
+                { product: 'USDT Staking', percent: 30, color: '#26a17b', apy: '4-7%', maxLoss: 1 },
+                { product: 'DAI Savings', percent: 30, color: '#f5ac37', apy: '6-10%', maxLoss: 2 }
+            ]
+        },
+        {
+            id: 'ETH_MAXIMALIST',
+            name: 'ETH Maximalist',
+            icon: '💠',
+            description: '100% Ethereum ecosystem exposure',
+            riskLevel: 'Medium',
+            expectedApy: '12-20%',
+            capitalProtection: '75%',
+            minInvestment: 200,
+            rebalanceFrequency: 'Weekly',
+            allocation: [
+                { product: 'ETH Staking (Lido)', percent: 40, color: '#00a3ff', apy: '4-5%', maxLoss: 20 },
+                { product: 'ETH/stETH LP', percent: 30, color: '#627eea', apy: '8-15%', maxLoss: 15 },
+                { product: 'ETH Options Vault', percent: 30, color: '#8c8dfc', apy: '15-25%', maxLoss: 30 }
+            ]
+        },
+        {
+            id: 'BTC_HODLER',
+            name: 'BTC HODLer Plus',
+            icon: '🪙',
+            description: 'Bitcoin-focused yield with wrapped BTC',
+            riskLevel: 'Medium',
+            expectedApy: '8-15%',
+            capitalProtection: '80%',
+            minInvestment: 500,
+            rebalanceFrequency: 'Monthly',
+            allocation: [
+                { product: 'WBTC Lending', percent: 50, color: '#f7931a', apy: '3-6%', maxLoss: 25 },
+                { product: 'BTC/ETH LP', percent: 30, color: '#627eea', apy: '10-18%', maxLoss: 20 },
+                { product: 'BTC Covered Calls', percent: 20, color: '#ff9500', apy: '15-25%', maxLoss: 15 }
+            ]
+        },
+        {
+            id: 'SOLANA_SPEED',
+            name: 'Solana Speed',
+            icon: '⚡',
+            description: 'High-performance Solana DeFi strategies',
+            riskLevel: 'Medium',
+            expectedApy: '18-30%',
+            capitalProtection: '70%',
+            minInvestment: 100,
+            rebalanceFrequency: 'Daily',
+            allocation: [
+                { product: 'SOL Staking', percent: 35, color: '#9945ff', apy: '7-9%', maxLoss: 25 },
+                { product: 'Marinade Finance', percent: 25, color: '#00d18c', apy: '8-12%', maxLoss: 20 },
+                { product: 'Raydium Farms', percent: 25, color: '#2dd4bf', apy: '25-40%', maxLoss: 35 },
+                { product: 'Jupiter Perps', percent: 15, color: '#c7f284', apy: '30-50%', maxLoss: 40 }
+            ]
+        },
+        {
+            id: 'DEFI_BLUE_CHIP',
+            name: 'DeFi Blue Chips',
+            icon: '🔷',
+            description: 'Top DeFi protocols with proven track record',
+            riskLevel: 'Medium',
+            expectedApy: '15-25%',
+            capitalProtection: '75%',
+            minInvestment: 300,
+            rebalanceFrequency: 'Weekly',
+            allocation: [
+                { product: 'AAVE Staking', percent: 30, color: '#b6509e', apy: '8-12%', maxLoss: 20 },
+                { product: 'UNI LP', percent: 25, color: '#ff007a', apy: '15-25%', maxLoss: 25 },
+                { product: 'CRV/CVX', percent: 25, color: '#0033ad', apy: '20-35%', maxLoss: 30 },
+                { product: 'MKR Vault', percent: 20, color: '#1aab9b', apy: '10-18%', maxLoss: 20 }
+            ]
+        },
+        {
+            id: 'LAYER2_EXPLORER',
+            name: 'Layer 2 Explorer',
+            icon: '🌉',
+            description: 'Arbitrum, Optimism, Base ecosystem',
+            riskLevel: 'Medium',
+            expectedApy: '20-35%',
+            capitalProtection: '70%',
+            minInvestment: 150,
+            rebalanceFrequency: 'Weekly',
+            allocation: [
+                { product: 'ARB Staking', percent: 30, color: '#28a0f0', apy: '10-15%', maxLoss: 30 },
+                { product: 'OP Rewards', percent: 25, color: '#ff0420', apy: '15-25%', maxLoss: 30 },
+                { product: 'Base LP', percent: 25, color: '#0052ff', apy: '20-35%', maxLoss: 35 },
+                { product: 'GMX/GLP', percent: 20, color: '#4fa8e3', apy: '25-40%', maxLoss: 25 }
+            ]
+        },
+        {
+            id: 'REAL_YIELD',
+            name: 'Real Yield',
+            icon: '💵',
+            description: 'Protocols with real revenue sharing',
+            riskLevel: 'Medium',
+            expectedApy: '12-22%',
+            capitalProtection: '80%',
+            minInvestment: 250,
+            rebalanceFrequency: 'Weekly',
+            allocation: [
+                { product: 'GMX Staking', percent: 35, color: '#4fa8e3', apy: '15-25%', maxLoss: 25 },
+                { product: 'GNS Staking', percent: 25, color: '#3ee6c4', apy: '10-20%', maxLoss: 30 },
+                { product: 'RDNT Lending', percent: 20, color: '#00d395', apy: '12-18%', maxLoss: 25 },
+                { product: 'Gains Network', percent: 20, color: '#00b897', apy: '15-25%', maxLoss: 30 }
+            ]
+        },
+        {
+            id: 'LIQUID_STAKING',
+            name: 'Liquid Staking Pro',
+            icon: '💧',
+            description: 'LST tokens across multiple chains',
+            riskLevel: 'Low',
+            expectedApy: '8-14%',
+            capitalProtection: '90%',
+            minInvestment: 100,
+            rebalanceFrequency: 'Monthly',
+            allocation: [
+                { product: 'stETH (Lido)', percent: 35, color: '#00a3ff', apy: '4-5%', maxLoss: 10 },
+                { product: 'rETH (Rocket)', percent: 25, color: '#ff7043', apy: '4-5%', maxLoss: 10 },
+                { product: 'cbETH (Coinbase)', percent: 20, color: '#0052ff', apy: '4-5%', maxLoss: 8 },
+                { product: 'mSOL (Marinade)', percent: 20, color: '#00d18c', apy: '7-9%', maxLoss: 15 }
+            ]
+        },
+        {
+            id: 'PERPETUAL_TRADER',
+            name: 'Perpetual Trader',
+            icon: '📊',
+            description: 'Funding rate arbitrage and perp strategies',
+            riskLevel: 'High',
+            expectedApy: '30-60%',
+            capitalProtection: '60%',
+            minInvestment: 500,
+            rebalanceFrequency: 'Daily',
+            allocation: [
+                { product: 'Funding Arb', percent: 40, color: '#00ff88', apy: '20-40%', maxLoss: 30 },
+                { product: 'Delta Neutral', percent: 30, color: '#4a9eff', apy: '25-45%', maxLoss: 35 },
+                { product: 'Basis Trade', percent: 30, color: '#ff6b9d', apy: '35-60%', maxLoss: 40 }
+            ]
+        },
+        {
+            id: 'NFT_YIELD',
+            name: 'NFT Yield Hunter',
+            icon: '🖼️',
+            description: 'NFT staking and lending protocols',
+            riskLevel: 'High',
+            expectedApy: '25-50%',
+            capitalProtection: '50%',
+            minInvestment: 200,
+            rebalanceFrequency: 'Weekly',
+            allocation: [
+                { product: 'NFT Lending', percent: 40, color: '#e040fb', apy: '20-40%', maxLoss: 50 },
+                { product: 'Blur Farming', percent: 35, color: '#ff6f00', apy: '30-60%', maxLoss: 60 },
+                { product: 'NFT Index', percent: 25, color: '#7c4dff', apy: '15-35%', maxLoss: 40 }
+            ]
+        },
+        {
+            id: 'MEME_CASINO',
+            name: 'Meme Casino',
+            icon: '🎰',
+            description: 'High-risk meme coin exposure',
+            riskLevel: 'High',
+            expectedApy: '50-200%',
+            capitalProtection: '30%',
+            minInvestment: 50,
+            rebalanceFrequency: 'Daily',
+            allocation: [
+                { product: 'PEPE/DOGE LP', percent: 35, color: '#00ff00', apy: '50-150%', maxLoss: 80 },
+                { product: 'SHIB Staking', percent: 30, color: '#ffa409', apy: '30-80%', maxLoss: 70 },
+                { product: 'New Memes DCA', percent: 35, color: '#ff69b4', apy: '100-300%', maxLoss: 90 }
+            ]
+        },
+        {
+            id: 'RWA_INCOME',
+            name: 'RWA Income',
+            icon: '🏛️',
+            description: 'Real World Asset backed yields',
+            riskLevel: 'Low',
+            expectedApy: '6-12%',
+            capitalProtection: '95%',
+            minInvestment: 1000,
+            rebalanceFrequency: 'Monthly',
+            allocation: [
+                { product: 'US Treasury (ONDO)', percent: 40, color: '#1e3a8a', apy: '4-5%', maxLoss: 2 },
+                { product: 'Corp Bonds', percent: 30, color: '#059669', apy: '6-8%', maxLoss: 5 },
+                { product: 'Real Estate', percent: 30, color: '#dc2626', apy: '8-12%', maxLoss: 10 }
+            ]
+        },
+        {
+            id: 'AIRDROP_FARMER',
+            name: 'Airdrop Farmer',
+            icon: '🪂',
+            description: 'Position for upcoming protocol airdrops',
+            riskLevel: 'Medium',
+            expectedApy: '20-100%',
+            capitalProtection: '70%',
+            minInvestment: 200,
+            rebalanceFrequency: 'Weekly',
+            allocation: [
+                { product: 'LayerZero Bridge', percent: 30, color: '#6366f1', apy: '5-50%', maxLoss: 30 },
+                { product: 'zkSync Activity', percent: 25, color: '#8b5cf6', apy: '10-80%', maxLoss: 25 },
+                { product: 'Scroll Usage', percent: 25, color: '#fcd34d', apy: '10-70%', maxLoss: 25 },
+                { product: 'Linea DeFi', percent: 20, color: '#60a5fa', apy: '15-60%', maxLoss: 30 }
+            ]
+        },
+        {
+            id: 'PRIVACY_SHIELD',
+            name: 'Privacy Shield',
+            icon: '🛡️',
+            description: 'Privacy-focused assets and protocols',
+            riskLevel: 'Medium',
+            expectedApy: '10-18%',
+            capitalProtection: '75%',
+            minInvestment: 300,
+            rebalanceFrequency: 'Monthly',
+            allocation: [
+                { product: 'Secret Network', percent: 35, color: '#1b1b1b', apy: '8-15%', maxLoss: 30 },
+                { product: 'Aztec Protocol', percent: 35, color: '#5c2d91', apy: '10-20%', maxLoss: 25 },
+                { product: 'Tornado Cash Alt', percent: 30, color: '#2dd4bf', apy: '12-20%', maxLoss: 30 }
+            ]
+        },
+        {
+            id: 'CROSS_CHAIN_ARB',
+            name: 'Cross-Chain Arb',
+            icon: '🔀',
+            description: 'Multi-chain arbitrage opportunities',
+            riskLevel: 'Medium',
+            expectedApy: '15-30%',
+            capitalProtection: '80%',
+            minInvestment: 500,
+            rebalanceFrequency: 'Daily',
+            allocation: [
+                { product: 'Bridge Arb', percent: 35, color: '#00d4aa', apy: '10-25%', maxLoss: 20 },
+                { product: 'DEX Arb', percent: 35, color: '#ff6b9d', apy: '15-30%', maxLoss: 25 },
+                { product: 'CEX-DEX Arb', percent: 30, color: '#4a9eff', apy: '20-35%', maxLoss: 20 }
+            ]
+        },
+        {
+            id: 'GAMING_GUILD',
+            name: 'Gaming Guild',
+            icon: '🎮',
+            description: 'GameFi and P2E token exposure',
+            riskLevel: 'High',
+            expectedApy: '25-60%',
+            capitalProtection: '55%',
+            minInvestment: 100,
+            rebalanceFrequency: 'Weekly',
+            allocation: [
+                { product: 'IMX Staking', percent: 30, color: '#00bfff', apy: '15-30%', maxLoss: 50 },
+                { product: 'GALA Farm', percent: 25, color: '#00d4aa', apy: '20-40%', maxLoss: 60 },
+                { product: 'MAGIC/Treasure', percent: 25, color: '#e31837', apy: '25-50%', maxLoss: 55 },
+                { product: 'PRIME Gaming', percent: 20, color: '#9333ea', apy: '30-60%', maxLoss: 60 }
+            ]
+        },
+        {
+            id: 'PENSION_PLAN',
+            name: 'Crypto Pension',
+            icon: '👴',
+            description: 'Long-term wealth preservation',
+            riskLevel: 'Low',
+            expectedApy: '5-10%',
+            capitalProtection: '95%',
+            minInvestment: 1000,
+            rebalanceFrequency: 'Quarterly',
+            allocation: [
+                { product: 'BTC Hold', percent: 30, color: '#f7931a', apy: '0%', maxLoss: 30 },
+                { product: 'ETH Staking', percent: 30, color: '#627eea', apy: '4-5%', maxLoss: 25 },
+                { product: 'Stables Yield', percent: 40, color: '#26a17b', apy: '5-8%', maxLoss: 2 }
+            ]
+        },
+        {
+            id: 'AI_TOKENS',
+            name: 'AI Revolution',
+            icon: '🧠',
+            description: 'Artificial Intelligence crypto projects',
+            riskLevel: 'High',
+            expectedApy: '30-80%',
+            capitalProtection: '50%',
+            minInvestment: 150,
+            rebalanceFrequency: 'Weekly',
+            allocation: [
+                { product: 'FET Staking', percent: 30, color: '#1d1d47', apy: '15-30%', maxLoss: 50 },
+                { product: 'RNDR Hold', percent: 25, color: '#cc0000', apy: '20-50%', maxLoss: 55 },
+                { product: 'AGIX Farm', percent: 25, color: '#6c5ce7', apy: '25-60%', maxLoss: 60 },
+                { product: 'TAO Staking', percent: 20, color: '#00ff88', apy: '30-80%', maxLoss: 65 }
+            ]
+        },
+        {
+            id: 'VALIDATOR_PRO',
+            name: 'Validator Pro',
+            icon: '🔐',
+            description: 'Professional validator node rewards',
+            riskLevel: 'Low',
+            expectedApy: '6-12%',
+            capitalProtection: '92%',
+            minInvestment: 5000,
+            rebalanceFrequency: 'Monthly',
+            allocation: [
+                { product: 'ETH Validator', percent: 40, color: '#627eea', apy: '4-5%', maxLoss: 10 },
+                { product: 'SOL Validator', percent: 30, color: '#9945ff', apy: '7-8%', maxLoss: 15 },
+                { product: 'ATOM Validator', percent: 30, color: '#2e3148', apy: '10-15%', maxLoss: 12 }
+            ]
+        },
+        {
+            id: 'OPTIONS_SELLER',
+            name: 'Options Seller',
+            icon: '📉',
+            description: 'Covered calls and puts strategies',
+            riskLevel: 'Medium',
+            expectedApy: '20-40%',
+            capitalProtection: '70%',
+            minInvestment: 500,
+            rebalanceFrequency: 'Weekly',
+            allocation: [
+                { product: 'BTC Covered Calls', percent: 40, color: '#f7931a', apy: '15-30%', maxLoss: 30 },
+                { product: 'ETH Put Selling', percent: 35, color: '#627eea', apy: '20-40%', maxLoss: 35 },
+                { product: 'Straddle Farm', percent: 25, color: '#ff6b9d', apy: '25-50%', maxLoss: 40 }
+            ]
+        },
+        {
+            id: 'COSMOS_ECOSYSTEM',
+            name: 'Cosmos Hub',
+            icon: '⚛️',
+            description: 'Inter-blockchain communication yields',
+            riskLevel: 'Medium',
+            expectedApy: '15-25%',
+            capitalProtection: '75%',
+            minInvestment: 200,
+            rebalanceFrequency: 'Weekly',
+            allocation: [
+                { product: 'ATOM Staking', percent: 35, color: '#2e3148', apy: '12-18%', maxLoss: 25 },
+                { product: 'OSMO LP', percent: 30, color: '#5e12a0', apy: '15-30%', maxLoss: 30 },
+                { product: 'JUNO Staking', percent: 20, color: '#f0827d', apy: '10-20%', maxLoss: 35 },
+                { product: 'STARS Farm', percent: 15, color: '#ec4899', apy: '20-35%', maxLoss: 40 }
+            ]
+        },
+        {
+            id: 'INSURANCE_BACKED',
+            name: 'Insurance Backed',
+            icon: '🔒',
+            description: 'DeFi insurance protected yields',
+            riskLevel: 'Low',
+            expectedApy: '4-8%',
+            capitalProtection: '98%',
+            minInvestment: 500,
+            rebalanceFrequency: 'Monthly',
+            allocation: [
+                { product: 'Nexus Mutual', percent: 40, color: '#1aab9b', apy: '3-6%', maxLoss: 2 },
+                { product: 'InsurAce Pool', percent: 30, color: '#ff6b00', apy: '4-8%', maxLoss: 3 },
+                { product: 'Unslashed', percent: 30, color: '#6366f1', apy: '5-10%', maxLoss: 4 }
+            ]
         }
     ],
 
