@@ -1,14 +1,13 @@
 /**
  * Obelisk DEX - Real-Time Price Service v2.1
  *
- * Uses Obelisk API for real-time cryptocurrency prices.
- * Connected to: https://obelisk-api.hugo-padilla-pro.workers.dev
- * Updated: 2024-12-13
+ * Uses public APIs for real-time cryptocurrency prices.
+ * Updated: 2025-01-08
  */
 
 const PriceService = {
-    // Obelisk API
-    OBELISK_API: 'https://obelisk-api.hugo-padilla-pro.workers.dev',
+    // Public API (CoinGecko)
+    OBELISK_API: 'https://api.coingecko.com/api/v3',
 
     // Supported pairs (from Obelisk API)
     PAIRS: ['BTC', 'ETH', 'SOL', 'ARB', 'XRP', 'ADA', 'AVAX', 'LINK', 'UNI', 'OP', 'INJ', 'SUI'],

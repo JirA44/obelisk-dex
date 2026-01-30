@@ -715,18 +715,119 @@ const CombosModule = {
                 { product: "NBA Top Shot", percent: 30, color: "#ff6b00", apy: "20-60%", maxLoss: 55 },
                 { product: "F1 Tokens", percent: 30, color: "#e10600", apy: "25-70%", maxLoss: 65 }
             ]
-        }
+        },
+        {'id':'WHALE_PORTFOLIO','name':'Whale Portfolio','icon':'🐋','description':'High-value institutional grade portfolio','riskLevel':'Low','expectedApy':'8-15%','capitalProtection':'90%','minInvestment':10000,'rebalanceFrequency':'Monthly','allocation':[{'product':'Blue Chip BTC','percent':40,'color':'#f7931a','apy':'5-12%','maxLoss':15},{'product':'Institutional ETH','percent':30,'color':'#627eea','apy':'6-14%','maxLoss':18},{'product':'Treasury Bonds','percent':20,'color':'#00d4aa','apy':'4-8%','maxLoss':5},{'product':'Gold Token','percent':10,'color':'#ffd700','apy':'3-6%','maxLoss':8}]},
+        {'id':'MICRO_STARTER','name':'Micro Starter Pack','icon':'🌱','description':'Perfect for beginners with small capital','riskLevel':'Low','expectedApy':'5-12%','capitalProtection':'85%','minInvestment':10,'rebalanceFrequency':'Weekly','allocation':[{'product':'Stable Savings','percent':50,'color':'#00d4aa','apy':'4-8%','maxLoss':5},{'product':'BTC Fraction','percent':30,'color':'#f7931a','apy':'5-15%','maxLoss':20},{'product':'ETH Fraction','percent':20,'color':'#627eea','apy':'6-16%','maxLoss':22}]},
+        {'id':'ASIA_FOCUS','name':'Asia Crypto Focus','icon':'🏯','description':'Asian blockchain projects and exchanges','riskLevel':'Medium','expectedApy':'15-35%','capitalProtection':'65%','minInvestment':200,'rebalanceFrequency':'Weekly','allocation':[{'product':'BNB Chain','percent':35,'color':'#f3ba2f','apy':'10-25%','maxLoss':35},{'product':'NEO Ecosystem','percent':25,'color':'#00e599','apy':'12-30%','maxLoss':40},{'product':'Klaytn','percent':20,'color':'#ff6b6b','apy':'15-35%','maxLoss':45},{'product':'Tron DeFi','percent':20,'color':'#eb0029','apy':'18-40%','maxLoss':50}]},
+        {'id':'EURO_DEFI','name':'Euro DeFi Bundle','icon':'🇪🇺','description':'European-compliant DeFi protocols','riskLevel':'Medium','expectedApy':'10-22%','capitalProtection':'75%','minInvestment':500,'rebalanceFrequency':'Monthly','allocation':[{'product':'Staked EURS','percent':40,'color':'#0052b4','apy':'5-10%','maxLoss':10},{'product':'Aave Europe','percent':30,'color':'#b6509e','apy':'8-18%','maxLoss':25},{'product':'Compound EU','percent':30,'color':'#00d395','apy':'10-20%','maxLoss':30}]},
+        {'id':'LATAM_YIELD','name':'LatAm Yield Hunter','icon':'🌎','description':'Latin American crypto opportunities','riskLevel':'High','expectedApy':'25-50%','capitalProtection':'50%','minInvestment':150,'rebalanceFrequency':'Weekly','allocation':[{'product':'Brazil DeFi','percent':35,'color':'#009c3b','apy':'20-45%','maxLoss':50},{'product':'Mexico Tokens','percent':35,'color':'#ce1126','apy':'22-48%','maxLoss':55},{'product':'Argentina Stable','percent':30,'color':'#74acdf','apy':'30-60%','maxLoss':40}]},
+        {'id':'MEMECOIN_SAFE','name':'Meme Coin Hedged','icon':'🐕','description':'Meme exposure with stablecoin hedge','riskLevel':'Medium-High','expectedApy':'30-80%','capitalProtection':'60%','minInvestment':50,'rebalanceFrequency':'Daily','allocation':[{'product':'Top Memes','percent':40,'color':'#ff9500','apy':'50-150%','maxLoss':70},{'product':'Stable Hedge','percent':40,'color':'#00d4aa','apy':'5-10%','maxLoss':5},{'product':'Blue Chip','percent':20,'color':'#627eea','apy':'8-15%','maxLoss':20}]},
+        {'id':'INSTITUTIONAL','name':'Institutional Grade','icon':'🏛️','description':'Bank-grade crypto investment strategy','riskLevel':'Very Low','expectedApy':'6-10%','capitalProtection':'95%','minInvestment':25000,'rebalanceFrequency':'Quarterly','allocation':[{'product':'Custody BTC','percent':35,'color':'#f7931a','apy':'4-8%','maxLoss':10},{'product':'Custody ETH','percent':25,'color':'#627eea','apy':'5-9%','maxLoss':12},{'product':'Treasury','percent':30,'color':'#00d4aa','apy':'4-6%','maxLoss':3},{'product':'Insurance Pool','percent':10,'color':'#9b59b6','apy':'3-5%','maxLoss':2}]},
+        {'id':'STUDENT_SAVER','name':'Student Saver','icon':'📚','description':'Low-risk growth for student budgets','riskLevel':'Low','expectedApy':'6-14%','capitalProtection':'80%','minInvestment':25,'rebalanceFrequency':'Monthly','allocation':[{'product':'Stable Earn','percent':60,'color':'#00d4aa','apy':'5-10%','maxLoss':8},{'product':'BTC Learn','percent':25,'color':'#f7931a','apy':'6-18%','maxLoss':25},{'product':'ETH Learn','percent':15,'color':'#627eea','apy':'7-20%','maxLoss':28}]},
+        {'id':'TRADER_ACTIVE','name':'Active Trader','icon':'📊','description':'For experienced traders seeking alpha','riskLevel':'High','expectedApy':'35-80%','capitalProtection':'40%','minInvestment':1000,'rebalanceFrequency':'Daily','allocation':[{'product':'Perp Trading','percent':40,'color':'#ff6b6b','apy':'40-100%','maxLoss':60},{'product':'Options Play','percent':30,'color':'#a855f7','apy':'50-120%','maxLoss':70},{'product':'Spot Swing','percent':30,'color':'#3b82f6','apy':'25-60%','maxLoss':40}]},
+        {'id':'HODL_FOREVER','name':'HODL Forever','icon':'💎','description':'Long-term accumulation strategy','riskLevel':'Medium','expectedApy':'12-25%','capitalProtection':'70%','minInvestment':500,'rebalanceFrequency':'Yearly','allocation':[{'product':'BTC Stack','percent':50,'color':'#f7931a','apy':'10-20%','maxLoss':30},{'product':'ETH Stack','percent':35,'color':'#627eea','apy':'12-25%','maxLoss':35},{'product':'SOL Stack','percent':15,'color':'#00ffa3','apy':'15-35%','maxLoss':45}]},
+        {'id':'DIVIDEND_HUNTER','name':'Dividend Hunter','icon':'💰','description':'Yield-generating token portfolio','riskLevel':'Medium','expectedApy':'15-30%','capitalProtection':'70%','minInvestment':300,'rebalanceFrequency':'Weekly','allocation':[{'product':'Staking Rewards','percent':40,'color':'#00d4aa','apy':'10-20%','maxLoss':20},{'product':'LP Farming','percent':35,'color':'#ff6b6b','apy':'20-40%','maxLoss':35},{'product':'Revenue Share','percent':25,'color':'#a855f7','apy':'15-35%','maxLoss':30}]},
+        {'id':'TECH_INNOVATOR','name':'Tech Innovator','icon':'🚀','description':'Cutting-edge blockchain technology','riskLevel':'High','expectedApy':'30-70%','capitalProtection':'45%','minInvestment':250,'rebalanceFrequency':'Weekly','allocation':[{'product':'ZK Rollups','percent':30,'color':'#6366f1','apy':'30-70%','maxLoss':55},{'product':'AI Tokens','percent':30,'color':'#22c55e','apy':'40-90%','maxLoss':60},{'product':'Modular Chains','percent':25,'color':'#f59e0b','apy':'25-60%','maxLoss':50},{'product':'Privacy Tech','percent':15,'color':'#8b5cf6','apy':'20-50%','maxLoss':45}]},
+        {'id':'CARBON_NEUTRAL','name':'Carbon Neutral','icon':'🌿','description':'Eco-friendly blockchain investments','riskLevel':'Medium','expectedApy':'10-25%','capitalProtection':'70%','minInvestment':200,'rebalanceFrequency':'Monthly','allocation':[{'product':'Carbon Credits','percent':35,'color':'#22c55e','apy':'8-20%','maxLoss':25},{'product':'Green PoS','percent':35,'color':'#10b981','apy':'10-25%','maxLoss':30},{'product':'Regen Finance','percent':30,'color':'#059669','apy':'12-30%','maxLoss':35}]},
+        {'id':'METAVERSE_LAND','name':'Metaverse Landowner','icon':'🏠','description':'Virtual real estate portfolio','riskLevel':'High','expectedApy':'25-60%','capitalProtection':'45%','minInvestment':500,'rebalanceFrequency':'Monthly','allocation':[{'product':'Decentraland','percent':30,'color':'#ff2d55','apy':'20-50%','maxLoss':55},{'product':'Sandbox','percent':30,'color':'#00b4e6','apy':'25-60%','maxLoss':60},{'product':'Otherside','percent':25,'color':'#6c5ce7','apy':'30-70%','maxLoss':65},{'product':'Somnium','percent':15,'color':'#9b59b6','apy':'35-80%','maxLoss':70}]},
+
+        // ═══════════════════════════════════════════════════════════════
+        // MEGA COMBOS - Combos of Combos (Meta-Portfolios)
+        // ═══════════════════════════════════════════════════════════════
+        {'id':'MEGA_BALANCED','name':'🌟 MEGA Balanced','icon':'⚖️','description':'Ultimate diversification: combines 4 combos for perfect balance','riskLevel':'Medium','expectedApy':'15-30%','capitalProtection':'75%','minInvestment':1000,'rebalanceFrequency':'Weekly','isMegaCombo':true,'allocation':[{'product':'Conservative Yield Combo','percent':30,'color':'#00d4aa','apy':'5-12%','maxLoss':10},{'product':'Blue Chip Combo','percent':30,'color':'#627eea','apy':'15-25%','maxLoss':25},{'product':'Growth Portfolio Combo','percent':25,'color':'#f7931a','apy':'18-35%','maxLoss':30},{'product':'Dividend Hunter Combo','percent':15,'color':'#a855f7','apy':'15-30%','maxLoss':25}]},
+        {'id':'MEGA_AGGRESSIVE','name':'🔥 MEGA Aggressive','icon':'🚀','description':'Maximum returns: combines high-yield combos','riskLevel':'Very High','expectedApy':'50-120%','capitalProtection':'30%','minInvestment':2000,'rebalanceFrequency':'Daily','isMegaCombo':true,'allocation':[{'product':'Degen Paradise Combo','percent':35,'color':'#ff6b6b','apy':'80-200%','maxLoss':80},{'product':'Tech Innovator Combo','percent':25,'color':'#6366f1','apy':'30-70%','maxLoss':55},{'product':'Active Trader Combo','percent':25,'color':'#f59e0b','apy':'35-80%','maxLoss':60},{'product':'Memecoin Hedged Combo','percent':15,'color':'#ff9500','apy':'30-80%','maxLoss':50}]},
+        {'id':'MEGA_INCOME','name':'💵 MEGA Income','icon':'🏦','description':'Passive income maximizer: yield-focused combos','riskLevel':'Low-Medium','expectedApy':'12-25%','capitalProtection':'80%','minInvestment':5000,'rebalanceFrequency':'Monthly','isMegaCombo':true,'allocation':[{'product':'Dividend Hunter Combo','percent':35,'color':'#00d4aa','apy':'15-30%','maxLoss':25},{'product':'Conservative Yield Combo','percent':30,'color':'#4a9eff','apy':'5-12%','maxLoss':10},{'product':'Institutional Grade Combo','percent':20,'color':'#9b59b6','apy':'6-10%','maxLoss':8},{'product':'Staking Rewards Combo','percent':15,'color':'#22c55e','apy':'10-20%','maxLoss':15}]},
+        {'id':'MEGA_GLOBAL','name':'🌍 MEGA Global','icon':'🗺️','description':'Worldwide exposure: regional combos combined','riskLevel':'Medium','expectedApy':'20-40%','capitalProtection':'60%','minInvestment':3000,'rebalanceFrequency':'Weekly','isMegaCombo':true,'allocation':[{'product':'Asia Focus Combo','percent':30,'color':'#f3ba2f','apy':'15-35%','maxLoss':40},{'product':'Euro DeFi Combo','percent':25,'color':'#0052b4','apy':'10-22%','maxLoss':25},{'product':'LatAm Yield Combo','percent':25,'color':'#009c3b','apy':'25-50%','maxLoss':45},{'product':'Blue Chip Combo','percent':20,'color':'#627eea','apy':'15-25%','maxLoss':25}]},
+        {'id':'MEGA_FUTURE','name':'🔮 MEGA Future','icon':'🤖','description':'Next-gen tech: AI, ZK, and emerging tech combos','riskLevel':'High','expectedApy':'35-75%','capitalProtection':'40%','minInvestment':2500,'rebalanceFrequency':'Weekly','isMegaCombo':true,'allocation':[{'product':'Tech Innovator Combo','percent':35,'color':'#6366f1','apy':'30-70%','maxLoss':55},{'product':'AI & Data Combo','percent':30,'color':'#22c55e','apy':'40-90%','maxLoss':60},{'product':'DePIN Infra Combo','percent':20,'color':'#f59e0b','apy':'25-55%','maxLoss':50},{'product':'Emerging Chains Combo','percent':15,'color':'#8b5cf6','apy':'30-65%','maxLoss':55}]},
+
+        // ═══════════════════════════════════════════════════════════════
+        // NEW THEMED COMBOS
+        // ═══════════════════════════════════════════════════════════════
+        {'id':'RETIREMENT_PLAN','name':'Retirement Plan','icon':'🏖️','description':'Long-term wealth building for retirement','riskLevel':'Low','expectedApy':'8-15%','capitalProtection':'90%','minInvestment':1000,'rebalanceFrequency':'Quarterly','allocation':[{'product':'Treasury Bonds','percent':40,'color':'#00d4aa','apy':'5-8%','maxLoss':5},{'product':'BTC Accumulator','percent':30,'color':'#f7931a','apy':'8-18%','maxLoss':20},{'product':'ETH Staking','percent':20,'color':'#627eea','apy':'10-15%','maxLoss':18},{'product':'Gold Token','percent':10,'color':'#ffd700','apy':'3-8%','maxLoss':10}]},
+        {'id':'WEEKEND_WARRIOR','name':'Weekend Warrior','icon':'⚔️','description':'High-action weekend trading strategy','riskLevel':'Very High','expectedApy':'40-100%','capitalProtection':'25%','minInvestment':200,'rebalanceFrequency':'Weekly','allocation':[{'product':'Leverage Trades','percent':40,'color':'#ff6b6b','apy':'60-150%','maxLoss':80},{'product':'Meme Plays','percent':30,'color':'#ff9500','apy':'50-200%','maxLoss':85},{'product':'Arbitrage Bot','percent':30,'color':'#3b82f6','apy':'20-50%','maxLoss':30}]},
+        {'id':'NIGHT_OWL','name':'Night Owl Asia','icon':'🦉','description':'Trade Asian market hours (midnight-8am UTC)','riskLevel':'Medium-High','expectedApy':'25-50%','capitalProtection':'55%','minInvestment':500,'rebalanceFrequency':'Daily','allocation':[{'product':'Asian Tokens','percent':40,'color':'#f3ba2f','apy':'20-45%','maxLoss':45},{'product':'Korean DeFi','percent':30,'color':'#00d4aa','apy':'25-50%','maxLoss':50},{'product':'Japan Tech','percent':30,'color':'#ff6b6b','apy':'30-60%','maxLoss':55}]},
+        {'id':'GAMING_GUILD','name':'Gaming Guild','icon':'🎮','description':'Play-to-earn and gaming token portfolio','riskLevel':'High','expectedApy':'30-70%','capitalProtection':'40%','minInvestment':150,'rebalanceFrequency':'Weekly','allocation':[{'product':'Axie Infinity','percent':25,'color':'#00b4e6','apy':'25-60%','maxLoss':55},{'product':'Gala Games','percent':25,'color':'#ff6b6b','apy':'30-70%','maxLoss':60},{'product':'Immutable X','percent':25,'color':'#6366f1','apy':'35-75%','maxLoss':65},{'product':'Yield Guild','percent':25,'color':'#22c55e','apy':'20-50%','maxLoss':50}]},
+        {'id':'MUSIC_NFT','name':'Music & NFT','icon':'🎵','description':'Music tokens and audio NFT investments','riskLevel':'High','expectedApy':'25-60%','capitalProtection':'45%','minInvestment':100,'rebalanceFrequency':'Weekly','allocation':[{'product':'Audius','percent':35,'color':'#cc00ff','apy':'20-50%','maxLoss':55},{'product':'Royal.io Pool','percent':30,'color':'#ff6b6b','apy':'25-60%','maxLoss':60},{'product':'Sound.xyz','percent':35,'color':'#00d4aa','apy':'30-70%','maxLoss':65}]},
+        {'id':'REAL_WORLD','name':'Real World Assets','icon':'🏢','description':'Tokenized real-world assets (RWA)','riskLevel':'Low-Medium','expectedApy':'8-18%','capitalProtection':'85%','minInvestment':1000,'rebalanceFrequency':'Monthly','allocation':[{'product':'Real Estate Tokens','percent':35,'color':'#00d4aa','apy':'6-12%','maxLoss':15},{'product':'Commodity Tokens','percent':30,'color':'#ffd700','apy':'5-10%','maxLoss':12},{'product':'Invoice Financing','percent':20,'color':'#3b82f6','apy':'10-18%','maxLoss':20},{'product':'Art Tokens','percent':15,'color':'#a855f7','apy':'15-25%','maxLoss':30}]},
+        {'id':'PRIVACY_FOCUSED','name':'Privacy Focused','icon':'🔒','description':'Privacy coins and anonymous DeFi','riskLevel':'Medium-High','expectedApy':'20-45%','capitalProtection':'55%','minInvestment':300,'rebalanceFrequency':'Weekly','allocation':[{'product':'Monero Pool','percent':30,'color':'#ff6600','apy':'15-35%','maxLoss':45},{'product':'Zcash Staking','percent':25,'color':'#f4b728','apy':'12-30%','maxLoss':40},{'product':'Secret Network','percent':25,'color':'#1b1b1b','apy':'18-40%','maxLoss':50},{'product':'Tornado Alt','percent':20,'color':'#00d4aa','apy':'25-55%','maxLoss':55}]},
+        {'id':'ORACLE_NETWORK','name':'Oracle Networks','icon':'🔮','description':'Blockchain oracle and data providers','riskLevel':'Medium','expectedApy':'15-35%','capitalProtection':'65%','minInvestment':250,'rebalanceFrequency':'Weekly','allocation':[{'product':'Chainlink','percent':40,'color':'#375bd2','apy':'10-25%','maxLoss':30},{'product':'Band Protocol','percent':25,'color':'#4520ff','apy':'15-35%','maxLoss':40},{'product':'API3','percent':20,'color':'#00d4aa','apy':'18-40%','maxLoss':45},{'product':'Pyth Network','percent':15,'color':'#7c3aed','apy':'20-45%','maxLoss':50}]},
+        {'id':'BRIDGE_MASTER','name':'Bridge Master','icon':'🌉','description':'Cross-chain bridge tokens and protocols','riskLevel':'Medium-High','expectedApy':'20-45%','capitalProtection':'55%','minInvestment':400,'rebalanceFrequency':'Weekly','allocation':[{'product':'Stargate','percent':30,'color':'#6366f1','apy':'18-40%','maxLoss':45},{'product':'LayerZero','percent':30,'color':'#00d4aa','apy':'20-45%','maxLoss':50},{'product':'Wormhole','percent':25,'color':'#ff6b6b','apy':'22-50%','maxLoss':55},{'product':'Synapse','percent':15,'color':'#a855f7','apy':'25-55%','maxLoss':60}]},
+        {'id':'DEX_LIQUIDITY','name':'DEX Liquidity Pro','icon':'💧','description':'Concentrated liquidity across top DEXes','riskLevel':'Medium-High','expectedApy':'25-55%','capitalProtection':'50%','minInvestment':500,'rebalanceFrequency':'Daily','allocation':[{'product':'Uniswap V3 LP','percent':35,'color':'#ff007a','apy':'20-50%','maxLoss':40},{'product':'Curve Finance','percent':30,'color':'#0033ad','apy':'15-35%','maxLoss':30},{'product':'Balancer','percent':20,'color':'#1e1e1e','apy':'18-45%','maxLoss':45},{'product':'Velodrome','percent':15,'color':'#00d4aa','apy':'30-60%','maxLoss':55}]}
     ],
+
+    // ═══════════════════════════════════════════════════════════════
+    // COMBO GENERATOR - Creates infinite recursive combos
+    // ═══════════════════════════════════════════════════════════════
+    generateUltraCombos() {
+        const ultraCombos = [];
+        const icons = ['💎', '🔥', '⚡', '🌟', '🚀', '💫', '🌈', '🎯', '👑', '🏆'];
+        const prefixes = ['ULTRA', 'HYPER', 'INFINITY', 'QUANTUM', 'OMEGA', 'APEX', 'PRIME', 'ELITE'];
+        const risks = ['Low', 'Medium', 'High', 'Very High'];
+        const colors = ['#ff6b6b', '#00d4aa', '#627eea', '#f7931a', '#a855f7', '#22c55e', '#3b82f6', '#f59e0b'];
+
+        // Generate ULTRA combos (combo x combo x combo)
+        for (let i = 0; i < 10; i++) {
+            const prefix = prefixes[i % prefixes.length];
+            const icon = icons[i % icons.length];
+            const risk = risks[Math.floor(Math.random() * risks.length)];
+            const baseApy = 20 + i * 10;
+            const protection = Math.max(20, 90 - i * 8);
+
+            ultraCombos.push({
+                id: `${prefix}_COMBO_X${i + 1}`,
+                name: `${icon} ${prefix} Combo X${i + 1}`,
+                icon: icon,
+                description: `Level ${i + 1} recursive combo - ${prefix.toLowerCase()} diversification`,
+                riskLevel: risk,
+                expectedApy: `${baseApy}-${baseApy * 2}%`,
+                capitalProtection: `${protection}%`,
+                minInvestment: 500 * (i + 1),
+                rebalanceFrequency: i < 3 ? 'Monthly' : (i < 6 ? 'Weekly' : 'Daily'),
+                isUltraCombo: true,
+                comboLevel: i + 1,
+                allocation: this.generateRandomAllocation(3 + Math.floor(i / 2), colors)
+            });
+        }
+
+        return ultraCombos;
+    },
+
+    generateRandomAllocation(count, colors) {
+        const products = [
+            'MEGA Balanced', 'MEGA Aggressive', 'MEGA Income', 'MEGA Global', 'MEGA Future',
+            'Blue Chip', 'Growth Portfolio', 'Conservative Yield', 'Degen Paradise', 'Tech Innovator',
+            'Dividend Hunter', 'HODL Forever', 'Active Trader', 'Institutional Grade', 'Real World Assets'
+        ];
+        const allocation = [];
+        let remaining = 100;
+
+        for (let i = 0; i < count && remaining > 0; i++) {
+            const isLast = i === count - 1;
+            const percent = isLast ? remaining : Math.floor(remaining / (count - i) * (0.8 + Math.random() * 0.4));
+            remaining -= percent;
+
+            allocation.push({
+                product: products[Math.floor(Math.random() * products.length)] + ' Combo',
+                percent: percent,
+                color: colors[i % colors.length],
+                apy: `${10 + i * 5}-${30 + i * 10}%`,
+                maxLoss: 20 + i * 8
+            });
+        }
+
+        return allocation;
+    },
 
     init() {
         // Translate UI when language changes
         if (typeof I18n !== 'undefined') {
             document.addEventListener('languageChanged', () => this.render());
         }
-        this.combos = this.comboData;
+        // Add generated ultra combos
+        this.combos = [...this.comboData, ...this.generateUltraCombos()];
         this.render();
         this.bindEvents();
-        console.log('[Combos] Module initialized with', this.combos.length, 'combos');
+        console.log('[Combos] Module initialized with', this.combos.length, 'combos (including generated)');
     },
 
     render(filter = 'all') {

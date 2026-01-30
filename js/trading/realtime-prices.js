@@ -10,7 +10,7 @@
 const RealtimePrices = {
     // Config
     config: {
-        apiUrl: 'https://retrieve-velvet-percent-classic.trycloudflare.com',
+        apiUrl: 'https://api.coingecko.com/api/v3',
         updateInterval: 500,      // UI updates every 500ms
         chartInterval: 50,        // Chart updates every 50ms
         maxDataPoints: 500,       // Max candles in memory

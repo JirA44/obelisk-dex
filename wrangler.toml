@@ -3,5 +3,10 @@ compatibility_date = "2024-01-01"
 pages_build_output_dir = "./"
 
 [vars]
-API_URL = "https://obelisk-api.hugo-padilla-pro.workers.dev"
+API_URL = "/api"
 VERSION = "2.0.0"
+
+# KV Namespace for user data persistence
+[[kv_namespaces]]
+binding = "OBELISK_KV"
+id = "601e44a34177477aabeff0a43c3a9011"

@@ -24,7 +24,7 @@ const PortfolioFix = {
     },
 
     injectDepositPanels() {
-        const tabIds = ['tab-investments', 'tab-combos', 'tab-banking', 'tab-portfolio', 'tab-swap', 'tab-trading'];
+        const tabIds = ['tab-investments', 'tab-combos', 'tab-banking', 'tab-portfolio', 'tab-swap', 'tab-trade', 'tab-bonds', 'tab-tools', 'tab-wallet', 'tab-products'];
 
         tabIds.forEach(tabId => {
             const section = document.getElementById(tabId);
@@ -39,11 +39,12 @@ const PortfolioFix = {
                     <h3 style="margin:0;color:#00ff88;font-size:16px;">💵 Capital Simule</h3>
                     <span class="sim-balance-display" style="font-size:16px;color:#fff;font-weight:700;background:rgba(0,0,0,0.4);padding:8px 16px;border-radius:20px;">$0.00</span>
                 </div>
-                <div style="display:flex;gap:10px;flex-wrap:wrap;">
-                    <button onclick="PortfolioFix.addSimulated(100)" style="flex:1;min-width:70px;padding:12px;background:#00ff88;border:none;border-radius:10px;color:#000;font-weight:700;cursor:pointer;">+$100</button>
-                    <button onclick="PortfolioFix.addSimulated(1000)" style="flex:1;min-width:70px;padding:12px;background:#00ff88;border:none;border-radius:10px;color:#000;font-weight:700;cursor:pointer;">+$1K</button>
-                    <button onclick="PortfolioFix.addSimulated(10000)" style="flex:1;min-width:70px;padding:12px;background:#00ff88;border:none;border-radius:10px;color:#000;font-weight:700;cursor:pointer;">+$10K</button>
-                    <button onclick="PortfolioFix.addSimulated(100000)" style="flex:1;min-width:70px;padding:12px;background:#a855f7;border:none;border-radius:10px;color:#fff;font-weight:700;cursor:pointer;">+$100K</button>
+                <div style="display:flex;gap:8px;flex-wrap:wrap;">
+                    <button onclick="PortfolioFix.addSimulated(1000)" style="flex:1;min-width:60px;padding:10px;background:#00ff88;border:none;border-radius:10px;color:#000;font-weight:700;cursor:pointer;">+$1K</button>
+                    <button onclick="PortfolioFix.addSimulated(10000)" style="flex:1;min-width:60px;padding:10px;background:#00ff88;border:none;border-radius:10px;color:#000;font-weight:700;cursor:pointer;">+$10K</button>
+                    <button onclick="PortfolioFix.addSimulated(100000)" style="flex:1;min-width:60px;padding:10px;background:#00ff88;border:none;border-radius:10px;color:#000;font-weight:700;cursor:pointer;">+$100K</button>
+                    <button onclick="PortfolioFix.addSimulated(1000000)" style="flex:1;min-width:60px;padding:10px;background:#a855f7;border:none;border-radius:10px;color:#fff;font-weight:700;cursor:pointer;">+$1M</button>
+                    <button onclick="PortfolioFix.addSimulated(10000000)" style="flex:1;min-width:60px;padding:10px;background:#f59e0b;border:none;border-radius:10px;color:#000;font-weight:700;cursor:pointer;">+$10M</button>
                 </div>
             `;
             section.insertBefore(panel, section.firstChild);
@@ -119,11 +120,13 @@ const PortfolioFix = {
                 <span>💵 AJOUTER USDC SIMULE</span>
                 <span class="sim-balance-display" style="background:#000;color:#00ff88;padding:5px 10px;border-radius:10px;">$0</span>
             </div>
-            <div style="padding:15px;display:grid;grid-template-columns:1fr 1fr;gap:10px;">
-                <button onclick="PortfolioFix.addSimulated(100)" style="padding:15px;background:#00ff88;border:none;border-radius:10px;color:#000;font-weight:bold;font-size:16px;cursor:pointer;">+$100</button>
-                <button onclick="PortfolioFix.addSimulated(1000)" style="padding:15px;background:#00ff88;border:none;border-radius:10px;color:#000;font-weight:bold;font-size:16px;cursor:pointer;">+$1K</button>
-                <button onclick="PortfolioFix.addSimulated(10000)" style="padding:15px;background:#00ff88;border:none;border-radius:10px;color:#000;font-weight:bold;font-size:16px;cursor:pointer;">+$10K</button>
-                <button onclick="PortfolioFix.addSimulated(100000)" style="padding:15px;background:#a855f7;border:none;border-radius:10px;color:#fff;font-weight:bold;font-size:16px;cursor:pointer;">+$100K</button>
+            <div style="padding:15px;display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px;">
+                <button onclick="PortfolioFix.addSimulated(1000)" style="padding:12px;background:#00ff88;border:none;border-radius:10px;color:#000;font-weight:bold;font-size:14px;cursor:pointer;">+$1K</button>
+                <button onclick="PortfolioFix.addSimulated(10000)" style="padding:12px;background:#00ff88;border:none;border-radius:10px;color:#000;font-weight:bold;font-size:14px;cursor:pointer;">+$10K</button>
+                <button onclick="PortfolioFix.addSimulated(100000)" style="padding:12px;background:#00ff88;border:none;border-radius:10px;color:#000;font-weight:bold;font-size:14px;cursor:pointer;">+$100K</button>
+                <button onclick="PortfolioFix.addSimulated(1000000)" style="padding:12px;background:#a855f7;border:none;border-radius:10px;color:#fff;font-weight:bold;font-size:14px;cursor:pointer;">+$1M</button>
+                <button onclick="PortfolioFix.addSimulated(10000000)" style="padding:12px;background:#f59e0b;border:none;border-radius:10px;color:#000;font-weight:bold;font-size:14px;cursor:pointer;">+$10M</button>
+                <button onclick="PortfolioFix.addSimulated(100000000)" style="padding:12px;background:#ef4444;border:none;border-radius:10px;color:#fff;font-weight:bold;font-size:14px;cursor:pointer;">+$100M</button>
             </div>
             <div style="padding:0 15px 15px;display:flex;gap:10px;">
                 <input type="number" id="quick-add-amount" placeholder="Montant..." style="flex:1;padding:12px;border:2px solid #00ff88;border-radius:8px;background:#000;color:#fff;font-size:14px;">
@@ -178,25 +181,66 @@ const PortfolioFix = {
     },
 
     addSimulated(amount) {
-        if (typeof SimulatedPortfolio !== 'undefined') {
+        // Methode 1: Via SimulatedPortfolio si disponible
+        if (typeof SimulatedPortfolio !== 'undefined' && SimulatedPortfolio.portfolio) {
             SimulatedPortfolio.portfolio.simulatedBalance += amount;
             SimulatedPortfolio.portfolio.totalDeposited += amount;
             SimulatedPortfolio.saveState();
             SimulatedPortfolio.updateUI();
+        } else {
+            // Methode 2: Directement via localStorage
+            let portfolio = { simulatedBalance: 0, totalDeposited: 0, investments: [], createdAt: Date.now() };
+            try {
+                const saved = localStorage.getItem('obelisk_simulated_portfolio');
+                if (saved) portfolio = JSON.parse(saved);
+            } catch(e) {}
 
-            // Mettre a jour tous les affichages de solde
-            this.updateAllBalanceDisplays();
+            portfolio.simulatedBalance = (portfolio.simulatedBalance || 0) + amount;
+            portfolio.totalDeposited = (portfolio.totalDeposited || 0) + amount;
+            portfolio.lastUpdated = Date.now();
 
-            if (typeof showNotification === 'function') {
-                showNotification(`+$${amount.toLocaleString()} ajoute en simule!`, 'success');
-            }
+            localStorage.setItem('obelisk_simulated_portfolio', JSON.stringify(portfolio));
+            console.log('💰 Added via localStorage:', amount, 'New balance:', portfolio.simulatedBalance);
+        }
+
+        // Mettre a jour tous les affichages de solde
+        this.updateAllBalanceDisplays();
+
+        // Marquer pour sync cloud
+        if (typeof CloudPersistence !== 'undefined') {
+            CloudPersistence.markChanged();
+        }
+
+        if (typeof showNotification === 'function') {
+            showNotification(`+$${amount.toLocaleString()} ajoute en simule!`, 'success');
         }
     },
 
     updateAllBalanceDisplays() {
-        if (typeof SimulatedPortfolio === 'undefined') return;
+        let balance = 0;
+        let invested = 0;
+        let earnings = 0;
+        let productsCount = 0;
 
-        const balance = SimulatedPortfolio.portfolio.simulatedBalance || 0;
+        // Essayer SimulatedPortfolio d'abord
+        if (typeof SimulatedPortfolio !== 'undefined' && SimulatedPortfolio.portfolio) {
+            balance = SimulatedPortfolio.portfolio.simulatedBalance || 0;
+            invested = SimulatedPortfolio.portfolio.totalInvested || 0;
+            earnings = SimulatedPortfolio.portfolio.totalEarnings || 0;
+            productsCount = (SimulatedPortfolio.portfolio.investments || []).length;
+        } else {
+            // Sinon, lire depuis localStorage
+            try {
+                const saved = localStorage.getItem('obelisk_simulated_portfolio');
+                if (saved) {
+                    const portfolio = JSON.parse(saved);
+                    balance = portfolio.simulatedBalance || 0;
+                    invested = portfolio.totalInvested || 0;
+                    earnings = portfolio.totalEarnings || 0;
+                    productsCount = (portfolio.investments || []).length;
+                }
+            } catch(e) {}
+        }
         const formatted = '$' + this.formatAmount(balance);
 
         // Mettre a jour tous les elements avec la classe sim-balance-display
@@ -210,6 +254,17 @@ const PortfolioFix = {
             const el = document.getElementById(id);
             if (el) el.textContent = formatted;
         });
+
+        // Mettre a jour les stats du portfolio
+        const totalBalanceEl = document.getElementById('portfolio-total-balance');
+        const totalInvestedEl = document.getElementById('portfolio-total-invested');
+        const totalEarningsEl = document.getElementById('portfolio-total-earnings');
+        const productsCountEl = document.getElementById('portfolio-products-count');
+
+        if (totalBalanceEl) totalBalanceEl.textContent = '$' + this.formatAmount(balance);
+        if (totalInvestedEl) totalInvestedEl.textContent = '$' + this.formatAmount(invested);
+        if (totalEarningsEl) totalEarningsEl.textContent = '$' + this.formatAmount(earnings);
+        if (productsCountEl) productsCountEl.textContent = productsCount.toString();
     },
 
     addCustomAmount() {

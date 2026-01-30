@@ -1,0 +1,7 @@
+name = "obelisk-storage"
+main = "obelisk-storage.js"
+compatibility_date = "2024-01-01"
+
+[[kv_namespaces]]
+binding = "OBELISK_KV"
+id = "601e44a34177477aabeff0a43c3a9011"

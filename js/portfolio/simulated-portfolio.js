@@ -143,7 +143,19 @@ const SimulatedPortfolio = {
      * Sauvegarder l'etat
      */
     saveState() {
-        localStorage.setItem('obelisk_simulated_portfolio', JSON.stringify(this.portfolio));
+        try {
+            const data = JSON.stringify(this.portfolio);
+            localStorage.setItem('obelisk_simulated_portfolio', data);
+
+            // Marquer pour sync Firebase
+            if (typeof FirebasePersistence !== 'undefined' && FirebasePersistence.isInitialized) {
+                FirebasePersistence.markChanged();
+            }
+
+            console.log('💾 Portfolio saved:', this.portfolio.investments?.length || 0, 'investments');
+        } catch (e) {
+            console.error('💾 Save error:', e);
+        }
     },
 
     /**
@@ -938,8 +950,8 @@ const SimulatedPortfolio = {
 
     renderSingleInvestment(inv) {
         const daysActive = ((Date.now() - inv.startDate) / (1000 * 60 * 60 * 24)).toFixed(1);
-        const dailyReturn = (inv.amount * inv.apy / 100 / 365).toFixedSafeOps.percentage(2);
-        const pnlPct = inv.amount > 0 ? ((inv.earnings , inv.amount)).toFixed(2) : 0;
+        const dailyReturn = (inv.amount * inv.apy / 100 / 365).toFixed(2);
+        const pnlPct = inv.amount > 0 ? ((inv.earnings / inv.amount) * 100).toFixed(2) : 0;
         const typeLabel = inv.isSimulated ? '🎮 SIMULE' : '💎 REEL';
         const typeClass = inv.isSimulated ? 'simulated' : 'real';
 
@@ -1937,28 +1949,35 @@ const SimulatedPortfolio = {
 
 // Auto-init avec integration Market Indexes
 function initSimulatedPortfolio() {
-    // Ajouter les Market Indexes au Investment Simulator
-    if (typeof InvestmentSimulator !== 'undefined' && typeof MarketIndexes !== 'undefined') {
-        // Convertir les indexes en format produit
-        const indexProducts = MarketIndexes.indexes.map(idx => ({
-            id: idx.id,
-            name: idx.name,
-            apy: idx.change24h > 0 ? 5.0 + idx.change24h / 2 : 3.0,  // APY estime
-            risk: idx.risk || 'medium',
-            icon: idx.icon,
-            category: 'index'
-        }));
-
-        // Ajouter au debut des produits (eviter doublons)
-        const existingIds = InvestmentSimulator.products.map(p => p.id);
-        const newProducts = indexProducts.filter(p => !existingIds.includes(p.id));
-        if (newProducts.length > 0) {
-            InvestmentSimulator.products = [...newProducts, ...InvestmentSimulator.products];
-            console.log('📊 Market Indexes ajoutes au Simulator:', newProducts.length);
+    try {
+        // Ajouter les Market Indexes au Investment Simulator
+        if (typeof InvestmentSimulator !== 'undefined' && typeof MarketIndexes !== 'undefined') {
+            if (InvestmentSimulator.products && MarketIndexes.indexes) {
+                const indexProducts = MarketIndexes.indexes.map(idx => ({
+                    id: idx.id,
+                    name: idx.name,
+                    apy: idx.change24h > 0 ? 5.0 + idx.change24h / 2 : 3.0,
+                    risk: idx.risk || 'medium',
+                    icon: idx.icon,
+                    category: 'index'
+                }));
+                const existingIds = InvestmentSimulator.products.map(p => p.id);
+                const newProducts = indexProducts.filter(p => !existingIds.includes(p.id));
+                if (newProducts.length > 0) {
+                    InvestmentSimulator.products = [...newProducts, ...InvestmentSimulator.products];
+                    console.log('📊 Market Indexes ajoutes au Simulator:', newProducts.length);
+                }
+            }
         }
+    } catch (e) {
+        console.warn('Market Indexes integration skipped:', e.message);
     }
 
-    SimulatedPortfolio.init();
+    try {
+        SimulatedPortfolio.init();
+    } catch (e) {
+        console.error('SimulatedPortfolio init failed:', e);
+    }
 }
 
 if (document.readyState === 'loading') {

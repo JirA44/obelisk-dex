@@ -479,18 +479,28 @@ document.addEventListener("DOMContentLoaded", function() {
     if (saved) setTheme(saved);
     
     // Add theme toggle button to header
+    var themes = ["default", "forerunner", "neon"];
+    var themeLabels = {
+        "default": "🎨 Default",
+        "forerunner": "🔥 Forerunner",
+        "neon": "💜 Neon"
+    };
+
     setTimeout(function() {
         var header = document.querySelector(".header-actions") || document.querySelector("header");
         if (header && !document.getElementById("theme-toggle")) {
             var btn = document.createElement("button");
             btn.id = "theme-toggle";
-            btn.innerHTML = "🎨 Theme";
+            var current = localStorage.getItem("obelisk_theme") || "default";
+            btn.innerHTML = themeLabels[current] || "🎨 Theme";
             btn.style.cssText = "background:linear-gradient(135deg,#ff6a00,#00ccff);border:none;color:#fff;padding:8px 16px;border-radius:8px;cursor:pointer;font-weight:bold;margin-left:10px;";
             btn.onclick = function() {
                 var current = localStorage.getItem("obelisk_theme") || "default";
-                var next = current === "default" ? "forerunner" : "default";
+                var currentIndex = themes.indexOf(current);
+                var nextIndex = (currentIndex + 1) % themes.length;
+                var next = themes[nextIndex];
                 setTheme(next);
-                btn.innerHTML = next === "forerunner" ? "🔥 FORERUNNER" : "🎨 Theme";
+                btn.innerHTML = themeLabels[next] || "🎨 Theme";
             };
             header.appendChild(btn);
         }

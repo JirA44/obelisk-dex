@@ -1,16 +1,14 @@
 /**
  * Obelisk DEX - Trading API v2.1
  *
- * Connects to Obelisk API for market data and trading.
- * API: https://obelisk-api.hugo-padilla-pro.workers.dev
- * Updated: 2024-12-13
+ * Connects to Hyperliquid API for market data and trading.
+ * API: https://api.hyperliquid.xyz
+ * Updated: 2025-01-08
  */
 
 const HyperliquidAPI = {
-    // Obelisk API endpoint - auto-detect local or production
-    OBELISK_API: window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1'
-        ? 'http://localhost:3001'
-        : 'https://retrieve-velvet-percent-classic.trycloudflare.com',
+    // Hyperliquid public API
+    OBELISK_API: 'https://api.hyperliquid.xyz',
 
     // Cache
     marketsCache: null,

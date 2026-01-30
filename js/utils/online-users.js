@@ -6,8 +6,8 @@
  */
 
 const OnlineUsers = {
-    // API endpoint for user tracking
-    API_BASE: 'https://obelisk-api.hugo-padilla-pro.workers.dev',
+    // API endpoint for user tracking (relative URL)
+    API_BASE: '',
 
     // Current session
     sessionId: null,

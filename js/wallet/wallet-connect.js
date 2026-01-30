@@ -86,6 +86,15 @@ const WalletConnect = {
             });
         }
 
+        // Listen for WalletManager events
+        window.addEventListener('wallet-connected', () => this.updateUI());
+        window.addEventListener('wallet-disconnected', () => this.updateUI());
+        window.addEventListener('wallet-changed', () => this.updateUI());
+
+        // Also update UI when page loads (for persisted wallet state)
+        setTimeout(() => this.updateUI(), 500);
+        setTimeout(() => this.updateUI(), 2000);
+
         console.log('[WalletConnect] Initialized');
     },
 
@@ -437,23 +446,39 @@ const WalletConnect = {
     // Update UI
     updateUI() {
         // Update connect button in header
-        const connectBtn = document.querySelector('.btn-connect, #btn-connect');
+        const connectBtn = document.querySelector('.btn-connect, #btn-connect, #btn-connect-wallet');
         if (connectBtn) {
-            if (this.connected && this.address) {
-                const shortAddr = this.address.slice(0, 6) + '...' + this.address.slice(-4);
-                const chain = this.chains[this.chainId];
-                const chainName = chain ? chain.name : 'Unknown';
+            const isFr = (typeof I18n !== 'undefined' && I18n.currentLang === 'fr');
 
-                connectBtn.innerHTML = `
-                    <span style="color:#00ff88;">●</span>
-                    ${shortAddr}
-                    <span style="font-size:0.7rem;opacity:0.7;margin-left:4px;">${chainName}</span>
-                `;
-                connectBtn.onclick = () => this.showAccountModal();
+            // Check both WalletConnect and WalletManager connection states
+            const walletManagerConnected = typeof WalletManager !== 'undefined' && WalletManager.isUnlocked && WalletManager.currentWallet;
+            const isConnected = this.connected || walletManagerConnected;
+
+            if (isConnected) {
+                // Get address from either source
+                const address = this.address || (WalletManager.currentWallet ? WalletManager.currentWallet.address : null);
+
+                if (address) {
+                    const shortAddr = address.slice(0, 6) + '...' + address.slice(-4);
+                    const chain = this.chains[this.chainId];
+                    const chainName = this.connected ? (chain ? chain.name : '') : (walletManagerConnected ? 'Obelisk' : '');
+
+                    connectBtn.innerHTML = `
+                        <span style="color:#00ff88;">●</span>
+                        ${shortAddr}
+                        ${chainName ? `<span style="font-size:0.7rem;opacity:0.7;margin-left:4px;">${chainName}</span>` : ''}
+                    `;
+                    connectBtn.onclick = () => this.showAccountModal();
+                    connectBtn.title = isFr ? 'Cliquez pour déconnecter' : 'Click to disconnect';
+                } else {
+                    // Connected but no address yet
+                    connectBtn.innerHTML = `<span style="color:#00ff88;">●</span> ${isFr ? 'Connecté' : 'Connected'}`;
+                    connectBtn.onclick = () => this.showAccountModal();
+                }
             } else {
-                const isFr = (typeof I18n !== 'undefined' && I18n.currentLang === 'fr');
                 connectBtn.textContent = isFr ? 'Connecter' : 'Connect';
                 connectBtn.onclick = () => this.showModal();
+                connectBtn.title = '';
             }
         }
 
@@ -468,7 +493,14 @@ const WalletConnect = {
     // Show account modal (when connected)
     showAccountModal() {
         const isFr = (typeof I18n !== 'undefined' && I18n.currentLang === 'fr');
-        const chain = this.chains[this.chainId] || { name: 'Unknown', symbol: 'ETH', explorer: '#' };
+
+        // Check if connected via WalletManager (Obelisk internal wallet) or WalletConnect (external)
+        const walletManagerConnected = typeof WalletManager !== 'undefined' && WalletManager.isUnlocked && WalletManager.currentWallet;
+        const address = this.address || (walletManagerConnected ? WalletManager.currentWallet.address : null);
+        const walletName = walletManagerConnected ? (WalletManager.currentWallet.name || 'Obelisk Wallet') : 'External Wallet';
+        const walletIcon = walletManagerConnected ? '◈' : '🦊';
+
+        const chain = this.chains[this.chainId] || { name: walletManagerConnected ? 'Obelisk' : 'Unknown', symbol: 'ETH', explorer: '#' };
 
         let modal = document.getElementById('walletConnectModal');
         if (!modal) {
@@ -487,12 +519,13 @@ const WalletConnect = {
                         padding: 20px;
                         margin-bottom: 16px;
                     ">
-                        <div style="font-size:2.5rem;margin-bottom:12px;">🦊</div>
+                        <div style="font-size:2.5rem;margin-bottom:12px;">${walletIcon}</div>
+                        <div style="color:#00d4aa;font-size:0.9rem;margin-bottom:8px;">${walletName}</div>
                         <div style="color:#fff;font-size:1.1rem;font-weight:600;word-break:break-all;">
-                            ${this.address}
+                            ${address || 'N/A'}
                         </div>
                         <div style="color:#888;font-size:0.85rem;margin-top:8px;">
-                            ${chain.name} • ${this.balance?.toFixed(4) || '0'} ${chain.symbol}
+                            ${chain.name} ${this.balance !== null ? '• ' + this.balance.toFixed(4) + ' ' + chain.symbol : ''}
                         </div>
                     </div>
 
@@ -507,7 +540,7 @@ const WalletConnect = {
                             cursor: pointer;
                         ">📋 ${isFr ? 'Copier' : 'Copy'}</button>
 
-                        <button onclick="window.open('${chain.explorer}/address/${this.address}', '_blank')" style="
+                        <button onclick="window.open('${chain.explorer}/address/${address}', '_blank')" style="
                             padding: 12px;
                             border-radius: 10px;
                             border: 1px solid #333;
@@ -518,7 +551,7 @@ const WalletConnect = {
                     </div>
 
                     <!-- Disconnect -->
-                    <button onclick="WalletConnect.disconnect();WalletConnect.closeModal()" style="
+                    <button onclick="WalletConnect.disconnectAll();WalletConnect.closeModal()" style="
                         width: 100%;
                         padding: 14px;
                         border-radius: 10px;
@@ -535,10 +568,29 @@ const WalletConnect = {
         modal.style.display = 'flex';
     },
 
+    // Disconnect all wallets (both WalletConnect and WalletManager)
+    disconnectAll() {
+        // Disconnect WalletConnect (external wallet)
+        this.disconnect();
+
+        // Disconnect WalletManager (Obelisk internal wallet)
+        if (typeof WalletManager !== 'undefined' && WalletManager.isUnlocked) {
+            WalletManager.lockWallet();
+            window.dispatchEvent(new Event('wallet-disconnected'));
+        }
+
+        // Update UI
+        this.updateUI();
+    },
+
     // Copy address
     copyAddress() {
-        if (this.address) {
-            navigator.clipboard.writeText(this.address);
+        // Get address from either WalletConnect or WalletManager
+        const walletManagerConnected = typeof WalletManager !== 'undefined' && WalletManager.isUnlocked && WalletManager.currentWallet;
+        const address = this.address || (walletManagerConnected ? WalletManager.currentWallet.address : null);
+
+        if (address) {
+            navigator.clipboard.writeText(address);
             const isFr = (typeof I18n !== 'undefined' && I18n.currentLang === 'fr');
             this.showNotification(
                 isFr ? '📋 Adresse copiée!' : '📋 Address copied!',
