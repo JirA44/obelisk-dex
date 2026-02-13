@@ -1,11 +1,10 @@
 // ═══════════════════════════════════════════════════════════════════════════════
-// OBELISK - DEX EXECUTOR V2.0 - MULTI-AGGREGATOR + NATIVE SL/TP
-// Real execution on GMX Perpetuals + DEX Spot (OpenOcean + 1inch aggregators)
+// OBELISK - DEX EXECUTOR V1.5 - MULTI-MARKET EDITION
+// Real execution on GMX Perpetuals + DEX Spot (OpenOcean aggregator)
 // V1.4: Implemented closeGmxPosition with GMX V2 MarketDecrease orders
 // V1.5: Extended GMX V2 markets (13 coins) + getGmxPositions() method
-// V2.0: Multi-aggregator (OpenOcean + 1inch), native GMX SL/TP (orderType 5/6)
 // ═══════════════════════════════════════════════════════════════════════════════
-console.log('[DEX-EXEC] V2.0 MULTI-AGGREGATOR + NATIVE SL/TP LOADED');
+console.log('[DEX-EXEC] V1.5 MULTI-MARKET EDITION LOADED');
 
 const path = require('path');
 require('dotenv').config({ path: path.join(__dirname, '.env') });
@@ -248,60 +247,23 @@ class DexExecutor {
                 console.log(`[DEX-EXEC] Approved`);
             }
 
-            // V2.0: Get quotes from BOTH aggregators in parallel (best price wins)
-            console.log(`[DEX-EXEC] Getting quotes: OpenOcean + 1inch for ${finalAmount} ${tokenIn} -> ${tokenOut}${scaledDown ? ' (SCALED)' : ''}`);
+            // V1.3: Get quote with final (possibly scaled) amount
+            console.log(`[DEX-EXEC] Getting OpenOcean quote: ${finalAmount} ${tokenIn} -> ${tokenOut}${scaledDown ? ' (SCALED)' : ''}`);
+            const quote = await this.getOpenOceanQuote(tokenInAddress, tokenOutAddress, finalAmount.toString(), decimalsIn);
 
-            const [openOceanQuote, oneInchQuote] = await Promise.allSettled([
-                this.getOpenOceanQuote(tokenInAddress, tokenOutAddress, finalAmount.toString(), decimalsIn),
-                this.get1inchQuote(tokenInAddress, tokenOutAddress, finalAmount, decimalsIn)
-            ]);
-
-            const ooQuote = openOceanQuote.status === 'fulfilled' ? openOceanQuote.value : null;
-            const inchQuote = oneInchQuote.status === 'fulfilled' ? oneInchQuote.value : null;
-
-            // Parse output amounts for comparison
-            const ooOut = ooQuote?.outAmount ? parseFloat(ooQuote.outAmount) : 0;
-            const inchOut = inchQuote?.dstAmount ? parseFloat(inchQuote.dstAmount) : 0;
-
-            console.log(`[DEX-EXEC] OpenOcean out: ${ooOut}, 1inch out: ${inchOut}`);
-
-            // Choose the best aggregator
-            let bestRoute = null;
-            let bestName = '';
-
-            if (ooOut > 0 && ooOut >= inchOut) {
-                bestRoute = 'openocean';
-                bestName = 'OpenOcean';
-                const srcAmt = parseFloat(ooQuote.inAmount) / Math.pow(10, ooQuote.inToken?.decimals || decimalsIn);
-                const destAmt = parseFloat(ooQuote.outAmount) / Math.pow(10, ooQuote.outToken?.decimals || 18);
-                console.log(`[DEX-EXEC] Best: OpenOcean (${srcAmt.toFixed(6)} -> ${destAmt.toFixed(6)})`);
-            } else if (inchOut > 0) {
-                bestRoute = '1inch';
-                bestName = '1inch';
-                console.log(`[DEX-EXEC] Best: 1inch (out=${inchOut})`);
-            }
-
-            if (!bestRoute) {
-                console.log(`[DEX-EXEC] No route found on either aggregator, simulating`);
+            if (!quote || !quote.outAmount) {
+                console.log(`[DEX-EXEC] No OpenOcean route found, simulating`);
                 return this.simulateOrder({ tokenIn, tokenOut, amountIn, side: 'buy' }, 'SPOT');
             }
 
-            // Execute on the best route
-            if (bestRoute === 'openocean') {
-                return await this.executeOpenOceanSwap(ooQuote);
-            } else {
-                // Get full swap data from 1inch (includes tx params)
-                const swapData = await this.get1inchSwapData(tokenInAddress, tokenOutAddress, finalAmount, decimalsIn);
-                if (!swapData) {
-                    // Fallback to OpenOcean if 1inch swap data fails
-                    if (ooOut > 0) {
-                        console.log(`[DEX-EXEC] 1inch swap data failed, falling back to OpenOcean`);
-                        return await this.executeOpenOceanSwap(ooQuote);
-                    }
-                    return this.simulateOrder({ tokenIn, tokenOut, amountIn, side: 'buy' }, 'SPOT');
-                }
-                return await this.execute1inchSwap(swapData);
-            }
+            // V1.2.1: Log raw response for debugging
+            console.log(`[DEX-EXEC] Raw quote: inAmount=${quote.inAmount} inDecimals=${quote.inToken?.decimals} outAmount=${quote.outAmount}`);
+            const srcAmt = parseFloat(quote.inAmount) / Math.pow(10, quote.inToken?.decimals || decimalsIn);
+            const destAmt = parseFloat(quote.outAmount) / Math.pow(10, quote.outToken?.decimals || 18);
+            console.log(`[DEX-EXEC] Quote: ${srcAmt.toFixed(6)} ${tokenIn} -> ${destAmt.toFixed(6)} ${tokenOut}`);
+
+            // Execute via OpenOcean
+            return await this.executeOpenOceanSwap(quote);
 
         } catch (err) {
             this.stats.failed++;
@@ -381,120 +343,6 @@ class DexExecutor {
     }
 
     // ═══════════════════════════════════════════════════════════════════════════
-    // V2.0: 1INCH AGGREGATOR
-    // ═══════════════════════════════════════════════════════════════════════════
-
-    async get1inchQuote(fromToken, toToken, amount, decimals = 6) {
-        try {
-            const amountWei = BigInt(Math.floor(amount * Math.pow(10, decimals))).toString();
-            const url = `https://api.1inch.dev/swap/v6.0/${ARBITRUM_CHAIN_ID}/quote?src=${fromToken}&dst=${toToken}&amount=${amountWei}`;
-            console.log(`[DEX-EXEC] 1inch quote request...`);
-
-            const headers = { 'Accept': 'application/json' };
-            // Use API key if available
-            if (process.env.ONEINCH_API_KEY) {
-                headers['Authorization'] = `Bearer ${process.env.ONEINCH_API_KEY}`;
-            }
-
-            const res = await fetch(url, { headers });
-            if (!res.ok) {
-                console.log(`[DEX-EXEC] 1inch status: ${res.status}`);
-                return null;
-            }
-            const data = await res.json();
-            if (!data.dstAmount) {
-                console.log(`[DEX-EXEC] 1inch error: no dstAmount`);
-                return null;
-            }
-            return data;
-        } catch (e) {
-            console.log('[DEX-EXEC] 1inch quote error:', e.message);
-            return null;
-        }
-    }
-
-    async get1inchSwapData(fromToken, toToken, amount, decimals = 6) {
-        try {
-            const amountWei = BigInt(Math.floor(amount * Math.pow(10, decimals))).toString();
-            const url = `https://api.1inch.dev/swap/v6.0/${ARBITRUM_CHAIN_ID}/swap?src=${fromToken}&dst=${toToken}&amount=${amountWei}&from=${this.wallet.address}&slippage=1&disableEstimate=true`;
-
-            const headers = { 'Accept': 'application/json' };
-            if (process.env.ONEINCH_API_KEY) {
-                headers['Authorization'] = `Bearer ${process.env.ONEINCH_API_KEY}`;
-            }
-
-            const res = await fetch(url, { headers });
-            if (!res.ok) {
-                console.log(`[DEX-EXEC] 1inch swap data status: ${res.status}`);
-                return null;
-            }
-            return await res.json();
-        } catch (e) {
-            console.log('[DEX-EXEC] 1inch swap data error:', e.message);
-            return null;
-        }
-    }
-
-    async execute1inchSwap(swapData) {
-        try {
-            if (!swapData || !swapData.tx) {
-                throw new Error('No transaction data from 1inch');
-            }
-
-            console.log(`[DEX-EXEC] Executing 1inch swap...`);
-
-            // Approve 1inch router if needed
-            const fromTokenAddr = swapData.tx.to === ONEINCH_ROUTER ? swapData.srcToken?.address : null;
-            if (fromTokenAddr && fromTokenAddr !== '0xEeeeeEeeeEeEeeEeEeEeeEEEeeeeEeeeeeeeEEeE') {
-                const tokenContract = new ethers.Contract(fromTokenAddr, ERC20_ABI, this.wallet);
-                const allowance = await tokenContract.allowance(this.wallet.address, ONEINCH_ROUTER);
-                const amountBn = BigInt(swapData.tx.value || swapData.fromAmount || '0');
-                if (allowance < amountBn) {
-                    console.log(`[DEX-EXEC] Approving token for 1inch...`);
-                    const approveTx = await tokenContract.approve(ONEINCH_ROUTER, ethers.MaxUint256);
-                    await approveTx.wait();
-                }
-            }
-
-            const tx = await this.wallet.sendTransaction({
-                to: swapData.tx.to,
-                data: swapData.tx.data,
-                value: swapData.tx.value || 0,
-                gasLimit: Math.min(parseInt(swapData.tx.gas || 500000) * 1.5, 2000000),
-            });
-
-            console.log(`[DEX-EXEC] 1inch tx: ${tx.hash}`);
-            const receipt = await tx.wait();
-
-            this.stats.filled++;
-            const srcAmount = parseFloat(swapData.fromAmount || swapData.srcAmount) / Math.pow(10, swapData.srcToken?.decimals || 6);
-            const destAmount = parseFloat(swapData.dstAmount || swapData.toAmount) / Math.pow(10, swapData.dstToken?.decimals || 18);
-            this.stats.volume += srcAmount;
-
-            console.log(`[DEX-EXEC] REAL TRADE via 1inch: ${srcAmount.toFixed(4)} -> ${destAmount.toFixed(4)}`);
-
-            return {
-                success: true,
-                order: {
-                    id: tx.hash,
-                    executionPrice: destAmount / srcAmount,
-                    quantity: srcAmount,
-                    amountOut: destAmount,
-                    status: 'filled',
-                    filledAt: Date.now(),
-                    gasUsed: receipt.gasUsed.toString(),
-                },
-                simulated: false,
-                route: '1INCH_ARBITRUM',
-                fee: parseFloat(receipt.gasUsed) * 0.0001
-            };
-        } catch (err) {
-            console.error('[DEX-EXEC] 1inch execution error:', err.message);
-            throw err;
-        }
-    }
-
-    // ═══════════════════════════════════════════════════════════════════════════
     // GMX PERPETUALS
     // ═══════════════════════════════════════════════════════════════════════════
 
@@ -506,7 +354,7 @@ class DexExecutor {
         }
 
         try {
-            const { coin, side, size, leverage = 2, tp = 0, sl = 0 } = order;
+            const { coin, side, size, leverage = 2 } = order;
             const isLong = side.toLowerCase() === 'buy' || side.toLowerCase() === 'long';
 
             // V1.5: Get market address from GMX_MARKETS (supports 13 coins)
@@ -596,17 +444,6 @@ class DexExecutor {
             this.stats.filled++;
             this.stats.volume += size;
 
-            // V2.0: Set native SL/TP conditional orders if provided
-            let slResult = null, tpResult = null;
-            if (sl > 0) {
-                slResult = await this.setGmxStopLoss(coin, isLong, size, sl);
-                console.log(`[DEX-EXEC] SL ${slResult.success ? 'SET' : 'FAILED'}: $${sl}`);
-            }
-            if (tp > 0) {
-                tpResult = await this.setGmxTakeProfit(coin, isLong, size, tp);
-                console.log(`[DEX-EXEC] TP ${tpResult.success ? 'SET' : 'FAILED'}: $${tp}`);
-            }
-
             return {
                 success: true,
                 order: {
@@ -617,10 +454,6 @@ class DexExecutor {
                     leverage,
                     executionPrice: price,
                     collateral: collateralUsd,
-                    tp: tp || null,
-                    sl: sl || null,
-                    tpSet: tpResult?.success || false,
-                    slSet: slResult?.success || false,
                     status: 'submitted', // GMX orders are executed by keepers
                     filledAt: Date.now(),
                     gasUsed: receipt.gasUsed.toString(),
@@ -742,151 +575,6 @@ class DexExecutor {
             this.stats.failed++;
             console.error('[DEX-EXEC] GMX close error:', err.message);
             return this.simulateOrder(order, 'GMX_CLOSE');
-        }
-    }
-
-    // ═══════════════════════════════════════════════════════════════════════════
-    // V2.0: GMX NATIVE SL/TP (On-chain conditional orders)
-    // orderType 5 = StopLossDecrease, orderType 6 = TakeProfitDecrease
-    // ═══════════════════════════════════════════════════════════════════════════
-
-    async setGmxStopLoss(coin, isLong, size, slPrice) {
-        if (!this.initialized) {
-            console.log(`[DEX-EXEC] Not initialized, skipping SL`);
-            return { success: false, error: 'Not initialized' };
-        }
-
-        try {
-            const market = GMX_MARKETS[coin.toUpperCase()];
-            if (!market) {
-                return { success: false, error: `No GMX market for ${coin}` };
-            }
-
-            console.log(`[DEX-EXEC] Setting GMX SL: ${coin} ${isLong ? 'LONG' : 'SHORT'} $${size} @ $${slPrice}`);
-
-            const exchangeRouter = new ethers.Contract(
-                GMX_CONTRACTS.ExchangeRouter,
-                GMX_EXCHANGE_ROUTER_ABI,
-                this.wallet
-            );
-
-            // StopLossDecrease order (orderType 5)
-            // For LONG SL: trigger when price drops below slPrice
-            // For SHORT SL: trigger when price rises above slPrice
-            const orderParams = {
-                addresses: [
-                    market,
-                    TOKENS.USDC,
-                    ethers.ZeroAddress,
-                ],
-                numbers: [
-                    0,                                                    // initialCollateralDeltaAmount (0 = close full)
-                    ethers.parseUnits(size.toString(), 30),              // sizeDeltaUsd
-                    ethers.parseUnits(slPrice.toString(), 30),           // triggerPrice
-                    ethers.parseUnits((slPrice * (isLong ? 0.98 : 1.02)).toString(), 30), // acceptablePrice (2% slippage for SL)
-                    300000,
-                    0,
-                    0,
-                ],
-                orderType: 5,                 // StopLossDecrease
-                decreasePositionSwapType: 0,
-                isLong,
-                shouldUnwrapNativeToken: false,
-                referralCode: ethers.ZeroHash,
-            };
-
-            const executionFee = ethers.parseEther('0.001');
-
-            const tx = await exchangeRouter.createOrder(orderParams, {
-                value: executionFee,
-                gasLimit: 1000000
-            });
-
-            console.log(`[DEX-EXEC] GMX SL order tx: ${tx.hash}`);
-            const receipt = await tx.wait();
-
-            return {
-                success: true,
-                txHash: tx.hash,
-                type: 'STOP_LOSS',
-                coin,
-                triggerPrice: slPrice,
-                gasUsed: receipt.gasUsed.toString()
-            };
-
-        } catch (err) {
-            console.error('[DEX-EXEC] GMX SL error:', err.message);
-            return { success: false, error: err.message };
-        }
-    }
-
-    async setGmxTakeProfit(coin, isLong, size, tpPrice) {
-        if (!this.initialized) {
-            console.log(`[DEX-EXEC] Not initialized, skipping TP`);
-            return { success: false, error: 'Not initialized' };
-        }
-
-        try {
-            const market = GMX_MARKETS[coin.toUpperCase()];
-            if (!market) {
-                return { success: false, error: `No GMX market for ${coin}` };
-            }
-
-            console.log(`[DEX-EXEC] Setting GMX TP: ${coin} ${isLong ? 'LONG' : 'SHORT'} $${size} @ $${tpPrice}`);
-
-            const exchangeRouter = new ethers.Contract(
-                GMX_CONTRACTS.ExchangeRouter,
-                GMX_EXCHANGE_ROUTER_ABI,
-                this.wallet
-            );
-
-            // TakeProfitDecrease order (orderType 6)
-            // For LONG TP: trigger when price rises above tpPrice
-            // For SHORT TP: trigger when price drops below tpPrice
-            const orderParams = {
-                addresses: [
-                    market,
-                    TOKENS.USDC,
-                    ethers.ZeroAddress,
-                ],
-                numbers: [
-                    0,                                                    // initialCollateralDeltaAmount
-                    ethers.parseUnits(size.toString(), 30),              // sizeDeltaUsd
-                    ethers.parseUnits(tpPrice.toString(), 30),           // triggerPrice
-                    ethers.parseUnits((tpPrice * (isLong ? 0.99 : 1.01)).toString(), 30), // acceptablePrice (1% slippage)
-                    300000,
-                    0,
-                    0,
-                ],
-                orderType: 6,                 // TakeProfitDecrease
-                decreasePositionSwapType: 0,
-                isLong,
-                shouldUnwrapNativeToken: false,
-                referralCode: ethers.ZeroHash,
-            };
-
-            const executionFee = ethers.parseEther('0.001');
-
-            const tx = await exchangeRouter.createOrder(orderParams, {
-                value: executionFee,
-                gasLimit: 1000000
-            });
-
-            console.log(`[DEX-EXEC] GMX TP order tx: ${tx.hash}`);
-            const receipt = await tx.wait();
-
-            return {
-                success: true,
-                txHash: tx.hash,
-                type: 'TAKE_PROFIT',
-                coin,
-                triggerPrice: tpPrice,
-                gasUsed: receipt.gasUsed.toString()
-            };
-
-        } catch (err) {
-            console.error('[DEX-EXEC] GMX TP error:', err.message);
-            return { success: false, error: err.message };
         }
     }
 

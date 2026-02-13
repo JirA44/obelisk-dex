@@ -11,12 +11,12 @@ const path = require('path');
 
 // Use fixed JWT_SECRET from .env (CRITICAL for session persistence)
 const JWT_SECRET = process.env.JWT_SECRET;
-if (!JWT_SECRET || JWT_SECRET === 'CHANGE_ME_GENERATE_NEW_SECRET') {
-  console.error('CRITICAL: JWT_SECRET not set in .env - server cannot start safely!');
-  console.error('   Generate one with: node -e "console.log(require(\'crypto\').randomBytes(64).toString(\'hex\'))"');
-  process.exit(1);
+if (!JWT_SECRET) {
+  console.error('❌ CRITICAL: JWT_SECRET not set in .env - sessions will break on restart!');
+  console.error('   Add this to your .env file:');
+  console.error(`   JWT_SECRET=${crypto.randomBytes(64).toString('hex')}`);
 }
-const JWT_EXPIRES = '24h'; // Reduced from 7d for security
+const JWT_EXPIRES = '7d';
 
 // ===========================================
 // SQLite Persistence for API Keys & Sessions
@@ -88,7 +88,7 @@ function generateToken(user) {
       wallet: user.wallet_address,
       role: user.role || 'user'
     },
-    JWT_SECRET,
+    JWT_SECRET || 'fallback-insecure-key',
     { expiresIn: JWT_EXPIRES }
   );
 }
@@ -98,7 +98,7 @@ function generateToken(user) {
  */
 function verifyToken(token) {
   try {
-    return jwt.verify(token, JWT_SECRET);
+    return jwt.verify(token, JWT_SECRET || 'fallback-insecure-key');
   } catch (err) {
     return null;
   }
@@ -200,27 +200,18 @@ function listApiKeys() {
 
 /**
  * Middleware: Authenticate user via JWT
- * Checks: 1) HttpOnly cookie, 2) Authorization header (backward compat)
  */
 function authenticateUser(req, res, next) {
-  // Try HttpOnly cookie first (preferred)
-  let token = req.cookies?.auth_token;
+  const authHeader = req.headers.authorization;
 
-  // Fallback to Authorization header
-  if (!token) {
-    const authHeader = req.headers.authorization;
-    if (authHeader && authHeader.startsWith('Bearer ')) {
-      token = authHeader.slice(7);
-    }
-  }
-
-  if (!token) {
+  if (!authHeader || !authHeader.startsWith('Bearer ')) {
     return res.status(401).json({
       error: 'Authentication required',
       code: 'UNAUTHORIZED'
     });
   }
 
+  const token = authHeader.slice(7);
   const decoded = verifyToken(token);
 
   if (!decoded) {
@@ -266,15 +257,10 @@ function authenticateBot(req, res, next) {
  * Middleware: Optional auth (user or bot, or anonymous)
  */
 function optionalAuth(req, res, next) {
-  // Try HttpOnly cookie first
-  const cookieToken = req.cookies?.auth_token;
   const authHeader = req.headers.authorization;
   const apiKey = req.headers['x-api-key'];
 
-  if (cookieToken) {
-    const decoded = verifyToken(cookieToken);
-    if (decoded) req.user = decoded;
-  } else if (authHeader?.startsWith('Bearer ')) {
+  if (authHeader?.startsWith('Bearer ')) {
     const decoded = verifyToken(authHeader.slice(7));
     if (decoded) req.user = decoded;
   } else if (apiKey) {

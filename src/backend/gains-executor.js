@@ -1,11 +1,10 @@
 // ===============================================================================
-// OBELISK - GAINS NETWORK EXECUTOR V2.1
+// OBELISK - GAINS NETWORK EXECUTOR V2.0
 // Real perpetual trading on gTrade (Arbitrum) - Crypto, Forex, Stocks
 // Up to 150x leverage on crypto, 1000x on forex
-// V2.1: Auto SL/TP on-chain after position open
 // Using official @gainsnetwork/sdk
 // ===============================================================================
-console.log('[GAINS-EXEC] V2.1 LOADED (Auto SL/TP)');
+console.log('[GAINS-EXEC] V2.0 LOADED (Official SDK)');
 
 const path = require('path');
 require('dotenv').config({ path: path.join(__dirname, '.env') });
@@ -537,55 +536,12 @@ class GainsExecutor {
             this.stats.filled++;
             this.stats.volume += positionSizeUsd;
 
-            // V2.1: Extract tradeIndex from receipt events for SL/TP updates
-            let tradeIndex = null;
-            try {
-                // Parse logs to find the trade index assigned by the contract
-                for (const log of receipt.logs) {
-                    // TradeOpened event or similar - tradeIndex is typically in topics/data
-                    if (log.topics && log.topics.length >= 3) {
-                        // The trade index is often the second indexed param
-                        const possibleIndex = parseInt(log.topics[2], 16);
-                        if (!isNaN(possibleIndex) && possibleIndex < 1000) {
-                            tradeIndex = possibleIndex;
-                            break;
-                        }
-                    }
-                }
-                if (tradeIndex === null) {
-                    // Fallback: query current trades to find the latest
-                    const positions = await this.getPositions();
-                    if (positions.success && positions.positions.length > 0) {
-                        const lastTrade = positions.positions[positions.positions.length - 1];
-                        tradeIndex = lastTrade.index;
-                    }
-                }
-            } catch (parseErr) {
-                console.log(`[GAINS-EXEC] Could not extract tradeIndex: ${parseErr.message}`);
-            }
-
-            // V2.1: Auto-set TP/SL on-chain if provided and we have tradeIndex
-            let tpResult = null, slResult = null;
-            if (tradeIndex !== null) {
-                if (tp > 0) {
-                    tpResult = await this.updateTakeProfit(tradeIndex, tp);
-                    console.log(`[GAINS-EXEC] Auto TP ${tpResult.success ? 'SET' : 'FAILED'}: $${tp} (index=${tradeIndex})`);
-                }
-                if (sl > 0) {
-                    slResult = await this.updateStopLoss(tradeIndex, sl);
-                    console.log(`[GAINS-EXEC] Auto SL ${slResult.success ? 'SET' : 'FAILED'}: $${sl} (index=${tradeIndex})`);
-                }
-            } else if (tp > 0 || sl > 0) {
-                console.log(`[GAINS-EXEC] Warning: TP/SL requested but tradeIndex unknown - TP/SL set in openTrade struct`);
-            }
-
             // Save trade locally
             const trade = {
                 id: `GAINS_${Date.now()}`,
                 txHash: receipt.hash,
                 coin,
                 pairIndex,
-                tradeIndex,
                 side: isLong ? 'LONG' : 'SHORT',
                 size: positionSizeUsd,
                 leverage: clampedLev,
@@ -593,8 +549,6 @@ class GainsExecutor {
                 entryPrice: price,
                 tp,
                 sl,
-                tpSet: tpResult?.success || (tp > 0), // TP was in the struct at minimum
-                slSet: slResult?.success || (sl > 0),
                 openedAt: Date.now(),
                 status: 'open'
             };
@@ -610,7 +564,6 @@ class GainsExecutor {
                     id: trade.id,
                     txHash: receipt.hash,
                     coin,
-                    tradeIndex,
                     side: trade.side,
                     size: positionSizeUsd,
                     leverage: clampedLev,
@@ -618,8 +571,6 @@ class GainsExecutor {
                     executionPrice: price,
                     tp,
                     sl,
-                    tpSet: trade.tpSet,
-                    slSet: trade.slSet,
                     status: 'open',
                     filledAt: Date.now(),
                     gasUsed: receipt.gasUsed.toString(),
@@ -1022,5 +973,5 @@ module.exports = {
     COLLATERAL_INDEX,
     SDK_ADDRESSES,
     GainsSDK,
-    VERSION: '2.1.0'
+    VERSION: '2.0.0'
 };

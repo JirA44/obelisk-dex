@@ -146,38 +146,6 @@ const parameterPollutionProtection = (req, res, next) => {
   next();
 };
 
-// CSRF Protection middleware
-// Validates that state-changing requests include a matching CSRF token
-const csrfProtection = (req, res, next) => {
-  // Skip for safe methods
-  if (['GET', 'HEAD', 'OPTIONS'].includes(req.method)) {
-    return next();
-  }
-
-  // Skip for API key auth (bots don't use cookies)
-  if (req.headers['x-api-key'] || req.headers['x-bot-token']) {
-    return next();
-  }
-
-  // Skip if no auth cookie (no session to protect)
-  if (!req.cookies?.auth_token) {
-    return next();
-  }
-
-  const csrfCookie = req.cookies?.csrf_token;
-  const csrfHeader = req.headers['x-csrf-token'];
-
-  if (!csrfCookie || !csrfHeader || csrfCookie !== csrfHeader) {
-    return res.status(403).json({
-      error: 'CSRF validation failed',
-      code: 'CSRF_INVALID',
-      hint: 'Fetch a CSRF token from GET /api/auth/csrf-token first'
-    });
-  }
-
-  next();
-};
-
 // IP whitelist for admin routes
 const adminWhitelist = new Set([
   '127.0.0.1',
@@ -199,7 +167,6 @@ module.exports = {
   securityHeaders,
   corsOptions,
   adminOnly,
-  csrfProtection,
   noSqlInjectionProtection,
   parameterPollutionProtection,
 };

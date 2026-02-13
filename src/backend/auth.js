@@ -1,14 +1,11 @@
 /**
  * OBELISK Authentication Module
  * Sign-In With Ethereum (SIWE) style authentication
- * With multi-wallet support and security monitoring
  */
 
 const crypto = require('crypto');
 const { ethers } = require('ethers');
 const db = require('./database');
-const { securityMonitor, EVENT_TYPES, SEVERITY } = require('./security-monitor');
-const { twoFactorAuth } = require('./twofa');
 
 class AuthSystem {
     constructor() {
@@ -76,16 +73,12 @@ This signature does not trigger any blockchain transaction or cost any gas fees.
      * Step 2: Verify signature and create session
      * Client signs the message and sends signature back
      */
-    async verifySignature(walletAddress, signature, nonce, ip = null) {
+    async verifySignature(walletAddress, signature, nonce) {
         const address = walletAddress.toLowerCase();
 
         // Check pending auth exists
         const pending = this.pendingAuth.get(nonce);
         if (!pending) {
-            securityMonitor.logEvent(EVENT_TYPES.INVALID_NONCE, {
-                ip, wallet: address, severity: SEVERITY.MEDIUM,
-                details: { reason: 'Nonce expired or not found' }
-            });
             throw new Error('Nonce expired or invalid');
         }
 
@@ -93,29 +86,17 @@ This signature does not trigger any blockchain transaction or cost any gas fees.
         this.pendingAuth.delete(nonce);
 
         if (pending.walletAddress !== address) {
-            securityMonitor.logEvent(EVENT_TYPES.INVALID_SIGNATURE, {
-                ip, wallet: address, severity: SEVERITY.HIGH,
-                details: { reason: 'Wallet address mismatch', expected: pending.walletAddress }
-            });
             throw new Error('Wallet address mismatch');
         }
 
         // Check nonce not too old (5 min max)
         if (Date.now() - pending.timestamp > 5 * 60 * 1000) {
-            securityMonitor.logEvent(EVENT_TYPES.INVALID_NONCE, {
-                ip, wallet: address, severity: SEVERITY.LOW,
-                details: { reason: 'Nonce expired', age: Date.now() - pending.timestamp }
-            });
             throw new Error('Nonce expired');
         }
 
         // Get user and verify nonce matches
         const user = db.getUserByWallet(address);
         if (!user || user.nonce !== nonce) {
-            securityMonitor.logEvent(EVENT_TYPES.INVALID_NONCE, {
-                ip, wallet: address, severity: SEVERITY.MEDIUM,
-                details: { reason: 'Nonce mismatch in DB' }
-            });
             throw new Error('Invalid nonce');
         }
 
@@ -129,17 +110,9 @@ This signature does not trigger any blockchain transaction or cost any gas fees.
             const recoveredAddress = ethers.verifyMessage(message, signature);
 
             if (recoveredAddress.toLowerCase() !== address) {
-                securityMonitor.logEvent(EVENT_TYPES.INVALID_SIGNATURE, {
-                    ip, wallet: address, userId: user.id, severity: SEVERITY.HIGH,
-                    details: { reason: 'Recovered address mismatch', recovered: recoveredAddress.toLowerCase() }
-                });
                 throw new Error('Signature verification failed');
             }
         } catch (e) {
-            securityMonitor.logEvent(EVENT_TYPES.INVALID_SIGNATURE, {
-                ip, wallet: address, severity: SEVERITY.HIGH,
-                details: { reason: 'Signature verification error', error: e.message }
-            });
             throw new Error('Invalid signature: ' + e.message);
         }
 
@@ -149,19 +122,14 @@ This signature does not trigger any blockchain transaction or cost any gas fees.
         // Create session token
         const sessionToken = db.createSession(user.id);
 
-        // Check if 2FA is enabled
-        const has2FA = twoFactorAuth.isEnabled(user.id);
-
         return {
             success: true,
             token: sessionToken,
-            requires2FA: has2FA,
             user: {
                 id: user.id,
                 wallet: user.wallet_address,
                 creditScore: user.credit_score,
-                isVerified: user.is_verified === 1,
-                has2FA
+                isVerified: user.is_verified === 1
             }
         };
     }
@@ -225,174 +193,6 @@ This signature does not trigger any blockchain transaction or cost any gas fees.
 
         req.user = session;
         next();
-    }
-
-    // ==================== MULTI-WALLET SUPPORT ====================
-
-    /**
-     * Link a new wallet to user account (requires SIWE verification)
-     */
-    async linkWallet(userId, walletAddress, signature, nonce, ip = null, label = null) {
-        const address = walletAddress.toLowerCase();
-
-        // Verify the signature for the new wallet
-        const pending = this.pendingAuth.get(nonce);
-        if (!pending || pending.walletAddress !== address) {
-            securityMonitor.logEvent(EVENT_TYPES.INVALID_SIGNATURE, {
-                ip, wallet: address, userId, severity: SEVERITY.HIGH,
-                details: { action: 'link_wallet', reason: 'Invalid nonce' }
-            });
-            throw new Error('Invalid nonce or wallet mismatch');
-        }
-
-        this.pendingAuth.delete(nonce);
-
-        // Verify signature
-        try {
-            const recoveredAddress = ethers.verifyMessage(pending.message, signature);
-            if (recoveredAddress.toLowerCase() !== address) {
-                securityMonitor.logEvent(EVENT_TYPES.INVALID_SIGNATURE, {
-                    ip, wallet: address, userId, severity: SEVERITY.HIGH,
-                    details: { action: 'link_wallet', reason: 'Signature mismatch' }
-                });
-                throw new Error('Signature verification failed');
-            }
-        } catch (e) {
-            throw new Error('Invalid signature: ' + e.message);
-        }
-
-        // Check if wallet is already linked to another user
-        const existingUser = db.getUserByWallet(address);
-        if (existingUser && existingUser.id !== userId) {
-            throw new Error('Wallet already linked to another account');
-        }
-
-        // Link the wallet
-        const success = db.linkWallet(userId, address, label, false);
-        if (!success) {
-            throw new Error('Wallet already linked to this account');
-        }
-
-        // Audit log
-        db.logWalletAudit(userId, address, 'linked', ip);
-
-        return { success: true, wallet: address, label };
-    }
-
-    /**
-     * Add a watch-only wallet (no signature required - just reading blockchain)
-     */
-    addWatchOnlyWallet(userId, walletAddress, label = null, ip = null) {
-        const address = walletAddress.toLowerCase();
-
-        if (!ethers.isAddress(address)) {
-            throw new Error('Invalid wallet address');
-        }
-
-        const success = db.linkWallet(userId, address, label || 'Watch Only', true);
-        if (!success) {
-            throw new Error('Wallet already linked');
-        }
-
-        // Audit log
-        db.logWalletAudit(userId, address, 'added_watch_only', ip);
-
-        return { success: true, wallet: address, isWatchOnly: true };
-    }
-
-    /**
-     * Unlink a wallet from user account
-     */
-    unlinkWallet(userId, walletAddress, ip = null) {
-        const address = walletAddress.toLowerCase();
-
-        // Check it's not the primary user wallet
-        const user = db.getUserById(userId);
-        if (user && user.wallet_address === address) {
-            throw new Error('Cannot unlink primary account wallet');
-        }
-
-        const success = db.unlinkWallet(userId, address);
-        if (!success) {
-            throw new Error('Wallet not found or already unlinked');
-        }
-
-        // Audit log
-        db.logWalletAudit(userId, address, 'unlinked', ip);
-
-        return { success: true, wallet: address };
-    }
-
-    /**
-     * Get all wallets linked to a user
-     */
-    getLinkedWallets(userId) {
-        const wallets = db.getLinkedWallets(userId);
-        const user = db.getUserById(userId);
-
-        // Add the main user wallet if not in linked_wallets
-        const mainWallet = user?.wallet_address;
-        const hasMain = wallets.some(w => w.wallet_address === mainWallet);
-
-        if (mainWallet && !hasMain) {
-            wallets.unshift({
-                wallet_address: mainWallet,
-                label: 'Primary',
-                is_primary: 1,
-                is_watch_only: 0,
-                linked_at: user.created_at
-            });
-        }
-
-        return wallets.map(w => ({
-            address: w.wallet_address,
-            label: w.label,
-            isPrimary: w.is_primary === 1,
-            isWatchOnly: w.is_watch_only === 1,
-            balanceSnapshot: w.balance_snapshot ? JSON.parse(w.balance_snapshot) : null,
-            lastActivity: w.last_activity,
-            linkedAt: w.linked_at
-        }));
-    }
-
-    /**
-     * Set primary wallet for trading
-     */
-    setPrimaryWallet(userId, walletAddress, ip = null) {
-        const address = walletAddress.toLowerCase();
-
-        // Check wallet is linked and not watch-only
-        const wallets = db.getLinkedWallets(userId);
-        const wallet = wallets.find(w => w.wallet_address === address);
-
-        if (!wallet) {
-            // Check if it's the main user wallet
-            const user = db.getUserById(userId);
-            if (user?.wallet_address !== address) {
-                throw new Error('Wallet not linked to this account');
-            }
-        } else if (wallet.is_watch_only) {
-            throw new Error('Cannot set watch-only wallet as primary');
-        }
-
-        db.setPrimaryWallet(userId, address);
-        db.logWalletAudit(userId, address, 'set_primary', ip);
-
-        return { success: true, primaryWallet: address };
-    }
-
-    /**
-     * Update wallet balance snapshot (for watch-only wallets)
-     */
-    updateWalletSnapshot(userId, walletAddress, balanceSnapshot) {
-        db.updateWalletSnapshot(userId, walletAddress, balanceSnapshot);
-    }
-
-    /**
-     * Get wallet audit log
-     */
-    getWalletAuditLog(userId, limit = 50) {
-        return db.getWalletAuditLog(userId, limit);
     }
 }
 
@@ -473,9 +273,5 @@ setInterval(() => {
 module.exports = {
     auth,
     rateLimiters,
-    RateLimiter,
-    securityMonitor,
-    twoFactorAuth,
-    EVENT_TYPES,
-    SEVERITY
+    RateLimiter
 };

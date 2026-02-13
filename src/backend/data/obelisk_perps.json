@@ -1,49 +1,95 @@
 {
   "positions": [
     [
-      "venue_mixbot_OP",
+      "MIXBOT_CRV",
       {
-        "id": "PERP_1770937235194_ko7k4x",
-        "userId": "venue_mixbot",
-        "coin": "OP",
-        "side": "sell",
-        "size": 5,
-        "margin": 2.5,
+        "id": "PERP_1769368045656_70flyz",
+        "userId": "MIXBOT",
+        "coin": "CRV",
+        "side": "long",
+        "size": 18.4181725,
+        "margin": 9.20908625,
         "leverage": 2,
-        "entryPrice": 0.1823,
-        "liquidationPrice": 0.264335,
+        "entryPrice": 0.3412,
+        "liquidationPrice": 0.18766000000000002,
         "tp": null,
         "sl": null,
         "venue": "PAPER",
         "txHash": null,
-        "source": "mixbot",
-        "openedAt": 1770937235194,
-        "lastFundingTime": 1770937235194,
+        "source": "api",
+        "openedAt": 1769368045656,
+        "lastFundingTime": 1769368045656,
         "accumulatedFunding": 0,
-        "realizedPnl": -0.0025
+        "realizedPnl": -0.00920908625
+      }
+    ],
+    [
+      "MIXBOT_AAVE",
+      {
+        "id": "PERP_1769372186683_18k331",
+        "userId": "MIXBOT",
+        "coin": "AAVE",
+        "side": "long",
+        "size": 15.13,
+        "margin": 7.565,
+        "leverage": 2,
+        "entryPrice": 146.57,
+        "liquidationPrice": 80.6135,
+        "tp": null,
+        "sl": null,
+        "venue": "PAPER",
+        "txHash": null,
+        "source": "api",
+        "openedAt": 1769372186683,
+        "lastFundingTime": 1769372186683,
+        "accumulatedFunding": 0,
+        "realizedPnl": -0.0075650000000000005
+      }
+    ],
+    [
+      "MIXBOT_UNI",
+      {
+        "id": "PERP_1769372606672_5wt1qi",
+        "userId": "MIXBOT",
+        "coin": "UNI",
+        "side": "long",
+        "size": 15.04,
+        "margin": 7.52,
+        "leverage": 2,
+        "entryPrice": 4.604,
+        "liquidationPrice": 2.5322000000000005,
+        "tp": null,
+        "sl": null,
+        "venue": "PAPER",
+        "txHash": null,
+        "source": "api",
+        "openedAt": 1769372606672,
+        "lastFundingTime": 1769372606672,
+        "accumulatedFunding": 0,
+        "realizedPnl": -0.00752
       }
     ]
   ],
   "tpslOrders": [],
   "liquidityPool": {
-    "USDC": 100101.737678276,
-    "totalLongs": 1.2434497875801753e-14,
-    "totalShorts": 5,
-    "openInterest": 5.000000000000041
+    "USDC": 100103.0350701981,
+    "totalLongs": 48.58817250000001,
+    "totalShorts": 0,
+    "openInterest": 48.58817250000004
   },
   "stats": {
-    "totalTrades": 102,
-    "totalVolume": 894.391726867599,
+    "totalTrades": 94,
+    "totalVolume": 881.391726867599,
     "totalLiquidations": 1,
-    "feesCollected": 1.1270584454489003,
+    "feesCollected": 1.0922643591989003,
     "fundingCollected": 3.9949376514833306,
-    "pnlPaid": -78.77532183622387,
+    "pnlPaid": -80.07271375831955,
     "byVenue": {
-      "PAPER": 41,
+      "PAPER": 38,
       "GMX": 0,
       "HYPERLIQUID": 0
     }
   },
-  "lastFundingTime": 1770642393406,
-  "savedAt": "2026-02-12T23:00:35.195Z"
+  "lastFundingTime": 1769195187184,
+  "savedAt": "2026-01-26T05:07:43.977Z"
 }
