@@ -1,0 +1,301 @@
+OBELISK DEX - RAPPORT DE VERIFICATION
+Date: 13/02/2026 02:42:29
+URL: https://obelisk-dex.pages.dev
+==================================================
+
+--- Chrome [FAIL] ---
+  Tabs verifies: 16
+  Console errors: 230
+  Load time: 26072ms
+  DOM elements: 147706
+  JS Heap: 98MB
+  Issues (110):
+
+  [CRITICAL] (1)
+    - [NaN_IN_PAGE] tab:dashboard matches:$NaN
+,NaN%
+
+  [HIGH] (104)
+    - [RAW_I18N_KEY] tab:dashboard key:glossary_impermanent_loss
+    - [RAW_I18N_KEY] tab:dashboard key:glossary_impermanent_loss_desc
+    - [RAW_I18N_KEY] tab:dashboard key:glossary_tvl
+    - [RAW_I18N_KEY] tab:dashboard key:glossary_tvl_desc
+    - [RAW_I18N_KEY] tab:dashboard key:glossary_yield_farming
+    - [RAW_I18N_KEY] tab:dashboard key:glossary_yield_farming_desc
+    - [RAW_I18N_KEY] tab:trade key:glossary_impermanent_loss
+    - [RAW_I18N_KEY] tab:trade key:glossary_impermanent_loss_desc
+    - [RAW_I18N_KEY] tab:trade key:glossary_tvl
+    - [RAW_I18N_KEY] tab:trade key:glossary_tvl_desc
+    - [RAW_I18N_KEY] tab:trade key:glossary_yield_farming
+    - [RAW_I18N_KEY] tab:trade key:glossary_yield_farming_desc
+    - [RAW_I18N_KEY] tab:swap key:glossary_impermanent_loss
+    - [RAW_I18N_KEY] tab:swap key:glossary_impermanent_loss_desc
+    - [RAW_I18N_KEY] tab:swap key:glossary_tvl
+    - [RAW_I18N_KEY] tab:swap key:glossary_tvl_desc
+    - [RAW_I18N_KEY] tab:swap key:glossary_yield_farming
+    - [RAW_I18N_KEY] tab:swap key:glossary_yield_farming_desc
+    - [RAW_I18N_KEY] tab:fast-trading key:glossary_impermanent_loss
+    - [RAW_I18N_KEY] tab:fast-trading key:glossary_impermanent_loss_desc
+    - [RAW_I18N_KEY] tab:fast-trading key:glossary_tvl
+    - [RAW_I18N_KEY] tab:fast-trading key:glossary_tvl_desc
+    - [RAW_I18N_KEY] tab:fast-trading key:glossary_yield_farming
+    - [RAW_I18N_KEY] tab:fast-trading key:glossary_yield_farming_desc
+    - [RAW_I18N_KEY] tab:hft key:glossary_impermanent_loss
+    - [RAW_I18N_KEY] tab:hft key:glossary_impermanent_loss_desc
+    - [RAW_I18N_KEY] tab:hft key:glossary_tvl
+    - [RAW_I18N_KEY] tab:hft key:glossary_tvl_desc
+    - [RAW_I18N_KEY] tab:hft key:glossary_yield_farming
+    - [RAW_I18N_KEY] tab:hft key:glossary_yield_farming_desc
+    - [RAW_I18N_KEY] tab:perps key:glossary_impermanent_loss
+    - [RAW_I18N_KEY] tab:perps key:glossary_impermanent_loss_desc
+    - [RAW_I18N_KEY] tab:perps key:glossary_tvl
+    - [RAW_I18N_KEY] tab:perps key:glossary_tvl_desc
+    - [RAW_I18N_KEY] tab:perps key:glossary_yield_farming
+    - [RAW_I18N_KEY] tab:perps key:glossary_yield_farming_desc
+    - [RAW_I18N_KEY] tab:banking key:glossary_impermanent_loss
+    - [RAW_I18N_KEY] tab:banking key:glossary_impermanent_loss_desc
+    - [RAW_I18N_KEY] tab:banking key:glossary_tvl
+    - [RAW_I18N_KEY] tab:banking key:glossary_tvl_desc
+    - [RAW_I18N_KEY] tab:banking key:glossary_yield_farming
+    - [RAW_I18N_KEY] tab:banking key:glossary_yield_farming_desc
+    - [RAW_I18N_KEY] tab:wallet key:glossary_impermanent_loss
+    - [RAW_I18N_KEY] tab:wallet key:glossary_impermanent_loss_desc
+    - [RAW_I18N_KEY] tab:wallet key:glossary_tvl
+    - [RAW_I18N_KEY] tab:wallet key:glossary_tvl_desc
+    - [RAW_I18N_KEY] tab:wallet key:glossary_yield_farming
+    - [RAW_I18N_KEY] tab:wallet key:glossary_yield_farming_desc
+    - [RAW_I18N_KEY] tab:portfolio key:glossary_impermanent_loss
+    - [RAW_I18N_KEY] tab:portfolio key:glossary_impermanent_loss_desc
+    - [RAW_I18N_KEY] tab:portfolio key:glossary_tvl
+    - [RAW_I18N_KEY] tab:portfolio key:glossary_tvl_desc
+    - [RAW_I18N_KEY] tab:portfolio key:glossary_yield_farming
+    - [RAW_I18N_KEY] tab:portfolio key:glossary_yield_farming_desc
+    - [TAB_ERROR] tab:combos elementHandle.click: Timeout 5000ms exceeded.
+Call log:
+[2m  - attempting click action[22m
+[2m    - scrolling into view if needed[22m
+[2m    - done scrolling[22m
+
+    - [TAB_ERROR] tab:investments elementHandle.click: Timeout 5000ms exceeded.
+    - [RAW_I18N_KEY] tab:products key:glossary_impermanent_loss
+    - [RAW_I18N_KEY] tab:products key:glossary_impermanent_loss_desc
+    - [RAW_I18N_KEY] tab:products key:glossary_tvl
+    - [RAW_I18N_KEY] tab:products key:glossary_tvl_desc
+    - [RAW_I18N_KEY] tab:products key:glossary_yield_farming
+    - [RAW_I18N_KEY] tab:products key:glossary_yield_farming_desc
+    - [RAW_I18N_KEY] tab:bonds key:glossary_impermanent_loss
+    - [RAW_I18N_KEY] tab:bonds key:glossary_impermanent_loss_desc
+    - [RAW_I18N_KEY] tab:bonds key:glossary_tvl
+    - [RAW_I18N_KEY] tab:bonds key:glossary_tvl_desc
+    - [RAW_I18N_KEY] tab:bonds key:glossary_yield_farming
+    - [RAW_I18N_KEY] tab:bonds key:glossary_yield_farming_desc
+    - [RAW_I18N_KEY] tab:tools key:glossary_impermanent_loss
+    - [RAW_I18N_KEY] tab:tools key:glossary_impermanent_loss_desc
+    - [RAW_I18N_KEY] tab:tools key:glossary_tvl
+    - [RAW_I18N_KEY] tab:tools key:glossary_tvl_desc
+    - [RAW_I18N_KEY] tab:tools key:glossary_yield_farming
+    - [RAW_I18N_KEY] tab:tools key:glossary_yield_farming_desc
+    - [RAW_I18N_KEY] tab:bots key:glossary_impermanent_loss
+    - [RAW_I18N_KEY] tab:bots key:glossary_impermanent_loss_desc
+    - [RAW_I18N_KEY] tab:bots key:glossary_tvl
+    - [RAW_I18N_KEY] tab:bots key:glossary_tvl_desc
+    - [RAW_I18N_KEY] tab:bots key:glossary_yield_farming
+    - [RAW_I18N_KEY] tab:bots key:glossary_yield_farming_desc
+    - [RAW_I18N_KEY] tab:learn key:glossary_impermanent_loss
+    - [RAW_I18N_KEY] tab:learn key:glossary_impermanent_loss_desc
+    - [RAW_I18N_KEY] tab:learn key:glossary_tvl
+    - [RAW_I18N_KEY] tab:learn key:glossary_tvl_desc
+    - [RAW_I18N_KEY] tab:learn key:glossary_yield_farming
+    - [RAW_I18N_KEY] tab:learn key:glossary_yield_farming_desc
+    - [RAW_I18N_KEY] tab:learn key:glossary_impermanent_loss
+    - [RAW_I18N_KEY] tab:learn key:glossary_impermanent_loss_desc
+    - [RAW_I18N_KEY] tab:learn key:glossary_tvl
+    - [RAW_I18N_KEY] tab:learn key:glossary_tvl_desc
+    - [RAW_I18N_KEY] tab:learn key:glossary_yield_farming
+    - [RAW_I18N_KEY] tab:learn key:glossary_yield_farming_desc
+    - [RAW_I18N_KEY] tab:about key:glossary_impermanent_loss
+    - [RAW_I18N_KEY] tab:about key:glossary_impermanent_loss_desc
+    - [RAW_I18N_KEY] tab:about key:glossary_tvl
+    - [RAW_I18N_KEY] tab:about key:glossary_tvl_desc
+    - [RAW_I18N_KEY] tab:about key:glossary_yield_farming
+    - [RAW_I18N_KEY] tab:about key:glossary_yield_farming_desc
+    - [RAW_I18N_KEY] tab:settings key:glossary_impermanent_loss
+    - [RAW_I18N_KEY] tab:settings key:glossary_impermanent_loss_desc
+    - [RAW_I18N_KEY] tab:settings key:glossary_tvl
+    - [RAW_I18N_KEY] tab:settings key:glossary_tvl_desc
+    - [RAW_I18N_KEY] tab:settings key:glossary_yield_farming
+    - [RAW_I18N_KEY] tab:settings key:glossary_yield_farming_desc
+
+  [MEDIUM] (4)
+    - [SLOW_LOAD]
+    - [HIDDEN_ELEMENT] tab:dashboard .portfolio-summary
+    - [HIDDEN_ELEMENT] tab:dashboard .summary-card
+    - [HIDDEN_ELEMENT] tab:banking #portfolio-real-balance
+
+  [LOW] (1)
+    - [DOM_BLOAT]
+
+  Console Errors:
+    - Failed to find a valid digest in the 'integrity' attribute for resource 'https://cdnjs.cloudflare.com/ajax/libs/dompurif
+    - Invalid left-hand side in assignment
+    - Invalid or unexpected token
+    - ErrorHandler caught: {type: error, message: Uncaught SyntaxError: Identifier 'FeedbackSystem' has already been declared,
+    - [InfraSecurity] 🚨 UNKNOWN_DOMAIN: Running on untrusted domain: obelisk-dex.pages.dev
+    - Price fetch error: ReferenceError: market is not defined
+    at https://obelisk-dex.pages.dev/js/trading/realtime-prices
+    - Connecting to 'ws://localhost:3001/' violates the following Content Security Policy directive: "connect-src 'self' https
+    - Connecting to 'http://localhost:3001/api/funding' violates the following Content Security Policy directive: "connect-src
+    - Fetch API cannot load http://localhost:3001/api/funding. Refused to connect because it violates the document's Content S
+    - Connecting to 'http://localhost:3001/api/obl/info' violates the following Content Security Policy directive: "connect-sr
+    ... et 220 de plus
+
+--- Firefox [FAIL] ---
+  Tabs verifies: 16
+  Console errors: 226
+  Load time: 22463ms
+  DOM elements: 147503
+  Issues (107):
+
+  [HIGH] (104)
+    - [TAB_ERROR] tab:dashboard elementHandle.click: Timeout 5000ms exceeded.
+    - [RAW_I18N_KEY] tab:trade key:glossary_impermanent_loss
+    - [RAW_I18N_KEY] tab:trade key:glossary_impermanent_loss_desc
+    - [RAW_I18N_KEY] tab:trade key:glossary_tvl
+    - [RAW_I18N_KEY] tab:trade key:glossary_tvl_desc
+    - [RAW_I18N_KEY] tab:trade key:glossary_yield_farming
+    - [RAW_I18N_KEY] tab:trade key:glossary_yield_farming_desc
+    - [RAW_I18N_KEY] tab:swap key:glossary_impermanent_loss
+    - [RAW_I18N_KEY] tab:swap key:glossary_impermanent_loss_desc
+    - [RAW_I18N_KEY] tab:swap key:glossary_tvl
+    - [RAW_I18N_KEY] tab:swap key:glossary_tvl_desc
+    - [RAW_I18N_KEY] tab:swap key:glossary_yield_farming
+    - [RAW_I18N_KEY] tab:swap key:glossary_yield_farming_desc
+    - [RAW_I18N_KEY] tab:fast-trading key:glossary_impermanent_loss
+    - [RAW_I18N_KEY] tab:fast-trading key:glossary_impermanent_loss_desc
+    - [RAW_I18N_KEY] tab:fast-trading key:glossary_tvl
+    - [RAW_I18N_KEY] tab:fast-trading key:glossary_tvl_desc
+    - [RAW_I18N_KEY] tab:fast-trading key:glossary_yield_farming
+    - [RAW_I18N_KEY] tab:fast-trading key:glossary_yield_farming_desc
+    - [RAW_I18N_KEY] tab:hft key:glossary_impermanent_loss
+    - [RAW_I18N_KEY] tab:hft key:glossary_impermanent_loss_desc
+    - [RAW_I18N_KEY] tab:hft key:glossary_tvl
+    - [RAW_I18N_KEY] tab:hft key:glossary_tvl_desc
+    - [RAW_I18N_KEY] tab:hft key:glossary_yield_farming
+    - [RAW_I18N_KEY] tab:hft key:glossary_yield_farming_desc
+    - [RAW_I18N_KEY] tab:perps key:glossary_impermanent_loss
+    - [RAW_I18N_KEY] tab:perps key:glossary_impermanent_loss_desc
+    - [RAW_I18N_KEY] tab:perps key:glossary_tvl
+    - [RAW_I18N_KEY] tab:perps key:glossary_tvl_desc
+    - [RAW_I18N_KEY] tab:perps key:glossary_yield_farming
+    - [RAW_I18N_KEY] tab:perps key:glossary_yield_farming_desc
+    - [RAW_I18N_KEY] tab:banking key:glossary_impermanent_loss
+    - [RAW_I18N_KEY] tab:banking key:glossary_impermanent_loss_desc
+    - [RAW_I18N_KEY] tab:banking key:glossary_tvl
+    - [RAW_I18N_KEY] tab:banking key:glossary_tvl_desc
+    - [RAW_I18N_KEY] tab:banking key:glossary_yield_farming
+    - [RAW_I18N_KEY] tab:banking key:glossary_yield_farming_desc
+    - [RAW_I18N_KEY] tab:wallet key:glossary_impermanent_loss
+    - [RAW_I18N_KEY] tab:wallet key:glossary_impermanent_loss_desc
+    - [RAW_I18N_KEY] tab:wallet key:glossary_tvl
+    - [RAW_I18N_KEY] tab:wallet key:glossary_tvl_desc
+    - [RAW_I18N_KEY] tab:wallet key:glossary_yield_farming
+    - [RAW_I18N_KEY] tab:wallet key:glossary_yield_farming_desc
+    - [RAW_I18N_KEY] tab:portfolio key:glossary_impermanent_loss
+    - [RAW_I18N_KEY] tab:portfolio key:glossary_impermanent_loss_desc
+    - [RAW_I18N_KEY] tab:portfolio key:glossary_tvl
+    - [RAW_I18N_KEY] tab:portfolio key:glossary_tvl_desc
+    - [RAW_I18N_KEY] tab:portfolio key:glossary_yield_farming
+    - [RAW_I18N_KEY] tab:portfolio key:glossary_yield_farming_desc
+    - [RAW_I18N_KEY] tab:combos key:glossary_impermanent_loss
+    - [RAW_I18N_KEY] tab:combos key:glossary_impermanent_loss_desc
+    - [RAW_I18N_KEY] tab:combos key:glossary_tvl
+    - [RAW_I18N_KEY] tab:combos key:glossary_tvl_desc
+    - [RAW_I18N_KEY] tab:combos key:glossary_yield_farming
+    - [RAW_I18N_KEY] tab:combos key:glossary_yield_farming_desc
+    - [TAB_ERROR] tab:investments elementHandle.click: Timeout 5000ms exceeded.
+    - [RAW_I18N_KEY] tab:products key:glossary_impermanent_loss
+    - [RAW_I18N_KEY] tab:products key:glossary_impermanent_loss_desc
+    - [RAW_I18N_KEY] tab:products key:glossary_tvl
+    - [RAW_I18N_KEY] tab:products key:glossary_tvl_desc
+    - [RAW_I18N_KEY] tab:products key:glossary_yield_farming
+    - [RAW_I18N_KEY] tab:products key:glossary_yield_farming_desc
+    - [RAW_I18N_KEY] tab:bonds key:glossary_impermanent_loss
+    - [RAW_I18N_KEY] tab:bonds key:glossary_impermanent_loss_desc
+    - [RAW_I18N_KEY] tab:bonds key:glossary_tvl
+    - [RAW_I18N_KEY] tab:bonds key:glossary_tvl_desc
+    - [RAW_I18N_KEY] tab:bonds key:glossary_yield_farming
+    - [RAW_I18N_KEY] tab:bonds key:glossary_yield_farming_desc
+    - [RAW_I18N_KEY] tab:tools key:glossary_impermanent_loss
+    - [RAW_I18N_KEY] tab:tools key:glossary_impermanent_loss_desc
+    - [RAW_I18N_KEY] tab:tools key:glossary_tvl
+    - [RAW_I18N_KEY] tab:tools key:glossary_tvl_desc
+    - [RAW_I18N_KEY] tab:tools key:glossary_yield_farming
+    - [RAW_I18N_KEY] tab:tools key:glossary_yield_farming_desc
+    - [RAW_I18N_KEY] tab:bots key:glossary_impermanent_loss
+    - [RAW_I18N_KEY] tab:bots key:glossary_impermanent_loss_desc
+    - [RAW_I18N_KEY] tab:bots key:glossary_tvl
+    - [RAW_I18N_KEY] tab:bots key:glossary_tvl_desc
+    - [RAW_I18N_KEY] tab:bots key:glossary_yield_farming
+    - [RAW_I18N_KEY] tab:bots key:glossary_yield_farming_desc
+    - [RAW_I18N_KEY] tab:learn key:glossary_impermanent_loss
+    - [RAW_I18N_KEY] tab:learn key:glossary_impermanent_loss_desc
+    - [RAW_I18N_KEY] tab:learn key:glossary_tvl
+    - [RAW_I18N_KEY] tab:learn key:glossary_tvl_desc
+    - [RAW_I18N_KEY] tab:learn key:glossary_yield_farming
+    - [RAW_I18N_KEY] tab:learn key:glossary_yield_farming_desc
+    - [RAW_I18N_KEY] tab:learn key:glossary_impermanent_loss
+    - [RAW_I18N_KEY] tab:learn key:glossary_impermanent_loss_desc
+    - [RAW_I18N_KEY] tab:learn key:glossary_tvl
+    - [RAW_I18N_KEY] tab:learn key:glossary_tvl_desc
+    - [RAW_I18N_KEY] tab:learn key:glossary_yield_farming
+    - [RAW_I18N_KEY] tab:learn key:glossary_yield_farming_desc
+    - [RAW_I18N_KEY] tab:about key:glossary_impermanent_loss
+    - [RAW_I18N_KEY] tab:about key:glossary_impermanent_loss_desc
+    - [RAW_I18N_KEY] tab:about key:glossary_tvl
+    - [RAW_I18N_KEY] tab:about key:glossary_tvl_desc
+    - [RAW_I18N_KEY] tab:about key:glossary_yield_farming
+    - [RAW_I18N_KEY] tab:about key:glossary_yield_farming_desc
+    - [RAW_I18N_KEY] tab:settings key:glossary_impermanent_loss
+    - [RAW_I18N_KEY] tab:settings key:glossary_impermanent_loss_desc
+    - [RAW_I18N_KEY] tab:settings key:glossary_tvl
+    - [RAW_I18N_KEY] tab:settings key:glossary_tvl_desc
+    - [RAW_I18N_KEY] tab:settings key:glossary_yield_farming
+    - [RAW_I18N_KEY] tab:settings key:glossary_yield_farming_desc
+
+  [MEDIUM] (2)
+    - [SLOW_LOAD]
+    - [HIDDEN_ELEMENT] tab:banking #portfolio-real-balance
+
+  [LOW] (1)
+    - [DOM_BLOAT]
+
+  Console Errors:
+    - [JavaScript Error: "None of the “sha512” hashes in the integrity attribute match the content of the subresource at “http
+    - invalid assignment left-hand side
+    - ErrorHandler caught: JSHandle@object
+    - invalid escape sequence
+    - [InfraSecurity] 🚨 UNKNOWN_DOMAIN: Running on untrusted domain: obelisk-dex.pages.dev
+    - Price fetch error: Error
+    - [Perps] WebSocket error: JSHandle@object
+    - [AppKit] Initialization failed: Error
+    - [JavaScript Error: "The resource from “https://unpkg.com/@web3modal/standalone@2.4.3/dist/index.umd.js” was blocked due 
+    - [JavaScript Error: "Content-Security-Policy: The page’s settings blocked the loading of a resource (connect-src) at ws:/
+    ... et 216 de plus
+
+--- WebKit [FAIL] ---
+  Tabs verifies: 0
+  Console errors: 0
+  Issues (1):
+
+  [CRITICAL] (1)
+    - [FATAL_ERROR] page.screenshot: Timeout 30000ms exceeded.
+Call log:
+[2m  - taking page screenshot[22m
+[2m  - waiting for fonts to load...[22m
+[2m  - fonts loaded[22m
+
+
+==================================================
+RESULTAT: ECHECS DETECTES
+Total issues: 218 (2 critiques)
+Browsers: Chrome:FAIL, Firefox:FAIL, WebKit:FAIL

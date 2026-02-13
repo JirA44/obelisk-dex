@@ -1,0 +1,59 @@
+# OBELISK Cloudflare Workers Configuration
+# https://developers.cloudflare.com/workers/wrangler/configuration/
+
+name = "obelisk-api"
+main = "obelisk-backend/worker.js"
+compatibility_date = "2024-01-01"
+
+# Account ID (from Cloudflare dashboard)
+# account_id = "your-account-id"
+
+# Environment variables
+[vars]
+NODE_ENV = "production"
+
+# Secrets (set via: wrangler secret put SECRET_NAME)
+# ADMIN_API_KEY
+# FIREBASE_PROJECT_ID
+# SENTRY_DSN
+
+# Routes
+# routes = [
+#   { pattern = "api.obelisk.io/*", zone_name = "obelisk.io" }
+# ]
+
+# Custom domain
+# [env.production]
+# routes = [
+#   { pattern = "api.obelisk.io/*", zone_name = "obelisk.io" }
+# ]
+
+# D1 Database (Cloudflare's SQLite)
+# [[d1_databases]]
+# binding = "DB"
+# database_name = "obelisk-db"
+# database_id = "your-database-id"
+
+# KV Namespace (for caching)
+# [[kv_namespaces]]
+# binding = "CACHE"
+# id = "your-kv-id"
+
+# Durable Objects (for WebSocket state)
+# [[durable_objects.bindings]]
+# name = "PRICE_FEED"
+# class_name = "PriceFeedDO"
+
+# R2 Storage (for backups)
+# [[r2_buckets]]
+# binding = "BACKUPS"
+# bucket_name = "obelisk-backups"
+
+# Build configuration
+[build]
+command = "npm install"
+
+# Development
+[dev]
+port = 8787
+local_protocol = "http"

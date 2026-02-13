@@ -1,0 +1,107 @@
+# OBELISK - Caddyfile
+# Caddy gère automatiquement les certificats SSL (Let's Encrypt)
+#
+# LOCAL DEV:  caddy run --config Caddyfile.local
+# PRODUCTION: caddy run --config Caddyfile
+#
+# Install Caddy: https://caddyserver.com/docs/install
+
+# ===========================================
+# PRODUCTION (avec domaine réel)
+# ===========================================
+obelisk-dex.pages.dev, api.obelisk.trading {
+    # Frontend (Cloudflare Pages gère déjà le frontend)
+    # Ce bloc est pour l'API uniquement
+
+    # API proxy vers Node.js
+    handle /api/* {
+        reverse_proxy localhost:3001
+    }
+
+    # Health check
+    handle /health {
+        reverse_proxy localhost:3001
+    }
+
+    # Ready check (K8s)
+    handle /ready {
+        reverse_proxy localhost:3001
+    }
+
+    # WebSocket proxy (important pour trading temps réel)
+    handle /ws {
+        reverse_proxy localhost:3001 {
+            header_up Connection {>Connection}
+            header_up Upgrade {>Upgrade}
+        }
+    }
+
+    # Security headers
+    header {
+        X-Frame-Options "SAMEORIGIN"
+        X-Content-Type-Options "nosniff"
+        X-XSS-Protection "1; mode=block"
+        Referrer-Policy "strict-origin-when-cross-origin"
+        Strict-Transport-Security "max-age=31536000; includeSubDomains; preload"
+        Content-Security-Policy "default-src 'self' https: wss:; script-src 'self' 'unsafe-inline' 'unsafe-eval' https:; style-src 'self' 'unsafe-inline' https:;"
+    }
+
+    # Gzip compression
+    encode gzip
+
+    # Rate limiting basique (Caddy 2.7+)
+    # @ratelimit {
+    #     path /api/*
+    # }
+    # rate_limit @ratelimit 100r/m
+
+    # Logs JSON
+    log {
+        output file ./logs/obelisk-access.log {
+            roll_size 10mb
+            roll_keep 5
+        }
+        format json
+    }
+}
+
+# ===========================================
+# LOCAL DEVELOPMENT (localhost avec HTTPS)
+# ===========================================
+:8443 {
+    # Auto-signed certificate for local dev
+    tls internal
+
+    # Frontend statique
+    root * ./obelisk-dex
+    file_server
+
+    # API proxy
+    handle /api/* {
+        reverse_proxy localhost:3001
+    }
+
+    handle /health {
+        reverse_proxy localhost:3001
+    }
+
+    handle /ws {
+        reverse_proxy localhost:3001 {
+            header_up Connection {>Connection}
+            header_up Upgrade {>Upgrade}
+        }
+    }
+
+    # SPA fallback
+    handle {
+        try_files {path} /index.html
+    }
+
+    # Security headers (moins stricts pour dev)
+    header {
+        X-Frame-Options "SAMEORIGIN"
+        X-Content-Type-Options "nosniff"
+    }
+
+    encode gzip
+}

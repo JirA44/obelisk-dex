@@ -1,0 +1,306 @@
+[
+  {
+    "browser": "Chrome",
+    "url": "https://d26a8f2e.obelisk-dex.pages.dev",
+    "timestamp": "2026-02-13T02:22:49.613Z",
+    "viewport": {
+      "width": 1920,
+      "height": 1080
+    },
+    "issues": [
+      {
+        "type": "SLOW_LOAD",
+        "loadTime": "17377ms",
+        "severity": "MEDIUM"
+      },
+      {
+        "type": "DOM_BLOAT",
+        "count": 149819,
+        "severity": "LOW"
+      },
+      {
+        "type": "HIDDEN_ELEMENT",
+        "tab": "dashboard",
+        "selector": ".portfolio-summary",
+        "severity": "MEDIUM"
+      },
+      {
+        "type": "HIDDEN_ELEMENT",
+        "tab": "dashboard",
+        "selector": ".summary-card",
+        "severity": "MEDIUM"
+      },
+      {
+        "type": "TAB_ERROR",
+        "tab": "investments",
+        "error": "elementHandle.click: Timeout 5000ms exceeded.",
+        "severity": "HIGH"
+      }
+    ],
+    "consoleErrors": [
+      "The Content Security Policy directive 'frame-ancestors' is ignored when delivered via a <meta> element.",
+      "Failed to find a valid digest in the 'integrity' attribute for resource 'https://cdnjs.cloudflare.com/ajax/libs/dompurify/3.0.6/purify.min.js' with computed SHA-512 integrity 'H+rglffZ6f5gF7UJgvH4Naa+fGCgjrHKMgoFOGmcPTRwR6oILo5R+gtzNrpDp7iMV3udbymBVjkeZGNz1Em4rQ=='. The resource has been blocked.",
+      "Invalid left-hand side in assignment",
+      "[FIREBASE] Init error: FirebaseError: Firebase: Error (auth/invalid-api-key).\n    at z (https://www.gstatic.com/firebasejs/10.7.1/firebase-auth-compat.js:1:22882)\n    at B (https://www.gstatic.com/firebasejs/10.7.1/firebase-auth-compat.js:1:23033)\n    at new Ii (https://www.gstatic.com/firebasejs/10.7.1/firebase-auth-compat.js:1:128848)\n    at INTERNAL.registerComponent.O.setServiceProps.ActionCodeInfo.Operation.EMAIL_SIGNIN [as instanceFactory] (https://www.gstatic.com/firebasejs/10.7.1/firebase-auth-compat.js:1:135450)\n    at y.getOrInitializeService (https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js:1:10211)\n    at y.getImmediate (https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js:1:8211)\n    at Oe._getService (https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js:1:26726)\n    at r.type.a.<computed> [as auth] (https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js:1:27866)\n    at Object.e [as auth] (https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js:1:27733)\n    at Object.init (https://d26a8f2e.obelisk-dex.pages.dev/js/wallet/firebase-auth.js:48:34)",
+      "Invalid or unexpected token",
+      "Connecting to 'http://localhost:3001/api/obl/info' violates the following Content Security Policy directive: \"connect-src 'self' https: wss:\". The action has been blocked.",
+      "Fetch API cannot load http://localhost:3001/api/obl/info. Refused to connect because it violates the document's Content Security Policy.",
+      "Loading the script 'https://unpkg.com/@web3modal/standalone@2.4.3/dist/index.umd.js' violates the following Content Security Policy directive: \"script-src 'self' 'unsafe-inline' https://cdnjs.cloudflare.com https://cdn.jsdelivr.net https://www.gstatic.com\". Note that 'script-src-elem' was not explicitly set, so 'script-src' is used as a fallback. The action has been blocked.",
+      "Connecting to 'ws://localhost:3001/' violates the following Content Security Policy directive: \"connect-src 'self' https: wss:\". The action has been blocked.",
+      "Connecting to 'http://localhost:3001/api/funding' violates the following Content Security Policy directive: \"connect-src 'self' https: wss:\". The action has been blocked.",
+      "Fetch API cannot load http://localhost:3001/api/funding. Refused to connect because it violates the document's Content Security Policy.",
+      "Connecting to 'http://localhost:3001/api/features' violates the following Content Security Policy directive: \"connect-src 'self' https: wss:\". The action has been blocked.",
+      "Fetch API cannot load http://localhost:3001/api/features. Refused to connect because it violates the document's Content Security Policy.",
+      "[AppKit] Initialization failed: Error: Failed to load Web3Modal\n    at script.onerror (https://d26a8f2e.obelisk-dex.pages.dev/js/wallet/wallet-appkit.js:158:43)",
+      "ErrorHandler caught: {type: error, message: Uncaught TypeError: Cannot read properties of undefined (reading 'percentage'), source: https://d26a8f2e.obelisk-dex.pages.dev/js/portfolio/leaderboard.js, line: 350, col: 104}",
+      "The Content Security Policy directive 'frame-ancestors' is ignored when delivered via a <meta> element.",
+      "Framing 'https://s.tradingview.com/' violates the following Content Security Policy directive: \"frame-src 'none'\". The request has been blocked.\n",
+      "[2026-02-13T02:23:13.696Z]  @firebase/firestore: Firestore (10.7.1): Could not reach Cloud Firestore backend. Connection failed 1 times. Most recent error: FirebaseError: [code=invalid-argument]: Invalid resource field value in the request.\nThis typically indicates that your device does not have a healthy Internet connection at the moment. The client will operate in offline mode until it is able to successfully connect to the backend.",
+      "The Content Security Policy directive 'frame-ancestors' is ignored when delivered via a <meta> element.",
+      "🔥 Firebase load error: Failed to get document because the client is offline.",
+      "Framing 'https://s.tradingview.com/' violates the following Content Security Policy directive: \"frame-src 'none'\". The request has been blocked.\n",
+      "[Aerodrome] Error fetching stats: Error: missing revert data (action=\"call\", data=null, reason=null, transaction={ \"data\": \"0x0902f1ac\", \"to\": \"0x2223F9FE624F69Da4D8256A7bCc9104FBA7F8f75\" }, invocation=null, revert=null, code=CALL_EXCEPTION, version=6.9.0)\n    at makeError (https://cdnjs.cloudflare.com/ajax/libs/ethers/6.9.0/ethers.umd.min.js:1:2851)\n    at getBuiltinCallException (https://cdnjs.cloudflare.com/ajax/libs/ethers/6.9.0/ethers.umd.min.js:1:227926)\n    at AbiCoder.getBuiltinCallException (https://cdnjs.cloudflare.com/ajax/libs/ethers/6.9.0/ethers.umd.min.js:1:229802)\n    at JsonRpcProvider.getRpcError (https://cdnjs.cloudflare.com/ajax/libs/ethers/6.9.0/ethers.umd.min.js:1:351600)\n    at https://cdnjs.cloudflare.com/ajax/libs/ethers/6.9.0/ethers.umd.min.js:1:345277",
+      "Connecting to 'http://localhost:3001/api/obl/info' violates the following Content Security Policy directive: \"connect-src 'self' https: wss:\". The action has been blocked.",
+      "Fetch API cannot load http://localhost:3001/api/obl/info. Refused to connect because it violates the document's Content Security Policy.",
+      "ErrorHandler caught: {type: error, message: Uncaught TypeError: Cannot read properties of undefined (reading 'percentage'), source: https://d26a8f2e.obelisk-dex.pages.dev/js/portfolio/leaderboard.js, line: 350, col: 104}",
+      "Connecting to 'http://localhost:3001/api/obl/info' violates the following Content Security Policy directive: \"connect-src 'self' https: wss:\". The action has been blocked.",
+      "Fetch API cannot load http://localhost:3001/api/obl/info. Refused to connect because it violates the document's Content Security Policy.",
+      "Connecting to 'http://localhost:3001/api/obl/info' violates the following Content Security Policy directive: \"connect-src 'self' https: wss:\". The action has been blocked.",
+      "Fetch API cannot load http://localhost:3001/api/obl/info. Refused to connect because it violates the document's Content Security Policy.",
+      "Connecting to 'http://localhost:3001/api/obl/info' violates the following Content Security Policy directive: \"connect-src 'self' https: wss:\". The action has been blocked.",
+      "Fetch API cannot load http://localhost:3001/api/obl/info. Refused to connect because it violates the document's Content Security Policy.",
+      "Connecting to 'http://localhost:3001/api/obl/info' violates the following Content Security Policy directive: \"connect-src 'self' https: wss:\". The action has been blocked.",
+      "Fetch API cannot load http://localhost:3001/api/obl/info. Refused to connect because it violates the document's Content Security Policy.",
+      "Connecting to 'http://localhost:3001/api/obl/info' violates the following Content Security Policy directive: \"connect-src 'self' https: wss:\". The action has been blocked.",
+      "Fetch API cannot load http://localhost:3001/api/obl/info. Refused to connect because it violates the document's Content Security Policy.",
+      "Connecting to 'http://localhost:3001/api/obl/info' violates the following Content Security Policy directive: \"connect-src 'self' https: wss:\". The action has been blocked.",
+      "Fetch API cannot load http://localhost:3001/api/obl/info. Refused to connect because it violates the document's Content Security Policy."
+    ],
+    "tabScreenshots": {
+      "home": "C:\\Users\\Hugop\\obelisk\\verify-results\\2026-02-13T02-22-49\\Chrome_home.png",
+      "dashboard": "C:\\Users\\Hugop\\obelisk\\verify-results\\2026-02-13T02-22-49\\Chrome_dashboard.png",
+      "trade": "C:\\Users\\Hugop\\obelisk\\verify-results\\2026-02-13T02-22-49\\Chrome_trade.png",
+      "swap": "C:\\Users\\Hugop\\obelisk\\verify-results\\2026-02-13T02-22-49\\Chrome_swap.png",
+      "fast-trading": "C:\\Users\\Hugop\\obelisk\\verify-results\\2026-02-13T02-22-49\\Chrome_fast-trading.png",
+      "hft": "C:\\Users\\Hugop\\obelisk\\verify-results\\2026-02-13T02-22-49\\Chrome_hft.png",
+      "perps": "C:\\Users\\Hugop\\obelisk\\verify-results\\2026-02-13T02-22-49\\Chrome_perps.png",
+      "banking": "C:\\Users\\Hugop\\obelisk\\verify-results\\2026-02-13T02-22-49\\Chrome_banking.png",
+      "wallet": "C:\\Users\\Hugop\\obelisk\\verify-results\\2026-02-13T02-22-49\\Chrome_wallet.png",
+      "portfolio": "C:\\Users\\Hugop\\obelisk\\verify-results\\2026-02-13T02-22-49\\Chrome_portfolio.png",
+      "combos": "C:\\Users\\Hugop\\obelisk\\verify-results\\2026-02-13T02-22-49\\Chrome_combos.png",
+      "products": "C:\\Users\\Hugop\\obelisk\\verify-results\\2026-02-13T02-22-49\\Chrome_products.png",
+      "bonds": "C:\\Users\\Hugop\\obelisk\\verify-results\\2026-02-13T02-22-49\\Chrome_bonds.png",
+      "tools": "C:\\Users\\Hugop\\obelisk\\verify-results\\2026-02-13T02-22-49\\Chrome_tools.png",
+      "bots": "C:\\Users\\Hugop\\obelisk\\verify-results\\2026-02-13T02-22-49\\Chrome_bots.png",
+      "learn": "C:\\Users\\Hugop\\obelisk\\verify-results\\2026-02-13T02-22-49\\Chrome_learn.png",
+      "about": "C:\\Users\\Hugop\\obelisk\\verify-results\\2026-02-13T02-22-49\\Chrome_about.png",
+      "solutions": "C:\\Users\\Hugop\\obelisk\\verify-results\\2026-02-13T02-22-49\\Chrome_solutions.png",
+      "enterprise": "C:\\Users\\Hugop\\obelisk\\verify-results\\2026-02-13T02-22-49\\Chrome_enterprise.png",
+      "institutional": "C:\\Users\\Hugop\\obelisk\\verify-results\\2026-02-13T02-22-49\\Chrome_institutional.png",
+      "settings": "C:\\Users\\Hugop\\obelisk\\verify-results\\2026-02-13T02-22-49\\Chrome_settings.png"
+    },
+    "performance": {
+      "domContentLoaded": 9625,
+      "loadComplete": 17377,
+      "domElements": 149819,
+      "jsHeap": 40
+    },
+    "tabsChecked": 20,
+    "passed": false
+  },
+  {
+    "browser": "Firefox",
+    "url": "https://d26a8f2e.obelisk-dex.pages.dev",
+    "timestamp": "2026-02-13T02:30:55.718Z",
+    "viewport": {
+      "width": 1920,
+      "height": 1080
+    },
+    "issues": [
+      {
+        "type": "DOM_BLOAT",
+        "count": 149706,
+        "severity": "LOW"
+      },
+      {
+        "type": "HIDDEN_ELEMENT",
+        "tab": "dashboard",
+        "selector": ".portfolio-summary",
+        "severity": "MEDIUM"
+      },
+      {
+        "type": "HIDDEN_ELEMENT",
+        "tab": "dashboard",
+        "selector": ".summary-card",
+        "severity": "MEDIUM"
+      },
+      {
+        "type": "TAB_ERROR",
+        "tab": "investments",
+        "error": "elementHandle.click: Timeout 5000ms exceeded.\nCall log:\n\u001b[2m  - attempting click action\u001b[22m\n\u001b[2m    - scrolling into view if needed\u001b[22m\n\u001b[2m    - done scrolling\u001b[22m\n",
+        "severity": "HIGH"
+      }
+    ],
+    "consoleErrors": [
+      "[JavaScript Error: \"None of the “sha512” hashes in the integrity attribute match the content of the subresource at “https://cdnjs.cloudflare.com/ajax/libs/dompurify/3.0.6/purify.min.js”. The computed hash is “H+rglffZ6f5gF7UJgvH4Naa+fGCgjrHKMgoFOGmcPTRwR6oILo5R+gtzNrpDp7iMV3udbymBVjkeZGNz1Em4rQ==”.\" {file: \"https://d26a8f2e.obelisk-dex.pages.dev/\" line: 0}]",
+      "[FIREBASE] Init error: Error",
+      "invalid assignment left-hand side",
+      "invalid escape sequence",
+      "[Perps] WebSocket error: JSHandle@object",
+      "[JavaScript Error: \"Content-Security-Policy: The page’s settings blocked the loading of a resource (connect-src) at http://localhost:3001/api/obl/info because it violates the following directive: “connect-src 'self' https: wss:”\" {file: \"https://d26a8f2e.obelisk-dex.pages.dev/js/products/obl-token.js\" line: 264}]",
+      "[AppKit] Initialization failed: Error",
+      "[JavaScript Error: \"Content-Security-Policy: The page’s settings blocked a script (script-src-elem) at https://unpkg.com/@web3modal/standalone@2.4.3/dist/index.umd.js from being executed because it violates the following directive: “script-src 'self' 'unsafe-inline' https://cdnjs.cloudflare.com https://cdn.jsdelivr.net https://www.gstatic.com”\" {file: \"https://d26a8f2e.obelisk-dex.pages.dev/js/wallet/wallet-appkit.js\" line: 159}]",
+      "[JavaScript Error: \"Content-Security-Policy: The page’s settings blocked the loading of a resource (connect-src) at ws://localhost:3001/ because it violates the following directive: “connect-src 'self' https: wss:”\" {file: \"https://d26a8f2e.obelisk-dex.pages.dev/js/products/perps-trading.js\" line: 99}]",
+      "[JavaScript Error: \"Content-Security-Policy: The page’s settings blocked the loading of a resource (connect-src) at http://localhost:3001/api/funding because it violates the following directive: “connect-src 'self' https: wss:”\" {file: \"https://d26a8f2e.obelisk-dex.pages.dev/js/products/perps-trading.js\" line: 133}]",
+      "[JavaScript Error: \"Content-Security-Policy: The page’s settings blocked the loading of a resource (connect-src) at http://localhost:3001/api/features because it violates the following directive: “connect-src 'self' https: wss:”\" {file: \"https://d26a8f2e.obelisk-dex.pages.dev/js/obelisk-live.js\" line: 44}]",
+      "Obelisk API error: Error",
+      "Failed to load markets: Error",
+      "[JavaScript Error: \"The Notification permission may only be requested from inside a short running user-generated event handler.\" {file: \"https://d26a8f2e.obelisk-dex.pages.dev/\" line: 0}]",
+      "[JavaScript Error: \"The Notification permission may only be requested from inside a short running user-generated event handler.\" {file: \"https://d26a8f2e.obelisk-dex.pages.dev/\" line: 0}]",
+      "[JavaScript Error: \"Content-Security-Policy: The page’s settings blocked the loading of a resource (frame-src) at https://s.tradingview.com/widgetembed/?frameElementId=tv_chart&symbol=BINANCE:BTCUSDT&interval=15&hidesidetoolbar=0&symboledit=1&saveimage=0&toolbarbg=0a0a1e&theme=dark&style=1&timezone=Etc%2FUTC&locale=en because it violates the following directive: “frame-src 'none'”\" {file: \"https://d26a8f2e.obelisk-dex.pages.dev/\" line: 0}]",
+      "Obelisk API error: Error",
+      "Failed to load markets: Error",
+      "Obelisk API error: Error",
+      "Failed to get prices: Error",
+      "Obelisk API error: Error",
+      "Failed to get orderbook, using mock data: Error",
+      "ErrorHandler caught: JSHandle@object",
+      "[2026-02-13T02:31:32.727Z]  @firebase/firestore: Firestore (10.7.1): Could not reach Cloud Firestore backend. Connection failed 1 times. Most recent error: FirebaseError: [code=invalid-argument]: Invalid resource field value in the request.\nThis typically indicates that your device does not have a healthy Internet connection at the moment. The client will operate in offline mode until it is able to successfully connect to the backend.",
+      "🔥 Firebase load error: Failed to get document because the client is offline.",
+      "[Aerodrome] Error fetching stats: Error",
+      "[JavaScript Error: \"Content-Security-Policy: The page’s settings blocked the loading of a resource (connect-src) at http://localhost:3001/api/obl/info because it violates the following directive: “connect-src 'self' https: wss:”\" {file: \"https://d26a8f2e.obelisk-dex.pages.dev/js/products/obl-token.js\" line: 264}]",
+      "ErrorHandler caught: JSHandle@object",
+      "[JavaScript Error: \"Content-Security-Policy: The page’s settings blocked the loading of a resource (connect-src) at http://localhost:3001/api/obl/info because it violates the following directive: “connect-src 'self' https: wss:”\" {file: \"https://d26a8f2e.obelisk-dex.pages.dev/js/products/obl-token.js\" line: 264}]",
+      "[JavaScript Error: \"Content-Security-Policy: The page’s settings blocked the loading of a resource (connect-src) at http://localhost:3001/api/obl/info because it violates the following directive: “connect-src 'self' https: wss:”\" {file: \"https://d26a8f2e.obelisk-dex.pages.dev/js/products/obl-token.js\" line: 264}]",
+      "[JavaScript Error: \"Content-Security-Policy: The page’s settings blocked the loading of a resource (connect-src) at http://localhost:3001/api/obl/info because it violates the following directive: “connect-src 'self' https: wss:”\" {file: \"https://d26a8f2e.obelisk-dex.pages.dev/js/products/obl-token.js\" line: 264}]",
+      "[JavaScript Error: \"Content-Security-Policy: The page’s settings blocked the loading of a resource (connect-src) at http://localhost:3001/api/obl/info because it violates the following directive: “connect-src 'self' https: wss:”\" {file: \"https://d26a8f2e.obelisk-dex.pages.dev/js/products/obl-token.js\" line: 264}]",
+      "[JavaScript Error: \"Content-Security-Policy: The page’s settings blocked the loading of a resource (connect-src) at http://localhost:3001/api/obl/info because it violates the following directive: “connect-src 'self' https: wss:”\" {file: \"https://d26a8f2e.obelisk-dex.pages.dev/js/products/obl-token.js\" line: 264}]",
+      "[JavaScript Error: \"Content-Security-Policy: The page’s settings blocked the loading of a resource (connect-src) at http://localhost:3001/api/obl/info because it violates the following directive: “connect-src 'self' https: wss:”\" {file: \"https://d26a8f2e.obelisk-dex.pages.dev/js/products/obl-token.js\" line: 264}]",
+      "[JavaScript Error: \"Content-Security-Policy: The page’s settings blocked the loading of a resource (connect-src) at http://localhost:3001/api/obl/info because it violates the following directive: “connect-src 'self' https: wss:”\" {file: \"https://d26a8f2e.obelisk-dex.pages.dev/js/products/obl-token.js\" line: 264}]"
+    ],
+    "tabScreenshots": {
+      "home": "C:\\Users\\Hugop\\obelisk\\verify-results\\2026-02-13T02-22-49\\Firefox_home.png",
+      "dashboard": "C:\\Users\\Hugop\\obelisk\\verify-results\\2026-02-13T02-22-49\\Firefox_dashboard.png",
+      "trade": "C:\\Users\\Hugop\\obelisk\\verify-results\\2026-02-13T02-22-49\\Firefox_trade.png",
+      "swap": "C:\\Users\\Hugop\\obelisk\\verify-results\\2026-02-13T02-22-49\\Firefox_swap.png",
+      "fast-trading": "C:\\Users\\Hugop\\obelisk\\verify-results\\2026-02-13T02-22-49\\Firefox_fast-trading.png",
+      "hft": "C:\\Users\\Hugop\\obelisk\\verify-results\\2026-02-13T02-22-49\\Firefox_hft.png",
+      "perps": "C:\\Users\\Hugop\\obelisk\\verify-results\\2026-02-13T02-22-49\\Firefox_perps.png",
+      "banking": "C:\\Users\\Hugop\\obelisk\\verify-results\\2026-02-13T02-22-49\\Firefox_banking.png",
+      "wallet": "C:\\Users\\Hugop\\obelisk\\verify-results\\2026-02-13T02-22-49\\Firefox_wallet.png",
+      "portfolio": "C:\\Users\\Hugop\\obelisk\\verify-results\\2026-02-13T02-22-49\\Firefox_portfolio.png",
+      "combos": "C:\\Users\\Hugop\\obelisk\\verify-results\\2026-02-13T02-22-49\\Firefox_combos.png",
+      "products": "C:\\Users\\Hugop\\obelisk\\verify-results\\2026-02-13T02-22-49\\Firefox_products.png",
+      "bonds": "C:\\Users\\Hugop\\obelisk\\verify-results\\2026-02-13T02-22-49\\Firefox_bonds.png",
+      "tools": "C:\\Users\\Hugop\\obelisk\\verify-results\\2026-02-13T02-22-49\\Firefox_tools.png",
+      "bots": "C:\\Users\\Hugop\\obelisk\\verify-results\\2026-02-13T02-22-49\\Firefox_bots.png",
+      "learn": "C:\\Users\\Hugop\\obelisk\\verify-results\\2026-02-13T02-22-49\\Firefox_learn.png",
+      "about": "C:\\Users\\Hugop\\obelisk\\verify-results\\2026-02-13T02-22-49\\Firefox_about.png",
+      "solutions": "C:\\Users\\Hugop\\obelisk\\verify-results\\2026-02-13T02-22-49\\Firefox_solutions.png",
+      "enterprise": "C:\\Users\\Hugop\\obelisk\\verify-results\\2026-02-13T02-22-49\\Firefox_enterprise.png",
+      "institutional": "C:\\Users\\Hugop\\obelisk\\verify-results\\2026-02-13T02-22-49\\Firefox_institutional.png",
+      "settings": "C:\\Users\\Hugop\\obelisk\\verify-results\\2026-02-13T02-22-49\\Firefox_settings.png"
+    },
+    "performance": {
+      "domContentLoaded": 6840,
+      "loadComplete": 7657,
+      "domElements": 149706,
+      "jsHeap": null
+    },
+    "tabsChecked": 20,
+    "passed": false
+  },
+  {
+    "browser": "WebKit",
+    "url": "https://d26a8f2e.obelisk-dex.pages.dev",
+    "timestamp": "2026-02-13T02:39:48.843Z",
+    "viewport": {
+      "width": 1920,
+      "height": 1080
+    },
+    "issues": [
+      {
+        "type": "DOM_BLOAT",
+        "count": 149370,
+        "severity": "LOW"
+      },
+      {
+        "type": "HIDDEN_ELEMENT",
+        "tab": "dashboard",
+        "selector": ".portfolio-summary",
+        "severity": "MEDIUM"
+      },
+      {
+        "type": "HIDDEN_ELEMENT",
+        "tab": "dashboard",
+        "selector": ".summary-card",
+        "severity": "MEDIUM"
+      },
+      {
+        "type": "TAB_ERROR",
+        "tab": "investments",
+        "error": "elementHandle.click: Timeout 5000ms exceeded.\nCall log:\n\u001b[2m  - attempting click action\u001b[22m\n\u001b[2m    - scrolling into view if needed\u001b[22m\n\u001b[2m    - done scrolling\u001b[22m\n\u001b[2m    - forcing action\u001b[22m\n\u001b[2m    - performing click action\u001b[22m\n",
+        "severity": "HIGH"
+      }
+    ],
+    "consoleErrors": [
+      "The Content Security Policy directive 'frame-ancestors' is ignored when delivered via an HTML meta element.",
+      "Cannot load script https://cdnjs.cloudflare.com/ajax/libs/dompurify/3.0.6/purify.min.js. Failed integrity metadata check. Content length: 20931, Expected content length: 7244, Expected metadata: sha512-H+rglffZ6f5gMl/Qg8OOOOseG+LRxZuLPsqzVXxNh+VLrFOBk6RpDTX3SQs7rMPcQri/9k+I1XQe6HpE+8gkJw==",
+      "Left side of assignment is not a reference.",
+      "[FIREBASE] Init error: FirebaseError: Firebase: Error (auth/invalid-api-key).",
+      "Invalid escape in identifier: '\\'",
+      "Refused to connect to http://localhost:3001/api/obl/info because it does not appear in the connect-src directive of the Content Security Policy.",
+      "Refused to load https://unpkg.com/@web3modal/standalone@2.4.3/dist/index.umd.js because it does not appear in the script-src directive of the Content Security Policy.",
+      "Notification prompting can only be done from a user gesture.",
+      "Notification prompting can only be done from a user gesture.",
+      "Refused to connect to ws://localhost:3001/ because it does not appear in the connect-src directive of the Content Security Policy.",
+      "[Perps] WebSocket error: SecurityError: The operation is insecure.",
+      "Refused to connect to http://localhost:3001/api/funding because it does not appear in the connect-src directive of the Content Security Policy.",
+      "Refused to connect to http://localhost:3001/api/features because it does not appear in the connect-src directive of the Content Security Policy.",
+      "[AppKit] Initialization failed: Error: Failed to load Web3Modal",
+      "ErrorHandler caught: {type: error, message: TypeError: undefined is not an object (evaluating 'this.formatPnLSafeOps.percentage'), source: https://d26a8f2e.obelisk-dex.pages.dev/js/portfolio/leaderboard.js, line: 350, col: 103}",
+      "Refused to load https://s.tradingview.com/widgetembed/?frameElementId=tv_chart&symbol=BINANCE:BTCUSDT&interval=15&hidesidetoolbar=0&symboledit=1&saveimage=0&toolbarbg=0a0a1e&theme=dark&style=1&timezone=Etc%2FUTC&locale=en because it does not appear in the frame-src directive of the Content Security Policy.",
+      "[2026-02-13T02:40:40.420Z]  @firebase/firestore: Firestore (10.7.1): Could not reach Cloud Firestore backend. Connection failed 1 times. Most recent error: FirebaseError: [code=invalid-argument]: Invalid resource field value in the request.\nThis typically indicates that your device does not have a healthy Internet connection at the moment. The client will operate in offline mode until it is able to successfully connect to the backend.",
+      "🔥 Firebase load error: Failed to get document because the client is offline.",
+      "Refused to load https://s.tradingview.com/widgetembed/?frameElementId=tv_chart&symbol=BINANCE:BTCUSDT&interval=15&hidesidetoolbar=0&symboledit=1&saveimage=0&toolbarbg=0a0a1e&theme=dark&style=1&timezone=Etc%2FUTC&locale=en because it does not appear in the frame-src directive of the Content Security Policy.",
+      "[Aerodrome] Error fetching stats: Error: missing revert data (action=\"call\", data=null, reason=null, transaction={ \"data\": \"0x0902f1ac\", \"to\": \"0x7C3b5e91CD4E3A8C1A30E5B3F1a3c7C9e6E7e8F9\" }, invocation=null, revert=null, code=CALL_EXCEPTION, version=6.9.0)",
+      "Refused to connect to http://localhost:3001/api/obl/info because it does not appear in the connect-src directive of the Content Security Policy.",
+      "ErrorHandler caught: {type: error, message: TypeError: undefined is not an object (evaluating 'this.formatPnLSafeOps.percentage'), source: https://d26a8f2e.obelisk-dex.pages.dev/js/portfolio/leaderboard.js, line: 350, col: 103}",
+      "Refused to connect to http://localhost:3001/api/obl/info because it does not appear in the connect-src directive of the Content Security Policy.",
+      "Refused to connect to http://localhost:3001/api/obl/info because it does not appear in the connect-src directive of the Content Security Policy.",
+      "Refused to connect to http://localhost:3001/api/obl/info because it does not appear in the connect-src directive of the Content Security Policy.",
+      "Refused to connect to http://localhost:3001/api/obl/info because it does not appear in the connect-src directive of the Content Security Policy."
+    ],
+    "tabScreenshots": {
+      "home": "C:\\Users\\Hugop\\obelisk\\verify-results\\2026-02-13T02-22-49\\WebKit_home.png",
+      "dashboard": "C:\\Users\\Hugop\\obelisk\\verify-results\\2026-02-13T02-22-49\\WebKit_dashboard.png",
+      "trade": "C:\\Users\\Hugop\\obelisk\\verify-results\\2026-02-13T02-22-49\\WebKit_trade.png",
+      "swap": "C:\\Users\\Hugop\\obelisk\\verify-results\\2026-02-13T02-22-49\\WebKit_swap.png",
+      "fast-trading": "C:\\Users\\Hugop\\obelisk\\verify-results\\2026-02-13T02-22-49\\WebKit_fast-trading.png",
+      "hft": "C:\\Users\\Hugop\\obelisk\\verify-results\\2026-02-13T02-22-49\\WebKit_hft.png",
+      "perps": "C:\\Users\\Hugop\\obelisk\\verify-results\\2026-02-13T02-22-49\\WebKit_perps.png",
+      "banking": "C:\\Users\\Hugop\\obelisk\\verify-results\\2026-02-13T02-22-49\\WebKit_banking.png",
+      "wallet": "C:\\Users\\Hugop\\obelisk\\verify-results\\2026-02-13T02-22-49\\WebKit_wallet.png",
+      "portfolio": "C:\\Users\\Hugop\\obelisk\\verify-results\\2026-02-13T02-22-49\\WebKit_portfolio.png",
+      "combos": "C:\\Users\\Hugop\\obelisk\\verify-results\\2026-02-13T02-22-49\\WebKit_combos.png",
+      "products": "C:\\Users\\Hugop\\obelisk\\verify-results\\2026-02-13T02-22-49\\WebKit_products.png",
+      "bonds": "C:\\Users\\Hugop\\obelisk\\verify-results\\2026-02-13T02-22-49\\WebKit_bonds.png",
+      "tools": "C:\\Users\\Hugop\\obelisk\\verify-results\\2026-02-13T02-22-49\\WebKit_tools.png",
+      "bots": "C:\\Users\\Hugop\\obelisk\\verify-results\\2026-02-13T02-22-49\\WebKit_bots.png",
+      "learn": "C:\\Users\\Hugop\\obelisk\\verify-results\\2026-02-13T02-22-49\\WebKit_learn.png",
+      "about": "C:\\Users\\Hugop\\obelisk\\verify-results\\2026-02-13T02-22-49\\WebKit_about.png",
+      "solutions": "C:\\Users\\Hugop\\obelisk\\verify-results\\2026-02-13T02-22-49\\WebKit_solutions.png",
+      "enterprise": "C:\\Users\\Hugop\\obelisk\\verify-results\\2026-02-13T02-22-49\\WebKit_enterprise.png",
+      "institutional": "C:\\Users\\Hugop\\obelisk\\verify-results\\2026-02-13T02-22-49\\WebKit_institutional.png",
+      "settings": "C:\\Users\\Hugop\\obelisk\\verify-results\\2026-02-13T02-22-49\\WebKit_settings.png"
+    },
+    "performance": {
+      "domContentLoaded": 5419,
+      "loadComplete": 5437,
+      "domElements": 149370,
+      "jsHeap": null
+    },
+    "tabsChecked": 20,
+    "passed": false
+  }
+]

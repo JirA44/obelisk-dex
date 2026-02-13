@@ -1,0 +1,93 @@
+# OBELISK - Docker Compose Production Stack
+# Usage: docker-compose up -d
+
+version: '3.8'
+
+services:
+  # Backend API
+  backend:
+    build:
+      context: ./obelisk-backend
+      dockerfile: Dockerfile
+    container_name: obelisk-backend
+    restart: unless-stopped
+    environment:
+      - NODE_ENV=production
+      - PORT=3001
+      - ADMIN_API_KEY=${ADMIN_API_KEY}
+      - ALLOWED_ORIGINS=${ALLOWED_ORIGINS:-https://obelisk.example.com}
+      - SENTRY_DSN=${SENTRY_DSN:-}
+    volumes:
+      - backend_data:/app/data
+      - ./obelisk-backend/obelisk.db:/app/obelisk.db
+    networks:
+      - obelisk-network
+    healthcheck:
+      test: ["CMD", "wget", "--no-verbose", "--tries=1", "--spider", "http://localhost:3001/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 10s
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "10m"
+        max-file: "3"
+
+  # Nginx Reverse Proxy (HTTPS)
+  nginx:
+    image: nginx:alpine
+    container_name: obelisk-nginx
+    restart: unless-stopped
+    ports:
+      - "80:80"
+      - "443:443"
+    volumes:
+      - ./nginx.conf:/etc/nginx/conf.d/default.conf:ro
+      - ./obelisk-dex:/var/www/obelisk/obelisk-dex:ro
+      - ./certbot/conf:/etc/letsencrypt:ro
+      - ./certbot/www:/var/www/certbot:ro
+    depends_on:
+      - backend
+    networks:
+      - obelisk-network
+    healthcheck:
+      test: ["CMD", "nginx", "-t"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+
+  # Certbot for Let's Encrypt SSL
+  certbot:
+    image: certbot/certbot
+    container_name: obelisk-certbot
+    volumes:
+      - ./certbot/conf:/etc/letsencrypt
+      - ./certbot/www:/var/www/certbot
+    entrypoint: "/bin/sh -c 'trap exit TERM; while :; do certbot renew; sleep 12h & wait $${!}; done;'"
+
+  # Redis Cache (optional, for scaling)
+  redis:
+    image: redis:alpine
+    container_name: obelisk-redis
+    restart: unless-stopped
+    command: redis-server --appendonly yes --maxmemory 256mb --maxmemory-policy allkeys-lru
+    volumes:
+      - redis_data:/data
+    networks:
+      - obelisk-network
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 10s
+      timeout: 5s
+      retries: 3
+    profiles:
+      - with-cache
+
+networks:
+  obelisk-network:
+    driver: bridge
+
+volumes:
+  backend_data:
+  redis_data:

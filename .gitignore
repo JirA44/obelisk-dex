@@ -1,0 +1,5 @@
+node_modules/
+.env
+obelisk-backend/.env
+*.log
+nul

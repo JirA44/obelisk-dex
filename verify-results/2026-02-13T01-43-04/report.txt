@@ -1,0 +1,42 @@
+OBELISK DEX - RAPPORT DE VERIFICATION
+Date: 13/02/2026 02:49:57
+URL: https://304fba1f.obelisk-dex.pages.dev
+==================================================
+
+--- Chrome [FAIL] ---
+  Tabs verifies: 20
+  Console errors: 38
+  Load time: 12798ms
+  DOM elements: 149824
+  JS Heap: 69MB
+  Issues (5):
+
+  [HIGH] (1)
+    - [TAB_ERROR] tab:investments elementHandle.click: Timeout 5000ms exceeded.
+
+  [MEDIUM] (3)
+    - [SLOW_LOAD]
+    - [HIDDEN_ELEMENT] tab:dashboard .portfolio-summary
+    - [HIDDEN_ELEMENT] tab:dashboard .summary-card
+
+  [LOW] (1)
+    - [DOM_BLOAT]
+
+  Console Errors:
+    - The Content Security Policy directive 'frame-ancestors' is ignored when delivered via a <meta> element.
+    - Failed to find a valid digest in the 'integrity' attribute for resource 'https://cdnjs.cloudflare.com/ajax/libs/dompurif
+    - Invalid left-hand side in assignment
+    - Identifier 'WalletManager' has already been declared
+    - [FIREBASE] Init error: FirebaseError: Firebase: Error (auth/invalid-api-key).
+    at z (https://www.gstatic.com/firebase
+    - Invalid or unexpected token
+    - Connecting to 'http://localhost:3001/api/obl/info' violates the following Content Security Policy directive: "connect-sr
+    - Fetch API cannot load http://localhost:3001/api/obl/info. Refused to connect because it violates the document's Content 
+    - ErrorHandler caught: {type: error, message: Uncaught SyntaxError: Identifier 'StrategyBacktester' has already been decla
+    - ErrorHandler caught: {type: error, message: Uncaught SyntaxError: Identifier 'ArbitrageScanner' has already been declare
+    ... et 28 de plus
+
+==================================================
+RESULTAT: ECHECS DETECTES
+Total issues: 5 (0 critiques)
+Browsers: Chrome:FAIL
