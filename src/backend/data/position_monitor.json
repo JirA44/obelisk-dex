@@ -1,0 +1,21 @@
+{
+  "orders": {
+    "PERP_1770341575714_n1gdqv": {
+      "tp": 4,
+      "sl": 2,
+      "venue": "obelisk-internal",
+      "coin": "BTC",
+      "side": "buy",
+      "size": 4,
+      "createdAt": 1770341575717
+    }
+  },
+  "stats": {
+    "checks": 207,
+    "slTriggered": 0,
+    "tpTriggered": 0,
+    "errors": 0,
+    "lastCheck": 1770341575385
+  },
+  "savedAt": "2026-02-06T01:32:55.718Z"
+}

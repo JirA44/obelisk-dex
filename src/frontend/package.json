@@ -1,0 +1,26 @@
+{
+  "name": "obelisk-dex",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/jira44/obelisk-dex.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "type": "commonjs",
+  "bugs": {
+    "url": "https://github.com/jira44/obelisk-dex/issues"
+  },
+  "homepage": "https://github.com/jira44/obelisk-dex#readme",
+  "devDependencies": {
+    "axe-core": "^4.11.0",
+    "pa11y": "^9.0.1",
+    "puppeteer": "^24.34.0"
+  }
+}

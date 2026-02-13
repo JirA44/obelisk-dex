@@ -1,0 +1,185 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>KYC Verification - Obelisk</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: 'Inter', -apple-system, sans-serif;
+            background: linear-gradient(135deg, #0a0a0f 0%, #1a1a2e 100%);
+            color: #fff;
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+        .container {
+            max-width: 500px;
+            width: 100%;
+            background: rgba(10, 10, 15, 0.9);
+            border: 1px solid rgba(0, 255, 136, 0.3);
+            border-radius: 24px;
+            padding: 48px;
+            text-align: center;
+        }
+        .logo {
+            font-size: 48px;
+            margin-bottom: 24px;
+        }
+        h1 {
+            font-size: 28px;
+            margin-bottom: 16px;
+            background: linear-gradient(135deg, #00ff88, #00aaff);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+        p {
+            color: #888;
+            margin-bottom: 24px;
+            line-height: 1.6;
+        }
+        .status {
+            padding: 16px;
+            border-radius: 12px;
+            margin: 24px 0;
+        }
+        .status.success {
+            background: rgba(0, 255, 136, 0.1);
+            border: 1px solid rgba(0, 255, 136, 0.3);
+            color: #00ff88;
+        }
+        .status.pending {
+            background: rgba(247, 147, 26, 0.1);
+            border: 1px solid rgba(247, 147, 26, 0.3);
+            color: #f7931a;
+        }
+        .status.error {
+            background: rgba(255, 59, 48, 0.1);
+            border: 1px solid rgba(255, 59, 48, 0.3);
+            color: #ff3b30;
+        }
+        .btn {
+            display: inline-block;
+            padding: 14px 32px;
+            background: linear-gradient(135deg, #00ff88, #00aaff);
+            color: #0a0a0f;
+            text-decoration: none;
+            border-radius: 12px;
+            font-weight: 700;
+            margin-top: 16px;
+            transition: transform 0.2s;
+        }
+        .btn:hover {
+            transform: translateY(-2px);
+        }
+        .loader {
+            width: 40px;
+            height: 40px;
+            border: 3px solid rgba(0, 255, 136, 0.3);
+            border-top-color: #00ff88;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            margin: 24px auto;
+        }
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="logo">🏛️</div>
+        <h1>Verification d'identite</h1>
+
+        <div id="loading">
+            <div class="loader"></div>
+            <p>Verification en cours...</p>
+        </div>
+
+        <div id="result" style="display:none;">
+            <div id="status-box" class="status"></div>
+            <p id="message"></p>
+            <a href="/" class="btn">Retour a Obelisk</a>
+        </div>
+    </div>
+
+    <script>
+        async function checkStatus() {
+            const loading = document.getElementById('loading');
+            const result = document.getElementById('result');
+            const statusBox = document.getElementById('status-box');
+            const message = document.getElementById('message');
+
+            // Get token from localStorage
+            const token = localStorage.getItem('obelisk_token');
+
+            if (!token) {
+                loading.style.display = 'none';
+                result.style.display = 'block';
+                statusBox.className = 'status error';
+                statusBox.textContent = 'Non connecte';
+                message.textContent = 'Veuillez vous connecter pour verifier votre statut KYC.';
+                return;
+            }
+
+            try {
+                // Determine API URL
+                let apiUrl = 'http://localhost:3001/api';
+                if (window.location.hostname.includes('pages.dev')) {
+                    apiUrl = 'http://localhost:3001/api';
+                }
+
+                const response = await fetch(`${apiUrl}/kyc/status`, {
+                    headers: {
+                        'Authorization': `Bearer ${token}`
+                    }
+                });
+
+                const data = await response.json();
+
+                loading.style.display = 'none';
+                result.style.display = 'block';
+
+                if (data.kyc?.status === 'verified') {
+                    statusBox.className = 'status success';
+                    statusBox.innerHTML = '✓ Verifie';
+                    message.textContent = 'Votre identite a ete verifiee avec succes. Vous pouvez maintenant effectuer des transactions reelles.';
+                } else if (data.kyc?.status === 'pending') {
+                    statusBox.className = 'status pending';
+                    statusBox.innerHTML = '⏳ En cours';
+                    message.textContent = 'Votre verification est en cours de traitement. Vous recevrez une notification une fois terminee.';
+                } else if (data.kyc?.status === 'failed') {
+                    statusBox.className = 'status error';
+                    statusBox.innerHTML = '✗ Echoue';
+                    message.textContent = data.kyc?.failedReason || 'La verification a echoue. Veuillez reessayer.';
+                } else {
+                    statusBox.className = 'status pending';
+                    statusBox.innerHTML = 'Non verifie';
+                    message.textContent = 'Vous n\'avez pas encore verifie votre identite.';
+                }
+
+            } catch (err) {
+                loading.style.display = 'none';
+                result.style.display = 'block';
+                statusBox.className = 'status error';
+                statusBox.textContent = 'Erreur';
+                message.textContent = 'Impossible de verifier le statut. Reessayez plus tard.';
+            }
+        }
+
+        // Check status on load
+        checkStatus();
+
+        // Recheck every 5 seconds if pending
+        setInterval(() => {
+            const statusBox = document.getElementById('status-box');
+            if (statusBox.classList.contains('pending')) {
+                checkStatus();
+            }
+        }, 5000);
+    </script>
+</body>
+</html>

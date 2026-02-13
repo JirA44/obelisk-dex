@@ -1,0 +1,779 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>OBELISK Debug Panel</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: 'Courier New', monospace;
+            background: #0a0a0f;
+            color: #00ff88;
+            padding: 20px;
+            line-height: 1.6;
+        }
+        h1 { color: #00aaff; margin-bottom: 20px; }
+        h2 { color: #8a2be2; margin: 20px 0 10px; border-bottom: 1px solid #333; padding-bottom: 5px; }
+        .section { background: #111; padding: 15px; margin: 10px 0; border-radius: 8px; border: 1px solid #333; }
+        .ok { color: #00ff88; }
+        .error { color: #ff4466; }
+        .warn { color: #ffaa00; }
+        .info { color: #00aaff; }
+        table { width: 100%; border-collapse: collapse; margin: 10px 0; }
+        th, td { padding: 8px; text-align: left; border: 1px solid #333; }
+        th { background: #1a1a2e; color: #00aaff; }
+        .screenshot { max-width: 100%; border: 2px solid #00ff88; margin: 10px 0; }
+        #log { background: #000; padding: 10px; max-height: 300px; overflow-y: auto; font-size: 12px; }
+        .log-entry { margin: 2px 0; }
+        button { background: #00ff88; color: #000; border: none; padding: 10px 20px; cursor: pointer; margin: 5px; border-radius: 4px; font-weight: bold; }
+        button:hover { background: #00cc66; }
+        iframe { width: 100%; height: 600px; border: 2px solid #00aaff; margin: 10px 0; }
+    </style>
+</head>
+<body>
+    <h1>🔧 OBELISK Debug Panel</h1>
+
+    <div class="section">
+        <h2>📊 Layout Check</h2>
+        <div id="layout-results"></div>
+    </div>
+
+    <div class="section">
+        <h2>🎯 Element Positions</h2>
+        <table id="elements-table">
+            <tr><th>Element</th><th>Exists</th><th>Position</th><th>Size</th><th>Visible</th></tr>
+        </table>
+    </div>
+
+    <div class="section">
+        <h2>🌐 Live Preview</h2>
+        <button onclick="loadPreview()">Load index.html</button>
+        <button onclick="runAllChecks()">Run All Checks</button>
+        <iframe id="preview" src="about:blank"></iframe>
+    </div>
+
+    <div class="section">
+        <h2>📝 Console Log</h2>
+        <div id="log"></div>
+    </div>
+
+    <div class="section">
+        <h2>📁 File Check</h2>
+        <div id="file-check"></div>
+    </div>
+
+    <!-- TASK 31: Transaction Test Panel -->
+    <div class="section">
+        <h2>💳 Transaction Test Panel</h2>
+        <div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 10px; margin-bottom: 10px;">
+            <button onclick="testDeposit()">Test Deposit $10</button>
+            <button onclick="testWithdraw()">Test Withdraw $5</button>
+            <button onclick="checkBalance()">Check Balance</button>
+            <button onclick="testMicroWithdraw()">Test Micro Withdraw $0.50</button>
+        </div>
+        <div id="transaction-results" style="background: #000; padding: 10px; min-height: 100px; border: 1px solid #333; border-radius: 4px;"></div>
+    </div>
+
+    <!-- TASK 32: Yield Verification Panel -->
+    <div class="section">
+        <h2>📈 Yield Verification Panel</h2>
+        <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; margin-bottom: 10px;">
+            <button onclick="traceInvestmentFlow()">Trace Investment Flow</button>
+            <button onclick="checkYieldCalculation()">Check Yield Calculation</button>
+            <button onclick="showAccrualLog()">Show Accrual Log</button>
+        </div>
+        <div id="yield-results" style="background: #000; padding: 10px; min-height: 100px; border: 1px solid #333; border-radius: 4px;"></div>
+    </div>
+
+    <!-- TASK 33: Product Tester Panel -->
+    <div class="section">
+        <h2>🧪 Product Testing Suite</h2>
+        <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; margin-bottom: 10px;">
+            <button onclick="runAllProductTests()">Run All Product Tests</button>
+            <button onclick="testCategoryStaking()">Test Staking Only</button>
+            <button onclick="testCategoryVaults()">Test Vaults Only</button>
+            <button onclick="clearTestResults()">Clear Results</button>
+            <button onclick="showTestSummary()">Show Summary</button>
+            <button onclick="exportTestResults()">Export Results</button>
+        </div>
+        <div id="product-test-results" style="background: #000; padding: 10px; max-height: 400px; overflow-y: auto; border: 1px solid #333; border-radius: 4px; font-size: 11px;"></div>
+    </div>
+
+    <!-- TASK 34: Real Investment Flow Tracer -->
+    <div class="section">
+        <h2>🔄 Real Investment Flow Tracer</h2>
+        <div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 10px; margin-bottom: 10px;">
+            <button onclick="traceRealFlow()">Trace Real Investment Flow</button>
+            <button onclick="checkRealTradingState()">Check RealTrading State</button>
+        </div>
+        <div id="real-flow-results" style="background: #000; padding: 10px; min-height: 100px; border: 1px solid #333; border-radius: 4px;"></div>
+    </div>
+
+    <!-- Load product-tester.js -->
+    <script src="js/utils/product-tester.js"></script>
+
+    <script>
+        const log = (msg, type = 'info') => {
+            const logEl = document.getElementById('log');
+            const entry = document.createElement('div');
+            entry.className = `log-entry ${type}`;
+            entry.textContent = `[${new Date().toLocaleTimeString()}] ${msg}`;
+            logEl.appendChild(entry);
+            logEl.scrollTop = logEl.scrollHeight;
+        };
+
+        const checkElement = (doc, selector, name) => {
+            const el = doc.querySelector(selector);
+            const table = document.getElementById('elements-table');
+            const row = document.createElement('tr');
+
+            if (el) {
+                const rect = el.getBoundingClientRect();
+                const style = window.getComputedStyle(el);
+                const visible = style.display !== 'none' && style.visibility !== 'hidden' && rect.width > 0;
+
+                row.innerHTML = `
+                    <td>${name}</td>
+                    <td class="ok">✓ YES</td>
+                    <td>Top: ${Math.round(rect.top)}px, Left: ${Math.round(rect.left)}px</td>
+                    <td>${Math.round(rect.width)} x ${Math.round(rect.height)}px</td>
+                    <td class="${visible ? 'ok' : 'error'}">${visible ? '✓ Visible' : '✗ Hidden'}</td>
+                `;
+                log(`${name}: Found at (${Math.round(rect.left)}, ${Math.round(rect.top)}) - ${Math.round(rect.width)}x${Math.round(rect.height)}px`, 'ok');
+            } else {
+                row.innerHTML = `
+                    <td>${name}</td>
+                    <td class="error">✗ NO</td>
+                    <td>-</td>
+                    <td>-</td>
+                    <td class="error">N/A</td>
+                `;
+                log(`${name}: NOT FOUND!`, 'error');
+            }
+            table.appendChild(row);
+            return el;
+        };
+
+        const loadPreview = () => {
+            log('Loading index.html...', 'info');
+            document.getElementById('preview').src = 'index.html';
+        };
+
+        const runAllChecks = () => {
+            log('Starting layout checks...', 'info');
+            const iframe = document.getElementById('preview');
+
+            if (iframe.src === 'about:blank') {
+                log('Please load preview first!', 'warn');
+                return;
+            }
+
+            try {
+                const doc = iframe.contentDocument || iframe.contentWindow.document;
+
+                // Clear previous results
+                const table = document.getElementById('elements-table');
+                table.innerHTML = '<tr><th>Element</th><th>Exists</th><th>Position</th><th>Size</th><th>Visible</th></tr>';
+
+                // Check critical elements
+                const checks = [
+                    ['.header', 'Header'],
+                    ['.lang-selector', 'Language Selector'],
+                    ['.lang-dropdown', 'Language Dropdown'],
+                    ['#chart-container', 'Chart Container'],
+                    ['.chart-panel', 'Chart Panel'],
+                    ['canvas', 'Chart Canvas'],
+                    ['.order-book', 'Order Book'],
+                    ['#order-book-container', 'Order Book Container'],
+                    ['.trading-panel', 'Trading Panel'],
+                    ['.main-content', 'Main Content'],
+                    ['.sidebar', 'Sidebar'],
+                    ['#wallet-btn', 'Wallet Button'],
+                ];
+
+                checks.forEach(([sel, name]) => checkElement(doc, sel, name));
+
+                // Layout analysis
+                const results = document.getElementById('layout-results');
+                const header = doc.querySelector('.header');
+                const langSel = doc.querySelector('.lang-selector');
+                const chart = doc.querySelector('#chart-container, .chart-panel, .chart-section');
+                const orderBook = doc.querySelector('.order-book, #order-book-container');
+
+                let html = '<table>';
+
+                // Language selector position check
+                if (langSel && header) {
+                    const langRect = langSel.getBoundingClientRect();
+                    const headerRect = header.getBoundingClientRect();
+                    const inHeader = langRect.top >= headerRect.top && langRect.bottom <= headerRect.bottom + 50;
+                    html += `<tr><td>Lang Selector in Header</td><td class="${inHeader ? 'ok' : 'error'}">${inHeader ? '✓ OK' : '✗ WRONG - at bottom!'}</td></tr>`;
+                    log(`Language selector: ${inHeader ? 'In header ✓' : 'NOT in header! Top=' + langRect.top}`, inHeader ? 'ok' : 'error');
+                }
+
+                // Chart size check
+                if (chart) {
+                    const chartRect = chart.getBoundingClientRect();
+                    const goodSize = chartRect.width > 300 && chartRect.height > 200;
+                    html += `<tr><td>Chart Size</td><td class="${goodSize ? 'ok' : 'error'}">${chartRect.width}x${chartRect.height}px ${goodSize ? '✓' : '✗ Too small!'}</td></tr>`;
+                    log(`Chart: ${chartRect.width}x${chartRect.height}px`, goodSize ? 'ok' : 'error');
+                }
+
+                // Order book check
+                if (orderBook) {
+                    const obRect = orderBook.getBoundingClientRect();
+                    const visible = obRect.height > 100;
+                    html += `<tr><td>Order Book</td><td class="${visible ? 'ok' : 'error'}">${obRect.width}x${obRect.height}px ${visible ? '✓' : '✗ Cut off!'}</td></tr>`;
+                    log(`Order Book: ${obRect.width}x${obRect.height}px`, visible ? 'ok' : 'error');
+                }
+
+                html += '</table>';
+                results.innerHTML = html;
+
+                log('Checks complete!', 'ok');
+
+            } catch (e) {
+                log('Error: ' + e.message, 'error');
+            }
+        };
+
+        // Check files
+        const checkFiles = async () => {
+            const files = ['index.html', 'css/main.css', 'js/i18n.js', 'js/app.js'];
+            const results = document.getElementById('file-check');
+            let html = '<table><tr><th>File</th><th>Status</th><th>Size</th></tr>';
+
+            for (const file of files) {
+                try {
+                    const res = await fetch(file);
+                    const text = await res.text();
+                    html += `<tr><td>${file}</td><td class="ok">✓ OK</td><td>${(text.length / 1024).toFixed(1)} KB</td></tr>`;
+                } catch (e) {
+                    html += `<tr><td>${file}</td><td class="error">✗ Error</td><td>-</td></tr>`;
+                }
+            }
+
+            html += '</table>';
+            results.innerHTML = html;
+        };
+
+        // Auto-run on load
+        window.onload = () => {
+            log('Debug panel loaded', 'ok');
+            checkFiles();
+        };
+
+        // Listen for iframe load
+        document.getElementById('preview').onload = function() {
+            if (this.src !== 'about:blank') {
+                log('Preview loaded, running checks...', 'info');
+                setTimeout(runAllChecks, 500);
+            }
+        };
+
+        // ============================================
+        // TASK 31: Transaction Test Panel Functions
+        // ============================================
+
+        const getIframePortfolio = () => {
+            const iframe = document.getElementById('preview');
+            if (!iframe || iframe.src === 'about:blank') {
+                return null;
+            }
+            try {
+                return iframe.contentWindow.SimulatedPortfolio;
+            } catch (e) {
+                return null;
+            }
+        };
+
+        const logTransaction = (message, type = 'info') => {
+            const el = document.getElementById('transaction-results');
+            const time = new Date().toLocaleTimeString();
+            const color = { info: '#00aaff', ok: '#00ff88', error: '#ff4466', warn: '#ffaa00' }[type] || '#fff';
+            el.innerHTML += `<div style="color: ${color};">[${time}] ${message}</div>`;
+            el.scrollTop = el.scrollHeight;
+        };
+
+        const testDeposit = () => {
+            logTransaction('Testing deposit of $10...', 'info');
+            const portfolio = getIframePortfolio();
+
+            if (!portfolio) {
+                logTransaction('ERROR: SimulatedPortfolio not accessible. Load index.html first!', 'error');
+                return;
+            }
+
+            try {
+                const initialBalance = portfolio.getBalance();
+                logTransaction(`Initial balance: $${initialBalance.toFixed(2)}`, 'info');
+
+                const success = portfolio.deposit(10);
+
+                if (success) {
+                    const newBalance = portfolio.getBalance();
+                    logTransaction(`✓ Deposit successful! New balance: $${newBalance.toFixed(2)}`, 'ok');
+                    logTransaction(`Balance increased by: $${(newBalance - initialBalance).toFixed(2)}`, 'ok');
+                } else {
+                    logTransaction('✗ Deposit failed!', 'error');
+                }
+            } catch (e) {
+                logTransaction(`ERROR: ${e.message}`, 'error');
+            }
+        };
+
+        const testWithdraw = () => {
+            logTransaction('Testing withdrawal of $5...', 'info');
+            const portfolio = getIframePortfolio();
+
+            if (!portfolio) {
+                logTransaction('ERROR: SimulatedPortfolio not accessible. Load index.html first!', 'error');
+                return;
+            }
+
+            try {
+                const initialBalance = portfolio.getBalance();
+                logTransaction(`Initial balance: $${initialBalance.toFixed(2)}`, 'info');
+
+                if (initialBalance < 5) {
+                    logTransaction('WARNING: Insufficient balance. Adding funds first...', 'warn');
+                    portfolio.deposit(10);
+                }
+
+                const success = portfolio.withdraw(5);
+
+                if (success) {
+                    const newBalance = portfolio.getBalance();
+                    const actualWithdrawn = initialBalance - newBalance;
+                    logTransaction(`✓ Withdrawal successful! New balance: $${newBalance.toFixed(2)}`, 'ok');
+                    logTransaction(`Actual amount withdrawn (after fees): $${actualWithdrawn.toFixed(2)}`, 'info');
+
+                    // Check fee
+                    const fee = 5 - actualWithdrawn;
+                    if (fee > 0) {
+                        logTransaction(`Fee applied: $${fee.toFixed(2)}`, 'warn');
+                    }
+                } else {
+                    logTransaction('✗ Withdrawal failed!', 'error');
+                }
+            } catch (e) {
+                logTransaction(`ERROR: ${e.message}`, 'error');
+            }
+        };
+
+        const checkBalance = () => {
+            logTransaction('Checking portfolio balance...', 'info');
+            const portfolio = getIframePortfolio();
+
+            if (!portfolio) {
+                logTransaction('ERROR: SimulatedPortfolio not accessible. Load index.html first!', 'error');
+                return;
+            }
+
+            try {
+                const balance = portfolio.portfolio.simulatedBalance || 0;
+                const totalDeposited = portfolio.portfolio.totalDeposited || 0;
+                const totalEarnings = portfolio.portfolio.totalEarnings || 0;
+                const investments = portfolio.portfolio.investments.length || 0;
+
+                logTransaction(`Current Balance: $${balance.toFixed(2)}`, 'ok');
+                logTransaction(`Total Deposited: $${totalDeposited.toFixed(2)}`, 'info');
+                logTransaction(`Total Earnings: $${totalEarnings.toFixed(2)}`, 'info');
+                logTransaction(`Active Investments: ${investments}`, 'info');
+
+                const totalValue = portfolio.getTotalValue ? portfolio.getTotalValue() : balance;
+                logTransaction(`Total Portfolio Value: $${totalValue.toFixed(2)}`, 'ok');
+            } catch (e) {
+                logTransaction(`ERROR: ${e.message}`, 'error');
+            }
+        };
+
+        const testMicroWithdraw = () => {
+            logTransaction('Testing micro withdrawal of $0.50 (fee compatibility test)...', 'info');
+            const portfolio = getIframePortfolio();
+
+            if (!portfolio) {
+                logTransaction('ERROR: SimulatedPortfolio not accessible. Load index.html first!', 'error');
+                return;
+            }
+
+            try {
+                const initialBalance = portfolio.getBalance();
+                logTransaction(`Initial balance: $${initialBalance.toFixed(2)}`, 'info');
+
+                // Ensure sufficient balance
+                if (initialBalance < 2) {
+                    logTransaction('Adding $5 to test micro withdrawal...', 'info');
+                    portfolio.deposit(5);
+                }
+
+                const success = portfolio.withdraw(0.50);
+
+                if (success) {
+                    const newBalance = portfolio.getBalance();
+                    const actualWithdrawn = initialBalance - newBalance;
+                    logTransaction(`✓ Micro withdrawal successful!`, 'ok');
+                    logTransaction(`New balance: $${newBalance.toFixed(2)}`, 'info');
+
+                    // Check if flat fee blocked micro withdrawal
+                    const fee = 0.50 - actualWithdrawn;
+                    if (fee >= 0.50) {
+                        logTransaction(`WARNING: Flat fee ($${fee.toFixed(2)}) blocked micro withdrawal!`, 'error');
+                        logTransaction('Fee config may need adjustment for micro withdrawals', 'warn');
+                    } else if (fee > 0) {
+                        logTransaction(`Fee applied: $${fee.toFixed(2)}`, 'info');
+                    }
+                } else {
+                    logTransaction('✗ Micro withdrawal failed! Fee may be blocking small withdrawals.', 'error');
+                }
+            } catch (e) {
+                logTransaction(`ERROR: ${e.message}`, 'error');
+            }
+        };
+
+        // ============================================
+        // TASK 32: Yield Verification Panel Functions
+        // ============================================
+
+        const logYield = (message, type = 'info') => {
+            const el = document.getElementById('yield-results');
+            const time = new Date().toLocaleTimeString();
+            const color = { info: '#00aaff', ok: '#00ff88', error: '#ff4466', warn: '#ffaa00' }[type] || '#fff';
+            el.innerHTML += `<div style="color: ${color};">[${time}] ${message}</div>`;
+            el.scrollTop = el.scrollHeight;
+        };
+
+        const traceInvestmentFlow = () => {
+            logYield('=== TRACING INVESTMENT FLOW ===', 'info');
+            const portfolio = getIframePortfolio();
+
+            if (!portfolio) {
+                logYield('ERROR: Load index.html first!', 'error');
+                return;
+            }
+
+            try {
+                logYield('FLOW: User clicks invest button', 'info');
+                logYield('  → calls SimulatedPortfolio.invest(productId, amount)', 'info');
+                logYield('  → deducts amount from simulatedBalance', 'info');
+                logYield('  → adds investment to portfolio.investments[]', 'info');
+                logYield('  → startEarningsCalculator() begins auto-compound', 'ok');
+                logYield('  → earnings accrue based on APY', 'ok');
+                logYield('  → portfolio.totalEarnings updates', 'ok');
+
+                // Check if earnings calculator is running
+                if (portfolio.earningsInterval) {
+                    logYield('✓ Earnings calculator is ACTIVE', 'ok');
+                } else {
+                    logYield('✗ WARNING: Earnings calculator may not be running!', 'warn');
+                }
+
+                // Show auto-compound interval
+                const interval = portfolio.config?.autoCompoundInterval || 3600000;
+                logYield(`Auto-compound interval: ${interval / 1000 / 60} minutes`, 'info');
+
+            } catch (e) {
+                logYield(`ERROR: ${e.message}`, 'error');
+            }
+        };
+
+        const checkYieldCalculation = () => {
+            logYield('=== CHECKING YIELD CALCULATION ===', 'info');
+            const iframe = document.getElementById('preview');
+
+            try {
+                const portfolio = iframe.contentWindow.SimulatedPortfolio;
+                const simulator = iframe.contentWindow.InvestmentSimulator;
+
+                if (!simulator) {
+                    logYield('ERROR: InvestmentSimulator not loaded!', 'error');
+                    return;
+                }
+
+                // Get a sample product
+                const product = simulator.products[0];
+                const testAmount = 1000;
+                const apy = product.apy;
+
+                logYield(`Testing product: ${product.name}`, 'info');
+                logYield(`APY: ${apy}%`, 'info');
+                logYield(`Test amount: $${testAmount}`, 'info');
+
+                // Calculate expected returns
+                const dailyRate = apy / 100 / 365;
+                const dailyReturn = testAmount * dailyRate;
+                const monthlyReturn = testAmount * (Math.pow(1 + dailyRate, 30) - 1);
+                const yearlyReturn = testAmount * (apy / 100);
+
+                logYield(`Expected daily return: $${dailyReturn.toFixed(4)}`, 'ok');
+                logYield(`Expected monthly return (30d): $${monthlyReturn.toFixed(2)}`, 'ok');
+                logYield(`Expected yearly return: $${yearlyReturn.toFixed(2)}`, 'ok');
+
+                logYield('Formula: Compound Interest (continuous)', 'info');
+                logYield('Daily: amount × (APY/100/365)', 'info');
+                logYield('Period: amount × ((1 + daily_rate)^days - 1)', 'info');
+
+            } catch (e) {
+                logYield(`ERROR: ${e.message}`, 'error');
+            }
+        };
+
+        const showAccrualLog = () => {
+            logYield('=== EARNINGS ACCRUAL LOG ===', 'info');
+            const portfolio = getIframePortfolio();
+
+            if (!portfolio) {
+                logYield('ERROR: Load index.html first!', 'error');
+                return;
+            }
+
+            try {
+                const investments = portfolio.portfolio.investments;
+
+                if (investments.length === 0) {
+                    logYield('No active investments. Create an investment first.', 'warn');
+                    return;
+                }
+
+                logYield(`Found ${investments.length} active investment(s):`, 'info');
+
+                investments.forEach((inv, i) => {
+                    const elapsed = Date.now() - inv.timestamp;
+                    const days = elapsed / 1000 / 60 / 60 / 24;
+
+                    logYield(`\n[${i + 1}] ${inv.productId}`, 'ok');
+                    logYield(`  Initial: $${inv.amount.toFixed(2)}`, 'info');
+                    logYield(`  Current: $${(inv.currentValue || inv.amount).toFixed(2)}`, 'ok');
+                    logYield(`  Earnings: $${((inv.currentValue || inv.amount) - inv.amount).toFixed(2)}`, 'ok');
+                    logYield(`  Time elapsed: ${days.toFixed(2)} days`, 'info');
+                    logYield(`  Type: ${inv.type || 'simulated'}`, 'info');
+                });
+
+                const totalEarnings = portfolio.portfolio.totalEarnings || 0;
+                logYield(`\nTotal Earnings Across Portfolio: $${totalEarnings.toFixed(2)}`, 'ok');
+
+            } catch (e) {
+                logYield(`ERROR: ${e.message}`, 'error');
+            }
+        };
+
+        // ============================================
+        // TASK 33: Product Tester Functions
+        // ============================================
+
+        const logTest = (message, type = 'info') => {
+            const el = document.getElementById('product-test-results');
+            const time = new Date().toLocaleTimeString();
+            const color = { info: '#00aaff', ok: '#00ff88', error: '#ff4466', warn: '#ffaa00' }[type] || '#fff';
+            el.innerHTML += `<div style="color: ${color};">[${time}] ${message}</div>`;
+            el.scrollTop = el.scrollHeight;
+        };
+
+        // Listen for ProductTester logs
+        window.addEventListener('product-tester-log', (e) => {
+            logTest(e.detail.message, e.detail.type);
+        });
+
+        const runAllProductTests = async () => {
+            logTest('=== STARTING COMPREHENSIVE PRODUCT TEST SUITE ===', 'info');
+            logTest('This will test all investment products...', 'info');
+
+            const iframe = document.getElementById('preview');
+            if (!iframe || iframe.src === 'about:blank') {
+                logTest('ERROR: Load index.html first!', 'error');
+                return;
+            }
+
+            try {
+                // Access ProductTester from iframe
+                const tester = iframe.contentWindow.ProductTester;
+                if (!tester) {
+                    logTest('ERROR: ProductTester not loaded in iframe!', 'error');
+                    return;
+                }
+
+                const results = await tester.runAllTests();
+                logTest(`\n=== TESTS COMPLETE ===`, 'ok');
+
+            } catch (e) {
+                logTest(`ERROR: ${e.message}`, 'error');
+            }
+        };
+
+        const testCategoryStaking = async () => {
+            logTest('Testing STAKING products only...', 'info');
+            const iframe = document.getElementById('preview');
+
+            try {
+                const tester = iframe.contentWindow.ProductTester;
+                await tester.testCategoryOnly('staking');
+            } catch (e) {
+                logTest(`ERROR: ${e.message}`, 'error');
+            }
+        };
+
+        const testCategoryVaults = async () => {
+            logTest('Testing VAULT products only...', 'info');
+            const iframe = document.getElementById('preview');
+
+            try {
+                const tester = iframe.contentWindow.ProductTester;
+                await tester.testCategoryOnly('vaults');
+            } catch (e) {
+                logTest(`ERROR: ${e.message}`, 'error');
+            }
+        };
+
+        const clearTestResults = () => {
+            const el = document.getElementById('product-test-results');
+            el.innerHTML = '<div style="color: #00ff88;">Test results cleared.</div>';
+
+            const iframe = document.getElementById('preview');
+            if (iframe && iframe.contentWindow.ProductTester) {
+                iframe.contentWindow.ProductTester.clearResults();
+            }
+        };
+
+        const showTestSummary = () => {
+            const iframe = document.getElementById('preview');
+
+            try {
+                const tester = iframe.contentWindow.ProductTester;
+                const results = tester.getResults();
+
+                if (results.length === 0) {
+                    logTest('No test results yet. Run tests first.', 'warn');
+                    return;
+                }
+
+                logTest('\n=== TEST SUMMARY ===', 'info');
+                const summary = tester.generateSummary();
+
+            } catch (e) {
+                logTest(`ERROR: ${e.message}`, 'error');
+            }
+        };
+
+        const exportTestResults = () => {
+            const iframe = document.getElementById('preview');
+
+            try {
+                const tester = iframe.contentWindow.ProductTester;
+                const results = tester.getResults();
+
+                if (results.length === 0) {
+                    logTest('No results to export.', 'warn');
+                    return;
+                }
+
+                const json = JSON.stringify(results, null, 2);
+                const blob = new Blob([json], { type: 'application/json' });
+                const url = URL.createObjectURL(blob);
+                const a = document.createElement('a');
+                a.href = url;
+                a.download = `obelisk-test-results-${Date.now()}.json`;
+                a.click();
+
+                logTest(`Exported ${results.length} test results`, 'ok');
+
+            } catch (e) {
+                logTest(`ERROR: ${e.message}`, 'error');
+            }
+        };
+
+        // ============================================
+        // TASK 34: Real Investment Flow Tracer
+        // ============================================
+
+        const logRealFlow = (message, type = 'info') => {
+            const el = document.getElementById('real-flow-results');
+            const time = new Date().toLocaleTimeString();
+            const color = { info: '#00aaff', ok: '#00ff88', error: '#ff4466', warn: '#ffaa00' }[type] || '#fff';
+            el.innerHTML += `<div style="color: ${color};">[${time}] ${message}</div>`;
+            el.scrollTop = el.scrollHeight;
+        };
+
+        const traceRealFlow = () => {
+            logRealFlow('=== REAL INVESTMENT FLOW DIAGRAM ===', 'info');
+            logRealFlow('\n[1] User connects wallet', 'info');
+            logRealFlow('    → MetaMask/WalletConnect popup', 'info');
+            logRealFlow('    → User approves connection', 'ok');
+            logRealFlow('    → Address stored in RealTrading.address', 'ok');
+
+            logRealFlow('\n[2] User clicks "Invest with Real Funds"', 'info');
+            logRealFlow('    → real-trading.js validates input', 'info');
+            logRealFlow('    → Checks wallet balance', 'info');
+            logRealFlow('    → Checks Hyperliquid account', 'ok');
+
+            logRealFlow('\n[3] Transaction signing', 'warn');
+            logRealFlow('    → EIP-712 signature request (Hyperliquid)', 'warn');
+            logRealFlow('    → User signs in wallet', 'warn');
+            logRealFlow('    → Signature sent to Hyperliquid API', 'ok');
+
+            logRealFlow('\n[4] Backend processing (server-ultra.js)', 'info');
+            logRealFlow('    → Receives transaction from frontend', 'info');
+            logRealFlow('    → Validates signature', 'info');
+            logRealFlow('    → Submits to blockchain (Arbitrum/Hyperliquid)', 'ok');
+
+            logRealFlow('\n[5] On-chain execution', 'ok');
+            logRealFlow('    → Transaction confirmed on Arbitrum', 'ok');
+            logRealFlow('    → Funds moved to Hyperliquid', 'ok');
+            logRealFlow('    → Investment position created', 'ok');
+
+            logRealFlow('\n[6] UI update', 'ok');
+            logRealFlow('    → WebSocket receives update', 'ok');
+            logRealFlow('    → Portfolio refreshes automatically', 'ok');
+            logRealFlow('    → User sees new investment', 'ok');
+
+            logRealFlow('\n=== END OF FLOW ===', 'info');
+        };
+
+        const checkRealTradingState = () => {
+            logRealFlow('=== CHECKING REAL TRADING STATE ===', 'info');
+            const iframe = document.getElementById('preview');
+
+            if (!iframe || iframe.src === 'about:blank') {
+                logRealFlow('ERROR: Load index.html first!', 'error');
+                return;
+            }
+
+            try {
+                const rt = iframe.contentWindow.RealTrading;
+
+                if (!rt) {
+                    logRealFlow('ERROR: RealTrading module not loaded!', 'error');
+                    return;
+                }
+
+                logRealFlow(`Connected: ${rt.connected ? 'YES' : 'NO'}`, rt.connected ? 'ok' : 'warn');
+                logRealFlow(`Wallet Address: ${rt.address || 'Not connected'}`, rt.address ? 'ok' : 'warn');
+
+                if (rt.hlBalance) {
+                    logRealFlow(`Hyperliquid Equity: $${rt.hlBalance.equity.toFixed(2)}`, 'ok');
+                    logRealFlow(`Available: $${rt.hlBalance.available.toFixed(2)}`, 'ok');
+                    logRealFlow(`Margin Used: $${rt.hlBalance.margin.toFixed(2)}`, 'info');
+                } else {
+                    logRealFlow('No Hyperliquid balance data', 'warn');
+                }
+
+                logRealFlow(`Active Positions: ${rt.positions?.length || 0}`, 'info');
+
+                if (rt.positions && rt.positions.length > 0) {
+                    rt.positions.forEach((pos, i) => {
+                        logRealFlow(`  [${i + 1}] ${pos.coin}: ${pos.size > 0 ? 'LONG' : 'SHORT'} ${Math.abs(pos.size)} @ $${pos.entryPrice}`, 'info');
+                        logRealFlow(`      Unrealized PnL: $${pos.unrealizedPnl.toFixed(2)}`, pos.unrealizedPnl >= 0 ? 'ok' : 'error');
+                    });
+                }
+
+                logRealFlow(`WebSocket: ${rt.ws ? 'CONNECTED' : 'DISCONNECTED'}`, rt.ws ? 'ok' : 'warn');
+
+                logRealFlow('\nRealTrading object exists and is accessible ✓', 'ok');
+
+            } catch (e) {
+                logRealFlow(`ERROR: ${e.message}`, 'error');
+            }
+        };
+    </script>
+</body>
+</html>

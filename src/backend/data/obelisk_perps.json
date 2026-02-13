@@ -1,0 +1,49 @@
+{
+  "positions": [
+    [
+      "venue_mixbot_OP",
+      {
+        "id": "PERP_1770937235194_ko7k4x",
+        "userId": "venue_mixbot",
+        "coin": "OP",
+        "side": "sell",
+        "size": 5,
+        "margin": 2.5,
+        "leverage": 2,
+        "entryPrice": 0.1823,
+        "liquidationPrice": 0.264335,
+        "tp": null,
+        "sl": null,
+        "venue": "PAPER",
+        "txHash": null,
+        "source": "mixbot",
+        "openedAt": 1770937235194,
+        "lastFundingTime": 1770937235194,
+        "accumulatedFunding": 0,
+        "realizedPnl": -0.0025
+      }
+    ]
+  ],
+  "tpslOrders": [],
+  "liquidityPool": {
+    "USDC": 100101.737678276,
+    "totalLongs": 1.2434497875801753e-14,
+    "totalShorts": 5,
+    "openInterest": 5.000000000000041
+  },
+  "stats": {
+    "totalTrades": 102,
+    "totalVolume": 894.391726867599,
+    "totalLiquidations": 1,
+    "feesCollected": 1.1270584454489003,
+    "fundingCollected": 3.9949376514833306,
+    "pnlPaid": -78.77532183622387,
+    "byVenue": {
+      "PAPER": 41,
+      "GMX": 0,
+      "HYPERLIQUID": 0
+    }
+  },
+  "lastFundingTime": 1770642393406,
+  "savedAt": "2026-02-12T23:00:35.195Z"
+}

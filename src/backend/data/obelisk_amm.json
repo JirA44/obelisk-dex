@@ -1,0 +1,191 @@
+{
+  "pools": [
+    [
+      "BTC/USDC",
+      {
+        "tokenA": "BTC",
+        "tokenB": "USDC",
+        "reserveA": 0.5002318248331076,
+        "reserveB": 47478.152791391985,
+        "k": 23750.083010543112,
+        "lpTokens": 154.1103500742244,
+        "providers": {
+          "OBELISK_PROTOCOL": 154.1103500742244
+        },
+        "createdAt": 1768852091411,
+        "totalSwaps": 8,
+        "totalVolume": 53.42428349000001,
+        "feesEarned": 0.05005533858
+      }
+    ],
+    [
+      "ETH/USDC",
+      {
+        "tokenA": "ETH",
+        "tokenB": "USDC",
+        "reserveA": 14.958637956006028,
+        "reserveB": 48133.303123830185,
+        "k": 720008.6550560697,
+        "lpTokens": 848.5281374238571,
+        "providers": {
+          "OBELISK_PROTOCOL": 848.5281374238571
+        },
+        "createdAt": 1768852091411,
+        "totalSwaps": 18,
+        "totalVolume": 192.49400761341434,
+        "feesEarned": 0.489072984190243
+      }
+    ],
+    [
+      "SOL/USDC",
+      {
+        "tokenA": "SOL",
+        "tokenB": "USDC",
+        "reserveA": 251.91012248936636,
+        "reserveB": 44659.86201432933,
+        "k": 11250271.310387902,
+        "lpTokens": 3354.1019662496847,
+        "providers": {
+          "OBELISK_PROTOCOL": 3354.1019662496847
+        },
+        "createdAt": 1768852091411,
+        "totalSwaps": 43,
+        "totalVolume": 263.45617605,
+        "feesEarned": 0.034652052659999995
+      }
+    ],
+    [
+      "ARB/USDC",
+      {
+        "tokenA": "ARB",
+        "tokenB": "USDC",
+        "reserveA": 50690.220546295765,
+        "reserveB": 39457.033336985,
+        "k": 2000085721.9543138,
+        "lpTokens": 44721.359549995796,
+        "providers": {
+          "OBELISK_PROTOCOL": 44721.359549995796
+        },
+        "createdAt": 1768852091411,
+        "totalSwaps": 34,
+        "totalVolume": 144.24210666870002,
+        "feesEarned": 2.1491099131875004
+      }
+    ],
+    [
+      "LINK/USDC",
+      {
+        "tokenA": "LINK",
+        "tokenB": "USDC",
+        "reserveA": 2000,
+        "reserveB": 40000,
+        "k": 80000000,
+        "lpTokens": 8944.27190999916,
+        "providers": {
+          "OBELISK_PROTOCOL": 8944.27190999916
+        },
+        "createdAt": 1768852091411,
+        "totalSwaps": 0,
+        "totalVolume": 0,
+        "feesEarned": 0
+      }
+    ],
+    [
+      "DOGE/USDC",
+      {
+        "tokenA": "DOGE",
+        "tokenB": "USDC",
+        "reserveA": 100543.2407203053,
+        "reserveB": 34811.49260148272,
+        "k": 3500060280.464004,
+        "lpTokens": 59160.79783099616,
+        "providers": {
+          "OBELISK_PROTOCOL": 59160.79783099616
+        },
+        "createdAt": 1768852091412,
+        "totalSwaps": 12,
+        "totalVolume": 76.46048398763,
+        "feesEarned": 1.6955286134463001
+      }
+    ],
+    [
+      "XRP/USDC",
+      {
+        "tokenA": "XRP",
+        "tokenB": "USDC",
+        "reserveA": 15085.581284999998,
+        "reserveB": 37287.896900051135,
+        "k": 562509599.6324209,
+        "lpTokens": 23717.082451262846,
+        "providers": {
+          "OBELISK_PROTOCOL": 23717.082451262846
+        },
+        "createdAt": 1768852091412,
+        "totalSwaps": 30,
+        "totalVolume": 164.6165827851,
+        "feesEarned": 0.25674385500000013
+      }
+    ],
+    [
+      "ADA/USDC",
+      {
+        "tokenA": "ADA",
+        "tokenB": "USDC",
+        "reserveA": 40000,
+        "reserveB": 36000,
+        "k": 1440000000,
+        "lpTokens": 37947.33192202055,
+        "providers": {
+          "OBELISK_PROTOCOL": 37947.33192202055
+        },
+        "createdAt": 1768852091412,
+        "totalSwaps": 0,
+        "totalVolume": 0,
+        "feesEarned": 0
+      }
+    ],
+    [
+      "AVAX/USDC",
+      {
+        "tokenA": "AVAX",
+        "tokenB": "USDC",
+        "reserveA": 1000,
+        "reserveB": 35000,
+        "k": 35000000,
+        "lpTokens": 5916.079783099616,
+        "providers": {
+          "OBELISK_PROTOCOL": 5916.079783099616
+        },
+        "createdAt": 1768852091412,
+        "totalSwaps": 0,
+        "totalVolume": 0,
+        "feesEarned": 0
+      }
+    ],
+    [
+      "OP/USDC",
+      {
+        "tokenA": "OP",
+        "tokenB": "USDC",
+        "reserveA": 20000,
+        "reserveB": 34000,
+        "k": 680000000,
+        "lpTokens": 26076.809620810596,
+        "providers": {
+          "OBELISK_PROTOCOL": 26076.809620810596
+        },
+        "createdAt": 1768852091412,
+        "totalSwaps": 0,
+        "totalVolume": 0,
+        "feesEarned": 0
+      }
+    ]
+  ],
+  "stats": {
+    "totalSwaps": 145,
+    "totalVolume": 894.6936405948442,
+    "feesCollected": 0.7791937928440071,
+    "tvl": 625962.6864636675
+  },
+  "savedAt": "2026-01-23T00:21:51.162Z"
+}

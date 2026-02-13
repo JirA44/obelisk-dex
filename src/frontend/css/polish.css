@@ -1,0 +1,826 @@
+/* ═══════════════════════════════════════════════════════════════════════════════
+   OBELISK DEX - POLISH CSS
+   Chess.com inspired - Clean, Smooth, Pleasant
+   ═══════════════════════════════════════════════════════════════════════════════ */
+
+/* ─────────────────────────────────────────────────────────────────────────────
+   GLOBAL SMOOTH TRANSITIONS
+   ───────────────────────────────────────────────────────────────────────────── */
+
+* {
+    transition: background-color 0.2s ease,
+                border-color 0.2s ease,
+                box-shadow 0.2s ease,
+                transform 0.15s ease,
+                opacity 0.2s ease;
+}
+
+/* Disable transitions for specific elements that shouldn't animate */
+canvas, video, iframe, img {
+    transition: none !important;
+}
+
+/* ─────────────────────────────────────────────────────────────────────────────
+   SMOOTH SCROLLING
+   ───────────────────────────────────────────────────────────────────────────── */
+
+html {
+    scroll-behavior: smooth;
+}
+
+/* Custom scrollbar - chess.com style */
+::-webkit-scrollbar {
+    width: 8px;
+    height: 8px;
+}
+
+::-webkit-scrollbar-track {
+    background: rgba(0, 0, 0, 0.2);
+    border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb {
+    background: linear-gradient(180deg, #00d4aa, #00a884);
+    border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+    background: linear-gradient(180deg, #00ffcc, #00d4aa);
+}
+
+/* ─────────────────────────────────────────────────────────────────────────────
+   BUTTON POLISH
+   ───────────────────────────────────────────────────────────────────────────── */
+
+button, .btn, [role="button"] {
+    position: relative;
+    overflow: hidden;
+    cursor: pointer;
+    font-weight: 600;
+    letter-spacing: 0.02em;
+}
+
+/* Ripple effect on click */
+button::after, .btn::after {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 0;
+    height: 0;
+    background: rgba(255, 255, 255, 0.3);
+    border-radius: 50%;
+    transform: translate(-50%, -50%);
+    opacity: 0;
+}
+
+button:active::after, .btn:active::after {
+    width: 200px;
+    height: 200px;
+    opacity: 0;
+    transition: width 0.4s ease-out, height 0.4s ease-out, opacity 0.4s ease-out;
+}
+
+/* Primary button glow */
+.btn-primary, button[style*="00d4aa"], button[style*="00ff88"] {
+    box-shadow: 0 4px 15px rgba(0, 212, 170, 0.3);
+}
+
+.btn-primary:hover, button[style*="00d4aa"]:hover, button[style*="00ff88"]:hover {
+    box-shadow: 0 6px 25px rgba(0, 212, 170, 0.5);
+    transform: translateY(-2px);
+}
+
+.btn-primary:active, button[style*="00d4aa"]:active, button[style*="00ff88"]:active {
+    transform: translateY(0);
+    box-shadow: 0 2px 10px rgba(0, 212, 170, 0.4);
+}
+
+/* ─────────────────────────────────────────────────────────────────────────────
+   CARD POLISH
+   ───────────────────────────────────────────────────────────────────────────── */
+
+/* Smooth card hover */
+[style*="border-radius"][style*="background"] {
+    transition: transform 0.25s cubic-bezier(0.4, 0, 0.2, 1),
+                box-shadow 0.25s cubic-bezier(0.4, 0, 0.2, 1),
+                border-color 0.25s ease !important;
+}
+
+/* Card lift effect */
+.card, .combo-card, [data-id] {
+    transition: transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1),
+                box-shadow 0.3s ease !important;
+}
+
+.card:hover, .combo-card:hover {
+    transform: translateY(-4px) scale(1.01);
+    box-shadow: 0 12px 40px rgba(0, 212, 170, 0.15),
+                0 4px 12px rgba(0, 0, 0, 0.3);
+}
+
+/* ─────────────────────────────────────────────────────────────────────────────
+   INPUT POLISH
+   ───────────────────────────────────────────────────────────────────────────── */
+
+input, select, textarea {
+    transition: border-color 0.2s ease,
+                box-shadow 0.2s ease,
+                background-color 0.2s ease !important;
+}
+
+input:focus, select:focus, textarea:focus {
+    outline: none;
+    border-color: #00d4aa !important;
+    box-shadow: 0 0 0 3px rgba(0, 212, 170, 0.2),
+                0 0 20px rgba(0, 212, 170, 0.1) !important;
+}
+
+/* Number input spinner hide */
+input[type="number"]::-webkit-inner-spin-button,
+input[type="number"]::-webkit-outer-spin-button {
+    -webkit-appearance: none;
+    margin: 0;
+}
+
+/* ─────────────────────────────────────────────────────────────────────────────
+   TAB NAVIGATION POLISH
+   ───────────────────────────────────────────────────────────────────────────── */
+
+.nav-tabs, .tab-nav, [role="tablist"] {
+    position: relative;
+}
+
+.nav-tab, .tab-btn, [role="tab"] {
+    position: relative;
+    transition: color 0.2s ease, background-color 0.2s ease !important;
+}
+
+.nav-tab::after, .tab-btn::after, [role="tab"]::after {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: 50%;
+    width: 0;
+    height: 3px;
+    background: linear-gradient(90deg, #00d4aa, #00ff88);
+    border-radius: 3px 3px 0 0;
+    transform: translateX(-50%);
+    transition: width 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.nav-tab.active::after, .tab-btn.active::after, [role="tab"][aria-selected="true"]::after {
+    width: 80%;
+}
+
+.nav-tab:hover::after, .tab-btn:hover::after, [role="tab"]:hover::after {
+    width: 60%;
+}
+
+/* ─────────────────────────────────────────────────────────────────────────────
+   LOADING STATES
+   ───────────────────────────────────────────────────────────────────────────── */
+
+/* Skeleton loading */
+.skeleton, .loading {
+    background: linear-gradient(90deg,
+        rgba(255, 255, 255, 0.05) 25%,
+        rgba(255, 255, 255, 0.1) 50%,
+        rgba(255, 255, 255, 0.05) 75%
+    );
+    background-size: 200% 100%;
+    animation: skeleton-loading 1.5s infinite;
+}
+
+@keyframes skeleton-loading {
+    0% { background-position: 200% 0; }
+    100% { background-position: -200% 0; }
+}
+
+/* Pulse animation */
+.pulse {
+    animation: pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+}
+
+/* pulse and spin defined in main.css */
+
+/* Spin animation for loaders */
+.spin, .loading-spinner {
+    animation: spin 1s linear infinite;
+}
+
+/* ─────────────────────────────────────────────────────────────────────────────
+   NOTIFICATION / TOAST POLISH
+   ───────────────────────────────────────────────────────────────────────────── */
+
+.notification, .toast, [role="alert"] {
+    animation: slide-in 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+@keyframes slide-in {
+    from {
+        transform: translateX(100%);
+        opacity: 0;
+    }
+    to {
+        transform: translateX(0);
+        opacity: 1;
+    }
+}
+
+/* ─────────────────────────────────────────────────────────────────────────────
+   MODAL POLISH
+   ───────────────────────────────────────────────────────────────────────────── */
+
+/* Modal backdrop */
+[style*="position:fixed"][style*="background:rgba"] {
+    animation: fade-in 0.2s ease;
+}
+
+@keyframes fade-in {
+    from { opacity: 0; }
+    to { opacity: 1; }
+}
+
+/* Modal content */
+[style*="position:fixed"] > [style*="background:#1a1a2e"],
+[style*="position:fixed"] > [style*="background:#0d0d1a"] {
+    animation: modal-pop 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+@keyframes modal-pop {
+    from {
+        transform: scale(0.9) translateY(20px);
+        opacity: 0;
+    }
+    to {
+        transform: scale(1) translateY(0);
+        opacity: 1;
+    }
+}
+
+/* ─────────────────────────────────────────────────────────────────────────────
+   NUMBER ANIMATIONS
+   ───────────────────────────────────────────────────────────────────────────── */
+
+/* Animated counters */
+.counter, [data-counter] {
+    display: inline-block;
+    transition: transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+.counter.updated {
+    animation: number-pop 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+@keyframes number-pop {
+    0% { transform: scale(1); }
+    50% { transform: scale(1.2); color: #00ff88; }
+    100% { transform: scale(1); }
+}
+
+/* ─────────────────────────────────────────────────────────────────────────────
+   PROGRESS BARS
+   ───────────────────────────────────────────────────────────────────────────── */
+
+.progress-bar, [role="progressbar"] {
+    position: relative;
+    overflow: hidden;
+}
+
+.progress-bar::after, [role="progressbar"]::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: linear-gradient(90deg,
+        transparent 0%,
+        rgba(255, 255, 255, 0.2) 50%,
+        transparent 100%
+    );
+    animation: progress-shine 2s infinite;
+}
+
+@keyframes progress-shine {
+    from { transform: translateX(-100%); }
+    to { transform: translateX(100%); }
+}
+
+/* ─────────────────────────────────────────────────────────────────────────────
+   HOVER GLOW EFFECTS
+   ───────────────────────────────────────────────────────────────────────────── */
+
+/* Subtle glow on interactive elements */
+a:hover, button:hover, .clickable:hover {
+    text-shadow: 0 0 10px rgba(0, 212, 170, 0.5);
+}
+
+/* Icon hover effects */
+[style*="font-size"][style*="rem"]:hover,
+.icon:hover, .emoji:hover {
+    transform: scale(1.1);
+    filter: drop-shadow(0 0 8px rgba(0, 212, 170, 0.6));
+}
+
+/* ─────────────────────────────────────────────────────────────────────────────
+   BADGE ANIMATIONS
+   ───────────────────────────────────────────────────────────────────────────── */
+
+.badge, .tag, .chip {
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.badge:hover, .tag:hover, .chip:hover {
+    transform: scale(1.05);
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+}
+
+/* New badge pulse */
+.badge-new, .badge-live {
+    animation: badge-pulse 2s infinite;
+}
+
+@keyframes badge-pulse {
+    0%, 100% { box-shadow: 0 0 0 0 rgba(0, 255, 136, 0.4); }
+    50% { box-shadow: 0 0 0 8px rgba(0, 255, 136, 0); }
+}
+
+/* ─────────────────────────────────────────────────────────────────────────────
+   TABLE POLISH
+   ───────────────────────────────────────────────────────────────────────────── */
+
+table {
+    border-collapse: separate;
+    border-spacing: 0;
+}
+
+tr {
+    transition: background-color 0.15s ease;
+}
+
+tbody tr:hover {
+    background-color: rgba(0, 212, 170, 0.08) !important;
+}
+
+/* ─────────────────────────────────────────────────────────────────────────────
+   TOOLTIP POLISH
+   ───────────────────────────────────────────────────────────────────────────── */
+
+[title] {
+    position: relative;
+}
+
+/* Custom tooltip styles would go here */
+
+/* ─────────────────────────────────────────────────────────────────────────────
+   FOCUS VISIBLE (Accessibility)
+   ───────────────────────────────────────────────────────────────────────────── */
+
+:focus-visible {
+    outline: 2px solid #00d4aa;
+    outline-offset: 2px;
+}
+
+/* ─────────────────────────────────────────────────────────────────────────────
+   CHESS.COM STYLE SPECIFIC
+   ───────────────────────────────────────────────────────────────────────────── */
+
+/* Success green glow */
+.success, [style*="00ff88"], [style*="00d4aa"] {
+    text-shadow: 0 0 20px currentColor;
+}
+
+/* Danger red glow */
+.danger, .error, [style*="ff4444"], [style*="ff6464"] {
+    text-shadow: 0 0 15px currentColor;
+}
+
+/* Clean shadows for elevated elements */
+.elevated, .card-elevated {
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.12),
+                0 4px 6px rgba(0, 0, 0, 0.16),
+                0 8px 16px rgba(0, 0, 0, 0.2);
+}
+
+/* Subtle border glow on hover */
+[style*="border:1px solid"]:hover {
+    box-shadow: 0 0 0 1px rgba(0, 212, 170, 0.3);
+}
+
+/* ─────────────────────────────────────────────────────────────────────────────
+   SMOOTH PAGE TRANSITIONS
+   ───────────────────────────────────────────────────────────────────────────── */
+
+.tab-content, section[id^="tab-"] {
+    animation: content-fade 0.3s ease;
+}
+
+@keyframes content-fade {
+    from {
+        opacity: 0;
+        transform: translateY(10px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* ─────────────────────────────────────────────────────────────────────────────
+   GRID ANIMATIONS
+   ───────────────────────────────────────────────────────────────────────────── */
+
+.grid > *, [style*="display:grid"] > * {
+    animation: grid-item-in 0.4s cubic-bezier(0.4, 0, 0.2, 1) backwards;
+}
+
+.grid > *:nth-child(1) { animation-delay: 0.05s; }
+.grid > *:nth-child(2) { animation-delay: 0.1s; }
+.grid > *:nth-child(3) { animation-delay: 0.15s; }
+.grid > *:nth-child(4) { animation-delay: 0.2s; }
+.grid > *:nth-child(5) { animation-delay: 0.25s; }
+.grid > *:nth-child(6) { animation-delay: 0.3s; }
+
+@keyframes grid-item-in {
+    from {
+        opacity: 0;
+        transform: translateY(20px) scale(0.95);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0) scale(1);
+    }
+}
+
+/* ─────────────────────────────────────────────────────────────────────────────
+   INTERACTIVE FEEDBACK
+   ───────────────────────────────────────────────────────────────────────────── */
+
+/* Click feedback */
+button:active, .btn:active, .clickable:active {
+    transform: scale(0.98);
+}
+
+/* Hover lift for cards */
+[onclick]:not(button):hover {
+    cursor: pointer;
+}
+
+/* Disabled state */
+[disabled], .disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+    pointer-events: none;
+}
+
+/* ─────────────────────────────────────────────────────────────────────────────
+   TYPOGRAPHY POLISH
+   ───────────────────────────────────────────────────────────────────────────── */
+
+h1, h2, h3, h4, h5, h6 {
+    letter-spacing: -0.02em;
+    font-weight: 700;
+}
+
+/* Gradient text for headings */
+.gradient-text, h1[style*="color:#00"] {
+    background: linear-gradient(135deg, #00ff88, #00d4aa);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+}
+
+/* ─────────────────────────────────────────────────────────────────────────────
+   FINAL TOUCHES
+   ───────────────────────────────────────────────────────────────────────────── */
+
+/* Smooth image loading */
+img {
+    opacity: 1;
+    transition: opacity 0.3s ease;
+}
+
+img[loading="lazy"] {
+    opacity: 0;
+}
+
+img[loading="lazy"].loaded {
+    opacity: 1;
+}
+
+/* Selection color */
+::selection {
+    background: rgba(0, 212, 170, 0.3);
+    color: #fff;
+}
+
+/* Print styles */
+@media print {
+    * {
+        animation: none !important;
+        transition: none !important;
+    }
+}
+
+/* ─────────────────────────────────────────────────────────────────────────────
+   GLASSMORPHISM
+   ───────────────────────────────────────────────────────────────────────────── */
+
+.glass-card {
+    background: rgba(10, 10, 20, 0.55);
+    backdrop-filter: blur(16px);
+    -webkit-backdrop-filter: blur(16px);
+    border: 1px solid rgba(201, 162, 39, 0.15);
+    border-radius: 16px;
+    padding: 20px;
+    transition: transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1),
+                box-shadow 0.3s ease,
+                border-color 0.3s ease;
+}
+
+.glass-card:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 12px 40px rgba(0, 0, 0, 0.4), 0 0 20px rgba(201, 162, 39, 0.1);
+    border-color: rgba(201, 162, 39, 0.3);
+}
+
+/* ─────────────────────────────────────────────────────────────────────────────
+   FADE SLIDE UP (staggered)
+   ───────────────────────────────────────────────────────────────────────────── */
+
+.fade-slide-up {
+    animation: fadeSlideUp 0.5s cubic-bezier(0.4, 0, 0.2, 1) backwards;
+    animation-delay: calc(var(--stagger, 0) * 0.08s);
+}
+
+@keyframes fadeSlideUp {
+    from {
+        opacity: 0;
+        transform: translateY(24px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* ─────────────────────────────────────────────────────────────────────────────
+   DASHBOARD STYLES
+   ───────────────────────────────────────────────────────────────────────────── */
+
+.dashboard-container {
+    max-width: 1100px;
+    margin: 0 auto;
+    padding: 20px;
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+
+.dash-hero {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 28px 32px;
+}
+
+.dash-hero-value {
+    font-size: 2.2rem;
+    font-weight: 700;
+    color: var(--text-primary);
+    letter-spacing: -0.02em;
+    margin: 4px 0;
+}
+
+.dash-hero-pnl {
+    font-size: 15px;
+    font-weight: 600;
+}
+
+.dashboard-cards {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 16px;
+}
+
+.dash-card {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    padding: 18px 20px;
+}
+
+.dash-card-icon {
+    font-size: 28px;
+    flex-shrink: 0;
+}
+
+.dash-card-label {
+    font-size: 12px;
+    color: var(--text-muted);
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    margin-bottom: 2px;
+}
+
+.dash-card-value {
+    font-size: 18px;
+    font-weight: 700;
+    color: var(--text-primary);
+}
+
+.dash-two-col {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 20px;
+}
+
+.dash-section {
+    padding: 20px;
+}
+
+.dash-section-title {
+    font-size: 15px;
+    color: var(--text-primary);
+    margin: 0 0 16px;
+    font-weight: 600;
+}
+
+.dash-mover-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 8px 0;
+    border-bottom: 1px solid rgba(201, 162, 39, 0.08);
+}
+
+.dash-mover-row:last-child {
+    border-bottom: none;
+}
+
+.dash-mover-symbol {
+    font-weight: 600;
+    color: var(--text-primary);
+    min-width: 50px;
+}
+
+.dash-mover-change {
+    font-weight: 600;
+    font-size: 13px;
+    min-width: 70px;
+    text-align: right;
+}
+
+.dash-actions-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 10px;
+}
+
+.dash-action-btn {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    padding: 14px 16px;
+    background: rgba(201, 162, 39, 0.1);
+    border: 1px solid rgba(201, 162, 39, 0.2);
+    border-radius: 12px;
+    color: var(--text-primary);
+    font-size: 14px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.dash-action-btn:hover {
+    background: rgba(201, 162, 39, 0.2);
+    border-color: rgba(201, 162, 39, 0.4);
+    transform: translateY(-2px);
+}
+
+.dash-action-icon {
+    font-size: 18px;
+}
+
+.dash-activity-item {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 10px 0;
+    border-bottom: 1px solid rgba(201, 162, 39, 0.08);
+    font-size: 14px;
+    color: var(--text-primary);
+}
+
+.dash-activity-item:last-child {
+    border-bottom: none;
+}
+
+.dash-watchlist-item {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 10px 0;
+    border-bottom: 1px solid rgba(201, 162, 39, 0.08);
+    cursor: pointer;
+    transition: background 0.15s;
+    padding: 10px 8px;
+    border-radius: 8px;
+}
+
+.dash-watchlist-item:hover {
+    background: rgba(201, 162, 39, 0.08);
+}
+
+.dash-pair-name {
+    font-weight: 600;
+    color: var(--text-primary);
+}
+
+.dash-pair-price {
+    color: var(--text-secondary);
+    font-family: var(--font-mono);
+}
+
+/* Dashboard responsive */
+@media (max-width: 768px) {
+    .dashboard-cards {
+        grid-template-columns: 1fr;
+    }
+    .dash-two-col {
+        grid-template-columns: 1fr;
+    }
+    .dash-actions-grid {
+        grid-template-columns: repeat(2, 1fr);
+    }
+    .dash-hero {
+        flex-direction: column;
+        text-align: center;
+        gap: 16px;
+        padding: 20px;
+    }
+    .dash-hero-value {
+        font-size: 1.8rem;
+    }
+}
+
+@media (max-width: 480px) {
+    .dashboard-container {
+        padding: 12px;
+        gap: 12px;
+    }
+    .dash-actions-grid {
+        grid-template-columns: 1fr 1fr;
+    }
+}
+
+/* ─────────────────────────────────────────────────────────────────────────────
+   SKELETON LOADING CLASSES
+   ───────────────────────────────────────────────────────────────────────────── */
+
+.skeleton-text {
+    height: 16px;
+    border-radius: 8px;
+    background: linear-gradient(90deg,
+        rgba(255,255,255,0.04) 25%,
+        rgba(255,255,255,0.08) 50%,
+        rgba(255,255,255,0.04) 75%
+    );
+    background-size: 200% 100%;
+    animation: skeleton-loading 1.5s infinite;
+}
+
+.skeleton-circle {
+    border-radius: 50%;
+    background: linear-gradient(90deg,
+        rgba(255,255,255,0.04) 25%,
+        rgba(255,255,255,0.08) 50%,
+        rgba(255,255,255,0.04) 75%
+    );
+    background-size: 200% 100%;
+    animation: skeleton-loading 1.5s infinite;
+}
+
+.skeleton-card {
+    border-radius: 16px;
+    min-height: 120px;
+    background: linear-gradient(90deg,
+        rgba(255,255,255,0.03) 25%,
+        rgba(255,255,255,0.06) 50%,
+        rgba(255,255,255,0.03) 75%
+    );
+    background-size: 200% 100%;
+    animation: skeleton-loading 1.5s infinite;
+}
+
+/* Reduced motion for accessibility */
+@media (prefers-reduced-motion: reduce) {
+    *, *::before, *::after {
+        animation-duration: 0.01ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: 0.01ms !important;
+    }
+}

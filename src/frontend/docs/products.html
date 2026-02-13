@@ -1,0 +1,725 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Produits Obelisk - Documentation complète</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: 'Segoe UI', system-ui, sans-serif;
+            background: linear-gradient(135deg, #0d0d1a 0%, #1a1a2e 100%);
+            color: #fff;
+            min-height: 100vh;
+            padding: 40px 20px;
+        }
+        .container { max-width: 1000px; margin: 0 auto; }
+        .breadcrumb { color: #888; margin-bottom: 30px; font-size: 14px; }
+        .breadcrumb a { color: #00aaff; text-decoration: none; }
+        h1 { color: #00ff88; margin-bottom: 16px; font-size: 36px; }
+        h2 { color: #00aaff; margin: 50px 0 20px; padding-bottom: 10px; border-bottom: 2px solid rgba(0,170,255,0.3); }
+        h3 { color: #f59e0b; margin: 30px 0 15px; }
+        h4 { color: #a855f7; margin: 20px 0 10px; }
+        p { color: #aaa; line-height: 1.8; margin-bottom: 16px; }
+        code {
+            background: rgba(0,255,136,0.1);
+            padding: 2px 8px;
+            border-radius: 4px;
+            color: #00ff88;
+            font-family: 'Fira Code', monospace;
+        }
+        pre {
+            background: rgba(0,0,0,0.5);
+            border: 1px solid rgba(0,255,136,0.3);
+            border-radius: 8px;
+            padding: 16px;
+            overflow-x: auto;
+            margin: 15px 0;
+        }
+        pre code { background: none; padding: 0; }
+        .product-card {
+            background: rgba(255,255,255,0.03);
+            border: 1px solid rgba(255,255,255,0.1);
+            border-radius: 16px;
+            padding: 24px;
+            margin: 20px 0;
+        }
+        .product-header {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+            margin-bottom: 16px;
+        }
+        .product-icon { font-size: 40px; }
+        .product-title { color: #fff; font-size: 22px; font-weight: bold; }
+        .product-subtitle { color: #888; font-size: 14px; }
+        table { width: 100%; border-collapse: collapse; margin: 15px 0; }
+        th, td { padding: 12px; text-align: left; border-bottom: 1px solid rgba(255,255,255,0.1); }
+        th { color: #888; font-weight: 600; background: rgba(0,0,0,0.3); }
+        .badge {
+            display: inline-block;
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 11px;
+            font-weight: bold;
+        }
+        .badge-earn { background: rgba(0,255,136,0.2); color: #00ff88; }
+        .badge-trade { background: rgba(0,170,255,0.2); color: #00aaff; }
+        .badge-defi { background: rgba(168,85,247,0.2); color: #a855f7; }
+        .badge-risk-low { background: rgba(34,197,94,0.2); color: #22c55e; }
+        .badge-risk-medium { background: rgba(245,158,11,0.2); color: #f59e0b; }
+        .badge-risk-high { background: rgba(239,68,68,0.2); color: #ef4444; }
+        .nav {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+            gap: 8px;
+            margin: 30px 0;
+            padding: 20px;
+            background: rgba(0,0,0,0.3);
+            border-radius: 12px;
+        }
+        .nav a {
+            padding: 10px;
+            background: rgba(0,255,136,0.1);
+            border: 1px solid rgba(0,255,136,0.2);
+            border-radius: 8px;
+            color: #00ff88;
+            text-decoration: none;
+            font-size: 12px;
+            text-align: center;
+            transition: all 0.3s;
+        }
+        .nav a:hover { background: rgba(0,255,136,0.2); }
+        .tip {
+            background: rgba(0,255,136,0.1);
+            border-left: 4px solid #00ff88;
+            padding: 12px 16px;
+            margin: 15px 0;
+            border-radius: 0 8px 8px 0;
+        }
+        .warning {
+            background: rgba(245,158,11,0.1);
+            border-left: 4px solid #f59e0b;
+            padding: 12px 16px;
+            margin: 15px 0;
+            border-radius: 0 8px 8px 0;
+        }
+        .category-header {
+            background: linear-gradient(135deg, rgba(0,255,136,0.1), rgba(0,170,255,0.1));
+            border-radius: 16px;
+            padding: 30px;
+            margin: 40px 0 20px;
+            text-align: center;
+        }
+        .category-header h2 { margin: 0; border: none; }
+        .category-header p { margin: 10px 0 0; }
+        .nav-bottom {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 60px;
+            padding-top: 30px;
+            border-top: 1px solid rgba(255,255,255,0.1);
+        }
+        .nav-btn {
+            padding: 16px 24px;
+            background: rgba(0,255,136,0.1);
+            border: 1px solid rgba(0,255,136,0.3);
+            border-radius: 10px;
+            color: #00ff88;
+            text-decoration: none;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="breadcrumb">
+            <a href="index.html">Documentation</a> / Produits
+        </div>
+
+        <h1>📦 Tous les Produits</h1>
+        <p style="font-size:18px;color:#888;margin-bottom:20px;">
+            Documentation complète des 50+ produits DeFi disponibles sur Obelisk
+        </p>
+
+        <div class="nav">
+            <a href="#staking">🥩 Staking</a>
+            <a href="#vaults">🏦 Vaults</a>
+            <a href="#lending">💰 Lending</a>
+            <a href="#perps">📈 Perpetuals</a>
+            <a href="#options">🎯 Options</a>
+            <a href="#structured">📊 Structurés</a>
+            <a href="#index">📑 Index Funds</a>
+            <a href="#copy">👥 Copy Trading</a>
+            <a href="#launchpad">🚀 Launchpad</a>
+            <a href="#bonds">📜 Bonds</a>
+            <a href="#insurance">🛡️ Insurance</a>
+            <a href="#lottery">🎰 Lottery</a>
+        </div>
+
+        <!-- ============== EARN CATEGORY ============== -->
+        <div class="category-header">
+            <h2 style="color:#00ff88;">💰 EARN - Générer des rendements</h2>
+            <p>Produits pour faire fructifier vos crypto passivement</p>
+        </div>
+
+        <!-- STAKING -->
+        <div class="product-card" id="staking">
+            <div class="product-header">
+                <span class="product-icon">🥩</span>
+                <div>
+                    <div class="product-title">Staking</div>
+                    <div class="product-subtitle">Bloquez vos tokens pour sécuriser le réseau</div>
+                </div>
+                <span class="badge badge-earn">EARN</span>
+                <span class="badge badge-risk-low">LOW RISK</span>
+            </div>
+            <p>Le staking vous permet de gagner des récompenses en participant à la sécurisation du réseau blockchain.</p>
+
+            <h4>Pools disponibles</h4>
+            <table>
+                <tr><th>Asset</th><th>APY</th><th>Lock Period</th><th>Min. Stake</th></tr>
+                <tr><td>ETH</td><td>4.5%</td><td>Flexible</td><td>0.01 ETH</td></tr>
+                <tr><td>ARB</td><td>8.2%</td><td>30 jours</td><td>100 ARB</td></tr>
+                <tr><td>LINK</td><td>5.8%</td><td>Flexible</td><td>10 LINK</td></tr>
+                <tr><td>OBL</td><td>12%</td><td>90 jours</td><td>1000 OBL</td></tr>
+            </table>
+
+            <h4>Comment staker</h4>
+            <ol style="color:#aaa;line-height:2;padding-left:20px;">
+                <li>Allez dans Products > Staking</li>
+                <li>Sélectionnez le pool souhaité</li>
+                <li>Entrez le montant à staker</li>
+                <li>Confirmez la transaction</li>
+            </ol>
+
+            <h4>API</h4>
+            <pre><code>// Staker des tokens
+StakingModule.stake('ETH', 1.0);
+
+// Voir les récompenses
+StakingModule.getRewards();
+
+// Unstake (après la période de lock)
+StakingModule.unstake('stake-123');</code></pre>
+
+            <div class="tip">
+                <strong>💡 Conseil</strong>: Le staking ETH est le plus stable et sécurisé. Parfait pour les débutants.
+            </div>
+        </div>
+
+        <!-- VAULTS -->
+        <div class="product-card" id="vaults">
+            <div class="product-header">
+                <span class="product-icon">🏦</span>
+                <div>
+                    <div class="product-title">Vaults (Coffres)</div>
+                    <div class="product-subtitle">Stratégies automatisées optimisées</div>
+                </div>
+                <span class="badge badge-earn">EARN</span>
+                <span class="badge badge-risk-medium">MEDIUM RISK</span>
+            </div>
+            <p>Les vaults exécutent des stratégies DeFi complexes automatiquement pour optimiser vos rendements.</p>
+
+            <h4>Vaults disponibles</h4>
+            <table>
+                <tr><th>Vault</th><th>Stratégie</th><th>APY</th><th>TVL</th></tr>
+                <tr><td>🔵 ETH-USDC LP</td><td>Liquidity Providing + Fees</td><td>15-25%</td><td>$2.4M</td></tr>
+                <tr><td>🟡 Stablecoin Yield</td><td>Multi-protocol lending</td><td>8-12%</td><td>$5.1M</td></tr>
+                <tr><td>🟣 Delta Neutral</td><td>Long/Short hedged</td><td>20-40%</td><td>$1.2M</td></tr>
+                <tr><td>🔴 High Risk Degen</td><td>Leveraged farming</td><td>50-100%</td><td>$450K</td></tr>
+            </table>
+
+            <h4>API</h4>
+            <pre><code>// Déposer dans un vault
+VaultsModule.deposit('eth-usdc-lp', 1000);
+
+// Retirer
+VaultsModule.withdraw('deposit-123');
+
+// Voir le rendement actuel
+VaultsModule.getCurrentAPY('eth-usdc-lp');</code></pre>
+        </div>
+
+        <!-- LENDING -->
+        <div class="product-card" id="lending">
+            <div class="product-header">
+                <span class="product-icon">💰</span>
+                <div>
+                    <div class="product-title">Lending & Borrowing</div>
+                    <div class="product-subtitle">Prêtez ou empruntez des crypto</div>
+                </div>
+                <span class="badge badge-defi">DEFI</span>
+            </div>
+            <p>Prêtez vos crypto pour gagner des intérêts, ou empruntez contre votre collatéral.</p>
+
+            <h4>Taux actuels</h4>
+            <table>
+                <tr><th>Asset</th><th>Supply APY</th><th>Borrow APY</th><th>Max LTV</th></tr>
+                <tr><td>USDC</td><td>5.2%</td><td>7.8%</td><td>85%</td></tr>
+                <tr><td>ETH</td><td>2.1%</td><td>4.5%</td><td>80%</td></tr>
+                <tr><td>WBTC</td><td>1.8%</td><td>3.9%</td><td>75%</td></tr>
+                <tr><td>ARB</td><td>4.5%</td><td>8.2%</td><td>70%</td></tr>
+            </table>
+
+            <h4>Comment emprunter</h4>
+            <ol style="color:#aaa;line-height:2;padding-left:20px;">
+                <li>Déposez du collatéral (ex: ETH)</li>
+                <li>Choisissez l'asset à emprunter (ex: USDC)</li>
+                <li>Attention à votre Health Factor (>1.5 recommandé)</li>
+                <li>Remboursez + intérêts quand vous voulez</li>
+            </ol>
+
+            <h4>API</h4>
+            <pre><code>// Déposer du collatéral
+LendingModule.supply('ETH', 2.0);
+
+// Emprunter
+LendingModule.borrow('USDC', 1000);
+
+// Rembourser
+LendingModule.repay('loan-123', 500);
+
+// Health Factor
+LendingModule.getHealthFactor();</code></pre>
+
+            <div class="warning">
+                <strong>⚠️ Attention</strong>: Si votre Health Factor tombe sous 1.0, vous serez liquidé. Gardez une marge de sécurité!
+            </div>
+        </div>
+
+        <!-- SAVINGS -->
+        <div class="product-card" id="savings">
+            <div class="product-header">
+                <span class="product-icon">🏧</span>
+                <div>
+                    <div class="product-title">Savings</div>
+                    <div class="product-subtitle">Épargne flexible à faible risque</div>
+                </div>
+                <span class="badge badge-earn">EARN</span>
+                <span class="badge badge-risk-low">LOW RISK</span>
+            </div>
+            <p>Compte d'épargne crypto avec rendements quotidiens et retrait flexible.</p>
+
+            <table>
+                <tr><th>Asset</th><th>APY</th><th>Retrait</th></tr>
+                <tr><td>USDC</td><td>4.5%</td><td>Instant</td></tr>
+                <tr><td>USDT</td><td>4.2%</td><td>Instant</td></tr>
+                <tr><td>DAI</td><td>4.8%</td><td>Instant</td></tr>
+            </table>
+
+            <h4>API</h4>
+            <pre><code>SavingsModule.deposit('USDC', 5000);
+SavingsModule.withdraw(2000);
+SavingsModule.getAccruedInterest();</code></pre>
+        </div>
+
+        <!-- ============== TRADING CATEGORY ============== -->
+        <div class="category-header">
+            <h2 style="color:#00aaff;">📈 TRADING - Trader les marchés</h2>
+            <p>Produits pour spéculer sur les mouvements de prix</p>
+        </div>
+
+        <!-- PERPETUALS -->
+        <div class="product-card" id="perps">
+            <div class="product-header">
+                <span class="product-icon">📈</span>
+                <div>
+                    <div class="product-title">Perpetual Futures</div>
+                    <div class="product-subtitle">Trading avec leverage sans expiration</div>
+                </div>
+                <span class="badge badge-trade">TRADE</span>
+                <span class="badge badge-risk-high">HIGH RISK</span>
+            </div>
+            <p>Tradez des contrats perpétuels avec leverage jusqu'à 50x. Long ou Short sur BTC, ETH, et 20+ assets.</p>
+
+            <h4>Paires disponibles</h4>
+            <table>
+                <tr><th>Paire</th><th>Max Leverage</th><th>Funding Rate</th><th>Spread</th></tr>
+                <tr><td>BTC/USDC</td><td>50x</td><td>0.01%/8h</td><td>0.02%</td></tr>
+                <tr><td>ETH/USDC</td><td>50x</td><td>0.01%/8h</td><td>0.02%</td></tr>
+                <tr><td>SOL/USDC</td><td>20x</td><td>0.02%/8h</td><td>0.05%</td></tr>
+                <tr><td>ARB/USDC</td><td>20x</td><td>0.02%/8h</td><td>0.05%</td></tr>
+            </table>
+
+            <h4>Ouvrir une position</h4>
+            <pre><code>// Position Long BTC avec 10x leverage
+PerpsModule.openPosition('BTC/USDC', 'long', 0.1, 10, {
+    takeProfit: 105000,
+    stopLoss: 92000,
+    liqProtection: true,  // Optionnel
+    liqProtectionPlan: 'standard'
+});
+
+// Position Short ETH
+PerpsModule.openPosition('ETH/USDC', 'short', 1.0, 5);
+
+// Fermer une position
+PerpsModule.closePosition('pos-123456');</code></pre>
+
+            <h4>Gestion du risque</h4>
+            <ul style="color:#aaa;line-height:2;padding-left:20px;">
+                <li><strong>Stop Loss</strong>: Ferme automatiquement si le prix atteint un seuil</li>
+                <li><strong>Take Profit</strong>: Prend les profits automatiquement</li>
+                <li><strong>Trailing Stop</strong>: Stop qui suit le prix</li>
+                <li><strong>Liquidation Protection</strong>: Voir <a href="innovations.html#liq-protection" style="color:#00aaff">Innovation Lab</a></li>
+            </ul>
+
+            <div class="warning">
+                <strong>⚠️ Leverage = Risque</strong>: Un leverage de 10x signifie qu'un mouvement de 10% contre vous = liquidation totale. Commencez avec 2-3x.
+            </div>
+        </div>
+
+        <!-- OPTIONS -->
+        <div class="product-card" id="options">
+            <div class="product-header">
+                <span class="product-icon">🎯</span>
+                <div>
+                    <div class="product-title">Options</div>
+                    <div class="product-subtitle">Call et Put avec risque limité</div>
+                </div>
+                <span class="badge badge-trade">TRADE</span>
+                <span class="badge badge-risk-medium">MEDIUM RISK</span>
+            </div>
+            <p>Achetez des options pour parier sur la hausse (Call) ou la baisse (Put) avec un risque limité au premium.</p>
+
+            <h4>Types d'options</h4>
+            <table>
+                <tr><th>Type</th><th>Description</th><th>Profit Max</th><th>Perte Max</th></tr>
+                <tr><td>📈 Call</td><td>Droit d'acheter à un prix fixe</td><td>Illimité</td><td>Premium payé</td></tr>
+                <tr><td>📉 Put</td><td>Droit de vendre à un prix fixe</td><td>Strike - 0</td><td>Premium payé</td></tr>
+            </table>
+
+            <h4>API</h4>
+            <pre><code>// Acheter une Call
+OptionsModule.buyOption({
+    asset: 'ETH',
+    type: 'call',
+    strike: 2800,
+    expiry: '2026-03-01',
+    amount: 1
+});
+
+// Exercer une option
+OptionsModule.exerciseOption('opt-123');
+
+// Vendre avant expiration
+OptionsModule.sellOption('opt-123');</code></pre>
+        </div>
+
+        <!-- MARGIN TRADING -->
+        <div class="product-card" id="margin">
+            <div class="product-header">
+                <span class="product-icon">⚖️</span>
+                <div>
+                    <div class="product-title">Margin Trading</div>
+                    <div class="product-subtitle">Spot trading avec emprunt</div>
+                </div>
+                <span class="badge badge-trade">TRADE</span>
+                <span class="badge badge-risk-high">HIGH RISK</span>
+            </div>
+            <p>Tradez le spot avec des fonds empruntés. Différent des perps car vous possédez réellement l'asset.</p>
+
+            <h4>API</h4>
+            <pre><code>// Ouvrir une position margin
+MarginTradingModule.openMarginPosition({
+    pair: 'ETH/USDC',
+    side: 'long',
+    amount: 2,
+    leverage: 3
+});
+
+// Ajouter du collatéral
+MarginTradingModule.addCollateral('pos-123', 500);</code></pre>
+        </div>
+
+        <!-- ============== STRUCTURED PRODUCTS ============== -->
+        <div class="category-header">
+            <h2 style="color:#a855f7;">📊 STRUCTURED - Produits structurés</h2>
+            <p>Produits financiers complexes avec profils de risque/rendement définis</p>
+        </div>
+
+        <!-- STRUCTURED PRODUCTS -->
+        <div class="product-card" id="structured">
+            <div class="product-header">
+                <span class="product-icon">📊</span>
+                <div>
+                    <div class="product-title">Structured Products</div>
+                    <div class="product-subtitle">Dual Currency, Range Accrual, Autocallables</div>
+                </div>
+                <span class="badge badge-defi">DERIVATIVES</span>
+            </div>
+            <p>Produits dérivés structurés combinant plusieurs instruments pour des profils risque/rendement spécifiques.</p>
+
+            <h4>Produits disponibles</h4>
+            <table>
+                <tr><th>Produit</th><th>APY</th><th>Risque</th><th>Description</th></tr>
+                <tr><td>Dual Currency</td><td>15-50%</td><td>Moyen</td><td>Rendement élevé, conversion possible</td></tr>
+                <tr><td>Range Accrual</td><td>20-80%</td><td>Moyen</td><td>Rendement si prix dans le range</td></tr>
+                <tr><td>Shark Fin</td><td>10-30%</td><td>Faible</td><td>Capital protégé + upside</td></tr>
+                <tr><td>Snowball</td><td>25-60%</td><td>Élevé</td><td>Accumulation de coupons</td></tr>
+            </table>
+
+            <h4>API</h4>
+            <pre><code>// Créer un produit structuré
+StructuredModule.createProduct({
+    type: 'dual-currency',
+    asset: 'ETH',
+    amount: 1,
+    strike: 2600,
+    duration: 7 // jours
+});</code></pre>
+        </div>
+
+        <!-- INDEX FUNDS -->
+        <div class="product-card" id="index">
+            <div class="product-header">
+                <span class="product-icon">📑</span>
+                <div>
+                    <div class="product-title">Index Funds</div>
+                    <div class="product-subtitle">Paniers diversifiés de crypto</div>
+                </div>
+                <span class="badge badge-earn">INVEST</span>
+                <span class="badge badge-risk-medium">MEDIUM RISK</span>
+            </div>
+            <p>Investissez dans des paniers thématiques sans gérer chaque token individuellement.</p>
+
+            <h4>Index disponibles</h4>
+            <table>
+                <tr><th>Index</th><th>Composition</th><th>Perf YTD</th></tr>
+                <tr><td>🔵 DeFi Blue Chip</td><td>AAVE, UNI, MKR, COMP, SNX</td><td>+45%</td></tr>
+                <tr><td>🟡 Layer 2</td><td>ARB, OP, MATIC, IMX, STRK</td><td>+62%</td></tr>
+                <tr><td>🟣 AI & Data</td><td>FET, OCEAN, AGIX, RNDR</td><td>+120%</td></tr>
+                <tr><td>🔴 Meme Index</td><td>PEPE, WIF, BONK, DOGE, SHIB</td><td>+200%</td></tr>
+            </table>
+
+            <h4>API</h4>
+            <pre><code>// Investir dans un index
+IndexFundsModule.invest('defi-blue-chip', 1000);
+
+// Racheter
+IndexFundsModule.redeem('inv-123');
+
+// Performance
+IndexFundsModule.getPerformance('defi-blue-chip');</code></pre>
+        </div>
+
+        <!-- BONDS -->
+        <div class="product-card" id="bonds">
+            <div class="product-header">
+                <span class="product-icon">📜</span>
+                <div>
+                    <div class="product-title">Crypto Bonds</div>
+                    <div class="product-subtitle">Obligations tokenisées à rendement fixe</div>
+                </div>
+                <span class="badge badge-earn">FIXED INCOME</span>
+                <span class="badge badge-risk-low">LOW RISK</span>
+            </div>
+            <p>Achetez des obligations crypto avec coupon fixe et remboursement à maturité.</p>
+
+            <h4>Bonds disponibles</h4>
+            <table>
+                <tr><th>Bond</th><th>Coupon</th><th>Maturité</th><th>Rating</th></tr>
+                <tr><td>OBL Treasury 2027</td><td>6%</td><td>1 an</td><td>AAA</td></tr>
+                <tr><td>DeFi Corporate 2026</td><td>9%</td><td>6 mois</td><td>AA</td></tr>
+                <tr><td>High Yield Q2</td><td>15%</td><td>3 mois</td><td>BB</td></tr>
+            </table>
+
+            <h4>API</h4>
+            <pre><code>CryptoBondsModule.buyBond('obl-treasury-2027', 5000);
+CryptoBondsModule.getMyBonds();
+CryptoBondsModule.claimCoupon('bond-123');</code></pre>
+        </div>
+
+        <!-- ============== SOCIAL & COPY ============== -->
+        <div class="category-header">
+            <h2 style="color:#f59e0b;">👥 SOCIAL - Trading social</h2>
+            <p>Copiez les meilleurs traders ou partagez vos stratégies</p>
+        </div>
+
+        <!-- COPY TRADING -->
+        <div class="product-card" id="copy">
+            <div class="product-header">
+                <span class="product-icon">👥</span>
+                <div>
+                    <div class="product-title">Copy Trading</div>
+                    <div class="product-subtitle">Copiez automatiquement les meilleurs traders</div>
+                </div>
+                <span class="badge badge-trade">SOCIAL</span>
+            </div>
+            <p>Suivez des traders vérifiés et copiez automatiquement leurs positions.</p>
+
+            <h4>Top Traders</h4>
+            <table>
+                <tr><th>Trader</th><th>ROI 30j</th><th>Win Rate</th><th>Copieurs</th></tr>
+                <tr><td>🏆 CryptoWhale</td><td>+45%</td><td>72%</td><td>1,234</td></tr>
+                <tr><td>🥈 DeFiMaster</td><td>+38%</td><td>68%</td><td>892</td></tr>
+                <tr><td>🥉 SwingKing</td><td>+31%</td><td>65%</td><td>567</td></tr>
+            </table>
+
+            <h4>API</h4>
+            <pre><code>// Copier un trader
+CopyTradingModule.followTrader('trader-123', {
+    allocation: 1000,  // Budget max
+    maxRisk: 0.1,      // 10% max par trade
+    copyRatio: 0.5     // Copier 50% de leurs tailles
+});
+
+// Arrêter de copier
+CopyTradingModule.unfollowTrader('trader-123');</code></pre>
+        </div>
+
+        <!-- SOCIAL TRADING -->
+        <div class="product-card" id="social">
+            <div class="product-header">
+                <span class="product-icon">💬</span>
+                <div>
+                    <div class="product-title">Social Trading</div>
+                    <div class="product-subtitle">Partagez et discutez de vos trades</div>
+                </div>
+                <span class="badge badge-trade">SOCIAL</span>
+            </div>
+            <p>Partagez vos analyses, suivez les discussions, et gagnez en réputation.</p>
+
+            <h4>API</h4>
+            <pre><code>// Partager un trade
+SocialTradingModule.sharePosition('pos-123', {
+    comment: 'Long BTC, expecting breakout',
+    visibility: 'public'
+});
+
+// Réagir à un post
+SocialTradingModule.react('post-456', 'bullish');</code></pre>
+        </div>
+
+        <!-- ============== OTHER PRODUCTS ============== -->
+        <div class="category-header">
+            <h2 style="color:#ef4444;">🎮 OTHER - Autres produits</h2>
+            <p>Launchpad, Insurance, Lottery et plus</p>
+        </div>
+
+        <!-- LAUNCHPAD -->
+        <div class="product-card" id="launchpad">
+            <div class="product-header">
+                <span class="product-icon">🚀</span>
+                <div>
+                    <div class="product-title">Launchpad</div>
+                    <div class="product-subtitle">Participez aux IDOs de nouveaux tokens</div>
+                </div>
+                <span class="badge badge-defi">IDO</span>
+                <span class="badge badge-risk-high">HIGH RISK</span>
+            </div>
+            <p>Accédez en priorité aux lancements de nouveaux projets crypto.</p>
+
+            <h4>Comment participer</h4>
+            <ol style="color:#aaa;line-height:2;padding-left:20px;">
+                <li>Stakez des OBL pour obtenir un tier</li>
+                <li>Rejoignez la whitelist du projet</li>
+                <li>Allouez des fonds pendant la période de contribution</li>
+                <li>Recevez vos tokens au TGE</li>
+            </ol>
+
+            <h4>Tiers de participation</h4>
+            <table>
+                <tr><th>Tier</th><th>OBL Requis</th><th>Allocation Garantie</th></tr>
+                <tr><td>🥉 Bronze</td><td>1,000</td><td>Lottery</td></tr>
+                <tr><td>🥈 Silver</td><td>5,000</td><td>$500</td></tr>
+                <tr><td>🥇 Gold</td><td>25,000</td><td>$2,500</td></tr>
+                <tr><td>💎 Diamond</td><td>100,000</td><td>$10,000</td></tr>
+            </table>
+        </div>
+
+        <!-- INSURANCE -->
+        <div class="product-card" id="insurance">
+            <div class="product-header">
+                <span class="product-icon">🛡️</span>
+                <div>
+                    <div class="product-title">Insurance</div>
+                    <div class="product-subtitle">Protégez vos positions contre les hacks</div>
+                </div>
+                <span class="badge badge-defi">PROTECTION</span>
+            </div>
+            <p>Souscrivez une assurance contre les smart contract exploits, les hacks et les depegs.</p>
+
+            <h4>Couvertures disponibles</h4>
+            <table>
+                <tr><th>Type</th><th>Couvre</th><th>Prime</th></tr>
+                <tr><td>Smart Contract</td><td>Exploits, bugs</td><td>2%/an</td></tr>
+                <tr><td>Stablecoin Depeg</td><td>Perte de peg >5%</td><td>1.5%/an</td></tr>
+                <tr><td>Exchange Hack</td><td>Perte sur CEX</td><td>3%/an</td></tr>
+            </table>
+
+            <h4>API</h4>
+            <pre><code>InsuranceModule.buyPolicy({
+    type: 'smart-contract',
+    coverage: 10000,
+    duration: 365
+});
+
+InsuranceModule.claimInsurance('policy-123', 'exploit on protocol X');</code></pre>
+        </div>
+
+        <!-- LOTTERY -->
+        <div class="product-card" id="lottery">
+            <div class="product-header">
+                <span class="product-icon">🎰</span>
+                <div>
+                    <div class="product-title">No-Loss Lottery</div>
+                    <div class="product-subtitle">Loterie sans perte de capital</div>
+                </div>
+                <span class="badge badge-defi">GAMIFICATION</span>
+                <span class="badge badge-risk-low">NO LOSS</span>
+            </div>
+            <p>Déposez des fonds, gagnez des tickets de loterie, récupérez votre capital même si vous ne gagnez pas.</p>
+
+            <h4>Comment ça marche</h4>
+            <ol style="color:#aaa;line-height:2;padding-left:20px;">
+                <li>Déposez des USDC (minimum $10)</li>
+                <li>Vos fonds génèrent du yield</li>
+                <li>Le yield alimente le prize pool</li>
+                <li>1 ticket par $10 déposés</li>
+                <li>Tirage hebdomadaire</li>
+                <li>Perdants: récupèrent leur capital</li>
+                <li>Gagnants: capital + jackpot</li>
+            </ol>
+
+            <h4>API</h4>
+            <pre><code>LotteryModule.deposit(100); // $100 = 10 tickets
+LotteryModule.getMyTickets();
+LotteryModule.withdraw(); // Récupérer le capital</code></pre>
+
+            <div class="tip">
+                <strong>💡 No-Loss</strong>: Contrairement à une loterie classique, vous ne perdez jamais votre capital. Seul le yield est mis en jeu.
+            </div>
+        </div>
+
+        <!-- PREDICTIONS -->
+        <div class="product-card" id="predictions">
+            <div class="product-header">
+                <span class="product-icon">🔮</span>
+                <div>
+                    <div class="product-title">Predictions</div>
+                    <div class="product-subtitle">Paris sur les événements crypto</div>
+                </div>
+                <span class="badge badge-trade">BETTING</span>
+                <span class="badge badge-risk-high">HIGH RISK</span>
+            </div>
+            <p>Pariez sur des événements: "BTC au-dessus de $100K le 1er mars?", "ETH ETF approuvé?"</p>
+
+            <h4>API</h4>
+            <pre><code>PredictionsModule.placeBet({
+    market: 'btc-100k-march',
+    prediction: 'yes',
+    amount: 50
+});
+
+PredictionsModule.claimWinnings('bet-123');</code></pre>
+        </div>
+
+        <!-- NAVIGATION -->
+        <nav class="nav-bottom">
+            <a href="getting-started.html" class="nav-btn">← Démarrer</a>
+            <a href="trading-tools.html" class="nav-btn">Trading Tools →</a>
+        </nav>
+    </div>
+</body>
+</html>

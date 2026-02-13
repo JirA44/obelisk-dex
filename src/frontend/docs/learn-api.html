@@ -1,0 +1,621 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Obelisk API - Apprendre</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: 'Segoe UI', system-ui, sans-serif;
+            background: linear-gradient(135deg, #0d0d1a 0%, #1a1a2e 100%);
+            color: #fff;
+            min-height: 100vh;
+            padding: 40px 20px;
+        }
+        .container { max-width: 900px; margin: 0 auto; }
+        h1 { color: #00ff88; margin-bottom: 10px; }
+        h2 { color: #00aaff; margin: 30px 0 15px; border-bottom: 1px solid rgba(0,170,255,0.3); padding-bottom: 8px; }
+        h3 { color: #f59e0b; margin: 20px 0 10px; }
+        p { color: #888; line-height: 1.6; margin-bottom: 15px; }
+        code {
+            background: rgba(0,255,136,0.1);
+            padding: 2px 8px;
+            border-radius: 4px;
+            color: #00ff88;
+            font-family: 'Fira Code', monospace;
+        }
+        pre {
+            background: rgba(0,0,0,0.5);
+            border: 1px solid rgba(0,255,136,0.3);
+            border-radius: 8px;
+            padding: 16px;
+            overflow-x: auto;
+            margin: 15px 0;
+        }
+        pre code { background: none; padding: 0; }
+        .card {
+            background: rgba(255,255,255,0.05);
+            border: 1px solid rgba(255,255,255,0.1);
+            border-radius: 12px;
+            padding: 20px;
+            margin: 15px 0;
+        }
+        .badge {
+            display: inline-block;
+            padding: 4px 10px;
+            border-radius: 4px;
+            font-size: 12px;
+            font-weight: bold;
+            margin-right: 8px;
+        }
+        .badge-get { background: rgba(0,255,136,0.2); color: #00ff88; }
+        .badge-post { background: rgba(0,170,255,0.2); color: #00aaff; }
+        .badge-delete { background: rgba(239,68,68,0.2); color: #ef4444; }
+        table { width: 100%; border-collapse: collapse; margin: 15px 0; }
+        th, td { padding: 12px; text-align: left; border-bottom: 1px solid rgba(255,255,255,0.1); }
+        th { color: #888; font-weight: 600; }
+        .nav { display: flex; gap: 15px; margin-bottom: 30px; flex-wrap: wrap; }
+        .nav a {
+            padding: 8px 16px;
+            background: rgba(0,255,136,0.1);
+            border: 1px solid rgba(0,255,136,0.3);
+            border-radius: 6px;
+            color: #00ff88;
+            text-decoration: none;
+            font-size: 14px;
+        }
+        .nav a:hover { background: rgba(0,255,136,0.2); }
+        .highlight { color: #f59e0b; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="breadcrumb" style="margin-bottom:20px;">
+            <a href="index.html" style="color:#00aaff;text-decoration:none;">Documentation</a> / API
+        </div>
+
+        <h1>📚 Obelisk API - Apprendre</h1>
+        <p>Documentation complète pour utiliser l'API Obelisk et les fonctionnalités avancées</p>
+
+        <div class="nav">
+            <a href="#protection">🛡️ Liquidation Protection</a>
+            <a href="#trading">📊 Trading API</a>
+            <a href="#rest-api">🔌 REST API Backend</a>
+            <a href="#venue-capital">🏦 Venue Capital</a>
+            <a href="#products">🚀 Products API</a>
+            <a href="#events">📡 Events</a>
+            <a href="#examples">💡 Exemples</a>
+        </div>
+
+        <!-- LIQUIDATION PROTECTION -->
+        <h2 id="protection">🛡️ Liquidation Protection API</h2>
+
+        <div class="card">
+            <h3>Plans disponibles</h3>
+            <table>
+                <tr>
+                    <th>Plan</th>
+                    <th>Icon</th>
+                    <th>Description</th>
+                    <th>Coût</th>
+                </tr>
+                <tr>
+                    <td><code>basic</code></td>
+                    <td>🔔</td>
+                    <td>Alerte seulement à 80% du seuil de liquidation</td>
+                    <td>Gratuit</td>
+                </tr>
+                <tr>
+                    <td><code>standard</code></td>
+                    <td>🛡️</td>
+                    <td>Ajout automatique de collateral à 85%</td>
+                    <td>0.2%/mois</td>
+                </tr>
+                <tr>
+                    <td><code>premium</code></td>
+                    <td>👑</td>
+                    <td>Fermeture automatique à 90% + garantie remboursement</td>
+                    <td>0.5%/mois</td>
+                </tr>
+            </table>
+        </div>
+
+        <h3>Activer la protection sur une position</h3>
+        <pre><code>// Via l'API JavaScript
+PerpsModule.api.enableProtection('pos-123456', 'standard');
+
+// Ou directement
+PerpsModule.setPositionProtection('pos-123456', true, 'premium');</code></pre>
+
+        <h3>Désactiver la protection</h3>
+        <pre><code>// Via l'API
+PerpsModule.api.disableProtection('pos-123456');
+
+// Ou directement
+PerpsModule.setPositionProtection('pos-123456', false);</code></pre>
+
+        <h3>Changer de plan</h3>
+        <pre><code>// Upgrade vers Premium
+PerpsModule.api.changePlan('pos-123456', 'premium');
+
+// Downgrade vers Basic
+PerpsModule.upgradeProtectionPlan('pos-123456', 'basic');</code></pre>
+
+        <h3>Opérations en masse</h3>
+        <pre><code>// Activer protection sur TOUTES les positions
+PerpsModule.api.enableAllProtection('standard');
+
+// Désactiver sur toutes les positions
+PerpsModule.api.disableAllProtection();</code></pre>
+
+        <h3>Obtenir les positions protégées</h3>
+        <pre><code>// Liste des positions avec protection active
+const protected = PerpsModule.api.getProtected();
+console.log(protected);
+
+// Résultat:
+// [{ id: 'pos-123', symbol: 'BTC/USDC', liqProtection: true, liqProtectionPlan: 'standard', ... }]</code></pre>
+
+        <!-- TRADING API -->
+        <h2 id="trading">📊 Trading API</h2>
+
+        <h3>Ouvrir une position</h3>
+        <pre><code>// Position avec protection activée
+const result = await PerpsModule.openPosition('BTC/USDC', 'long', 0.01, 10, {
+    takeProfit: 100000,
+    stopLoss: 90000,
+    liqProtection: true,
+    liqProtectionPlan: 'standard'
+});
+
+console.log(result);
+// { success: true, position: {...}, action: 'opened' }</code></pre>
+
+        <h3>Fermer une position</h3>
+        <pre><code>PerpsModule.closePosition('pos-123456');
+// Notification: "Position closed: +$123.45 (15.2% ROE)"</code></pre>
+
+        <h3>Obtenir toutes les positions</h3>
+        <pre><code>const positions = PerpsModule.api.getPositions();
+// ou
+const positions = PerpsModule.positions;</code></pre>
+
+        <h3>Obtenir une position spécifique</h3>
+        <pre><code>const pos = PerpsModule.api.getPosition('pos-123456');</code></pre>
+
+        <!-- REST API BACKEND -->
+        <h2 id="rest-api">🔌 REST API Backend</h2>
+        <p>API REST disponible sur <code>http://localhost:3001</code>. Permet l'intégration de bots externes et le trading programmatique via le moteur de perps interne.</p>
+
+        <div class="card">
+            <h3>Endpoints Trading</h3>
+            <table>
+                <tr><th>Méthode</th><th>Endpoint</th><th>Description</th></tr>
+                <tr>
+                    <td><span class="badge badge-post">POST</span></td>
+                    <td><code>/api/trade/order</code></td>
+                    <td>Placer un ordre (market/limit)</td>
+                </tr>
+                <tr>
+                    <td><span class="badge badge-get">GET</span></td>
+                    <td><code>/api/trade/positions</code></td>
+                    <td>Lister les positions ouvertes</td>
+                </tr>
+                <tr>
+                    <td><span class="badge badge-get">GET</span></td>
+                    <td><code>/api/trade/fees</code></td>
+                    <td>Frais par venue</td>
+                </tr>
+                <tr>
+                    <td><span class="badge badge-get">GET</span></td>
+                    <td><code>/api/trade/route</code></td>
+                    <td>Smart routing - meilleure venue pour un trade</td>
+                </tr>
+                <tr>
+                    <td><span class="badge badge-get">GET</span></td>
+                    <td><code>/api/trade/history</code></td>
+                    <td>Historique des trades</td>
+                </tr>
+                <tr>
+                    <td><span class="badge badge-get">GET</span></td>
+                    <td><code>/api/markets</code></td>
+                    <td>Prix et marchés disponibles (36 coins)</td>
+                </tr>
+                <tr>
+                    <td><span class="badge badge-get">GET</span></td>
+                    <td><code>/health</code></td>
+                    <td>Santé du serveur</td>
+                </tr>
+            </table>
+        </div>
+
+        <h3>Placer un ordre</h3>
+        <pre><code>// POST /api/trade/order
+const res = await fetch('http://localhost:3001/api/trade/order', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({
+        symbol: 'BTC/USDC',
+        side: 'buy',           // 'buy' ou 'sell'
+        size: 5,               // Taille en $
+        leverage: 2,           // Levier (max 3x pour bots)
+        type: 'market',        // 'market' ou 'limit'
+        sl: 0,                 // Stop loss (0 = désactivé)
+        tp: 0,                 // Take profit (0 = désactivé)
+        source: 'mixbot',      // Identifiant du bot (route vers perps interne)
+        strategy: 'momentum',  // Nom de la stratégie
+    })
+});
+
+const data = await res.json();
+// { success: true, orderId: "PERP_...", exchange: "obelisk-internal", price: 63057.45 }</code></pre>
+
+        <h3>Lister les positions</h3>
+        <pre><code>// GET /api/trade/positions
+const res = await fetch('http://localhost:3001/api/trade/positions');
+const data = await res.json();
+// { positions: [{ coin: "BTC", side: "buy", size: 5, entryPrice: 63057, pnl: {...} }] }</code></pre>
+
+        <h3>Prix des marchés</h3>
+        <pre><code>// GET /api/markets
+const res = await fetch('http://localhost:3001/api/markets');
+const data = await res.json();
+// { markets: [{ pair: "BTC/USDC", price: 97250.50 }, { pair: "ETH/USDC", price: 2650.30 }, ...] }</code></pre>
+
+        <div class="card">
+            <h3>🔀 Smart Routing</h3>
+            <p>Les ordres avec <code>source: 'mixbot'</code> sont automatiquement routés vers le moteur de perps interne (ObeliskPerps). Les autres ordres utilisent le smart router vers les venues externes (GMX, dYdX, Morpher, etc.) basé sur les frais les plus bas.</p>
+        </div>
+
+        <!-- VENUE CAPITAL API -->
+        <h2 id="venue-capital">🏦 Venue Capital API</h2>
+        <p>Système de capital dédié pour bots externes. Chaque bot a son propre compte avec equity, marge et suivi PnL en temps réel.</p>
+
+        <div class="card">
+            <h3>Architecture</h3>
+            <p>Le moteur interne <strong>ObeliskPerps</strong> dispose d'un pool de liquidité de <span class="highlight">$100K USDC</span> avec 36 coins supportés. Les bots tradent contre cette liquidité avec des prix réels (Binance WebSocket).</p>
+            <table>
+                <tr><th>Paramètre</th><th>Valeur</th></tr>
+                <tr><td>Pool de liquidité</td><td>$100,000 USDC</td></tr>
+                <tr><td>Coins supportés</td><td>36 (BTC, ETH, SOL, ARB, OP, AVAX, LINK, ...)</td></tr>
+                <tr><td>Leverage max bots</td><td>3x</td></tr>
+                <tr><td>Prix</td><td>Temps réel via Binance WebSocket</td></tr>
+                <tr><td>Frais</td><td>0.04% taker</td></tr>
+                <tr><td>Funding rate</td><td>Calculé toutes les 8h</td></tr>
+            </table>
+        </div>
+
+        <div class="card">
+            <h3>Endpoints Venue Capital</h3>
+            <table>
+                <tr><th>Méthode</th><th>Endpoint</th><th>Description</th></tr>
+                <tr>
+                    <td><span class="badge badge-get">GET</span></td>
+                    <td><code>/api/trade/equity?venue=mixbot</code></td>
+                    <td>Equity, marge disponible, positions, PnL total</td>
+                </tr>
+                <tr>
+                    <td><span class="badge badge-get">GET</span></td>
+                    <td><code>/api/trade/venue/positions?venue=mixbot</code></td>
+                    <td>Positions ouvertes avec PnL temps réel</td>
+                </tr>
+                <tr>
+                    <td><span class="badge badge-post">POST</span></td>
+                    <td><code>/api/trade/venue/close</code></td>
+                    <td>Fermer une position venue</td>
+                </tr>
+                <tr>
+                    <td><span class="badge badge-post">POST</span></td>
+                    <td><code>/api/trade/venue/deposit</code></td>
+                    <td>Déposer du capital</td>
+                </tr>
+                <tr>
+                    <td><span class="badge badge-get">GET</span></td>
+                    <td><code>/api/trade/venue/stats</code></td>
+                    <td>Statistiques du venue (ROI, trades, fees)</td>
+                </tr>
+            </table>
+        </div>
+
+        <h3>Consulter l'equity</h3>
+        <pre><code>// GET /api/trade/equity?venue=mixbot
+const res = await fetch('http://localhost:3001/api/trade/equity?venue=mixbot');
+const data = await res.json();
+
+// Réponse:
+// {
+//   "equity": 5.00,
+//   "freeCollateral": 5.00,
+//   "positions": [],
+//   "totalPnl": 0,
+//   "totalFees": 0.002,
+//   "totalTrades": 12,
+//   "initialCapital": 5,
+//   "dailyDrawdown": 0.5
+// }</code></pre>
+
+        <h3>Fermer une position</h3>
+        <pre><code>// POST /api/trade/venue/close
+const res = await fetch('http://localhost:3001/api/trade/venue/close', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({
+        venue: 'mixbot',
+        coin: 'BTC',
+        side: 'sell',     // Côté inverse pour fermer
+        size: 5
+    })
+});
+
+const data = await res.json();
+// { success: true, exchange: "obelisk-internal", price: 97300.50, pnl: 0.23, fee: 0.002 }</code></pre>
+
+        <h3>Déposer du capital</h3>
+        <pre><code>// POST /api/trade/venue/deposit
+const res = await fetch('http://localhost:3001/api/trade/venue/deposit', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({
+        venue: 'mixbot',
+        amount: 10        // Ajouter $10 au capital
+    })
+});
+
+// { success: true, equity: 15.00 }</code></pre>
+
+        <h3>Statistiques</h3>
+        <pre><code>// GET /api/trade/venue/stats?venue=mixbot
+const res = await fetch('http://localhost:3001/api/trade/venue/stats?venue=mixbot');
+const data = await res.json();
+
+// {
+//   "id": "mixbot",
+//   "name": "MixBot",
+//   "equity": 5.23,
+//   "initialCapital": 5,
+//   "totalPnl": 0.23,
+//   "totalFees": 0.04,
+//   "totalTrades": 12,
+//   "openPositions": 0,
+//   "roi": "4.60%"
+// }</code></pre>
+
+        <div class="card">
+            <h3>⚡ Exemple complet: Bot d'intégration</h3>
+            <pre><code>// Exemple: bot qui trade via l'API REST Obelisk
+const API = 'http://localhost:3001';
+
+async function botTrade() {
+    // 1. Vérifier l'equity
+    const equity = await fetch(`${API}/api/trade/equity?venue=mixbot`).then(r => r.json());
+    console.log(`Equity: $${equity.equity} | Free: $${equity.freeCollateral}`);
+
+    if (equity.freeCollateral < 3) {
+        console.log('Marge insuffisante, skip');
+        return;
+    }
+
+    // 2. Ouvrir un trade
+    const order = await fetch(`${API}/api/trade/order`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+            symbol: 'ETH/USDC', side: 'buy', size: 5,
+            leverage: 2, source: 'mixbot', strategy: 'momentum'
+        })
+    }).then(r => r.json());
+
+    if (order.success) {
+        console.log(`Opened ETH LONG @ $${order.price} via ${order.exchange}`);
+    }
+
+    // 3. Attendre... puis fermer
+    const close = await fetch(`${API}/api/trade/venue/close`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ venue: 'mixbot', coin: 'ETH', side: 'sell', size: 5 })
+    }).then(r => r.json());
+
+    console.log(`Closed ETH | PnL: $${close.pnl?.toFixed(2)}`);
+}
+
+botTrade();</code></pre>
+        </div>
+
+        <div class="card">
+            <h3>🛡️ Protections intégrées</h3>
+            <table>
+                <tr><th>Protection</th><th>Description</th></tr>
+                <tr><td>Equity minimum</td><td>Bloque les trades si equity &lt; $3</td></tr>
+                <tr><td>Max positions</td><td>1 position ouverte par venue (configurable)</td></tr>
+                <tr><td>Max leverage</td><td>3x maximum pour les bots</td></tr>
+                <tr><td>Daily drawdown</td><td>Coupe le trading si perte &gt; 3% du capital journalier</td></tr>
+                <tr><td>Anti-race lock</td><td>Empêche les ordres simultanés sur le même venue</td></tr>
+                <tr><td>Marge requise</td><td>Vérifie que la marge est disponible avant chaque trade</td></tr>
+            </table>
+        </div>
+
+        <!-- PRODUCTS API -->
+        <h2 id="products">🚀 Products API</h2>
+
+        <div class="card">
+            <h3>Modules disponibles</h3>
+            <table>
+                <tr><th>Module</th><th>Description</th></tr>
+                <tr><td><code>PerpsModule</code></td><td>Trading perpetuals</td></tr>
+                <tr><td><code>DCAVaultModule</code></td><td>Dollar Cost Average automatique</td></tr>
+                <tr><td><code>WhaleTrackerModule</code></td><td>Tracker les gros portefeuilles</td></tr>
+                <tr><td><code>AirdropHunterModule</code></td><td>Tracker les airdrops</td></tr>
+                <tr><td><code>CryptoPayroll</code></td><td>Paiements B2B/B2C</td></tr>
+                <tr><td><code>LiquidationProtectionModule</code></td><td>Protection standalone</td></tr>
+                <tr><td><code>SmartYieldRouterModule</code></td><td>Auto-routage yield</td></tr>
+                <tr><td><code>NFTCollateralModule</code></td><td>Prêts contre NFTs</td></tr>
+                <tr><td><code>GasOptimizerModule</code></td><td>Optimisation gas</td></tr>
+                <tr><td><code>AutoRebalancerModule</code></td><td>Rééquilibrage portfolio</td></tr>
+            </table>
+        </div>
+
+        <h3>DCA Vault - Créer un plan</h3>
+        <pre><code>DCAVaultModule.createPlan({
+    asset: 'BTC',
+    amount: 100,        // $100 par exécution
+    frequency: 'weekly' // daily, weekly, biweekly, monthly
+});
+
+// Exécuter manuellement
+DCAVaultModule.executeDCA('dca-123456');</code></pre>
+
+        <h3>Crypto Payroll - Ajouter un destinataire</h3>
+        <pre><code>CryptoPayroll.addRecipient('company-123', {
+    name: 'John Doe',
+    wallet: '0x123...',
+    salary: 5000,
+    type: 'b2c',           // b2b ou b2c
+    frequency: 'weekly',   // daily, weekly, biweekly, monthly
+    paymentCurrency: 'USDC'
+});</code></pre>
+
+        <!-- EVENTS -->
+        <h2 id="events">📡 Events</h2>
+
+        <h3>Écouter les changements de protection</h3>
+        <pre><code>window.addEventListener('obelisk:protection-changed', (e) => {
+    console.log('Protection changed:', e.detail);
+    // { positionId, enabled, plan, position }
+});</code></pre>
+
+        <h3>Écouter les nouvelles positions</h3>
+        <pre><code>// Observer les changements dans PerpsModule.positions
+const observer = setInterval(() => {
+    const positions = PerpsModule.positions;
+    // Votre logique ici
+}, 1000);</code></pre>
+
+        <!-- EXAMPLES -->
+        <h2 id="examples">💡 Exemples pratiques</h2>
+
+        <div class="card">
+            <h3>🤖 Bot: Protéger automatiquement toutes les nouvelles positions</h3>
+            <pre><code>// Surveiller et protéger automatiquement
+let lastCount = PerpsModule.positions.length;
+
+setInterval(() => {
+    const currentCount = PerpsModule.positions.length;
+
+    if (currentCount > lastCount) {
+        // Nouvelle position détectée
+        const newPos = PerpsModule.positions[PerpsModule.positions.length - 1];
+
+        if (!newPos.liqProtection) {
+            PerpsModule.setPositionProtection(newPos.id, true, 'standard');
+            console.log(`🛡️ Auto-protected: ${newPos.symbol}`);
+        }
+    }
+
+    lastCount = currentCount;
+}, 1000);</code></pre>
+        </div>
+
+        <div class="card">
+            <h3>📊 Script: Rapport des positions protégées</h3>
+            <pre><code>function generateProtectionReport() {
+    const positions = PerpsModule.positions;
+    const protected = positions.filter(p => p.liqProtection);
+    const unprotected = positions.filter(p => !p.liqProtection);
+
+    console.log('=== PROTECTION REPORT ===');
+    console.log(`Total positions: ${positions.length}`);
+    console.log(`Protected: ${protected.length}`);
+    console.log(`Unprotected: ${unprotected.length}`);
+
+    console.log('\n📋 Protected positions:');
+    protected.forEach(p => {
+        console.log(`  ${p.liqProtectionPlan === 'basic' ? '🔔' : p.liqProtectionPlan === 'standard' ? '🛡️' : '👑'} ${p.symbol} - ${p.liqProtectionPlan}`);
+    });
+
+    if (unprotected.length > 0) {
+        console.log('\n⚠️ Unprotected positions:');
+        unprotected.forEach(p => {
+            console.log(`  ❌ ${p.symbol} - Liq: $${p.liquidationPrice.toFixed(2)}`);
+        });
+    }
+}
+
+generateProtectionReport();</code></pre>
+        </div>
+
+        <div class="card">
+            <h3>🔄 Integration externe via fetch</h3>
+            <pre><code>// Si vous avez un serveur backend, exposez l'API
+
+// Côté client - Envoyer l'état au backend
+async function syncToBackend() {
+    const data = {
+        positions: PerpsModule.positions,
+        protected: PerpsModule.api.getProtected()
+    };
+
+    await fetch('https://your-api.com/sync', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(data)
+    });
+}
+
+// Webhook sur changement de protection
+window.addEventListener('obelisk:protection-changed', async (e) => {
+    await fetch('https://your-api.com/webhook/protection', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(e.detail)
+    });
+});</code></pre>
+        </div>
+
+        <div class="card">
+            <h3>🔌 curl - Tester l'API backend rapidement</h3>
+            <pre><code># Vérifier la santé du serveur
+curl http://localhost:3001/health
+
+# Equity MixBot
+curl http://localhost:3001/api/trade/equity?venue=mixbot
+
+# Positions ouvertes
+curl http://localhost:3001/api/trade/venue/positions?venue=mixbot
+
+# Prix des marchés
+curl http://localhost:3001/api/markets
+
+# Ouvrir un trade BTC LONG $5 x2
+curl -X POST http://localhost:3001/api/trade/order \
+  -H "Content-Type: application/json" \
+  -d '{"symbol":"BTC/USDC","side":"buy","size":5,"leverage":2,"source":"mixbot","strategy":"test"}'
+
+# Fermer le trade
+curl -X POST http://localhost:3001/api/trade/venue/close \
+  -H "Content-Type: application/json" \
+  -d '{"venue":"mixbot","coin":"BTC","side":"sell","size":5}'
+
+# Stats du venue
+curl http://localhost:3001/api/trade/venue/stats?venue=mixbot</code></pre>
+        </div>
+
+        <div style="margin-top:40px;padding:20px;background:rgba(0,255,136,0.1);border:1px solid rgba(0,255,136,0.3);border-radius:12px;text-align:center;">
+            <h3 style="color:#00ff88;margin-bottom:10px;">🚀 Prêt à commencer?</h3>
+            <p>Ouvrez la console du navigateur (F12) et testez les commandes!</p>
+            <div style="display:flex;gap:15px;justify-content:center;flex-wrap:wrap;margin-top:15px;">
+                <a href="../index.html" style="padding:12px 24px;background:linear-gradient(135deg,#00ff88,#00cc66);border-radius:8px;color:#000;text-decoration:none;font-weight:bold;">
+                    🚀 Ouvrir l'App
+                </a>
+                <a href="index.html" style="padding:12px 24px;background:rgba(0,170,255,0.2);border:1px solid rgba(0,170,255,0.4);border-radius:8px;color:#00aaff;text-decoration:none;font-weight:bold;">
+                    📚 Documentation
+                </a>
+                <a href="innovations.html" style="padding:12px 24px;background:rgba(245,158,11,0.2);border:1px solid rgba(245,158,11,0.4);border-radius:8px;color:#f59e0b;text-decoration:none;font-weight:bold;">
+                    🚀 Innovations
+                </a>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

@@ -1,0 +1,888 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Documentation - OBELISK DEX</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+    <link rel="icon" type="image/svg+xml" href="assets/obelisk-icon.svg">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --bg-dark: #0a0a0f;
+            --bg-card: #12121a;
+            --bg-card-hover: #1a1a25;
+            --primary: #00ff88;
+            --secondary: #00aaff;
+            --accent: #8a2be2;
+            --text: #ffffff;
+            --text-dim: #888899;
+            --border: #2a2a3a;
+            --code-bg: #1a1a2e;
+        }
+
+        body {
+            font-family: 'Inter', -apple-system, sans-serif;
+            background: var(--bg-dark);
+            color: var(--text);
+            min-height: 100vh;
+            line-height: 1.7;
+        }
+
+        .bg-gradient {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background:
+                radial-gradient(ellipse at 20% 20%, rgba(0, 255, 136, 0.05) 0%, transparent 50%),
+                radial-gradient(ellipse at 80% 80%, rgba(138, 43, 226, 0.05) 0%, transparent 50%);
+            pointer-events: none;
+            z-index: 0;
+        }
+
+        /* Layout */
+        .docs-layout {
+            display: grid;
+            grid-template-columns: 280px 1fr;
+            min-height: 100vh;
+            position: relative;
+            z-index: 1;
+        }
+
+        /* Sidebar */
+        .sidebar {
+            background: var(--bg-card);
+            border-right: 1px solid var(--border);
+            padding: 24px;
+            position: sticky;
+            top: 0;
+            height: 100vh;
+            overflow-y: auto;
+        }
+
+        .sidebar-logo {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin-bottom: 32px;
+            text-decoration: none;
+        }
+
+        .sidebar-logo svg {
+            width: 36px;
+            height: 36px;
+        }
+
+        .sidebar-logo span {
+            font-size: 20px;
+            font-weight: 800;
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .nav-section {
+            margin-bottom: 24px;
+        }
+
+        .nav-section-title {
+            font-size: 11px;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            color: var(--text-dim);
+            margin-bottom: 12px;
+        }
+
+        .nav-link {
+            display: block;
+            padding: 8px 12px;
+            color: var(--text-dim);
+            text-decoration: none;
+            border-radius: 8px;
+            font-size: 14px;
+            transition: all 0.2s;
+            margin-bottom: 4px;
+        }
+
+        .nav-link:hover, .nav-link.active {
+            background: rgba(0, 255, 136, 0.1);
+            color: var(--primary);
+        }
+
+        /* Main Content */
+        .main-content {
+            padding: 48px 64px;
+            max-width: 900px;
+        }
+
+        .breadcrumb {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 14px;
+            color: var(--text-dim);
+            margin-bottom: 24px;
+        }
+
+        .breadcrumb a {
+            color: var(--primary);
+            text-decoration: none;
+        }
+
+        h1 {
+            font-size: 40px;
+            font-weight: 800;
+            margin-bottom: 16px;
+            background: linear-gradient(135deg, var(--text), var(--text-dim));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .intro {
+            font-size: 18px;
+            color: var(--text-dim);
+            margin-bottom: 48px;
+            padding-bottom: 32px;
+            border-bottom: 1px solid var(--border);
+        }
+
+        h2 {
+            font-size: 28px;
+            font-weight: 700;
+            margin: 48px 0 16px;
+            color: var(--text);
+        }
+
+        h3 {
+            font-size: 20px;
+            font-weight: 600;
+            margin: 32px 0 12px;
+            color: var(--text);
+        }
+
+        p {
+            margin-bottom: 16px;
+            color: var(--text-dim);
+        }
+
+        ul, ol {
+            margin: 16px 0;
+            padding-left: 24px;
+            color: var(--text-dim);
+        }
+
+        li {
+            margin-bottom: 8px;
+        }
+
+        /* Code blocks */
+        code {
+            font-family: 'JetBrains Mono', monospace;
+            background: var(--code-bg);
+            padding: 2px 6px;
+            border-radius: 4px;
+            font-size: 14px;
+            color: var(--primary);
+        }
+
+        pre {
+            background: var(--code-bg);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            padding: 20px;
+            overflow-x: auto;
+            margin: 16px 0;
+        }
+
+        pre code {
+            background: none;
+            padding: 0;
+            color: var(--text);
+        }
+
+        /* Cards */
+        .feature-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 16px;
+            margin: 24px 0;
+        }
+
+        .doc-card {
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            padding: 20px;
+            transition: all 0.3s;
+        }
+
+        .doc-card:hover {
+            border-color: var(--primary);
+            transform: translateY(-2px);
+        }
+
+        .doc-card h4 {
+            font-size: 16px;
+            font-weight: 600;
+            margin-bottom: 8px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .doc-card p {
+            font-size: 14px;
+            margin: 0;
+        }
+
+        /* Alerts */
+        .alert {
+            padding: 16px 20px;
+            border-radius: 12px;
+            margin: 24px 0;
+            display: flex;
+            gap: 12px;
+        }
+
+        .alert-info {
+            background: rgba(0, 170, 255, 0.1);
+            border: 1px solid rgba(0, 170, 255, 0.3);
+        }
+
+        .alert-warning {
+            background: rgba(255, 170, 0, 0.1);
+            border: 1px solid rgba(255, 170, 0, 0.3);
+        }
+
+        .alert-success {
+            background: rgba(0, 255, 136, 0.1);
+            border: 1px solid rgba(0, 255, 136, 0.3);
+        }
+
+        .alert-icon {
+            font-size: 20px;
+        }
+
+        .alert-content {
+            flex: 1;
+        }
+
+        .alert-title {
+            font-weight: 600;
+            margin-bottom: 4px;
+            color: var(--text);
+        }
+
+        .alert-text {
+            font-size: 14px;
+            color: var(--text-dim);
+            margin: 0;
+        }
+
+        /* Table */
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 24px 0;
+        }
+
+        th, td {
+            padding: 12px 16px;
+            text-align: left;
+            border-bottom: 1px solid var(--border);
+        }
+
+        th {
+            font-weight: 600;
+            color: var(--text);
+            background: var(--bg-card);
+        }
+
+        td {
+            color: var(--text-dim);
+        }
+
+        /* Back to top */
+        .back-to-app {
+            position: fixed;
+            bottom: 24px;
+            right: 24px;
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            color: var(--bg-dark);
+            padding: 12px 20px;
+            border-radius: 50px;
+            text-decoration: none;
+            font-weight: 600;
+            font-size: 14px;
+            box-shadow: 0 4px 20px rgba(0, 255, 136, 0.3);
+            transition: transform 0.3s;
+        }
+
+        .back-to-app:hover {
+            transform: translateY(-2px);
+        }
+
+        /* Responsive */
+        @media (max-width: 900px) {
+            html, body {
+                overflow-x: hidden;
+            }
+
+            .docs-layout {
+                grid-template-columns: 1fr;
+            }
+
+            .sidebar {
+                display: none;
+            }
+
+            .main-content {
+                padding: 16px;
+                max-width: 100vw;
+                overflow-x: hidden;
+                box-sizing: border-box;
+            }
+
+            h1 {
+                font-size: 28px;
+                word-wrap: break-word;
+            }
+
+            .breadcrumb {
+                flex-wrap: wrap;
+            }
+
+            pre {
+                max-width: 100%;
+                overflow-x: auto;
+            }
+
+            code {
+                word-wrap: break-word;
+            }
+
+            footer a,
+            .nav-link,
+            a {
+                min-height: 44px;
+                display: inline-flex;
+                align-items: center;
+            }
+
+            .back-to-app {
+                min-height: 48px;
+                min-width: 120px;
+            }
+        }
+
+        /* Accessibility */
+        .skip-link {
+            position: absolute;
+            top: -100px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: var(--primary);
+            color: var(--bg-dark);
+            padding: 12px 24px;
+            border-radius: 8px;
+            font-weight: 700;
+            z-index: 1000;
+            transition: top 0.3s;
+            text-decoration: none;
+        }
+
+        .skip-link:focus {
+            top: 10px;
+        }
+
+        *:focus-visible {
+            outline: 2px solid var(--primary);
+            outline-offset: 2px;
+        }
+
+        .sr-only {
+            position: absolute;
+            width: 1px;
+            height: 1px;
+            padding: 0;
+            margin: -1px;
+            overflow: hidden;
+            clip: rect(0, 0, 0, 0);
+            white-space: nowrap;
+            border: 0;
+        }
+
+        @media (prefers-reduced-motion: reduce) {
+            *, *::before, *::after {
+                animation-duration: 0.01ms !important;
+                transition-duration: 0.01ms !important;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Accessibility: Skip to main content -->
+    <a href="#main-content" class="skip-link">Skip to main content</a>
+
+    <div class="bg-gradient" aria-hidden="true"></div>
+
+    <div class="docs-layout">
+        <aside class="sidebar" role="complementary">
+            <a href="index.html" class="sidebar-logo">
+                <svg viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M24 2L10 46h28L24 2z" fill="url(#g1)" />
+                    <path d="M24 10L14 42h20L24 10z" fill="#0a0a0f" />
+                    <path d="M24 18L17 38h14L24 18z" fill="url(#g1)" opacity="0.6" />
+                    <defs>
+                        <linearGradient id="g1" x1="24" y1="2" x2="24" y2="46" gradientUnits="userSpaceOnUse">
+                            <stop stop-color="#00ff88" />
+                            <stop offset="0.5" stop-color="#00aaff" />
+                            <stop offset="1" stop-color="#8a2be2" />
+                        </linearGradient>
+                    </defs>
+                </svg>
+                <span>OBELISK</span>
+            </a>
+
+            <nav role="navigation" aria-label="Documentation navigation">
+                <div class="nav-section">
+                    <div class="nav-section-title">Getting Started</div>
+                    <a href="#introduction" class="nav-link active">Introduction</a>
+                    <a href="#quickstart" class="nav-link">Quick Start</a>
+                    <a href="#connect-wallet" class="nav-link">Connect Wallet</a>
+                </div>
+
+                <div class="nav-section">
+                    <div class="nav-section-title">Features</div>
+                    <a href="#trading" class="nav-link">Perpetual Trading</a>
+                    <a href="#swap" class="nav-link">Token Swap</a>
+                    <a href="#banking" class="nav-link">DeFi Banking</a>
+                    <a href="#bonds" class="nav-link">Crypto Bonds</a>
+                    <a href="#tools" class="nav-link">Pro Tools</a>
+                    <a href="#portfolio" class="nav-link">Portfolio</a>
+                </div>
+
+                <div class="nav-section">
+                    <div class="nav-section-title">Security</div>
+                    <a href="#post-quantum" class="nav-link">Post-Quantum</a>
+                    <a href="#self-custody" class="nav-link">Self-Custody</a>
+                    <a href="#recovery" class="nav-link">Social Recovery</a>
+                </div>
+
+                <div class="nav-section">
+                    <div class="nav-section-title">API</div>
+                    <a href="#api-overview" class="nav-link">Overview</a>
+                    <a href="#api-endpoints" class="nav-link">Endpoints</a>
+                </div>
+            </nav>
+        </aside>
+
+        <main class="main-content" id="main-content" role="main">
+            <div class="breadcrumb">
+                <a href="index.html">Home</a>
+                <span>/</span>
+                <span>Documentation</span>
+            </div>
+
+            <h1>OBELISK Documentation</h1>
+            <p class="intro">
+                Welcome to the Obelisk DEX documentation. Learn how to use the first post-quantum
+                secure decentralized exchange for trading, swapping, and managing your crypto assets.
+            </p>
+
+            <section id="introduction">
+                <h2>Introduction</h2>
+                <p>
+                    Obelisk is a next-generation decentralized exchange (DEX) that combines the security
+                    of post-quantum cryptography with a comprehensive suite of DeFi tools. Unlike traditional
+                    centralized exchanges, Obelisk never holds your funds - you maintain complete control
+                    of your private keys at all times.
+                </p>
+
+                <div class="feature-grid">
+                    <div class="doc-card">
+                        <h4>🔐 Self-Custody</h4>
+                        <p>Your keys, your crypto. We never store or have access to your private keys.</p>
+                    </div>
+                    <div class="doc-card">
+                        <h4>🛡️ Post-Quantum</h4>
+                        <p>Protected against quantum computer attacks with NIST-approved algorithms.</p>
+                    </div>
+                    <div class="doc-card">
+                        <h4>⚡ Ultra-Fast</h4>
+                        <p>Sub-second execution with real-time price updates every millisecond.</p>
+                    </div>
+                    <div class="doc-card">
+                        <h4>💰 Zero Fees</h4>
+                        <p>No platform fees on swaps. Only pay network gas fees.</p>
+                    </div>
+                </div>
+            </section>
+
+            <section id="quickstart">
+                <h2>Quick Start</h2>
+                <p>Get started with Obelisk in 3 simple steps:</p>
+
+                <h3>Step 1: Access the Platform</h3>
+                <p>
+                    Navigate to <a href="app.html" style="color: var(--primary)">app.obelisk-dex.pages.dev</a>
+                    or click "Launch App" from the homepage.
+                </p>
+
+                <h3>Step 2: Connect Your Wallet</h3>
+                <p>
+                    Click the "Connect Wallet" button in the top right corner. Obelisk supports:
+                </p>
+                <ul>
+                    <li><strong>MetaMask</strong> - Most popular browser wallet</li>
+                    <li><strong>WalletConnect</strong> - Connect any mobile wallet</li>
+                    <li><strong>Coinbase Wallet</strong> - Direct integration</li>
+                    <li><strong>Private Key</strong> - Import existing wallet (advanced)</li>
+                </ul>
+
+                <div class="alert alert-warning">
+                    <span class="alert-icon">⚠️</span>
+                    <div class="alert-content">
+                        <div class="alert-title">Security Notice</div>
+                        <p class="alert-text">
+                            Never share your private key or seed phrase with anyone.
+                            Obelisk will never ask for your private key through email or support.
+                        </p>
+                    </div>
+                </div>
+
+                <h3>Step 3: Start Trading</h3>
+                <p>
+                    Once connected, you can immediately access all features: trading, swapping,
+                    banking, and portfolio management.
+                </p>
+            </section>
+
+            <section id="connect-wallet">
+                <h2>Connect Wallet</h2>
+                <p>
+                    Obelisk uses a non-custodial architecture, meaning your wallet connects directly
+                    to the blockchain without intermediaries.
+                </p>
+
+                <h3>Supported Networks</h3>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Network</th>
+                            <th>Chain ID</th>
+                            <th>Status</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>Arbitrum One</td>
+                            <td>42161</td>
+                            <td style="color: var(--primary)">● Active</td>
+                        </tr>
+                        <tr>
+                            <td>Ethereum</td>
+                            <td>1</td>
+                            <td style="color: var(--primary)">● Active</td>
+                        </tr>
+                        <tr>
+                            <td>Optimism</td>
+                            <td>10</td>
+                            <td style="color: var(--secondary)">● Coming Soon</td>
+                        </tr>
+                        <tr>
+                            <td>Base</td>
+                            <td>8453</td>
+                            <td style="color: var(--secondary)">● Coming Soon</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </section>
+
+            <section id="trading">
+                <h2>Perpetual Trading</h2>
+                <p>
+                    Trade perpetual contracts on 100+ assets with up to 100x leverage.
+                    Obelisk aggregates liquidity from Hyperliquid for deep order books and tight spreads.
+                </p>
+
+                <h3>Order Types</h3>
+                <ul>
+                    <li><strong>Market Order</strong> - Execute immediately at best available price</li>
+                    <li><strong>Limit Order</strong> - Set your desired entry price</li>
+                    <li><strong>Stop Loss</strong> - Automatically close position at specified loss</li>
+                    <li><strong>Take Profit</strong> - Lock in gains at target price</li>
+                </ul>
+
+                <h3>Leverage</h3>
+                <p>
+                    Adjust leverage from 1x to 100x using the slider. Higher leverage amplifies
+                    both gains and losses. We recommend starting with lower leverage (5-10x)
+                    until you're familiar with the platform.
+                </p>
+
+                <div class="alert alert-info">
+                    <span class="alert-icon">💡</span>
+                    <div class="alert-content">
+                        <div class="alert-title">Pro Tip</div>
+                        <p class="alert-text">
+                            Use the order book depth visualization to identify key support
+                            and resistance levels before placing trades.
+                        </p>
+                    </div>
+                </div>
+            </section>
+
+            <section id="swap">
+                <h2>Token Swap</h2>
+                <p>
+                    Swap any token instantly with the best rates aggregated from multiple DEXs
+                    including Uniswap, SushiSwap, and Curve.
+                </p>
+
+                <h3>How It Works</h3>
+                <ol>
+                    <li>Select the token you want to swap from</li>
+                    <li>Select the token you want to receive</li>
+                    <li>Enter the amount</li>
+                    <li>Review the quote and slippage</li>
+                    <li>Confirm the transaction in your wallet</li>
+                </ol>
+
+                <h3>Slippage Protection</h3>
+                <p>
+                    Default slippage tolerance is set to 0.5%. You can adjust this in settings.
+                    Higher slippage may be needed for low-liquidity tokens.
+                </p>
+            </section>
+
+            <section id="banking">
+                <h2>DeFi Banking</h2>
+                <p>
+                    Obelisk Banking allows you to deposit crypto assets and earn interest,
+                    similar to a traditional savings account but fully decentralized.
+                </p>
+
+                <h3>Features</h3>
+                <ul>
+                    <li><strong>Flexible Deposits</strong> - Withdraw anytime with no lock-up</li>
+                    <li><strong>Competitive APY</strong> - Rates updated in real-time based on market conditions</li>
+                    <li><strong>Auto-Compound</strong> - Interest automatically reinvested</li>
+                    <li><strong>Multi-Asset</strong> - Support for ETH, USDC, USDT, and more</li>
+                </ul>
+            </section>
+
+            <section id="bonds">
+                <h2>Crypto Bonds</h2>
+                <p>
+                    Fixed-term investments with guaranteed returns. Lock your crypto for a
+                    specified period and earn predictable yields.
+                </p>
+
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Term</th>
+                            <th>APY</th>
+                            <th>Min. Deposit</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>30 Days</td>
+                            <td style="color: var(--primary)">5.2%</td>
+                            <td>$100</td>
+                        </tr>
+                        <tr>
+                            <td>90 Days</td>
+                            <td style="color: var(--primary)">8.5%</td>
+                            <td>$100</td>
+                        </tr>
+                        <tr>
+                            <td>180 Days</td>
+                            <td style="color: var(--primary)">12.0%</td>
+                            <td>$500</td>
+                        </tr>
+                        <tr>
+                            <td>365 Days</td>
+                            <td style="color: var(--primary)">15.0%</td>
+                            <td>$1,000</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </section>
+
+            <section id="tools">
+                <h2>Pro Tools</h2>
+                <p>Advanced tools for serious traders:</p>
+
+                <div class="feature-grid">
+                    <div class="doc-card">
+                        <h4>📊 Arbitrage Scanner</h4>
+                        <p>Find price differences across DEXs in real-time.</p>
+                    </div>
+                    <div class="doc-card">
+                        <h4>🤖 AI Advisor</h4>
+                        <p>Get AI-powered trade recommendations based on market analysis.</p>
+                    </div>
+                    <div class="doc-card">
+                        <h4>🐋 Whale Tracker</h4>
+                        <p>Monitor large wallet movements and smart money flows.</p>
+                    </div>
+                    <div class="doc-card">
+                        <h4>📈 Advanced Charts</h4>
+                        <p>TradingView integration with 100+ technical indicators.</p>
+                    </div>
+                </div>
+            </section>
+
+            <section id="portfolio">
+                <h2>Portfolio Manager</h2>
+                <p>
+                    Track all your crypto assets in one place. The portfolio dashboard shows:
+                </p>
+                <ul>
+                    <li>Total portfolio value in USD</li>
+                    <li>Asset allocation breakdown</li>
+                    <li>Profit/Loss tracking (daily, weekly, monthly, all-time)</li>
+                    <li>Transaction history</li>
+                    <li>Performance analytics</li>
+                </ul>
+            </section>
+
+            <section id="post-quantum">
+                <h2>Post-Quantum Security</h2>
+                <p>
+                    Obelisk implements NIST-approved post-quantum cryptographic algorithms
+                    to protect your assets against future quantum computer threats.
+                </p>
+
+                <h3>Algorithms Used</h3>
+                <ul>
+                    <li><strong>CRYSTALS-Kyber</strong> - Key encapsulation mechanism for secure key exchange</li>
+                    <li><strong>CRYSTALS-Dilithium</strong> - Digital signatures for transaction authentication</li>
+                </ul>
+
+                <div class="alert alert-success">
+                    <span class="alert-icon">✓</span>
+                    <div class="alert-content">
+                        <div class="alert-title">Future-Proof Security</div>
+                        <p class="alert-text">
+                            While quantum computers capable of breaking current encryption
+                            don't exist yet, Obelisk is already prepared for that future.
+                        </p>
+                    </div>
+                </div>
+            </section>
+
+            <section id="self-custody">
+                <h2>Self-Custody</h2>
+                <p>
+                    Obelisk is 100% non-custodial. This means:
+                </p>
+                <ul>
+                    <li>Your private keys never leave your device</li>
+                    <li>We cannot freeze or seize your funds</li>
+                    <li>No KYC or account registration required</li>
+                    <li>You are in complete control at all times</li>
+                </ul>
+            </section>
+
+            <section id="recovery">
+                <h2>Social Recovery</h2>
+                <p>
+                    Obelisk supports social recovery to help you regain access to your wallet
+                    if you lose your private key.
+                </p>
+
+                <h3>How It Works</h3>
+                <ol>
+                    <li>Designate trusted "guardians" (friends, family, or hardware devices)</li>
+                    <li>If you lose access, initiate recovery</li>
+                    <li>Guardians approve the recovery request</li>
+                    <li>After threshold approvals, you regain access with a new key</li>
+                </ol>
+            </section>
+
+            <section id="api-overview">
+                <h2>API Overview</h2>
+                <p>
+                    Obelisk provides a REST API for programmatic access to market data and trading.
+                </p>
+
+                <h3>Base URL</h3>
+                <pre><code>https://obelisk-api.obelisk-io.workers.dev</code></pre>
+
+                <h3>Authentication</h3>
+                <p>
+                    Public endpoints (market data) require no authentication.
+                    Trading endpoints require a signed request using your wallet.
+                </p>
+            </section>
+
+            <section id="api-endpoints">
+                <h2>API Endpoints</h2>
+
+                <h3>Get Markets</h3>
+                <pre><code>GET /api/markets
+
+Response:
+{
+  "markets": [
+    {
+      "symbol": "BTC-USD",
+      "price": 97234.50,
+      "change24h": 2.34,
+      "volume24h": 1250000000
+    }
+  ]
+}</code></pre>
+
+                <h3>Get Order Book</h3>
+                <pre><code>GET /api/orderbook/:symbol
+
+Response:
+{
+  "bids": [[97200, 1.5], [97150, 2.3]],
+  "asks": [[97250, 1.2], [97300, 1.8]],
+  "spread": 50
+}</code></pre>
+
+                <h3>Get Price Feed</h3>
+                <pre><code>GET /api/prices
+
+Response:
+{
+  "BTC": 97234.50,
+  "ETH": 3456.78,
+  "SOL": 124.56,
+  "timestamp": 1702847123456
+}</code></pre>
+            </section>
+
+            <div style="margin-top: 64px; padding-top: 32px; border-top: 1px solid var(--border); text-align: center;">
+                <p style="color: var(--text-dim); font-size: 14px;">
+                    © 2025 Obelisk DEX. Built for the post-quantum era.<br>
+                    <a href="index.html" style="color: var(--primary)">Home</a> ·
+                    <a href="app.html" style="color: var(--primary)">Launch App</a> ·
+                    <a href="https://github.com" style="color: var(--primary)" target="_blank" rel="noopener noreferrer">GitHub<span class="sr-only"> (opens in new tab)</span></a>
+                </p>
+            </div>
+        </main>
+    </div>
+
+    <a href="app.html" class="back-to-app">Launch App →</a>
+</body>
+</html>

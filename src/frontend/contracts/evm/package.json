@@ -1,0 +1,29 @@
+{
+  "name": "obelisk-dex-contracts",
+  "version": "1.0.0",
+  "description": "Obelisk DEX Smart Contracts - Multi-chain (ETH, ARB, Base, RSK/BTC, SOL)",
+  "scripts": {
+    "compile": "hardhat compile",
+    "test": "hardhat test",
+    "node": "hardhat node",
+    "deploy:local": "hardhat run scripts/deploy.js --network localhost",
+    "deploy:sepolia": "hardhat run scripts/deploy.js --network sepolia",
+    "deploy:ethereum": "hardhat run scripts/deploy.js --network ethereum",
+    "deploy:arbitrum": "hardhat run scripts/deploy.js --network arbitrum",
+    "deploy:arbitrum-sepolia": "hardhat run scripts/deploy.js --network arbitrumSepolia",
+    "deploy:base": "hardhat run scripts/deploy.js --network base",
+    "deploy:base-sepolia": "hardhat run scripts/deploy.js --network baseSepolia",
+    "deploy:rsk": "hardhat run scripts/deploy.js --network rsk",
+    "deploy:rsk-testnet": "hardhat run scripts/deploy.js --network rskTestnet",
+    "deploy:all-testnet": "npm run deploy:sepolia && npm run deploy:arbitrum-sepolia && npm run deploy:base-sepolia && npm run deploy:rsk-testnet",
+    "deploy:all-mainnet": "npm run deploy:ethereum && npm run deploy:arbitrum && npm run deploy:base && npm run deploy:rsk",
+    "verify": "hardhat verify"
+  },
+  "dependencies": {
+    "dotenv": "^16.3.1"
+  },
+  "devDependencies": {
+    "@nomicfoundation/hardhat-toolbox": "^4.0.0",
+    "hardhat": "^2.19.0"
+  }
+}

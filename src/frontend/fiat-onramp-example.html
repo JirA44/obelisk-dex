@@ -1,0 +1,371 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Obelisk - Fiat On-Ramp Integration Example</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: linear-gradient(135deg, #0a0a15, #1a1a2e);
+            color: #fff;
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 800px;
+            width: 100%;
+        }
+
+        h1 {
+            text-align: center;
+            margin-bottom: 30px;
+            background: linear-gradient(135deg, #00ff88, #00d4aa);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            font-size: 2.5rem;
+        }
+
+        .card {
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 20px;
+            padding: 30px;
+            margin-bottom: 20px;
+        }
+
+        h2 {
+            color: #00ff88;
+            margin-bottom: 15px;
+            font-size: 1.5rem;
+        }
+
+        .button-group {
+            display: grid;
+            gap: 15px;
+            margin-top: 20px;
+        }
+
+        button {
+            padding: 15px 25px;
+            border-radius: 12px;
+            border: none;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, #00d4aa, #00a884);
+            color: #fff;
+        }
+
+        .btn-moonpay {
+            background: linear-gradient(135deg, #4a9eff, #357abd);
+            color: #fff;
+        }
+
+        .btn-transak {
+            background: linear-gradient(135deg, #6b46ff, #5236cc);
+            color: #fff;
+        }
+
+        .btn-secondary {
+            background: rgba(255, 255, 255, 0.1);
+            color: #fff;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+
+        button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 30px rgba(0, 255, 136, 0.3);
+        }
+
+        .info {
+            background: rgba(0, 212, 170, 0.1);
+            border: 1px solid rgba(0, 212, 170, 0.3);
+            border-radius: 10px;
+            padding: 15px;
+            margin-top: 15px;
+            font-size: 0.9rem;
+            color: #00d4aa;
+        }
+
+        .warning {
+            background: rgba(255, 165, 0, 0.1);
+            border: 1px solid rgba(255, 165, 0, 0.3);
+            border-radius: 10px;
+            padding: 15px;
+            margin-top: 15px;
+            font-size: 0.9rem;
+            color: #ffa500;
+        }
+
+        code {
+            background: rgba(0, 0, 0, 0.3);
+            padding: 2px 6px;
+            border-radius: 4px;
+            font-family: 'Courier New', monospace;
+        }
+
+        pre {
+            background: rgba(0, 0, 0, 0.3);
+            padding: 15px;
+            border-radius: 8px;
+            overflow-x: auto;
+            margin-top: 10px;
+            font-size: 0.85rem;
+        }
+
+        .status {
+            margin-top: 20px;
+            padding: 15px;
+            background: rgba(0, 0, 0, 0.3);
+            border-radius: 10px;
+            font-family: 'Courier New', monospace;
+            font-size: 0.85rem;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>💳 Fiat On-Ramp Integration</h1>
+
+        <!-- Configuration Card -->
+        <div class="card">
+            <h2>1. Configuration</h2>
+            <p>Configure the fiat on-ramp with MoonPay and/or Transak API keys:</p>
+
+            <div class="button-group">
+                <button class="btn-secondary" onclick="configureSimulation()">
+                    Use Simulation Mode (Default)
+                </button>
+                <button class="btn-moonpay" onclick="configureMoonPay()">
+                    Configure MoonPay (Sandbox)
+                </button>
+                <button class="btn-transak" onclick="configureTransak()">
+                    Configure Transak (Staging)
+                </button>
+            </div>
+
+            <div class="info">
+                <strong>Note:</strong> In production, set API keys via environment variables or secure config.
+                For testing, you can use sandbox/staging modes with test credentials.
+            </div>
+        </div>
+
+        <!-- Usage Card -->
+        <div class="card">
+            <h2>2. Open Fiat On-Ramp</h2>
+            <p>Test the different payment methods:</p>
+
+            <div class="button-group">
+                <button class="btn-primary" onclick="FiatOnRamp.showModal()">
+                    💳 Open Fiat On-Ramp Modal
+                </button>
+                <button class="btn-moonpay" onclick="FiatOnRamp.openMoonPayWidget()">
+                    🌙 Open MoonPay Widget
+                </button>
+                <button class="btn-transak" onclick="FiatOnRamp.openTransakWidget()">
+                    💎 Open Transak Widget
+                </button>
+            </div>
+
+            <div class="warning">
+                <strong>Wallet Required:</strong> Make sure to set a wallet address before opening payment widgets.
+            </div>
+        </div>
+
+        <!-- API Testing Card -->
+        <div class="card">
+            <h2>3. Test Backend API</h2>
+            <p>Test the fiat webhook endpoints:</p>
+
+            <div class="button-group">
+                <button class="btn-secondary" onclick="getTransactions()">
+                    Get Fiat Transactions
+                </button>
+                <button class="btn-secondary" onclick="getFiatStats()">
+                    Get Fiat Statistics
+                </button>
+                <button class="btn-secondary" onclick="testMoonPayWebhook()">
+                    Simulate MoonPay Webhook
+                </button>
+                <button class="btn-secondary" onclick="testTransakWebhook()">
+                    Simulate Transak Webhook
+                </button>
+            </div>
+
+            <div class="status" id="status">
+                Waiting for action...
+            </div>
+        </div>
+
+        <!-- Code Example Card -->
+        <div class="card">
+            <h2>4. Integration Code</h2>
+            <p>Example JavaScript code:</p>
+            <pre><code>// Configure providers
+FiatOnRamp.configure({
+    moonpayApiKey: 'pk_test_...',
+    transakApiKey: 'YOUR_API_KEY',
+    provider: 'moonpay' // or 'transak' or 'simulation'
+});
+
+// Set wallet address (from your app)
+ObeliskApp.state.account = '0x...';
+
+// Register callback for payment completion
+FiatOnRamp.onPaymentComplete((result) => {
+    console.log('Payment completed:', result);
+    // Update user balance, show notification, etc.
+});
+
+// Open modal
+FiatOnRamp.showModal(100); // preset amount
+
+// Or directly open provider widget
+FiatOnRamp.openMoonPayWidget({
+    currencyCode: 'usdc',
+    walletAddress: '0x...',
+    baseCurrencyAmount: 100,
+    baseCurrencyCode: 'eur'
+});</code></pre>
+        </div>
+    </div>
+
+    <!-- Load the fiat-onramp.js module -->
+    <script src="js/products/fiat-onramp.js"></script>
+
+    <script>
+        // Mock ObeliskApp for testing
+        window.ObeliskApp = {
+            state: {
+                account: '0x377706801308ac4c3Fe86EEBB295FeC6E1279140', // Your wallet
+                balance: 1000
+            }
+        };
+
+        // Setup payment completion callback
+        FiatOnRamp.onPaymentComplete((result) => {
+            console.log('Payment completed!', result);
+            updateStatus('Payment completed: ' + JSON.stringify(result, null, 2));
+        });
+
+        function updateStatus(message) {
+            document.getElementById('status').textContent = message;
+        }
+
+        function configureSimulation() {
+            FiatOnRamp.configure({ provider: 'simulation' });
+            updateStatus('Configured: Simulation mode (default)');
+        }
+
+        function configureMoonPay() {
+            FiatOnRamp.configure({
+                moonpayApiKey: 'pk_test_123', // Replace with real sandbox key
+                provider: 'moonpay',
+                moonpayLive: false // Use sandbox
+            });
+            updateStatus('Configured: MoonPay (Sandbox mode)');
+        }
+
+        function configureTransak() {
+            FiatOnRamp.configure({
+                transakApiKey: 'YOUR_STAGING_KEY', // Replace with real staging key
+                provider: 'transak',
+                transakLive: false // Use staging
+            });
+            updateStatus('Configured: Transak (Staging mode)');
+        }
+
+        async function getTransactions() {
+            try {
+                const response = await fetch('http://localhost:3001/api/fiat/transactions');
+                const data = await response.json();
+                updateStatus('Transactions:\n' + JSON.stringify(data, null, 2));
+            } catch (e) {
+                updateStatus('Error: ' + e.message + '\nMake sure backend is running on port 3001');
+            }
+        }
+
+        async function getFiatStats() {
+            try {
+                const response = await fetch('http://localhost:3001/api/fiat/stats');
+                const data = await response.json();
+                updateStatus('Stats:\n' + JSON.stringify(data, null, 2));
+            } catch (e) {
+                updateStatus('Error: ' + e.message + '\nMake sure backend is running on port 3001');
+            }
+        }
+
+        async function testMoonPayWebhook() {
+            try {
+                const testPayload = {
+                    id: 'test_' + Date.now(),
+                    type: 'transactionCompleted',
+                    status: 'completed',
+                    cryptoCurrency: 'usdc',
+                    baseCurrency: 'eur',
+                    baseCurrencyAmount: 100,
+                    quoteCurrencyAmount: 95.5,
+                    walletAddress: ObeliskApp.state.account,
+                    createdAt: new Date().toISOString()
+                };
+
+                const response = await fetch('http://localhost:3001/api/webhooks/moonpay', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(testPayload)
+                });
+
+                const data = await response.json();
+                updateStatus('MoonPay webhook response:\n' + JSON.stringify(data, null, 2));
+            } catch (e) {
+                updateStatus('Error: ' + e.message);
+            }
+        }
+
+        async function testTransakWebhook() {
+            try {
+                const testPayload = {
+                    eventName: 'ORDER_COMPLETED',
+                    data: {
+                        id: 'test_' + Date.now(),
+                        status: 'COMPLETED',
+                        cryptocurrency: 'USDC',
+                        fiatCurrency: 'EUR',
+                        fiatAmount: 100,
+                        cryptoAmount: 95.5,
+                        walletAddress: ObeliskApp.state.account,
+                        network: 'arbitrum',
+                        createdAt: new Date().toISOString()
+                    }
+                };
+
+                const response = await fetch('http://localhost:3001/api/webhooks/transak', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(testPayload)
+                });
+
+                const data = await response.json();
+                updateStatus('Transak webhook response:\n' + JSON.stringify(data, null, 2));
+            } catch (e) {
+                updateStatus('Error: ' + e.message);
+            }
+        }
+    </script>
+</body>
+</html>

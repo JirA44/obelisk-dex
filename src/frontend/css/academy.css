@@ -1,0 +1,911 @@
+/**
+ * OBELISK Trading Academy Styles
+ * Simulated traders for education
+ */
+
+/* ========================================
+   ACADEMY CONTAINER
+   ======================================== */
+.academy-container {
+    max-width: 1400px;
+    margin: 0 auto;
+    padding: 20px;
+    min-height: 100vh;
+}
+
+/* ========================================
+   HERO SECTION
+   ======================================== */
+.academy-hero {
+    background: linear-gradient(135deg, rgba(201,162,39,0.15) 0%, rgba(0,212,255,0.1) 100%);
+    border: 1px solid rgba(201,162,39,0.3);
+    border-radius: 20px;
+    padding: 40px;
+    margin-bottom: 30px;
+    text-align: center;
+    position: relative;
+    overflow: hidden;
+}
+
+.academy-hero::before {
+    content: '';
+    position: absolute;
+    top: -50%;
+    left: -50%;
+    width: 200%;
+    height: 200%;
+    background: radial-gradient(circle, rgba(201,162,39,0.1) 0%, transparent 60%);
+    animation: pulse-glow 4s ease-in-out infinite;
+}
+
+@keyframes pulse-glow {
+    0%, 100% { opacity: 0.5; transform: scale(1); }
+    50% { opacity: 1; transform: scale(1.1); }
+}
+
+.academy-hero-icon {
+    font-size: 64px;
+    margin-bottom: 20px;
+    animation: float 3s ease-in-out infinite;
+}
+
+@keyframes float {
+    0%, 100% { transform: translateY(0); }
+    50% { transform: translateY(-10px); }
+}
+
+.academy-title {
+    font-size: 2.5rem;
+    color: #c9a227;
+    margin-bottom: 10px;
+    font-weight: 700;
+    text-shadow: 0 0 20px rgba(201,162,39,0.5);
+}
+
+.academy-subtitle {
+    font-size: 1.1rem;
+    color: rgba(255,255,255,0.7);
+    max-width: 600px;
+    margin: 0 auto;
+}
+
+/* ========================================
+   TABS NAVIGATION
+   ======================================== */
+.academy-tabs {
+    display: flex;
+    gap: 10px;
+    margin-bottom: 30px;
+    flex-wrap: wrap;
+    justify-content: center;
+}
+
+.academy-tab {
+    padding: 12px 24px;
+    background: rgba(20,20,30,0.8);
+    border: 1px solid rgba(201,162,39,0.2);
+    border-radius: 10px;
+    color: rgba(255,255,255,0.7);
+    cursor: pointer;
+    transition: all 0.3s ease;
+    font-size: 0.95rem;
+}
+
+.academy-tab:hover {
+    border-color: rgba(201,162,39,0.5);
+    color: #c9a227;
+}
+
+.academy-tab.active {
+    background: linear-gradient(135deg, rgba(201,162,39,0.2), rgba(0,212,255,0.1));
+    border-color: #c9a227;
+    color: #c9a227;
+}
+
+/* ========================================
+   TRADERS GRID
+   ======================================== */
+.traders-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    gap: 24px;
+    margin-bottom: 40px;
+}
+
+.trader-card {
+    background: linear-gradient(145deg, rgba(20,20,30,0.95), rgba(10,10,15,0.98));
+    border: 1px solid rgba(201,162,39,0.2);
+    border-radius: 16px;
+    padding: 24px;
+    transition: all 0.3s ease;
+    position: relative;
+    overflow: hidden;
+}
+
+.trader-card:hover {
+    border-color: #c9a227;
+    transform: translateY(-5px);
+    box-shadow: 0 15px 40px rgba(201,162,39,0.2);
+}
+
+.trader-card.trading {
+    border-color: #00d4ff;
+    animation: trading-pulse 2s ease-in-out infinite;
+}
+
+@keyframes trading-pulse {
+    0%, 100% { box-shadow: 0 0 0 0 rgba(0,212,255,0.4); }
+    50% { box-shadow: 0 0 20px 5px rgba(0,212,255,0.2); }
+}
+
+.trader-avatar {
+    width: 60px;
+    height: 60px;
+    background: linear-gradient(135deg, #c9a227, #00d4ff);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 24px;
+    font-weight: 700;
+    color: #0a0a0f;
+    margin-bottom: 15px;
+}
+
+.trader-name {
+    font-size: 1.4rem;
+    color: #fff;
+    margin-bottom: 5px;
+    font-weight: 600;
+}
+
+.trader-style {
+    font-size: 0.85rem;
+    color: #c9a227;
+    margin-bottom: 10px;
+    display: flex;
+    align-items: center;
+    gap: 5px;
+}
+
+.trader-description {
+    font-size: 0.9rem;
+    color: rgba(255,255,255,0.6);
+    margin-bottom: 15px;
+    line-height: 1.5;
+}
+
+.trader-stats {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 10px;
+    margin-bottom: 15px;
+}
+
+.trader-stat {
+    text-align: center;
+    padding: 10px;
+    background: rgba(0,0,0,0.3);
+    border-radius: 8px;
+}
+
+.trader-stat-value {
+    font-size: 1.2rem;
+    font-weight: 700;
+    color: #00d4ff;
+}
+
+.trader-stat-value.positive { color: #00ff88; }
+.trader-stat-value.negative { color: #ff4444; }
+
+.trader-stat-label {
+    font-size: 0.75rem;
+    color: rgba(255,255,255,0.5);
+    margin-top: 3px;
+}
+
+.trader-indicators {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+    margin-bottom: 15px;
+}
+
+.trader-indicator {
+    padding: 4px 10px;
+    background: rgba(201,162,39,0.15);
+    border: 1px solid rgba(201,162,39,0.3);
+    border-radius: 20px;
+    font-size: 0.75rem;
+    color: #c9a227;
+}
+
+.trader-actions {
+    display: flex;
+    gap: 10px;
+}
+
+.btn-follow {
+    flex: 1;
+    padding: 10px 16px;
+    background: linear-gradient(135deg, rgba(201,162,39,0.2), rgba(0,212,255,0.1));
+    border: 1px solid rgba(201,162,39,0.4);
+    border-radius: 8px;
+    color: #c9a227;
+    cursor: pointer;
+    transition: all 0.3s;
+    font-size: 0.9rem;
+}
+
+.btn-follow:hover {
+    background: linear-gradient(135deg, #c9a227, #00d4ff);
+    color: #0a0a0f;
+}
+
+.btn-follow.following {
+    background: #c9a227;
+    color: #0a0a0f;
+}
+
+.btn-copy-trade {
+    padding: 10px 16px;
+    background: rgba(0,212,255,0.15);
+    border: 1px solid rgba(0,212,255,0.4);
+    border-radius: 8px;
+    color: #00d4ff;
+    cursor: pointer;
+    transition: all 0.3s;
+}
+
+.btn-copy-trade:hover {
+    background: #00d4ff;
+    color: #0a0a0f;
+}
+
+.btn-copy-trade.active {
+    background: #00d4ff;
+    color: #0a0a0f;
+}
+
+/* ========================================
+   LIVE FEED
+   ======================================== */
+.live-feed-container {
+    background: rgba(10,10,15,0.9);
+    border: 1px solid rgba(201,162,39,0.2);
+    border-radius: 16px;
+    padding: 20px;
+    margin-bottom: 30px;
+}
+
+.live-feed-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
+}
+
+.live-feed-title {
+    font-size: 1.3rem;
+    color: #c9a227;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.live-indicator {
+    width: 10px;
+    height: 10px;
+    background: #00ff88;
+    border-radius: 50%;
+    animation: blink 1s ease-in-out infinite;
+}
+
+@keyframes blink {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0.3; }
+}
+
+.live-feed-list {
+    max-height: 400px;
+    overflow-y: auto;
+}
+
+.feed-item {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    padding: 15px;
+    background: rgba(20,20,30,0.5);
+    border-radius: 10px;
+    margin-bottom: 10px;
+    border-left: 3px solid transparent;
+    transition: all 0.3s;
+}
+
+.feed-item.buy { border-left-color: #00ff88; }
+.feed-item.sell { border-left-color: #ff4444; }
+.feed-item.new { animation: feed-slide-in 0.5s ease-out; }
+
+@keyframes feed-slide-in {
+    from { opacity: 0; transform: translateX(-20px); }
+    to { opacity: 1; transform: translateX(0); }
+}
+
+.feed-avatar {
+    width: 40px;
+    height: 40px;
+    background: linear-gradient(135deg, #c9a227, #00d4ff);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 700;
+    color: #0a0a0f;
+    flex-shrink: 0;
+}
+
+.feed-content {
+    flex: 1;
+}
+
+.feed-trader {
+    font-weight: 600;
+    color: #fff;
+    margin-bottom: 3px;
+}
+
+.feed-action {
+    font-size: 0.9rem;
+    color: rgba(255,255,255,0.7);
+}
+
+.feed-action .symbol { color: #c9a227; font-weight: 600; }
+.feed-action .buy { color: #00ff88; }
+.feed-action .sell { color: #ff4444; }
+
+.feed-explanation {
+    font-size: 0.85rem;
+    color: rgba(255,255,255,0.5);
+    margin-top: 5px;
+    font-style: italic;
+}
+
+.feed-time {
+    font-size: 0.8rem;
+    color: rgba(255,255,255,0.4);
+    text-align: right;
+    min-width: 60px;
+}
+
+.feed-pnl {
+    font-size: 0.9rem;
+    font-weight: 600;
+    padding: 4px 10px;
+    border-radius: 6px;
+    min-width: 70px;
+    text-align: center;
+}
+
+.feed-pnl.positive {
+    background: rgba(0,255,136,0.15);
+    color: #00ff88;
+}
+
+.feed-pnl.negative {
+    background: rgba(255,68,68,0.15);
+    color: #ff4444;
+}
+
+/* ========================================
+   LEADERBOARD
+   ======================================== */
+.leaderboard-container {
+    background: rgba(10,10,15,0.9);
+    border: 1px solid rgba(201,162,39,0.2);
+    border-radius: 16px;
+    padding: 20px;
+    margin-bottom: 30px;
+}
+
+.leaderboard-title {
+    font-size: 1.3rem;
+    color: #c9a227;
+    margin-bottom: 20px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.leaderboard-table {
+    width: 100%;
+}
+
+.leaderboard-row {
+    display: grid;
+    grid-template-columns: 50px 1fr 100px 80px 80px 100px;
+    gap: 15px;
+    padding: 15px;
+    align-items: center;
+    border-radius: 10px;
+    margin-bottom: 8px;
+    background: rgba(20,20,30,0.5);
+    transition: all 0.3s;
+}
+
+.leaderboard-row:hover {
+    background: rgba(201,162,39,0.1);
+}
+
+.leaderboard-row.header {
+    background: transparent;
+    color: rgba(255,255,255,0.5);
+    font-size: 0.85rem;
+}
+
+.leaderboard-rank {
+    font-size: 1.2rem;
+    font-weight: 700;
+    text-align: center;
+}
+
+.leaderboard-rank.gold { color: #ffd700; }
+.leaderboard-rank.silver { color: #c0c0c0; }
+.leaderboard-rank.bronze { color: #cd7f32; }
+
+.leaderboard-trader {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+.leaderboard-avatar {
+    width: 36px;
+    height: 36px;
+    background: linear-gradient(135deg, #c9a227, #00d4ff);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 700;
+    color: #0a0a0f;
+    font-size: 0.9rem;
+}
+
+.leaderboard-name {
+    font-weight: 600;
+    color: #fff;
+}
+
+.leaderboard-style {
+    font-size: 0.8rem;
+    color: rgba(255,255,255,0.5);
+}
+
+.leaderboard-pnl {
+    font-weight: 700;
+}
+
+.leaderboard-pnl.positive { color: #00ff88; }
+.leaderboard-pnl.negative { color: #ff4444; }
+
+.leaderboard-wr {
+    color: #00d4ff;
+}
+
+.leaderboard-trades {
+    color: rgba(255,255,255,0.6);
+}
+
+.leaderboard-streak {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+}
+
+.streak-fire { color: #ff6b35; }
+.streak-ice { color: #00d4ff; }
+
+/* ========================================
+   QUIZ SECTION
+   ======================================== */
+.quiz-container {
+    background: linear-gradient(145deg, rgba(20,20,30,0.95), rgba(10,10,15,0.98));
+    border: 1px solid rgba(0,212,255,0.3);
+    border-radius: 16px;
+    padding: 30px;
+    margin-bottom: 30px;
+}
+
+.quiz-header {
+    text-align: center;
+    margin-bottom: 30px;
+}
+
+.quiz-title {
+    font-size: 1.5rem;
+    color: #00d4ff;
+    margin-bottom: 10px;
+}
+
+.quiz-subtitle {
+    color: rgba(255,255,255,0.6);
+}
+
+.quiz-question {
+    font-size: 1.1rem;
+    color: #fff;
+    margin-bottom: 25px;
+    line-height: 1.6;
+    text-align: center;
+    padding: 20px;
+    background: rgba(0,0,0,0.3);
+    border-radius: 12px;
+}
+
+.quiz-options {
+    display: grid;
+    gap: 12px;
+    max-width: 500px;
+    margin: 0 auto 25px;
+}
+
+.quiz-option {
+    padding: 16px 20px;
+    background: rgba(20,20,30,0.8);
+    border: 1px solid rgba(201,162,39,0.2);
+    border-radius: 10px;
+    color: rgba(255,255,255,0.8);
+    cursor: pointer;
+    transition: all 0.3s;
+    text-align: left;
+}
+
+.quiz-option:hover {
+    border-color: #c9a227;
+    background: rgba(201,162,39,0.1);
+}
+
+.quiz-option.selected {
+    border-color: #00d4ff;
+    background: rgba(0,212,255,0.15);
+}
+
+.quiz-option.correct {
+    border-color: #00ff88;
+    background: rgba(0,255,136,0.15);
+    color: #00ff88;
+}
+
+.quiz-option.wrong {
+    border-color: #ff4444;
+    background: rgba(255,68,68,0.15);
+    color: #ff4444;
+}
+
+.quiz-result {
+    text-align: center;
+    padding: 20px;
+    border-radius: 12px;
+    margin-bottom: 20px;
+}
+
+.quiz-result.correct {
+    background: rgba(0,255,136,0.1);
+    border: 1px solid rgba(0,255,136,0.3);
+    color: #00ff88;
+}
+
+.quiz-result.wrong {
+    background: rgba(255,68,68,0.1);
+    border: 1px solid rgba(255,68,68,0.3);
+    color: #ff4444;
+}
+
+.quiz-explanation {
+    font-size: 0.95rem;
+    color: rgba(255,255,255,0.7);
+    margin-top: 10px;
+}
+
+.quiz-actions {
+    text-align: center;
+}
+
+.btn-next-quiz {
+    padding: 12px 30px;
+    background: linear-gradient(135deg, #00d4ff, #00ff88);
+    border: none;
+    border-radius: 10px;
+    color: #0a0a0f;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s;
+}
+
+.btn-next-quiz:hover {
+    transform: scale(1.05);
+    box-shadow: 0 5px 20px rgba(0,212,255,0.4);
+}
+
+/* ========================================
+   NOTIFICATIONS
+   ======================================== */
+.academy-notifications {
+    position: fixed;
+    top: 80px;
+    right: 20px;
+    width: 350px;
+    max-height: calc(100vh - 100px);
+    overflow-y: auto;
+    z-index: 1000;
+    pointer-events: none;
+}
+
+.notification {
+    background: linear-gradient(145deg, rgba(20,20,30,0.98), rgba(10,10,15,0.99));
+    border: 1px solid rgba(201,162,39,0.4);
+    border-radius: 12px;
+    padding: 15px;
+    margin-bottom: 10px;
+    pointer-events: auto;
+    animation: notification-slide 0.5s ease-out;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+}
+
+@keyframes notification-slide {
+    from {
+        opacity: 0;
+        transform: translateX(100px);
+    }
+    to {
+        opacity: 1;
+        transform: translateX(0);
+    }
+}
+
+.notification.closing {
+    animation: notification-close 0.3s ease-in forwards;
+}
+
+@keyframes notification-close {
+    to {
+        opacity: 0;
+        transform: translateX(100px);
+    }
+}
+
+.notification-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 10px;
+}
+
+.notification-trader {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.notification-avatar {
+    width: 32px;
+    height: 32px;
+    background: linear-gradient(135deg, #c9a227, #00d4ff);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 700;
+    color: #0a0a0f;
+    font-size: 0.8rem;
+}
+
+.notification-name {
+    font-weight: 600;
+    color: #c9a227;
+}
+
+.notification-close {
+    background: none;
+    border: none;
+    color: rgba(255,255,255,0.5);
+    cursor: pointer;
+    font-size: 1.2rem;
+    padding: 5px;
+}
+
+.notification-close:hover {
+    color: #ff4444;
+}
+
+.notification-body {
+    font-size: 0.9rem;
+    color: rgba(255,255,255,0.8);
+    margin-bottom: 8px;
+}
+
+.notification-body .buy { color: #00ff88; font-weight: 600; }
+.notification-body .sell { color: #ff4444; font-weight: 600; }
+.notification-body .symbol { color: #c9a227; font-weight: 600; }
+
+.notification-reason {
+    font-size: 0.85rem;
+    color: rgba(255,255,255,0.5);
+    font-style: italic;
+}
+
+.notification-actions {
+    display: flex;
+    gap: 10px;
+    margin-top: 12px;
+}
+
+.btn-notification {
+    flex: 1;
+    padding: 8px 12px;
+    border-radius: 6px;
+    font-size: 0.85rem;
+    cursor: pointer;
+    transition: all 0.3s;
+}
+
+.btn-notification.copy {
+    background: rgba(0,212,255,0.15);
+    border: 1px solid rgba(0,212,255,0.4);
+    color: #00d4ff;
+}
+
+.btn-notification.copy:hover {
+    background: #00d4ff;
+    color: #0a0a0f;
+}
+
+.btn-notification.view {
+    background: rgba(201,162,39,0.15);
+    border: 1px solid rgba(201,162,39,0.4);
+    color: #c9a227;
+}
+
+.btn-notification.view:hover {
+    background: #c9a227;
+    color: #0a0a0f;
+}
+
+/* ========================================
+   COPY TRADE SETTINGS
+   ======================================== */
+.copy-trade-settings {
+    background: rgba(10,10,15,0.9);
+    border: 1px solid rgba(0,212,255,0.3);
+    border-radius: 16px;
+    padding: 25px;
+    margin-bottom: 30px;
+}
+
+.copy-trade-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
+}
+
+.copy-trade-title {
+    font-size: 1.3rem;
+    color: #00d4ff;
+}
+
+.copy-trade-toggle {
+    position: relative;
+    width: 60px;
+    height: 30px;
+}
+
+.copy-trade-toggle input {
+    opacity: 0;
+    width: 0;
+    height: 0;
+}
+
+.copy-trade-slider {
+    position: absolute;
+    cursor: pointer;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(50,50,60,0.8);
+    border-radius: 30px;
+    transition: 0.4s;
+}
+
+.copy-trade-slider:before {
+    position: absolute;
+    content: "";
+    height: 22px;
+    width: 22px;
+    left: 4px;
+    bottom: 4px;
+    background: #fff;
+    border-radius: 50%;
+    transition: 0.4s;
+}
+
+.copy-trade-toggle input:checked + .copy-trade-slider {
+    background: linear-gradient(135deg, #00d4ff, #00ff88);
+}
+
+.copy-trade-toggle input:checked + .copy-trade-slider:before {
+    transform: translateX(30px);
+}
+
+.copy-trade-config {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+    gap: 20px;
+}
+
+.config-item {
+    padding: 15px;
+    background: rgba(20,20,30,0.5);
+    border-radius: 10px;
+}
+
+.config-label {
+    font-size: 0.85rem;
+    color: rgba(255,255,255,0.6);
+    margin-bottom: 8px;
+}
+
+.config-input {
+    width: 100%;
+    padding: 10px;
+    background: rgba(0,0,0,0.3);
+    border: 1px solid rgba(201,162,39,0.2);
+    border-radius: 6px;
+    color: #fff;
+    font-size: 0.95rem;
+}
+
+.config-input:focus {
+    outline: none;
+    border-color: #00d4ff;
+}
+
+/* ========================================
+   RESPONSIVE
+   ======================================== */
+@media (max-width: 768px) {
+    .academy-container {
+        padding: 15px;
+    }
+
+    .academy-hero {
+        padding: 25px;
+    }
+
+    .academy-title {
+        font-size: 1.8rem;
+    }
+
+    .traders-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .leaderboard-row {
+        grid-template-columns: 40px 1fr 80px;
+        font-size: 0.9rem;
+    }
+
+    .leaderboard-row .leaderboard-wr,
+    .leaderboard-row .leaderboard-trades,
+    .leaderboard-row .leaderboard-streak {
+        display: none;
+    }
+
+    .academy-notifications {
+        width: calc(100% - 30px);
+        left: 15px;
+        right: 15px;
+    }
+}

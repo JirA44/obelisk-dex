@@ -1,0 +1,11 @@
+<svg viewBox="0 0 40 40" fill="none" xmlns="http://www.w3.org/2000/svg">
+    <path d="M20 2L8 38h24L20 2z" fill="url(#obelisk-gradient)" />
+    <path d="M20 8L12 34h16L20 8z" fill="#0a0a0f" />
+    <path d="M20 14L15 30h10L20 14z" fill="url(#obelisk-gradient)" opacity="0.6" />
+    <defs>
+        <linearGradient id="obelisk-gradient" x1="20" y1="2" x2="20" y2="38" gradientUnits="userSpaceOnUse">
+            <stop stop-color="#00f0ff" />
+            <stop offset="1" stop-color="#0080ff" />
+        </linearGradient>
+    </defs>
+</svg>

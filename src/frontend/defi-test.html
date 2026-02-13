@@ -1,0 +1,385 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Obelisk DeFi Integration Tests</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: 'Segoe UI', sans-serif;
+            background: #0d0d1a;
+            color: #fff;
+            padding: 30px;
+            min-height: 100vh;
+        }
+        h1 { color: #00ff88; margin-bottom: 20px; }
+        h2 { color: #00d4aa; margin: 20px 0 10px; }
+        .test-section {
+            background: #1a1a2e;
+            border-radius: 12px;
+            padding: 20px;
+            margin-bottom: 20px;
+        }
+        .test-item {
+            display: flex;
+            align-items: center;
+            padding: 10px;
+            border-bottom: 1px solid #333;
+        }
+        .test-item:last-child { border-bottom: none; }
+        .test-status {
+            width: 30px;
+            font-size: 20px;
+        }
+        .test-name { flex: 1; }
+        .test-result { color: #888; font-size: 14px; }
+        .btn {
+            background: linear-gradient(135deg, #00ff88, #00d4aa);
+            color: #000;
+            border: none;
+            padding: 12px 24px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: bold;
+            margin: 10px 5px 10px 0;
+        }
+        .btn:hover { transform: scale(1.02); }
+        .btn-secondary {
+            background: #1a1a2e;
+            color: #00ff88;
+            border: 1px solid #00ff88;
+        }
+        .log {
+            background: #0d0d1a;
+            border-radius: 8px;
+            padding: 15px;
+            margin-top: 15px;
+            max-height: 300px;
+            overflow-y: auto;
+            font-family: monospace;
+            font-size: 12px;
+        }
+        .log-entry { margin: 5px 0; }
+        .log-pass { color: #00ff88; }
+        .log-fail { color: #ff4444; }
+        .log-info { color: #888; }
+        .summary {
+            background: linear-gradient(135deg, rgba(0,255,136,0.1), rgba(0,212,170,0.1));
+            border: 1px solid #00ff88;
+            border-radius: 12px;
+            padding: 20px;
+            margin-top: 20px;
+            text-align: center;
+        }
+        .summary-title { font-size: 24px; margin-bottom: 10px; }
+        .summary-stats { font-size: 36px; color: #00ff88; }
+    </style>
+</head>
+<body>
+    <h1>🧪 Obelisk DeFi Integration Tests</h1>
+    <p style="color:#888;margin-bottom:20px;">Comprehensive verification of all DeFi modules</p>
+
+    <div class="test-section">
+        <h2>📦 Module Loading</h2>
+        <div id="loading-tests"></div>
+    </div>
+
+    <div class="test-section">
+        <h2>🔗 Smart Contract Verification</h2>
+        <div id="contract-tests"></div>
+    </div>
+
+    <div class="test-section">
+        <h2>🌐 RPC Connection Tests</h2>
+        <div id="rpc-tests"></div>
+    </div>
+
+    <div class="test-section">
+        <h2>📊 Protocol Data Tests</h2>
+        <div id="data-tests"></div>
+    </div>
+
+    <div class="test-section">
+        <h2>💼 Function Availability</h2>
+        <div id="function-tests"></div>
+    </div>
+
+    <div style="margin: 20px 0;">
+        <button class="btn" onclick="runAllTests()">🚀 Run All Tests</button>
+        <button class="btn btn-secondary" onclick="clearLog()">🗑️ Clear Log</button>
+        <button class="btn btn-secondary" onclick="location.reload()">🔄 Reload Page</button>
+    </div>
+
+    <div class="log" id="test-log">
+        <div class="log-entry log-info">[Ready] Click "Run All Tests" to start...</div>
+    </div>
+
+    <div class="summary" id="summary" style="display:none;">
+        <div class="summary-title">Test Results</div>
+        <div class="summary-stats" id="summary-stats">0/0</div>
+        <div id="summary-text" style="color:#888;margin-top:10px;"></div>
+    </div>
+
+    <!-- Load ethers.js -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/ethers/6.9.0/ethers.umd.min.js"></script>
+
+    <!-- Load DeFi modules -->
+    <script src="js/defi/aave-integration.js"></script>
+    <script src="js/defi/gmx-integration.js"></script>
+    <script src="js/defi/gains-integration.js"></script>
+    <script src="js/defi/aerodrome-integration.js"></script>
+    <script src="js/defi/defi-manager.js"></script>
+    <script src="js/defi/defi-health-check.js"></script>
+
+    <script>
+        // Test results storage
+        const results = {
+            passed: 0,
+            failed: 0,
+            tests: []
+        };
+
+        // Log to UI
+        function log(message, type = 'info') {
+            const logDiv = document.getElementById('test-log');
+            const entry = document.createElement('div');
+            entry.className = `log-entry log-${type}`;
+            entry.textContent = `[${new Date().toLocaleTimeString()}] ${message}`;
+            logDiv.appendChild(entry);
+            logDiv.scrollTop = logDiv.scrollHeight;
+        }
+
+        function clearLog() {
+            document.getElementById('test-log').innerHTML = '<div class="log-entry log-info">[Cleared]</div>';
+        }
+
+        // Add test result to UI
+        function addTestResult(container, name, passed, details = '') {
+            const div = document.createElement('div');
+            div.className = 'test-item';
+            div.innerHTML = `
+                <span class="test-status">${passed ? '✅' : '❌'}</span>
+                <span class="test-name">${name}</span>
+                <span class="test-result">${details}</span>
+            `;
+            document.getElementById(container).appendChild(div);
+
+            results.tests.push({ name, passed, details });
+            if (passed) results.passed++;
+            else results.failed++;
+        }
+
+        // Run all tests
+        async function runAllTests() {
+            log('Starting comprehensive DeFi tests...', 'info');
+            results.passed = 0;
+            results.failed = 0;
+            results.tests = [];
+
+            // Clear test containers
+            ['loading-tests', 'contract-tests', 'rpc-tests', 'data-tests', 'function-tests'].forEach(id => {
+                document.getElementById(id).innerHTML = '';
+            });
+
+            // 1. Module Loading Tests
+            log('Testing module loading...', 'info');
+            await testModuleLoading();
+
+            // 2. Contract Tests
+            log('Testing smart contracts...', 'info');
+            await testContracts();
+
+            // 3. RPC Tests
+            log('Testing RPC connections...', 'info');
+            await testRPC();
+
+            // 4. Data Tests
+            log('Testing protocol data...', 'info');
+            await testData();
+
+            // 5. Function Tests
+            log('Testing function availability...', 'info');
+            await testFunctions();
+
+            // Show summary
+            showSummary();
+        }
+
+        async function testModuleLoading() {
+            addTestResult('loading-tests', 'ethers.js', typeof ethers !== 'undefined',
+                typeof ethers !== 'undefined' ? `v${ethers.version || '6.x'}` : 'Not loaded');
+
+            addTestResult('loading-tests', 'AaveIntegration', typeof AaveIntegration !== 'undefined',
+                typeof AaveIntegration !== 'undefined' ? 'Module loaded' : 'Not loaded');
+
+            addTestResult('loading-tests', 'GMXIntegration', typeof GMXIntegration !== 'undefined',
+                typeof GMXIntegration !== 'undefined' ? 'Module loaded' : 'Not loaded');
+
+            addTestResult('loading-tests', 'AerodromeIntegration', typeof AerodromeIntegration !== 'undefined',
+                typeof AerodromeIntegration !== 'undefined' ? 'Module loaded' : 'Not loaded');
+
+            addTestResult('loading-tests', 'DeFiManager', typeof DeFiManager !== 'undefined',
+                typeof DeFiManager !== 'undefined' ? `${DeFiManager.protocols?.length || 0} protocols` : 'Not loaded');
+
+            addTestResult('loading-tests', 'DeFiHealthCheck', typeof DeFiHealthCheck !== 'undefined',
+                typeof DeFiHealthCheck !== 'undefined' ? 'Module loaded' : 'Not loaded');
+        }
+
+        async function testContracts() {
+            // Aave contracts
+            if (typeof AaveIntegration !== 'undefined') {
+                const aavePool = AaveIntegration.contracts?.pool;
+                addTestResult('contract-tests', 'Aave Pool Address',
+                    aavePool && aavePool.startsWith('0x') && aavePool.length === 42,
+                    aavePool ? aavePool.slice(0, 10) + '...' : 'Invalid');
+
+                const aaveUSDC = AaveIntegration.contracts?.USDC;
+                addTestResult('contract-tests', 'Aave USDC Address',
+                    aaveUSDC && aaveUSDC.startsWith('0x') && aaveUSDC.length === 42,
+                    aaveUSDC ? aaveUSDC.slice(0, 10) + '...' : 'Invalid');
+            }
+
+            // GMX contracts
+            if (typeof GMXIntegration !== 'undefined') {
+                const glpManager = GMXIntegration.contracts?.glpManager;
+                addTestResult('contract-tests', 'GMX GLP Manager',
+                    glpManager && glpManager.startsWith('0x') && glpManager.length === 42,
+                    glpManager ? glpManager.slice(0, 10) + '...' : 'Invalid');
+            }
+
+            // Aerodrome contracts
+            if (typeof AerodromeIntegration !== 'undefined') {
+                const router = AerodromeIntegration.contracts?.router;
+                addTestResult('contract-tests', 'Aerodrome Router',
+                    router && router.startsWith('0x') && router.length === 42,
+                    router ? router.slice(0, 10) + '...' : 'Invalid');
+            }
+        }
+
+        async function testRPC() {
+            // Test Arbitrum RPC
+            try {
+                const arbProvider = new ethers.JsonRpcProvider('https://arb1.arbitrum.io/rpc');
+                const arbNetwork = await arbProvider.getNetwork();
+                addTestResult('rpc-tests', 'Arbitrum RPC', arbNetwork.chainId === 42161n,
+                    `Chain ID: ${arbNetwork.chainId}`);
+                log('Arbitrum RPC connected', 'pass');
+            } catch (e) {
+                addTestResult('rpc-tests', 'Arbitrum RPC', false, e.message);
+                log('Arbitrum RPC failed: ' + e.message, 'fail');
+            }
+
+            // Test Base RPC
+            try {
+                const baseProvider = new ethers.JsonRpcProvider('https://mainnet.base.org');
+                const baseNetwork = await baseProvider.getNetwork();
+                addTestResult('rpc-tests', 'Base RPC', baseNetwork.chainId === 8453n,
+                    `Chain ID: ${baseNetwork.chainId}`);
+                log('Base RPC connected', 'pass');
+            } catch (e) {
+                addTestResult('rpc-tests', 'Base RPC', false, e.message);
+                log('Base RPC failed: ' + e.message, 'fail');
+            }
+        }
+
+        async function testData() {
+            // Test Aave rates
+            if (typeof AaveIntegration !== 'undefined') {
+                try {
+                    const rates = await AaveIntegration.fetchRates();
+                    const hasRates = rates?.USDC?.supply !== undefined;
+                    addTestResult('data-tests', 'Aave USDC Rate', hasRates,
+                        hasRates ? `${rates.USDC.supply.toFixed(2)}% APY` : 'Failed to fetch');
+                    if (hasRates) log(`Aave USDC rate: ${rates.USDC.supply.toFixed(2)}%`, 'pass');
+                } catch (e) {
+                    addTestResult('data-tests', 'Aave USDC Rate', false, e.message);
+                }
+            }
+
+            // Test GMX stats
+            if (typeof GMXIntegration !== 'undefined') {
+                try {
+                    const stats = await GMXIntegration.fetchStats();
+                    const hasStats = stats?.glpPrice > 0;
+                    addTestResult('data-tests', 'GMX GLP Price', hasStats,
+                        hasStats ? `$${stats.glpPrice.toFixed(4)}` : 'Failed to fetch');
+                    if (hasStats) log(`GMX GLP price: $${stats.glpPrice.toFixed(4)}`, 'pass');
+                } catch (e) {
+                    addTestResult('data-tests', 'GMX GLP Price', false, e.message);
+                }
+            }
+
+            // Test Aerodrome pools
+            if (typeof AerodromeIntegration !== 'undefined') {
+                try {
+                    const pools = await AerodromeIntegration.fetchPoolStats();
+                    const poolCount = Object.keys(pools || {}).length;
+                    addTestResult('data-tests', 'Aerodrome Pools', poolCount > 0,
+                        `${poolCount} pools loaded`);
+                    if (poolCount > 0) log(`Aerodrome: ${poolCount} pools loaded`, 'pass');
+                } catch (e) {
+                    addTestResult('data-tests', 'Aerodrome Pools', false, e.message);
+                }
+            }
+
+            // Test DeFi Manager protocols
+            if (typeof DeFiManager !== 'undefined') {
+                const protocolCount = DeFiManager.protocols?.length || 0;
+                addTestResult('data-tests', 'DeFi Manager Protocols', protocolCount > 0,
+                    `${protocolCount} protocols registered`);
+            }
+        }
+
+        async function testFunctions() {
+            // Aave functions
+            if (typeof AaveIntegration !== 'undefined') {
+                const aaveFuncs = ['supplyUSDC', 'withdrawUSDC', 'getUserPosition', 'getEstimatedEarnings'];
+                aaveFuncs.forEach(fn => {
+                    const exists = typeof AaveIntegration[fn] === 'function';
+                    addTestResult('function-tests', `Aave.${fn}()`, exists, exists ? 'Available' : 'Missing');
+                });
+            }
+
+            // GMX functions
+            if (typeof GMXIntegration !== 'undefined') {
+                const gmxFuncs = ['buyAndStakeGLP', 'sellGLP', 'claimRewards', 'getUserPosition'];
+                gmxFuncs.forEach(fn => {
+                    const exists = typeof GMXIntegration[fn] === 'function';
+                    addTestResult('function-tests', `GMX.${fn}()`, exists, exists ? 'Available' : 'Missing');
+                });
+            }
+
+            // DeFi Manager functions
+            if (typeof DeFiManager !== 'undefined') {
+                const mgrFuncs = ['getByRisk', 'getByAPY', 'getBestRiskAdjusted', 'invest', 'calculateCAGR'];
+                mgrFuncs.forEach(fn => {
+                    const exists = typeof DeFiManager[fn] === 'function';
+                    addTestResult('function-tests', `Manager.${fn}()`, exists, exists ? 'Available' : 'Missing');
+                });
+            }
+        }
+
+        function showSummary() {
+            const total = results.passed + results.failed;
+            const percent = total > 0 ? Math.round((results.passed / total) * 100) : 0;
+            const allPassed = results.failed === 0;
+
+            document.getElementById('summary').style.display = 'block';
+            document.getElementById('summary-stats').textContent = `${results.passed}/${total}`;
+            document.getElementById('summary-stats').style.color = allPassed ? '#00ff88' : '#ffbb00';
+            document.getElementById('summary-text').textContent = allPassed
+                ? '🎉 All tests passed! DeFi integrations are operational.'
+                : `⚠️ ${results.failed} tests failed. Check the log for details.`;
+
+            log(`Tests complete: ${results.passed}/${total} passed (${percent}%)`, allPassed ? 'pass' : 'fail');
+        }
+
+        // Auto-run tests on load
+        window.onload = () => {
+            log('Page loaded. DeFi modules initializing...', 'info');
+            setTimeout(runAllTests, 1000);
+        };
+    </script>
+</body>
+</html>

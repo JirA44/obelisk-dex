@@ -1,0 +1,93 @@
+{
+  "venues": [
+    [
+      "mixbot",
+      {
+        "id": "mixbot",
+        "name": "MixBot",
+        "initialCapital": 5,
+        "equity": 4.981918399808428,
+        "availableMargin": 2.4819183998084284,
+        "positions": [
+          {
+            "id": "PERP_1770937235194_ko7k4x",
+            "coin": "OP",
+            "side": "sell",
+            "size": 5,
+            "margin": 2.5,
+            "leverage": 2,
+            "entryPrice": 0.1823,
+            "tp": null,
+            "sl": null,
+            "strategy": "combo_CM_MACD_Supertrend",
+            "openedAt": 1770937235203
+          }
+        ],
+        "trades": [
+          {
+            "type": "open",
+            "coin": "BTC",
+            "side": "buy",
+            "size": 4,
+            "price": 63057.45,
+            "leverage": 2,
+            "fee": 0.002,
+            "timestamp": 1770339042674
+          },
+          {
+            "type": "close",
+            "coin": "BTC",
+            "side": "buy",
+            "size": 4,
+            "entryPrice": 63057.45,
+            "exitPrice": 63216.38,
+            "pnl": -0.014081600191571356,
+            "fee": 0.002,
+            "timestamp": 1770339063710
+          },
+          {
+            "type": "open",
+            "coin": "BTC",
+            "side": "buy",
+            "size": 4,
+            "price": 64227.41,
+            "leverage": 2,
+            "fee": 0.002,
+            "timestamp": 1770341575716
+          },
+          {
+            "type": "close",
+            "coin": "BTC",
+            "side": "buy",
+            "size": 4,
+            "entryPrice": 64227.41,
+            "exitPrice": 64227.41,
+            "pnl": -0.004,
+            "fee": 0.002,
+            "timestamp": 1770341575749
+          },
+          {
+            "type": "open",
+            "coin": "OP",
+            "side": "sell",
+            "size": 5,
+            "price": 0.1823,
+            "leverage": 2,
+            "fee": 0.0025,
+            "timestamp": 1770937235203
+          }
+        ],
+        "maxPositions": 1,
+        "maxLeverage": 3,
+        "maxDailyDrawdown": 3,
+        "dailyStartEquity": 4.981918399808428,
+        "dailyStartDate": "Fri Feb 13 2026",
+        "totalPnl": -0.018081600191571356,
+        "totalFees": 0.0105,
+        "totalTrades": 3,
+        "createdAt": 1770339021664
+      }
+    ]
+  ],
+  "savedAt": "2026-02-12T23:00:35.203Z"
+}

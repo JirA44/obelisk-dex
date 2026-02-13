@@ -1,0 +1,439 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Démarrer avec Obelisk - Guide de démarrage</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: 'Segoe UI', system-ui, sans-serif;
+            background: linear-gradient(135deg, #0d0d1a 0%, #1a1a2e 100%);
+            color: #fff;
+            min-height: 100vh;
+            padding: 40px 20px;
+        }
+        .container { max-width: 900px; margin: 0 auto; }
+        .breadcrumb { color: #888; margin-bottom: 30px; font-size: 14px; }
+        .breadcrumb a { color: #00aaff; text-decoration: none; }
+        h1 { color: #00ff88; margin-bottom: 16px; font-size: 36px; }
+        h2 { color: #00aaff; margin: 50px 0 20px; padding-bottom: 10px; border-bottom: 2px solid rgba(0,170,255,0.3); }
+        h3 { color: #f59e0b; margin: 30px 0 15px; }
+        h4 { color: #a855f7; margin: 20px 0 10px; }
+        p { color: #aaa; line-height: 1.8; margin-bottom: 16px; }
+        ul, ol { color: #aaa; padding-left: 24px; margin-bottom: 16px; line-height: 2; }
+        code {
+            background: rgba(0,255,136,0.1);
+            padding: 2px 8px;
+            border-radius: 4px;
+            color: #00ff88;
+            font-family: 'Fira Code', monospace;
+        }
+        .card {
+            background: rgba(255,255,255,0.03);
+            border: 1px solid rgba(255,255,255,0.1);
+            border-radius: 16px;
+            padding: 24px;
+            margin: 20px 0;
+        }
+        .step {
+            display: flex;
+            gap: 20px;
+            margin: 24px 0;
+            padding: 24px;
+            background: rgba(0,0,0,0.3);
+            border-radius: 12px;
+            border-left: 4px solid #00ff88;
+        }
+        .step-number {
+            width: 40px;
+            height: 40px;
+            background: linear-gradient(135deg, #00ff88, #00cc66);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #000;
+            font-weight: bold;
+            font-size: 18px;
+            flex-shrink: 0;
+        }
+        .step-content h4 { margin-top: 0; color: #fff; }
+        .tip {
+            background: rgba(0,255,136,0.1);
+            border-left: 4px solid #00ff88;
+            padding: 16px 20px;
+            margin: 20px 0;
+            border-radius: 0 8px 8px 0;
+        }
+        .warning {
+            background: rgba(245,158,11,0.1);
+            border-left: 4px solid #f59e0b;
+            padding: 16px 20px;
+            margin: 20px 0;
+            border-radius: 0 8px 8px 0;
+        }
+        .danger {
+            background: rgba(239,68,68,0.1);
+            border-left: 4px solid #ef4444;
+            padding: 16px 20px;
+            margin: 20px 0;
+            border-radius: 0 8px 8px 0;
+        }
+        .feature-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 16px;
+            margin: 20px 0;
+        }
+        .feature-item {
+            background: rgba(255,255,255,0.05);
+            border-radius: 10px;
+            padding: 16px;
+            text-align: center;
+        }
+        .feature-item span { font-size: 32px; display: block; margin-bottom: 8px; }
+        .feature-item h5 { color: #fff; margin-bottom: 4px; }
+        .feature-item p { color: #888; font-size: 12px; margin: 0; }
+        .nav-bottom {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 60px;
+            padding-top: 30px;
+            border-top: 1px solid rgba(255,255,255,0.1);
+        }
+        .nav-btn {
+            padding: 16px 24px;
+            background: rgba(0,255,136,0.1);
+            border: 1px solid rgba(0,255,136,0.3);
+            border-radius: 10px;
+            color: #00ff88;
+            text-decoration: none;
+            font-weight: 500;
+        }
+        .nav-btn:hover { background: rgba(0,255,136,0.2); }
+        img { max-width: 100%; border-radius: 12px; margin: 20px 0; }
+        table { width: 100%; border-collapse: collapse; margin: 20px 0; }
+        th, td { padding: 12px; text-align: left; border-bottom: 1px solid rgba(255,255,255,0.1); }
+        th { color: #888; background: rgba(0,0,0,0.3); }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="breadcrumb">
+            <a href="index.html">Documentation</a> / Démarrer
+        </div>
+
+        <h1>🚀 Démarrer avec Obelisk</h1>
+        <p style="font-size:18px;color:#888;margin-bottom:40px;">
+            Bienvenue! Ce guide vous accompagne de la création de votre wallet à votre première transaction.
+        </p>
+
+        <!-- OVERVIEW -->
+        <div class="card">
+            <h3 style="margin-top:0;">⏱️ Temps estimé: 5 minutes</h3>
+            <p>À la fin de ce guide, vous aurez:</p>
+            <ul>
+                <li>Créé votre wallet post-quantique</li>
+                <li>Compris comment déposer des fonds</li>
+                <li>Réalisé votre première opération</li>
+            </ul>
+        </div>
+
+        <!-- WHAT IS OBELISK -->
+        <h2 id="intro">Qu'est-ce qu'Obelisk?</h2>
+        <p>
+            Obelisk est une <strong>banque décentralisée</strong> (DEX) avec sécurité post-quantique.
+            Contrairement aux exchanges centralisés (Binance, Coinbase), vos fonds restent sous votre contrôle total.
+        </p>
+
+        <div class="feature-grid">
+            <div class="feature-item">
+                <span>🔐</span>
+                <h5>Self-Custody</h5>
+                <p>Vos clés, vos crypto</p>
+            </div>
+            <div class="feature-item">
+                <span>🛡️</span>
+                <h5>Post-Quantique</h5>
+                <p>Cryptographie du futur</p>
+            </div>
+            <div class="feature-item">
+                <span>💰</span>
+                <h5>50+ Produits</h5>
+                <p>DeFi complet</p>
+            </div>
+            <div class="feature-item">
+                <span>⚡</span>
+                <h5>Multi-Chain</h5>
+                <p>Arbitrum, Ethereum, etc.</p>
+            </div>
+        </div>
+
+        <!-- CREATE WALLET -->
+        <h2 id="wallet">Étape 1: Créer votre Wallet</h2>
+        <p>
+            Votre wallet est votre identité sur Obelisk. Il est protégé par une cryptographie
+            post-quantique (CRYSTALS-Kyber, Dilithium, SPHINCS+) résistante aux futurs ordinateurs quantiques.
+        </p>
+
+        <div class="step">
+            <div class="step-number">1</div>
+            <div class="step-content">
+                <h4>Accédez à Obelisk</h4>
+                <p>Rendez-vous sur <a href="https://obelisk-dex.pages.dev" style="color:#00aaff">obelisk-dex.pages.dev</a></p>
+            </div>
+        </div>
+
+        <div class="step">
+            <div class="step-number">2</div>
+            <div class="step-content">
+                <h4>Cliquez sur "Create New Wallet"</h4>
+                <p>Dans le panneau Wallet à droite, cliquez sur le bouton de création.</p>
+            </div>
+        </div>
+
+        <div class="step">
+            <div class="step-number">3</div>
+            <div class="step-content">
+                <h4>Sauvegardez votre Seed Phrase</h4>
+                <p>Une phrase de 12-24 mots sera générée. <strong>Notez-la sur papier!</strong></p>
+            </div>
+        </div>
+
+        <div class="step">
+            <div class="step-number">4</div>
+            <div class="step-content">
+                <h4>Créez votre mot de passe</h4>
+                <p>Ce mot de passe chiffre votre wallet localement. Il n'est stocké nulle part.</p>
+            </div>
+        </div>
+
+        <div class="danger">
+            <strong>⚠️ CRITIQUE - Seed Phrase</strong>
+            <ul>
+                <li>Jamais sur un ordinateur ou téléphone</li>
+                <li>Jamais en photo ou screenshot</li>
+                <li>Jamais partagée avec quiconque</li>
+                <li>Perdre la seed = perdre les fonds à jamais</li>
+            </ul>
+        </div>
+
+        <div class="tip">
+            <strong>💡 Conseil</strong>: Écrivez votre seed phrase sur 2 papiers, stockés dans 2 lieux différents (coffre, famille de confiance).
+        </div>
+
+        <!-- DEPOSIT -->
+        <h2 id="deposit">Étape 2: Déposer des fonds</h2>
+
+        <h3>Option A: Mode Démo (Simulé)</h3>
+        <p>Pour tester sans risque, utilisez le capital simulé:</p>
+        <ol>
+            <li>Cliquez sur le bouton <code>+$100</code>, <code>+$1K</code> ou <code>+$10K</code></li>
+            <li>Le capital simulé apparaît instantanément</li>
+            <li>Testez tous les produits sans risque!</li>
+        </ol>
+
+        <div class="tip">
+            <strong>💡 Mode Démo</strong>: Parfait pour apprendre. Les transactions sont simulées, aucun vrai crypto n'est nécessaire.
+        </div>
+
+        <h3>Option B: Dépôt réel (Production)</h3>
+        <p>Pour utiliser de vrais fonds:</p>
+
+        <div class="step">
+            <div class="step-number">1</div>
+            <div class="step-content">
+                <h4>Cliquez sur "Deposit"</h4>
+                <p>Dans l'onglet Banking ou depuis le panneau wallet.</p>
+            </div>
+        </div>
+
+        <div class="step">
+            <div class="step-number">2</div>
+            <div class="step-content">
+                <h4>Choisissez la crypto et le réseau</h4>
+                <p>USDC, ETH, etc. sur Arbitrum One (recommandé pour les frais bas).</p>
+            </div>
+        </div>
+
+        <div class="step">
+            <div class="step-number">3</div>
+            <div class="step-content">
+                <h4>Copiez l'adresse de dépôt</h4>
+                <p>Envoyez vos crypto à cette adresse depuis votre wallet externe.</p>
+            </div>
+        </div>
+
+        <div class="warning">
+            <strong>⚠️ Vérifiez toujours</strong>: Le réseau (chain) doit correspondre! Envoyer de l'ETH sur Arbitrum vers une adresse Ethereum = fonds perdus.
+        </div>
+
+        <h4>Réseaux supportés</h4>
+        <table>
+            <tr>
+                <th>Réseau</th>
+                <th>Assets</th>
+                <th>Frais moyens</th>
+                <th>Temps</th>
+            </tr>
+            <tr>
+                <td>Arbitrum One</td>
+                <td>ETH, USDC, ARB, LINK</td>
+                <td>~$0.10</td>
+                <td>~1 min</td>
+            </tr>
+            <tr>
+                <td>Ethereum</td>
+                <td>ETH, USDC, WBTC</td>
+                <td>$5-50</td>
+                <td>~2 min</td>
+            </tr>
+            <tr>
+                <td>Optimism</td>
+                <td>ETH, USDC, OP</td>
+                <td>~$0.15</td>
+                <td>~1 min</td>
+            </tr>
+        </table>
+
+        <!-- FIRST TRADE -->
+        <h2 id="trade">Étape 3: Votre première opération</h2>
+        <p>Voici les opérations les plus simples pour commencer:</p>
+
+        <h3>Option 1: Swap (Échange)</h3>
+        <p>Échangez une crypto contre une autre:</p>
+        <ol>
+            <li>Allez dans l'onglet <strong>Swap</strong></li>
+            <li>Sélectionnez le token à vendre (ex: USDC)</li>
+            <li>Sélectionnez le token à acheter (ex: ETH)</li>
+            <li>Entrez le montant</li>
+            <li>Cliquez sur <strong>Swap</strong></li>
+        </ol>
+
+        <h3>Option 2: Staking (Recommandé pour débuter)</h3>
+        <p>Gagnez des intérêts en stakant vos crypto:</p>
+        <ol>
+            <li>Allez dans <strong>Products > Staking</strong></li>
+            <li>Choisissez un pool (ex: ETH Staking - 4.5% APY)</li>
+            <li>Entrez le montant à staker</li>
+            <li>Confirmez la transaction</li>
+        </ol>
+
+        <div class="tip">
+            <strong>💡 Pour débuter</strong>: Le staking est la façon la plus simple et sûre de gagner des rendements. Commencez par là!
+        </div>
+
+        <h3>Option 3: Trading Perpetuals (Avancé)</h3>
+        <p>Pour les traders expérimentés:</p>
+        <ol>
+            <li>Allez dans <strong>Products > Perps Trading</strong></li>
+            <li>Sélectionnez une paire (ex: BTC/USDC)</li>
+            <li>Choisissez Long ou Short</li>
+            <li>Définissez votre taille et leverage (max 3x recommandé)</li>
+            <li>Ajoutez Stop Loss et Take Profit</li>
+            <li>Ouvrez la position</li>
+        </ol>
+
+        <div class="warning">
+            <strong>⚠️ Attention au leverage</strong>: Plus le leverage est élevé, plus le risque de liquidation est grand. Commencez avec 2x maximum.
+        </div>
+
+        <!-- INTERFACE OVERVIEW -->
+        <h2 id="interface">Navigation dans l'interface</h2>
+
+        <h3>Onglets principaux</h3>
+        <table>
+            <tr>
+                <th>Onglet</th>
+                <th>Description</th>
+            </tr>
+            <tr>
+                <td><strong>Swap</strong></td>
+                <td>Échange rapide de tokens</td>
+            </tr>
+            <tr>
+                <td><strong>Trading</strong></td>
+                <td>Charts, order book, trading avancé</td>
+            </tr>
+            <tr>
+                <td><strong>Banking</strong></td>
+                <td>Dépôts, retraits, virements</td>
+            </tr>
+            <tr>
+                <td><strong>Products</strong></td>
+                <td>Tous les produits DeFi (50+)</td>
+            </tr>
+            <tr>
+                <td><strong>Portfolio</strong></td>
+                <td>Vue de vos assets et positions</td>
+            </tr>
+            <tr>
+                <td><strong>Academy</strong></td>
+                <td>Cours et tutoriels</td>
+            </tr>
+        </table>
+
+        <h3>Panneau Wallet (droite)</h3>
+        <ul>
+            <li><strong>Balance</strong>: Votre solde total</li>
+            <li><strong>Deposit/Withdraw</strong>: Gérer vos fonds</li>
+            <li><strong>Capital simulé</strong>: Ajouter du capital de test</li>
+        </ul>
+
+        <!-- NEXT STEPS -->
+        <h2 id="next">Prochaines étapes</h2>
+
+        <div class="feature-grid">
+            <a href="products.html" class="feature-item" style="text-decoration:none;">
+                <span>📦</span>
+                <h5>Explorer les produits</h5>
+                <p>50+ produits DeFi</p>
+            </a>
+            <a href="trading-tools.html" class="feature-item" style="text-decoration:none;">
+                <span>🛠️</span>
+                <h5>Trading Tools</h5>
+                <p>Calculateurs pro</p>
+            </a>
+            <a href="innovations.html" class="feature-item" style="text-decoration:none;">
+                <span>🚀</span>
+                <h5>Innovation Lab</h5>
+                <p>Produits uniques</p>
+            </a>
+            <a href="security.html" class="feature-item" style="text-decoration:none;">
+                <span>🔐</span>
+                <h5>Sécurité</h5>
+                <p>Bonnes pratiques</p>
+            </a>
+        </div>
+
+        <!-- FAQ -->
+        <h2 id="faq">Questions fréquentes</h2>
+
+        <div class="card">
+            <h4>Est-ce que mes fonds sont en sécurité?</h4>
+            <p>Oui. Obelisk utilise le self-custody: vos clés privées ne quittent jamais votre appareil. Même nous ne pouvons pas accéder à vos fonds.</p>
+        </div>
+
+        <div class="card">
+            <h4>Qu'est-ce que la cryptographie post-quantique?</h4>
+            <p>C'est une cryptographie résistante aux futurs ordinateurs quantiques. Obelisk utilise CRYSTALS-Kyber, Dilithium et SPHINCS+ - les standards approuvés par le NIST.</p>
+        </div>
+
+        <div class="card">
+            <h4>Y a-t-il des frais?</h4>
+            <p>Les frais dépendent du produit: swaps (~0.3%), trading perps (~0.05%), staking (0%). Consultez chaque produit pour les détails.</p>
+        </div>
+
+        <div class="card">
+            <h4>Comment récupérer mes fonds?</h4>
+            <p>Allez dans Banking > Withdraw, choisissez l'asset et le réseau, entrez votre adresse de destination.</p>
+        </div>
+
+        <nav class="nav-bottom">
+            <a href="index.html" class="nav-btn">← Documentation</a>
+            <a href="products.html" class="nav-btn">Produits →</a>
+        </nav>
+    </div>
+</body>
+</html>

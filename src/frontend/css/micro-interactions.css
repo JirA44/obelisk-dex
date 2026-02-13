@@ -1,0 +1,929 @@
+/**
+ * OBELISK Micro-Interactions CSS
+ * Subtle animations and polish for enhanced UX
+ */
+
+/* =============================================
+   RIPPLE EFFECT ON BUTTONS
+   ============================================= */
+
+.btn, .tab-btn, .page-btn, button[class*="btn"] {
+    position: relative;
+    overflow: hidden;
+}
+
+.ripple {
+    position: absolute;
+    border-radius: 50%;
+    background: rgba(255, 255, 255, 0.3);
+    transform: scale(0);
+    animation: ripple-effect 0.6s ease-out;
+    pointer-events: none;
+}
+
+@keyframes ripple-effect {
+    to {
+        transform: scale(4);
+        opacity: 0;
+    }
+}
+
+/* =============================================
+   CARD HOVER LIFT (3D TRANSFORM)
+   ============================================= */
+
+.glass-card,
+.wallet-item,
+.trader-row,
+.leaderboard-row,
+.style-card {
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.glass-card:hover,
+.wallet-item:hover,
+.trader-row:hover,
+.leaderboard-row:hover,
+.style-card:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15),
+                0 0 15px rgba(201, 162, 39, 0.1);
+}
+
+/* Subtle tilt on hover for cards */
+.style-card:hover {
+    transform: translateY(-4px) rotateX(2deg);
+}
+
+/* =============================================
+   SUCCESS / ERROR ANIMATIONS
+   ============================================= */
+
+/* Checkmark animation */
+.success-icon {
+    color: #4ade80;
+    animation: success-pop 0.4s ease-out;
+}
+
+@keyframes success-pop {
+    0% { transform: scale(0); opacity: 0; }
+    50% { transform: scale(1.2); }
+    100% { transform: scale(1); opacity: 1; }
+}
+
+.success-icon svg {
+    animation: checkmark-draw 0.5s ease-out 0.2s both;
+}
+
+@keyframes checkmark-draw {
+    0% { stroke-dasharray: 100; stroke-dashoffset: 100; }
+    100% { stroke-dashoffset: 0; }
+}
+
+/* Error shake animation */
+.error-shake {
+    animation: shake 0.4s ease-out;
+}
+
+@keyframes shake {
+    0%, 100% { transform: translateX(0); }
+    20%, 60% { transform: translateX(-8px); }
+    40%, 80% { transform: translateX(8px); }
+}
+
+/* Error message reveal */
+.error-message {
+    animation: error-reveal 0.3s ease-out;
+}
+
+@keyframes error-reveal {
+    0% { opacity: 0; transform: translateY(-10px); }
+    100% { opacity: 1; transform: translateY(0); }
+}
+
+/* =============================================
+   LOADING SKELETONS
+   ============================================= */
+
+.skeleton {
+    background: linear-gradient(90deg,
+        rgba(255, 255, 255, 0.05) 25%,
+        rgba(255, 255, 255, 0.1) 50%,
+        rgba(255, 255, 255, 0.05) 75%
+    );
+    background-size: 200% 100%;
+    animation: skeleton-shimmer 1.5s infinite;
+    border-radius: 4px;
+}
+
+@keyframes skeleton-shimmer {
+    0% { background-position: 200% 0; }
+    100% { background-position: -200% 0; }
+}
+
+.skeleton-text {
+    height: 16px;
+    margin-bottom: 8px;
+}
+
+.skeleton-text.short {
+    width: 60%;
+}
+
+.skeleton-avatar {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+}
+
+.skeleton-card {
+    height: 72px;
+    margin-bottom: 8px;
+}
+
+/* =============================================
+   TRADE EXECUTION FLASH
+   ============================================= */
+
+.trade-flash {
+    position: relative;
+}
+
+.trade-flash::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    border-radius: inherit;
+    animation: trade-flash 0.5s ease-out;
+    pointer-events: none;
+}
+
+.trade-flash.buy::after {
+    background: linear-gradient(135deg,
+        rgba(74, 222, 128, 0.4) 0%,
+        transparent 100%
+    );
+}
+
+.trade-flash.sell::after {
+    background: linear-gradient(135deg,
+        rgba(248, 113, 113, 0.4) 0%,
+        transparent 100%
+    );
+}
+
+@keyframes trade-flash {
+    0% { opacity: 1; }
+    100% { opacity: 0; }
+}
+
+/* =============================================
+   NUMBER TICK ANIMATION
+   ============================================= */
+
+.tick-up {
+    animation: tick-up 0.4s ease-out;
+    color: #4ade80 !important;
+}
+
+.tick-down {
+    animation: tick-down 0.4s ease-out;
+    color: #f87171 !important;
+}
+
+@keyframes tick-up {
+    0% { transform: translateY(10px); opacity: 0; }
+    50% { transform: translateY(-2px); }
+    100% { transform: translateY(0); opacity: 1; }
+}
+
+@keyframes tick-down {
+    0% { transform: translateY(-10px); opacity: 0; }
+    50% { transform: translateY(2px); }
+    100% { transform: translateY(0); opacity: 1; }
+}
+
+/* =============================================
+   TOAST NOTIFICATIONS
+   ============================================= */
+
+.toast {
+    position: fixed;
+    bottom: 20px;
+    right: 20px;
+    padding: 12px 24px;
+    background: rgba(30, 30, 40, 0.95);
+    border: 1px solid rgba(201, 162, 39, 0.3);
+    border-radius: 8px;
+    color: #e8e4d9;
+    font-size: 14px;
+    z-index: 600;
+    opacity: 0;
+    transform: translateY(20px);
+    transition: opacity 0.3s ease, transform 0.3s ease;
+    backdrop-filter: blur(10px);
+}
+
+.toast.show {
+    opacity: 1;
+    transform: translateY(0);
+}
+
+.toast-success {
+    border-color: rgba(74, 222, 128, 0.5);
+    box-shadow: 0 0 20px rgba(74, 222, 128, 0.2);
+}
+
+.toast-error {
+    border-color: rgba(248, 113, 113, 0.5);
+    box-shadow: 0 0 20px rgba(248, 113, 113, 0.2);
+}
+
+.toast-info {
+    border-color: rgba(96, 165, 250, 0.5);
+    box-shadow: 0 0 20px rgba(96, 165, 250, 0.2);
+}
+
+/* =============================================
+   INPUT FOCUS EFFECTS
+   ============================================= */
+
+input, select, textarea {
+    transition: border-color 0.2s ease, box-shadow 0.2s ease;
+}
+
+input:focus, select:focus, textarea:focus {
+    outline: none;
+    border-color: rgba(201, 162, 39, 0.6);
+    box-shadow: 0 0 0 3px rgba(201, 162, 39, 0.15);
+}
+
+/* Code input special styling (2FA) */
+.code-input {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 28px;
+    letter-spacing: 8px;
+    text-align: center;
+    padding: 16px 24px;
+    background: rgba(0, 0, 0, 0.3);
+    border: 2px solid rgba(201, 162, 39, 0.3);
+    border-radius: 12px;
+    color: #c9a227;
+    width: 100%;
+}
+
+.code-input:focus {
+    border-color: #c9a227;
+    box-shadow: 0 0 0 4px rgba(201, 162, 39, 0.2);
+}
+
+/* =============================================
+   MODAL TRANSITIONS
+   ============================================= */
+
+.modal-overlay {
+    position: fixed;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.7);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 9000;
+    animation: modal-fade-in 0.2s ease-out;
+    backdrop-filter: blur(4px);
+}
+
+@keyframes modal-fade-in {
+    0% { opacity: 0; }
+    100% { opacity: 1; }
+}
+
+.modal {
+    background: linear-gradient(145deg, rgba(30, 30, 40, 0.98), rgba(20, 20, 30, 0.98));
+    border: 1px solid rgba(201, 162, 39, 0.3);
+    border-radius: 16px;
+    padding: 0;
+    max-width: 480px;
+    width: 90%;
+    max-height: 90vh;
+    overflow: hidden;
+    animation: modal-slide-up 0.3s ease-out;
+    box-shadow: 0 25px 50px rgba(0, 0, 0, 0.5),
+                0 0 40px rgba(201, 162, 39, 0.1);
+}
+
+@keyframes modal-slide-up {
+    0% { opacity: 0; transform: translateY(30px) scale(0.95); }
+    100% { opacity: 1; transform: translateY(0) scale(1); }
+}
+
+.modal-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 20px 24px;
+    border-bottom: 1px solid rgba(201, 162, 39, 0.2);
+}
+
+.modal-header h3 {
+    margin: 0;
+    color: #c9a227;
+    font-size: 18px;
+}
+
+.modal-close {
+    background: none;
+    border: none;
+    color: #888;
+    font-size: 24px;
+    cursor: pointer;
+    padding: 0;
+    line-height: 1;
+    transition: color 0.2s ease;
+}
+
+.modal-close:hover {
+    color: #c9a227;
+}
+
+.modal-body {
+    padding: 24px;
+    overflow-y: auto;
+    max-height: calc(90vh - 80px);
+}
+
+/* =============================================
+   BADGE STYLES
+   ============================================= */
+
+.badge {
+    display: inline-block;
+    padding: 4px 10px;
+    border-radius: 12px;
+    font-size: 11px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.badge.primary {
+    background: linear-gradient(135deg, rgba(201, 162, 39, 0.3), rgba(201, 162, 39, 0.1));
+    border: 1px solid rgba(201, 162, 39, 0.5);
+    color: #c9a227;
+}
+
+.badge.watch-only {
+    background: linear-gradient(135deg, rgba(96, 165, 250, 0.3), rgba(96, 165, 250, 0.1));
+    border: 1px solid rgba(96, 165, 250, 0.5);
+    color: #60a5fa;
+}
+
+.badge.enabled {
+    background: linear-gradient(135deg, rgba(74, 222, 128, 0.3), rgba(74, 222, 128, 0.1));
+    border: 1px solid rgba(74, 222, 128, 0.5);
+    color: #4ade80;
+}
+
+.badge.disabled {
+    background: linear-gradient(135deg, rgba(248, 113, 113, 0.3), rgba(248, 113, 113, 0.1));
+    border: 1px solid rgba(248, 113, 113, 0.5);
+    color: #f87171;
+}
+
+/* =============================================
+   STYLE BADGES (Trading Styles)
+   ============================================= */
+
+.style-badge {
+    display: inline-block;
+    padding: 4px 10px;
+    border-radius: 4px;
+    font-size: 11px;
+    font-weight: 600;
+    text-transform: uppercase;
+}
+
+.style-badge.scalper { background: #ef4444; color: white; }
+.style-badge.swing { background: #3b82f6; color: white; }
+.style-badge.trendfollower { background: #22c55e; color: white; }
+.style-badge.contrarian { background: #a855f7; color: white; }
+.style-badge.newstrader { background: #f59e0b; color: black; }
+.style-badge.momentum { background: #06b6d4; color: white; }
+.style-badge.meanreversion { background: #ec4899; color: white; }
+.style-badge.breakout { background: #84cc16; color: black; }
+
+/* =============================================
+   VALUE COLORS
+   ============================================= */
+
+.positive { color: #4ade80 !important; }
+.negative { color: #f87171 !important; }
+
+/* =============================================
+   WALLET MANAGER STYLES
+   ============================================= */
+
+.wallet-manager {
+    padding: 16px;
+}
+
+.wallet-manager-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
+}
+
+.wallet-manager-header h3 {
+    margin: 0;
+    color: #c9a227;
+}
+
+.wallet-manager-actions {
+    display: flex;
+    gap: 8px;
+}
+
+.wallet-list {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+.wallet-item {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    padding: 16px;
+    background: rgba(0, 0, 0, 0.2);
+    border: 1px solid rgba(201, 162, 39, 0.2);
+    border-radius: 12px;
+}
+
+.wallet-item.primary {
+    border-color: rgba(201, 162, 39, 0.5);
+    box-shadow: 0 0 20px rgba(201, 162, 39, 0.1);
+}
+
+.wallet-item.watch-only {
+    opacity: 0.8;
+    border-style: dashed;
+}
+
+.wallet-info {
+    flex: 1;
+}
+
+.wallet-address {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-family: 'JetBrains Mono', monospace;
+    color: #e8e4d9;
+}
+
+.wallet-label {
+    font-size: 12px;
+    color: #888;
+    margin-top: 4px;
+}
+
+.wallet-badges {
+    display: flex;
+    gap: 6px;
+    margin-top: 6px;
+}
+
+.wallet-balance {
+    font-size: 12px;
+    color: #888;
+}
+
+.wallet-actions {
+    display: flex;
+    gap: 8px;
+}
+
+/* =============================================
+   2FA STYLES
+   ============================================= */
+
+.twofa-step {
+    text-align: center;
+}
+
+.twofa-step.hidden {
+    display: none;
+}
+
+.step-indicator {
+    font-size: 12px;
+    color: #888;
+    margin-bottom: 16px;
+}
+
+.qr-container {
+    margin: 24px 0;
+}
+
+.qr-container img {
+    border-radius: 8px;
+    background: white;
+    padding: 16px;
+}
+
+.secret-code {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 16px;
+    letter-spacing: 2px;
+    padding: 12px;
+    background: rgba(0, 0, 0, 0.3);
+    border-radius: 8px;
+    margin: 12px 0;
+    color: #c9a227;
+}
+
+.backup-codes {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 8px;
+    margin: 16px 0;
+}
+
+.backup-code {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 14px;
+    padding: 8px 12px;
+    background: rgba(0, 0, 0, 0.3);
+    border-radius: 6px;
+    color: #c9a227;
+}
+
+.backup-actions {
+    display: flex;
+    justify-content: center;
+    gap: 12px;
+    margin-top: 12px;
+}
+
+.warning {
+    color: #f59e0b;
+    font-size: 13px;
+    padding: 12px;
+    background: rgba(245, 158, 11, 0.1);
+    border-radius: 8px;
+    margin: 12px 0;
+}
+
+/* =============================================
+   ACADEMY TRADERS STYLES
+   ============================================= */
+
+.academy-traders {
+    padding: 24px;
+}
+
+.academy-header {
+    margin-bottom: 24px;
+}
+
+.academy-header h2 {
+    margin: 0 0 8px 0;
+    color: #c9a227;
+}
+
+.academy-header .subtitle {
+    margin: 0;
+    color: #888;
+}
+
+.academy-tabs {
+    display: flex;
+    gap: 8px;
+    margin-bottom: 24px;
+    border-bottom: 1px solid rgba(201, 162, 39, 0.2);
+    padding-bottom: 16px;
+}
+
+.tab-btn {
+    padding: 10px 20px;
+    background: transparent;
+    border: 1px solid rgba(201, 162, 39, 0.3);
+    border-radius: 8px;
+    color: #888;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.tab-btn:hover {
+    color: #c9a227;
+    border-color: rgba(201, 162, 39, 0.5);
+}
+
+.tab-btn.active {
+    background: rgba(201, 162, 39, 0.1);
+    border-color: #c9a227;
+    color: #c9a227;
+}
+
+.tab-content {
+    display: none;
+}
+
+.tab-content.active {
+    display: block;
+}
+
+.traders-filters {
+    display: flex;
+    gap: 16px;
+    margin-bottom: 20px;
+    flex-wrap: wrap;
+}
+
+.filter-group {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+}
+
+.filter-group label {
+    font-size: 12px;
+    color: #888;
+}
+
+.filter-group select {
+    padding: 8px 12px;
+    background: rgba(0, 0, 0, 0.3);
+    border: 1px solid rgba(201, 162, 39, 0.3);
+    border-radius: 6px;
+    color: #e8e4d9;
+    min-width: 150px;
+}
+
+.traders-list-header {
+    display: grid;
+    grid-template-columns: 50px 2fr 1fr 100px 80px 120px;
+    gap: 16px;
+    padding: 12px 16px;
+    background: rgba(201, 162, 39, 0.1);
+    border-radius: 8px;
+    font-size: 12px;
+    font-weight: 600;
+    color: #c9a227;
+    text-transform: uppercase;
+}
+
+.traders-list {
+    margin-top: 8px;
+}
+
+.trader-row {
+    display: grid;
+    grid-template-columns: 50px 2fr 1fr 100px 80px 120px;
+    gap: 16px;
+    padding: 16px;
+    background: rgba(0, 0, 0, 0.2);
+    border: 1px solid rgba(201, 162, 39, 0.1);
+    border-radius: 8px;
+    margin-bottom: 8px;
+    align-items: center;
+    cursor: pointer;
+}
+
+.trader-avatar {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, #c9a227, #8b6914);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: bold;
+    color: white;
+}
+
+.trader-avatar.large {
+    width: 64px;
+    height: 64px;
+    font-size: 24px;
+}
+
+.col-name {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+.trader-name {
+    font-weight: 500;
+    color: #e8e4d9;
+}
+
+.pagination {
+    margin-top: 24px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 12px;
+}
+
+.pagination-controls {
+    display: flex;
+    gap: 4px;
+}
+
+.page-btn {
+    padding: 8px 12px;
+    background: transparent;
+    border: 1px solid rgba(201, 162, 39, 0.3);
+    border-radius: 6px;
+    color: #888;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    min-width: 40px;
+}
+
+.page-btn:hover:not(:disabled) {
+    border-color: #c9a227;
+    color: #c9a227;
+}
+
+.page-btn.active {
+    background: #c9a227;
+    border-color: #c9a227;
+    color: #000;
+}
+
+.page-btn:disabled {
+    opacity: 0.3;
+    cursor: not-allowed;
+}
+
+.pagination-info {
+    font-size: 12px;
+    color: #888;
+}
+
+/* Leaderboard specific */
+.leaderboard-row {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    padding: 16px;
+    background: rgba(0, 0, 0, 0.2);
+    border: 1px solid rgba(201, 162, 39, 0.1);
+    border-radius: 8px;
+    margin-bottom: 8px;
+    cursor: pointer;
+}
+
+.leaderboard-row.gold {
+    background: linear-gradient(135deg, rgba(255, 215, 0, 0.1), rgba(0, 0, 0, 0.2));
+    border-color: rgba(255, 215, 0, 0.3);
+}
+
+.leaderboard-row.silver {
+    background: linear-gradient(135deg, rgba(192, 192, 192, 0.1), rgba(0, 0, 0, 0.2));
+    border-color: rgba(192, 192, 192, 0.3);
+}
+
+.leaderboard-row.bronze {
+    background: linear-gradient(135deg, rgba(205, 127, 50, 0.1), rgba(0, 0, 0, 0.2));
+    border-color: rgba(205, 127, 50, 0.3);
+}
+
+.lb-rank {
+    width: 50px;
+    font-weight: bold;
+    color: #888;
+}
+
+.medal {
+    font-size: 18px;
+}
+
+.medal.gold { color: #ffd700; }
+.medal.silver { color: #c0c0c0; }
+.medal.bronze { color: #cd7f32; }
+
+.lb-trader {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    flex: 1;
+}
+
+.trader-details {
+    display: flex;
+    flex-direction: column;
+}
+
+.trader-style {
+    font-size: 12px;
+    color: #888;
+}
+
+.lb-stats {
+    display: flex;
+    gap: 24px;
+}
+
+.stat-item {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+}
+
+.stat-item .label {
+    font-size: 10px;
+    color: #888;
+    text-transform: uppercase;
+}
+
+.stat-item .value {
+    font-weight: 600;
+}
+
+/* Style cards grid */
+.styles-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    gap: 16px;
+}
+
+.style-card {
+    padding: 20px;
+    background: rgba(0, 0, 0, 0.2);
+    border: 1px solid rgba(201, 162, 39, 0.2);
+    border-radius: 12px;
+}
+
+.style-header {
+    margin-bottom: 12px;
+}
+
+.style-description {
+    font-size: 13px;
+    color: #888;
+    margin-bottom: 16px;
+}
+
+.style-stats {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 12px;
+}
+
+.style-stats .stat {
+    display: flex;
+    flex-direction: column;
+}
+
+.style-stats .stat-label {
+    font-size: 11px;
+    color: #888;
+}
+
+.style-stats .stat-value {
+    font-size: 16px;
+    font-weight: 600;
+    color: #e8e4d9;
+}
+
+/* =============================================
+   RESPONSIVE
+   ============================================= */
+
+@media (max-width: 768px) {
+    .traders-list-header,
+    .trader-row {
+        grid-template-columns: 40px 1fr 80px 80px;
+    }
+
+    .col-style,
+    .col-trades {
+        display: none;
+    }
+
+    .traders-filters {
+        flex-direction: column;
+    }
+
+    .filter-group select {
+        width: 100%;
+    }
+
+    .lb-stats {
+        flex-direction: column;
+        gap: 8px;
+    }
+
+    .stat-item {
+        align-items: flex-start;
+    }
+}
+
+/* =============================================
+   BUTTON RIPPLE SCRIPT
+   ============================================= */

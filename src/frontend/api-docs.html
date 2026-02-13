@@ -1,0 +1,587 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Obelisk DEX - API Documentation</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        body {
+            font-family: 'Segoe UI', system-ui, sans-serif;
+            background: linear-gradient(135deg, #0a0a0f 0%, #1a1a2e 100%);
+            color: #fff;
+            min-height: 100vh;
+            line-height: 1.6;
+        }
+
+        .container { max-width: 1200px; margin: 0 auto; padding: 20px; }
+
+        header {
+            padding: 40px 20px;
+            text-align: center;
+            border-bottom: 1px solid rgba(0, 255, 136, 0.2);
+        }
+
+        header h1 {
+            font-size: 2.5rem;
+            background: linear-gradient(135deg, #00ff88, #00aaff);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            margin-bottom: 10px;
+        }
+
+        header p { color: #888; font-size: 1.1rem; }
+
+        .badge {
+            display: inline-block;
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 600;
+            margin: 10px 5px;
+        }
+
+        .badge-live { background: #00ff88; color: #000; }
+        .badge-pq { background: #8a2be2; color: #fff; }
+
+        .api-section {
+            margin: 40px 0;
+            padding: 30px;
+            background: rgba(255,255,255,0.02);
+            border: 1px solid rgba(255,255,255,0.1);
+            border-radius: 16px;
+        }
+
+        .api-section h2 {
+            color: #00ff88;
+            font-size: 1.5rem;
+            margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .endpoint {
+            background: rgba(0,0,0,0.3);
+            border: 1px solid rgba(255,255,255,0.1);
+            border-radius: 12px;
+            margin: 15px 0;
+            overflow: hidden;
+        }
+
+        .endpoint-header {
+            display: flex;
+            align-items: center;
+            padding: 15px 20px;
+            cursor: pointer;
+            gap: 15px;
+        }
+
+        .endpoint-header:hover { background: rgba(0, 255, 136, 0.05); }
+
+        .method {
+            padding: 6px 12px;
+            border-radius: 6px;
+            font-size: 12px;
+            font-weight: 700;
+            min-width: 60px;
+            text-align: center;
+        }
+
+        .method-get { background: #00aaff; color: #000; }
+        .method-post { background: #00ff88; color: #000; }
+        .method-delete { background: #ff4444; color: #fff; }
+
+        .endpoint-path {
+            font-family: 'JetBrains Mono', monospace;
+            color: #fff;
+            font-size: 14px;
+        }
+
+        .endpoint-desc {
+            color: #888;
+            font-size: 13px;
+            margin-left: auto;
+        }
+
+        .endpoint-body {
+            display: none;
+            padding: 20px;
+            border-top: 1px solid rgba(255,255,255,0.1);
+            background: rgba(0,0,0,0.2);
+        }
+
+        .endpoint.open .endpoint-body { display: block; }
+
+        .code-block {
+            background: #0d0d12;
+            border: 1px solid #222;
+            border-radius: 8px;
+            padding: 15px;
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 13px;
+            overflow-x: auto;
+            margin: 10px 0;
+        }
+
+        .code-block .key { color: #00aaff; }
+        .code-block .string { color: #00ff88; }
+        .code-block .number { color: #ffaa00; }
+        .code-block .bool { color: #ff6b6b; }
+
+        .try-it {
+            margin-top: 20px;
+            padding: 20px;
+            background: rgba(0, 255, 136, 0.05);
+            border: 1px solid rgba(0, 255, 136, 0.2);
+            border-radius: 8px;
+        }
+
+        .try-it h4 { color: #00ff88; margin-bottom: 15px; }
+
+        .try-it input, .try-it select {
+            width: 100%;
+            padding: 12px;
+            background: #0a0a0f;
+            border: 1px solid #333;
+            border-radius: 8px;
+            color: #fff;
+            font-size: 14px;
+            margin-bottom: 10px;
+        }
+
+        .try-it button {
+            padding: 12px 24px;
+            background: linear-gradient(135deg, #00ff88, #00aaff);
+            border: none;
+            border-radius: 8px;
+            color: #000;
+            font-weight: 600;
+            cursor: pointer;
+            transition: transform 0.2s;
+        }
+
+        .try-it button:hover { transform: scale(1.02); }
+
+        .response-box {
+            margin-top: 15px;
+            padding: 15px;
+            background: #0d0d12;
+            border-radius: 8px;
+            font-family: monospace;
+            font-size: 12px;
+            max-height: 300px;
+            overflow: auto;
+            white-space: pre-wrap;
+            display: none;
+        }
+
+        .response-box.show { display: block; }
+        .response-box.success { border: 1px solid #00ff88; }
+        .response-box.error { border: 1px solid #ff4444; }
+
+        .params-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 15px 0;
+        }
+
+        .params-table th, .params-table td {
+            padding: 12px;
+            text-align: left;
+            border-bottom: 1px solid #222;
+        }
+
+        .params-table th { color: #00aaff; font-size: 12px; text-transform: uppercase; }
+        .params-table td { font-size: 14px; }
+        .params-table .param-name { font-family: monospace; color: #00ff88; }
+        .params-table .param-type { color: #888; font-size: 12px; }
+        .params-table .required { color: #ff6b6b; font-size: 11px; }
+
+        .status-indicator {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 15px 20px;
+            background: rgba(0, 255, 136, 0.1);
+            border-radius: 8px;
+            margin-bottom: 30px;
+        }
+
+        .status-dot {
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            background: #00ff88;
+            animation: pulse 2s infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.5; }
+        }
+
+        .nav-tabs {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 30px;
+            flex-wrap: wrap;
+        }
+
+        .nav-tab {
+            padding: 12px 24px;
+            background: rgba(255,255,255,0.05);
+            border: 1px solid rgba(255,255,255,0.1);
+            border-radius: 8px;
+            color: #888;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .nav-tab:hover { border-color: #00ff88; color: #fff; }
+        .nav-tab.active { background: rgba(0, 255, 136, 0.2); border-color: #00ff88; color: #00ff88; }
+
+        footer {
+            text-align: center;
+            padding: 40px;
+            border-top: 1px solid rgba(255,255,255,0.1);
+            color: #666;
+        }
+
+        footer a { color: #00ff88; text-decoration: none; }
+    </style>
+</head>
+<body>
+    <header>
+        <h1>Obelisk DEX API</h1>
+        <p>Post-Quantum Secure Decentralized Exchange</p>
+        <div>
+            <span class="badge badge-live">API Live</span>
+            <span class="badge badge-pq">Post-Quantum Ready</span>
+        </div>
+    </header>
+
+    <div class="container">
+        <!-- Status -->
+        <div class="status-indicator">
+            <div class="status-dot"></div>
+            <span>API Status: <strong style="color: #00ff88;">Operational</strong></span>
+            <span style="margin-left: auto; color: #888;">Base URL: <code>https://obelisk-dex.pages.dev/api</code></span>
+        </div>
+
+        <!-- Navigation -->
+        <div class="nav-tabs">
+            <button class="nav-tab active" onclick="showSection('markets')">Markets</button>
+            <button class="nav-tab" onclick="showSection('auth')">Authentication</button>
+            <button class="nav-tab" onclick="showSection('trading')">Trading</button>
+            <button class="nav-tab" onclick="showSection('banking')">Banking</button>
+            <button class="nav-tab" onclick="showSection('products')">Products</button>
+        </div>
+
+        <!-- Markets Section -->
+        <div id="section-markets" class="api-section">
+            <h2>📊 Markets</h2>
+
+            <div class="endpoint" id="ep-markets">
+                <div class="endpoint-header" onclick="toggleEndpoint('ep-markets')">
+                    <span class="method method-get">GET</span>
+                    <span class="endpoint-path">/api/markets</span>
+                    <span class="endpoint-desc">Get all available markets with real-time prices</span>
+                </div>
+                <div class="endpoint-body">
+                    <p>Returns all trading pairs with current prices from Hyperliquid and dYdX.</p>
+
+                    <h4 style="margin: 20px 0 10px; color: #00aaff;">Response</h4>
+                    <div class="code-block">
+{
+  <span class="key">"markets"</span>: [
+    {
+      <span class="key">"pair"</span>: <span class="string">"BTC/USDC"</span>,
+      <span class="key">"price"</span>: <span class="number">87828.50</span>,
+      <span class="key">"change24h"</span>: <span class="number">2.34</span>,
+      <span class="key">"source"</span>: <span class="string">"Hyperliquid"</span>,
+      <span class="key">"spread"</span>: <span class="number">0.04</span>
+    }
+  ],
+  <span class="key">"count"</span>: <span class="number">50</span>,
+  <span class="key">"realtime"</span>: <span class="bool">true</span>
+}</div>
+
+                    <div class="try-it">
+                        <h4>Try It</h4>
+                        <button onclick="tryApi('/api/markets', 'GET', 'markets-response')">Send Request</button>
+                        <div class="response-box" id="markets-response"></div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="endpoint" id="ep-ticker">
+                <div class="endpoint-header" onclick="toggleEndpoint('ep-ticker')">
+                    <span class="method method-get">GET</span>
+                    <span class="endpoint-path">/api/ticker/{pair}</span>
+                    <span class="endpoint-desc">Get ticker for specific trading pair</span>
+                </div>
+                <div class="endpoint-body">
+                    <table class="params-table">
+                        <tr><th>Parameter</th><th>Type</th><th>Description</th></tr>
+                        <tr>
+                            <td><span class="param-name">pair</span> <span class="required">required</span></td>
+                            <td><span class="param-type">string</span></td>
+                            <td>Trading pair (e.g., BTC/USDC)</td>
+                        </tr>
+                    </table>
+
+                    <div class="try-it">
+                        <h4>Try It</h4>
+                        <input type="text" id="ticker-pair" placeholder="BTC/USDC" value="BTC/USDC">
+                        <button onclick="tryApi('/api/ticker/' + encodeURIComponent(document.getElementById('ticker-pair').value), 'GET', 'ticker-response')">Send Request</button>
+                        <div class="response-box" id="ticker-response"></div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="endpoint" id="ep-arbitrage">
+                <div class="endpoint-header" onclick="toggleEndpoint('ep-arbitrage')">
+                    <span class="method method-get">GET</span>
+                    <span class="endpoint-path">/api/arbitrage</span>
+                    <span class="endpoint-desc">Get cross-DEX arbitrage opportunities</span>
+                </div>
+                <div class="endpoint-body">
+                    <p>Returns current arbitrage opportunities between Hyperliquid and dYdX.</p>
+                    <div class="try-it">
+                        <h4>Try It</h4>
+                        <button onclick="tryApi('/api/arbitrage', 'GET', 'arb-response')">Send Request</button>
+                        <div class="response-box" id="arb-response"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Auth Section -->
+        <div id="section-auth" class="api-section" style="display: none;">
+            <h2>🔐 Authentication</h2>
+
+            <div class="endpoint" id="ep-register">
+                <div class="endpoint-header" onclick="toggleEndpoint('ep-register')">
+                    <span class="method method-post">POST</span>
+                    <span class="endpoint-path">/api/auth/register</span>
+                    <span class="endpoint-desc">Register bot/application for API access</span>
+                </div>
+                <div class="endpoint-body">
+                    <table class="params-table">
+                        <tr><th>Body Parameter</th><th>Type</th><th>Description</th></tr>
+                        <tr>
+                            <td><span class="param-name">name</span> <span class="required">required</span></td>
+                            <td><span class="param-type">string</span></td>
+                            <td>Application name</td>
+                        </tr>
+                        <tr>
+                            <td><span class="param-name">type</span> <span class="required">required</span></td>
+                            <td><span class="param-type">string</span></td>
+                            <td>trading | read-only | analytics</td>
+                        </tr>
+                    </table>
+
+                    <h4 style="margin: 20px 0 10px; color: #00aaff;">Response</h4>
+                    <div class="code-block">
+{
+  <span class="key">"success"</span>: <span class="bool">true</span>,
+  <span class="key">"apiKey"</span>: <span class="string">"obl_k_a1b2c3d4..."</span>,
+  <span class="key">"secret"</span>: <span class="string">"obl_s_x9y8z7..."</span>
+}</div>
+                </div>
+            </div>
+
+            <div class="endpoint" id="ep-session">
+                <div class="endpoint-header" onclick="toggleEndpoint('ep-session')">
+                    <span class="method method-post">POST</span>
+                    <span class="endpoint-path">/api/auth/session</span>
+                    <span class="endpoint-desc">Create authenticated session</span>
+                </div>
+                <div class="endpoint-body">
+                    <p>Requires <code>X-API-Key</code> header with your API key.</p>
+                    <table class="params-table">
+                        <tr><th>Body Parameter</th><th>Type</th><th>Description</th></tr>
+                        <tr>
+                            <td><span class="param-name">ttlMinutes</span></td>
+                            <td><span class="param-type">integer</span></td>
+                            <td>Session lifetime (default: 60, max: 1440)</td>
+                        </tr>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+        <!-- Trading Section -->
+        <div id="section-trading" class="api-section" style="display: none;">
+            <h2>📈 Trading</h2>
+
+            <div class="endpoint" id="ep-order">
+                <div class="endpoint-header" onclick="toggleEndpoint('ep-order')">
+                    <span class="method method-post">POST</span>
+                    <span class="endpoint-path">/api/order</span>
+                    <span class="endpoint-desc">Place market or limit order</span>
+                </div>
+                <div class="endpoint-body">
+                    <p>Requires authentication (API Key + Session).</p>
+                    <table class="params-table">
+                        <tr><th>Body Parameter</th><th>Type</th><th>Description</th></tr>
+                        <tr>
+                            <td><span class="param-name">pair</span> <span class="required">required</span></td>
+                            <td><span class="param-type">string</span></td>
+                            <td>Trading pair (e.g., BTC/USDC)</td>
+                        </tr>
+                        <tr>
+                            <td><span class="param-name">side</span> <span class="required">required</span></td>
+                            <td><span class="param-type">string</span></td>
+                            <td>buy | sell</td>
+                        </tr>
+                        <tr>
+                            <td><span class="param-name">quantity</span> <span class="required">required</span></td>
+                            <td><span class="param-type">number</span></td>
+                            <td>Amount to trade</td>
+                        </tr>
+                        <tr>
+                            <td><span class="param-name">type</span></td>
+                            <td><span class="param-type">string</span></td>
+                            <td>market (default) | limit</td>
+                        </tr>
+                        <tr>
+                            <td><span class="param-name">leverage</span></td>
+                            <td><span class="param-type">number</span></td>
+                            <td>1-100 (default: 1)</td>
+                        </tr>
+                    </table>
+                </div>
+            </div>
+
+            <div class="endpoint" id="ep-positions">
+                <div class="endpoint-header" onclick="toggleEndpoint('ep-positions')">
+                    <span class="method method-get">GET</span>
+                    <span class="endpoint-path">/api/positions</span>
+                    <span class="endpoint-desc">Get all open positions</span>
+                </div>
+                <div class="endpoint-body">
+                    <p>Requires authentication. Returns all open positions with P&L.</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Banking Section -->
+        <div id="section-banking" class="api-section" style="display: none;">
+            <h2>🏦 Banking</h2>
+
+            <div class="endpoint" id="ep-deposit">
+                <div class="endpoint-header" onclick="toggleEndpoint('ep-deposit')">
+                    <span class="method method-post">POST</span>
+                    <span class="endpoint-path">/api/banking/deposit</span>
+                    <span class="endpoint-desc">Prepare deposit to Obelisk</span>
+                </div>
+                <div class="endpoint-body">
+                    <table class="params-table">
+                        <tr><th>Parameter</th><th>Type</th><th>Description</th></tr>
+                        <tr>
+                            <td><span class="param-name">amount</span></td>
+                            <td><span class="param-type">number</span></td>
+                            <td>Amount to deposit (min: 10)</td>
+                        </tr>
+                        <tr>
+                            <td><span class="param-name">currency</span></td>
+                            <td><span class="param-type">string</span></td>
+                            <td>USDC | ETH | USDT</td>
+                        </tr>
+                        <tr>
+                            <td><span class="param-name">network</span></td>
+                            <td><span class="param-type">string</span></td>
+                            <td>ARBITRUM | ETHEREUM | POLYGON</td>
+                        </tr>
+                    </table>
+                </div>
+            </div>
+
+            <div class="endpoint" id="ep-withdraw">
+                <div class="endpoint-header" onclick="toggleEndpoint('ep-withdraw')">
+                    <span class="method method-post">POST</span>
+                    <span class="endpoint-path">/api/banking/withdraw</span>
+                    <span class="endpoint-desc">Withdraw to external wallet</span>
+                </div>
+                <div class="endpoint-body">
+                    <p>Instant withdrawals. No lock-up period.</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Products Section -->
+        <div id="section-products" class="api-section" style="display: none;">
+            <h2>💎 Investment Products</h2>
+
+            <div class="endpoint" id="ep-products">
+                <div class="endpoint-header" onclick="toggleEndpoint('ep-products')">
+                    <span class="method method-get">GET</span>
+                    <span class="endpoint-path">/api/products</span>
+                    <span class="endpoint-desc">List all investment products</span>
+                </div>
+                <div class="endpoint-body">
+                    <h4 style="margin: 20px 0 10px; color: #00aaff;">Available Products</h4>
+                    <div class="code-block">
+[
+  { <span class="key">"id"</span>: <span class="string">"safe-haven"</span>, <span class="key">"apy"</span>: <span class="string">"4-5%"</span>, <span class="key">"protection"</span>: <span class="number">100</span>% },
+  { <span class="key">"id"</span>: <span class="string">"balanced"</span>, <span class="key">"apy"</span>: <span class="string">"7-10%"</span>, <span class="key">"protection"</span>: <span class="number">90</span>% },
+  { <span class="key">"id"</span>: <span class="string">"yield"</span>, <span class="key">"apy"</span>: <span class="string">"10-15%"</span>, <span class="key">"protection"</span>: <span class="number">80</span>% },
+  { <span class="key">"id"</span>: <span class="string">"growth"</span>, <span class="key">"apy"</span>: <span class="string">"12-18%"</span>, <span class="key">"protection"</span>: <span class="number">70</span>% }
+]</div>
+                </div>
+            </div>
+
+            <div class="endpoint" id="ep-invest">
+                <div class="endpoint-header" onclick="toggleEndpoint('ep-invest')">
+                    <span class="method method-post">POST</span>
+                    <span class="endpoint-path">/api/products/{id}/invest</span>
+                    <span class="endpoint-desc">Invest in a product</span>
+                </div>
+                <div class="endpoint-body">
+                    <p>Allocate funds to an investment product. Min investment: $10.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <footer>
+        <p><a href="app.html">Back to App</a> | <a href="docs.html">Full Documentation</a> | <a href="start.html">Getting Started</a></p>
+        <p style="margin-top: 10px;">&copy; 2024 Obelisk DEX - Post-Quantum Secure</p>
+    </footer>
+
+    <script>
+        const API_BASE = '/api';
+
+        function toggleEndpoint(id) {
+            document.getElementById(id).classList.toggle('open');
+        }
+
+        function showSection(section) {
+            document.querySelectorAll('.api-section').forEach(s => s.style.display = 'none');
+            document.getElementById('section-' + section).style.display = 'block';
+            document.querySelectorAll('.nav-tab').forEach(t => t.classList.remove('active'));
+            event.target.classList.add('active');
+        }
+
+        async function tryApi(endpoint, method, responseId) {
+            const responseBox = document.getElementById(responseId);
+            responseBox.classList.add('show');
+            responseBox.className = 'response-box show';
+            responseBox.textContent = 'Loading...';
+
+            try {
+                const response = await fetch(API_BASE + endpoint, { method });
+                const data = await response.json();
+                responseBox.textContent = JSON.stringify(data, null, 2);
+                responseBox.classList.add('success');
+            } catch (error) {
+                responseBox.textContent = 'Error: ' + error.message;
+                responseBox.classList.add('error');
+            }
+        }
+    </script>
+</body>
+</html>

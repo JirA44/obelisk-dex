@@ -1,0 +1,1030 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>OBELISK - Institutional Tools</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+    <link rel="icon" type="image/svg+xml" href="assets/obelisk-icon.svg">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        :root {
+            --bg: #000000; --bg2: #050505; --bg3: #0a0a0a;
+            --card: #030303; --border: #1a1a1a;
+            --text: #e8e4d9; --text2: #c9a227; --muted: #6b5d3e;
+            --gold: #c9a227; --cyan: #00d4ff; --green: #00ff88;
+            --red: #ff4444; --orange: #ff8800;
+        }
+        body { font-family: 'Inter', sans-serif; background: var(--bg); color: var(--text); min-height: 100vh; }
+        a { color: var(--cyan); text-decoration: none; }
+
+        /* NAV */
+        .nav { display: flex; align-items: center; justify-content: space-between; padding: 16px 24px; border-bottom: 1px solid var(--border); background: var(--bg2); position: sticky; top: 0; z-index: 100; }
+        .nav-brand { display: flex; align-items: center; gap: 12px; }
+        .nav-brand svg { width: 32px; height: 32px; }
+        .nav-brand span { font-size: 1.2rem; font-weight: 700; color: var(--gold); }
+        .nav-links { display: flex; gap: 16px; align-items: center; }
+        .nav-links a { color: var(--muted); font-size: 0.85rem; font-weight: 500; }
+        .nav-links a:hover { color: var(--text); }
+        .nav-links a.active { color: var(--gold); }
+
+        /* HERO */
+        .hero { text-align: center; padding: 48px 24px 32px; background: linear-gradient(135deg, rgba(201,162,39,0.08) 0%, rgba(0,212,255,0.05) 100%); border-bottom: 1px solid var(--border); }
+        .hero h1 { font-size: 2rem; color: var(--gold); margin-bottom: 8px; }
+        .hero p { color: var(--muted); font-size: 0.95rem; max-width: 600px; margin: 0 auto; }
+
+        /* CONTAINER */
+        .container { max-width: 1400px; margin: 0 auto; padding: 24px; }
+
+        /* TABS */
+        .tabs { display: flex; gap: 4px; border-bottom: 1px solid var(--border); margin-bottom: 24px; overflow-x: auto; }
+        .tab { padding: 12px 20px; cursor: pointer; color: var(--muted); font-size: 0.85rem; font-weight: 600; border-bottom: 2px solid transparent; white-space: nowrap; transition: all 0.2s; }
+        .tab:hover { color: var(--text); }
+        .tab.active { color: var(--gold); border-bottom-color: var(--gold); }
+        .tab-content { display: none; }
+        .tab-content.active { display: block; }
+
+        /* CARDS & PANELS */
+        .card { background: var(--card); border: 1px solid var(--border); border-radius: 12px; padding: 20px; }
+        .panel { background: var(--card); border: 1px solid var(--border); border-radius: 12px; padding: 20px; margin-bottom: 16px; }
+        .panel-title { font-size: 0.9rem; font-weight: 700; color: var(--gold); margin-bottom: 16px; }
+
+        /* STAT CARDS */
+        .stats-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 16px; margin-bottom: 24px; }
+        .stat-card { background: var(--card); border: 1px solid var(--border); border-radius: 12px; padding: 16px; }
+        .stat-label { font-size: 0.75rem; color: var(--muted); text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 4px; }
+        .stat-value { font-size: 1.4rem; font-weight: 700; font-family: 'JetBrains Mono', monospace; }
+        .stat-value.positive { color: var(--green); }
+        .stat-value.negative { color: var(--red); }
+
+        /* TABLES */
+        table { width: 100%; border-collapse: collapse; font-size: 0.85rem; }
+        th { text-align: left; padding: 10px 12px; color: var(--muted); font-weight: 600; border-bottom: 1px solid var(--border); font-size: 0.75rem; text-transform: uppercase; letter-spacing: 0.5px; }
+        td { padding: 10px 12px; border-bottom: 1px solid rgba(26,26,26,0.5); font-family: 'JetBrains Mono', monospace; font-size: 0.8rem; }
+        tr:hover { background: rgba(201,162,39,0.03); }
+
+        /* BADGES */
+        .badge { padding: 2px 8px; border-radius: 4px; font-size: 0.7rem; font-weight: 600; text-transform: uppercase; }
+        .badge-owner { background: rgba(201,162,39,0.15); color: #c9a227; border: 1px solid rgba(201,162,39,0.3); }
+        .badge-admin { background: rgba(0,212,255,0.15); color: #00d4ff; border: 1px solid rgba(0,212,255,0.3); }
+        .badge-trader { background: rgba(0,255,136,0.15); color: #00ff88; border: 1px solid rgba(0,255,136,0.3); }
+        .badge-viewer { background: rgba(107,93,62,0.15); color: #6b5d3e; border: 1px solid rgba(107,93,62,0.3); }
+        .badge-active { background: rgba(0,255,136,0.15); color: #00ff88; }
+        .badge-inactive { background: rgba(255,68,68,0.15); color: #ff4444; }
+
+        /* FORMS */
+        .form-row { display: flex; gap: 12px; margin-bottom: 12px; align-items: flex-end; flex-wrap: wrap; }
+        .form-group { display: flex; flex-direction: column; gap: 4px; }
+        .form-group label { font-size: 0.75rem; color: var(--muted); text-transform: uppercase; letter-spacing: 0.5px; }
+        input, select { background: var(--bg3); border: 1px solid var(--border); border-radius: 8px; padding: 8px 12px; color: var(--text); font-family: 'JetBrains Mono', monospace; font-size: 0.85rem; outline: none; }
+        input:focus, select:focus { border-color: var(--gold); }
+        input[type="checkbox"] { width: 16px; height: 16px; accent-color: var(--gold); }
+
+        /* BUTTONS */
+        .btn { padding: 8px 16px; border-radius: 8px; border: 1px solid var(--border); background: transparent; color: var(--text); cursor: pointer; font-size: 0.8rem; font-weight: 600; transition: all 0.2s; }
+        .btn:hover { border-color: var(--gold); }
+        .btn-primary { border-color: var(--cyan); background: rgba(0,212,255,0.1); color: var(--cyan); }
+        .btn-primary:hover { background: rgba(0,212,255,0.2); }
+        .btn-danger { border-color: var(--red); color: var(--red); }
+        .btn-danger:hover { background: rgba(255,68,68,0.1); }
+        .btn-gold { border-color: var(--gold); background: rgba(201,162,39,0.1); color: var(--gold); }
+        .btn-sm { padding: 4px 10px; font-size: 0.7rem; }
+
+        /* CHECKBOX GROUP */
+        .checkbox-group { display: flex; flex-wrap: wrap; gap: 8px; }
+        .checkbox-label { display: flex; align-items: center; gap: 4px; font-size: 0.8rem; color: var(--text); cursor: pointer; }
+
+        /* DONUT CHART */
+        .donut-container { display: flex; justify-content: center; margin: 20px 0; }
+        .donut { width: 200px; height: 200px; border-radius: 50%; position: relative; }
+        .donut-center { position: absolute; top: 50%; left: 50%; transform: translate(-50%,-50%); text-align: center; }
+        .donut-center .amount { font-size: 1.2rem; font-weight: 700; color: var(--gold); font-family: 'JetBrains Mono', monospace; }
+        .donut-center .label { font-size: 0.7rem; color: var(--muted); }
+        .donut-legend { display: flex; flex-wrap: wrap; gap: 12px; justify-content: center; margin-top: 12px; }
+        .legend-item { display: flex; align-items: center; gap: 6px; font-size: 0.75rem; }
+        .legend-dot { width: 10px; height: 10px; border-radius: 50%; }
+
+        /* PROGRESS BAR */
+        .progress { background: var(--bg3); border-radius: 4px; height: 6px; overflow: hidden; }
+        .progress-bar { height: 100%; border-radius: 4px; transition: width 0.3s; }
+
+        /* TOGGLE */
+        .toggle { position: relative; width: 36px; height: 20px; cursor: pointer; }
+        .toggle input { opacity: 0; width: 0; height: 0; }
+        .toggle-slider { position: absolute; top: 0; left: 0; right: 0; bottom: 0; background: var(--border); border-radius: 20px; transition: 0.3s; }
+        .toggle-slider:before { content: ''; position: absolute; height: 14px; width: 14px; left: 3px; bottom: 3px; background: var(--muted); border-radius: 50%; transition: 0.3s; }
+        .toggle input:checked + .toggle-slider { background: rgba(0,255,136,0.3); }
+        .toggle input:checked + .toggle-slider:before { transform: translateX(16px); background: var(--green); }
+
+        /* PERIOD SELECTOR */
+        .period-selector { display: flex; gap: 4px; margin-bottom: 16px; }
+        .period-btn { padding: 6px 14px; border-radius: 6px; border: 1px solid var(--border); background: transparent; color: var(--muted); cursor: pointer; font-size: 0.8rem; }
+        .period-btn.active { border-color: var(--gold); color: var(--gold); background: rgba(201,162,39,0.1); }
+
+        /* TOAST */
+        .toast { position: fixed; bottom: 20px; right: 20px; padding: 12px 20px; border-radius: 8px; font-size: 0.85rem; z-index: 1000; opacity: 0; transition: opacity 0.3s; pointer-events: none; }
+        .toast.show { opacity: 1; }
+        .toast.success { background: rgba(0,255,136,0.15); color: var(--green); border: 1px solid rgba(0,255,136,0.3); }
+        .toast.error { background: rgba(255,68,68,0.15); color: var(--red); border: 1px solid rgba(255,68,68,0.3); }
+
+        /* NO-ORG */
+        .no-org { text-align: center; padding: 80px 20px; }
+        .no-org h2 { color: var(--gold); margin-bottom: 12px; }
+        .no-org p { color: var(--muted); margin-bottom: 24px; }
+
+        /* RESPONSIVE */
+        @media (max-width: 768px) {
+            .stats-grid { grid-template-columns: repeat(2, 1fr); }
+            .form-row { flex-direction: column; }
+            .nav-links { gap: 8px; }
+        }
+    </style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav class="nav">
+    <div class="nav-brand">
+        <svg viewBox="0 0 32 32" fill="none"><polygon points="16,2 30,28 2,28" stroke="#c9a227" stroke-width="2" fill="none"/><line x1="16" y1="8" x2="16" y2="22" stroke="#00d4ff" stroke-width="1.5"/></svg>
+        <span>OBELISK</span>
+    </div>
+    <div class="nav-links">
+        <a href="index.html">Accueil</a>
+        <a href="app.html">Trading</a>
+        <a href="traders.html">Traders</a>
+        <a href="institutional.html" class="active">Institutional</a>
+        <a href="docs.html">Docs</a>
+    </div>
+</nav>
+
+<!-- HERO -->
+<div class="hero">
+    <h1>Institutional Tools</h1>
+    <p>Multi-account team management, scoped API keys, compliance reports, and treasury management</p>
+</div>
+
+<!-- ACCESS DENIED (individual accounts) -->
+<div id="accessDenied" class="no-org" style="display:none">
+    <h2>Business or Institutional Account Required</h2>
+    <p>Institutional tools are available for Business and Institutional accounts only.</p>
+    <p style="color:var(--muted);margin-top:8px">You can change your account type in <a href="app.html" style="color:var(--cyan)">Trading > Settings > Account Type</a>.</p>
+</div>
+
+<!-- NO ORG STATE -->
+<div id="noOrg" class="no-org" style="display:none">
+    <h2>No Organization Found</h2>
+    <p>Create an organization to access institutional tools, or accept a pending invite.</p>
+    <div class="form-row" style="justify-content:center">
+        <div class="form-group">
+            <label>Organization Name</label>
+            <input type="text" id="newOrgName" placeholder="My Fund">
+        </div>
+        <div class="form-group">
+            <label>Tier</label>
+            <select id="newOrgTier">
+                <option value="starter">Starter (5 members)</option>
+                <option value="professional">Professional (25 members)</option>
+                <option value="enterprise">Enterprise (100 members)</option>
+            </select>
+        </div>
+        <button class="btn btn-primary" onclick="createOrg()">Create Organization</button>
+    </div>
+</div>
+
+<!-- MAIN CONTENT -->
+<div class="container" id="mainContent" style="display:none">
+
+    <!-- TABS -->
+    <div class="tabs">
+        <div class="tab active" data-tab="dashboard">Dashboard</div>
+        <div class="tab" data-tab="team">Team</div>
+        <div class="tab" data-tab="apikeys">API & Webhooks</div>
+        <div class="tab" data-tab="reports">Reports</div>
+        <div class="tab" data-tab="treasury">Treasury</div>
+    </div>
+
+    <!-- TAB 1: DASHBOARD -->
+    <div class="tab-content active" id="tab-dashboard">
+        <div class="panel" id="orgCard">
+            <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px">
+                <div>
+                    <div style="font-size:1.1rem;font-weight:700;color:var(--gold)" id="orgName">-</div>
+                    <div style="font-size:0.8rem;color:var(--muted)">Tier: <span id="orgTier">-</span> | Members: <span id="orgMemberCount">0</span></div>
+                </div>
+                <span class="badge badge-owner" id="orgRoleBadge">OWNER</span>
+            </div>
+        </div>
+
+        <div class="stats-grid">
+            <div class="stat-card">
+                <div class="stat-label">Total AUM</div>
+                <div class="stat-value" id="statAum">$0</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-label">P&L Today</div>
+                <div class="stat-value" id="statPnl">$0</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-label">Active Positions</div>
+                <div class="stat-value" id="statPositions">0</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-label">API Keys Active</div>
+                <div class="stat-value" id="statKeys">0</div>
+            </div>
+        </div>
+
+        <div class="panel">
+            <div class="panel-title">Recent Audit Trail</div>
+            <table>
+                <thead><tr><th>Time</th><th>User</th><th>Action</th><th>Resource</th><th>Details</th></tr></thead>
+                <tbody id="auditTable"><tr><td colspan="5" style="color:var(--muted);text-align:center">Loading...</td></tr></tbody>
+            </table>
+        </div>
+    </div>
+
+    <!-- TAB 2: TEAM -->
+    <div class="tab-content" id="tab-team">
+        <div class="panel">
+            <div class="panel-title">Invite Member</div>
+            <div class="form-row">
+                <div class="form-group" style="flex:1">
+                    <label>Wallet Address</label>
+                    <input type="text" id="inviteWallet" placeholder="0x..." style="width:100%">
+                </div>
+                <div class="form-group">
+                    <label>Role</label>
+                    <select id="inviteRole">
+                        <option value="viewer">Viewer</option>
+                        <option value="trader" selected>Trader</option>
+                        <option value="admin">Admin</option>
+                    </select>
+                </div>
+                <button class="btn btn-primary" onclick="inviteMember()">Invite</button>
+            </div>
+        </div>
+
+        <div class="panel">
+            <div class="panel-title">Team Members</div>
+            <table>
+                <thead><tr><th>Wallet</th><th>Role</th><th>Capital Allocated</th><th>Position Limit</th><th>Daily Loss Limit</th><th>Actions</th></tr></thead>
+                <tbody id="membersTable"><tr><td colspan="6" style="color:var(--muted);text-align:center">Loading...</td></tr></tbody>
+            </table>
+        </div>
+
+        <div class="panel" id="pendingInvitesPanel" style="display:none">
+            <div class="panel-title">Pending Invites</div>
+            <table>
+                <thead><tr><th>Wallet</th><th>Role</th><th>Expires</th><th>Actions</th></tr></thead>
+                <tbody id="invitesTable"></tbody>
+            </table>
+        </div>
+    </div>
+
+    <!-- TAB 3: API & WEBHOOKS -->
+    <div class="tab-content" id="tab-apikeys">
+        <div class="panel">
+            <div class="panel-title">Create API Key</div>
+            <div class="form-row">
+                <div class="form-group" style="flex:1">
+                    <label>Name</label>
+                    <input type="text" id="keyName" placeholder="My bot key">
+                </div>
+                <div class="form-group">
+                    <label>Tier</label>
+                    <select id="keyTier">
+                        <option value="basic">Basic (60 req/min)</option>
+                        <option value="pro">Pro (300 req/min)</option>
+                        <option value="unlimited">Unlimited</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label>IP Whitelist</label>
+                    <input type="text" id="keyIp" placeholder="optional">
+                </div>
+            </div>
+            <div class="form-row">
+                <div class="form-group">
+                    <label>Scopes</label>
+                    <div class="checkbox-group">
+                        <label class="checkbox-label"><input type="checkbox" value="read" checked> Read</label>
+                        <label class="checkbox-label"><input type="checkbox" value="trade"> Trade</label>
+                        <label class="checkbox-label"><input type="checkbox" value="withdraw"> Withdraw</label>
+                        <label class="checkbox-label"><input type="checkbox" value="admin"> Admin</label>
+                    </div>
+                </div>
+                <button class="btn btn-primary" onclick="createApiKey()">Generate Key</button>
+            </div>
+        </div>
+
+        <div class="panel">
+            <div class="panel-title">Active API Keys</div>
+            <table>
+                <thead><tr><th>Name</th><th>Preview</th><th>Scopes</th><th>Tier</th><th>Requests</th><th>Actions</th></tr></thead>
+                <tbody id="keysTable"><tr><td colspan="6" style="color:var(--muted);text-align:center">Loading...</td></tr></tbody>
+            </table>
+        </div>
+
+        <div class="panel">
+            <div class="panel-title">Webhooks</div>
+            <div class="form-row">
+                <div class="form-group" style="flex:1">
+                    <label>URL</label>
+                    <input type="text" id="webhookUrl" placeholder="https://..." style="width:100%">
+                </div>
+                <div class="form-group">
+                    <label>PnL Threshold</label>
+                    <input type="number" id="webhookThreshold" placeholder="optional" style="width:100px">
+                </div>
+            </div>
+            <div class="form-row">
+                <div class="form-group">
+                    <label>Events</label>
+                    <div class="checkbox-group">
+                        <label class="checkbox-label"><input type="checkbox" value="trade.opened" class="wh-event"> Trade Opened</label>
+                        <label class="checkbox-label"><input type="checkbox" value="trade.closed" class="wh-event"> Trade Closed</label>
+                        <label class="checkbox-label"><input type="checkbox" value="pnl.threshold" class="wh-event"> PnL Threshold</label>
+                        <label class="checkbox-label"><input type="checkbox" value="member.joined" class="wh-event"> Member Joined</label>
+                    </div>
+                </div>
+                <button class="btn btn-primary" onclick="createWebhook()">Add Webhook</button>
+            </div>
+            <table style="margin-top:16px">
+                <thead><tr><th>URL</th><th>Events</th><th>Status</th><th>Fails</th><th>Actions</th></tr></thead>
+                <tbody id="webhooksTable"><tr><td colspan="5" style="color:var(--muted);text-align:center">Loading...</td></tr></tbody>
+            </table>
+        </div>
+    </div>
+
+    <!-- TAB 4: REPORTS -->
+    <div class="tab-content" id="tab-reports">
+        <div class="period-selector">
+            <button class="period-btn active" data-period="daily">Daily</button>
+            <button class="period-btn" data-period="weekly">Weekly</button>
+            <button class="period-btn" data-period="monthly">Monthly</button>
+        </div>
+
+        <div class="stats-grid">
+            <div class="stat-card">
+                <div class="stat-label">P&L Total</div>
+                <div class="stat-value" id="reportPnl">$0</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-label">Win Rate</div>
+                <div class="stat-value" id="reportWinRate">0%</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-label">Total Trades</div>
+                <div class="stat-value" id="reportTrades">0</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-label">Total Fees</div>
+                <div class="stat-value" id="reportFees">$0</div>
+            </div>
+        </div>
+
+        <div style="display:flex;gap:8px;margin-bottom:16px">
+            <button class="btn btn-gold" onclick="exportCsv()">Export CSV</button>
+            <button class="btn btn-gold" onclick="loadTaxReport()">Tax Report</button>
+        </div>
+
+        <div class="panel">
+            <div class="panel-title">Audit Trail</div>
+            <div class="form-row" style="margin-bottom:12px">
+                <div class="form-group">
+                    <label>Filter Action</label>
+                    <select id="auditFilter" onchange="loadAuditTrail()">
+                        <option value="">All</option>
+                        <option value="org.created">Org Created</option>
+                        <option value="member.added">Member Added</option>
+                        <option value="member.removed">Member Removed</option>
+                        <option value="apikey.created">API Key Created</option>
+                        <option value="webhook.created">Webhook Created</option>
+                        <option value="treasury.allocated">Capital Allocated</option>
+                        <option value="dca.executed">DCA Executed</option>
+                    </select>
+                </div>
+            </div>
+            <table>
+                <thead><tr><th>Time</th><th>User</th><th>Action</th><th>Resource</th><th>Details</th></tr></thead>
+                <tbody id="reportAuditTable"><tr><td colspan="5" style="color:var(--muted);text-align:center">Loading...</td></tr></tbody>
+            </table>
+        </div>
+    </div>
+
+    <!-- TAB 5: TREASURY -->
+    <div class="tab-content" id="tab-treasury">
+        <div class="stats-grid" style="grid-template-columns: repeat(2, 1fr)">
+            <div class="stat-card" style="text-align:center">
+                <div class="stat-label">Total AUM</div>
+                <div class="stat-value" id="treasuryAum" style="font-size:2rem">$0</div>
+            </div>
+            <div class="stat-card" style="text-align:center">
+                <div class="stat-label">Total P&L</div>
+                <div class="stat-value" id="treasuryPnl" style="font-size:2rem">$0</div>
+            </div>
+        </div>
+
+        <div class="donut-container">
+            <div>
+                <div class="donut" id="allocationDonut"></div>
+                <div class="donut-legend" id="donutLegend"></div>
+            </div>
+        </div>
+
+        <!-- Capital Allocations -->
+        <div class="panel">
+            <div class="panel-title">Capital Allocations</div>
+            <div class="form-row">
+                <div class="form-group" style="flex:1">
+                    <label>Strategy</label>
+                    <input type="text" id="allocStrategy" placeholder="e.g. BTC Long-Term">
+                </div>
+                <div class="form-group">
+                    <label>Amount ($)</label>
+                    <input type="number" id="allocAmount" placeholder="1000" style="width:120px">
+                </div>
+                <button class="btn btn-primary" onclick="allocateCapital()">Allocate</button>
+            </div>
+            <table style="margin-top:12px">
+                <thead><tr><th>Strategy</th><th>Allocated</th><th>Current</th><th>P&L</th><th>Progress</th><th>Actions</th></tr></thead>
+                <tbody id="allocationsTable"><tr><td colspan="6" style="color:var(--muted);text-align:center">Loading...</td></tr></tbody>
+            </table>
+        </div>
+
+        <!-- DCA Schedules -->
+        <div class="panel">
+            <div class="panel-title">DCA Schedules</div>
+            <div class="form-row">
+                <div class="form-group">
+                    <label>Token</label>
+                    <input type="text" id="dcaToken" placeholder="BTC" style="width:80px">
+                </div>
+                <div class="form-group">
+                    <label>Amount ($)</label>
+                    <input type="number" id="dcaAmount" placeholder="100" style="width:100px">
+                </div>
+                <div class="form-group">
+                    <label>Interval</label>
+                    <select id="dcaInterval">
+                        <option value="3600">Hourly</option>
+                        <option value="86400" selected>Daily</option>
+                        <option value="604800">Weekly</option>
+                        <option value="2592000">Monthly</option>
+                    </select>
+                </div>
+                <button class="btn btn-primary" onclick="createDca()">Create DCA</button>
+            </div>
+            <table style="margin-top:12px">
+                <thead><tr><th>Token</th><th>Amount</th><th>Interval</th><th>Next Exec</th><th>Total Invested</th><th>Active</th><th>Actions</th></tr></thead>
+                <tbody id="dcaTable"><tr><td colspan="7" style="color:var(--muted);text-align:center">Loading...</td></tr></tbody>
+            </table>
+        </div>
+
+        <!-- Budget Management -->
+        <div class="panel">
+            <div class="panel-title">Budget Management</div>
+            <table>
+                <thead><tr><th>Member</th><th>Daily Limit</th><th>Weekly Limit</th><th>Monthly Limit</th><th>Spent Today</th><th>Remaining</th><th>Actions</th></tr></thead>
+                <tbody id="budgetTable"><tr><td colspan="7" style="color:var(--muted);text-align:center">Loading...</td></tr></tbody>
+            </table>
+        </div>
+    </div>
+
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+const API_BASE = window.location.hostname === 'localhost' ? 'http://localhost:3001' : '';
+const API = `${API_BASE}/api/institutional`;
+let currentOrg = null;
+let currentRole = null;
+
+// ==================== INIT ====================
+async function init() {
+    // Check account type first
+    try {
+        const token = localStorage.getItem('obelisk_token');
+        if (token) {
+            const meRes = await fetch(`${API_BASE}/api/auth/me`, {
+                headers: { 'Authorization': `Bearer ${token}` }
+            });
+            const meData = await meRes.json();
+            if (meData.user && meData.user.accountType === 'individual') {
+                showAccessDenied();
+                return;
+            }
+        }
+    } catch { /* continue anyway if auth check fails */ }
+
+    try {
+        const res = await apiFetch('/org');
+        if (res.success) {
+            currentOrg = res.org;
+            currentRole = res.role;
+            document.getElementById('noOrg').style.display = 'none';
+            document.getElementById('accessDenied').style.display = 'none';
+            document.getElementById('mainContent').style.display = 'block';
+            renderOrgInfo(res);
+            loadDashboard();
+        } else {
+            showNoOrg();
+        }
+    } catch {
+        showNoOrg();
+    }
+}
+
+function showAccessDenied() {
+    document.getElementById('noOrg').style.display = 'none';
+    document.getElementById('mainContent').style.display = 'none';
+    document.getElementById('accessDenied').style.display = 'block';
+}
+
+function showNoOrg() {
+    document.getElementById('noOrg').style.display = 'block';
+    document.getElementById('mainContent').style.display = 'none';
+}
+
+// ==================== API HELPER ====================
+async function apiFetch(path, options = {}) {
+    const url = `${API}${path}`;
+    const res = await fetch(url, {
+        credentials: 'include',
+        headers: { 'Content-Type': 'application/json', ...options.headers },
+        ...options
+    });
+    return res.json();
+}
+
+// ==================== ORG ====================
+async function createOrg() {
+    const name = document.getElementById('newOrgName').value.trim();
+    if (!name) return showToast('Name required', 'error');
+    const tier = document.getElementById('newOrgTier').value;
+    const res = await apiFetch('/org', { method: 'POST', body: JSON.stringify({ name, tier }) });
+    if (res.success) {
+        showToast('Organization created!', 'success');
+        init();
+    } else {
+        showToast(res.error, 'error');
+    }
+}
+
+function renderOrgInfo(data) {
+    document.getElementById('orgName').textContent = data.org.name;
+    document.getElementById('orgTier').textContent = data.org.tier;
+    document.getElementById('orgMemberCount').textContent = data.memberCount;
+    const badge = document.getElementById('orgRoleBadge');
+    badge.textContent = data.role.toUpperCase();
+    badge.className = `badge badge-${data.role}`;
+}
+
+// ==================== DASHBOARD ====================
+async function loadDashboard() {
+    loadAuditDashboard();
+    loadStats();
+}
+
+async function loadStats() {
+    try {
+        const [pnl, treasury, keys] = await Promise.all([
+            apiFetch('/reports/pnl?period=daily'),
+            apiFetch('/treasury/overview'),
+            apiFetch('/api-keys')
+        ]);
+        document.getElementById('statAum').textContent = `$${(treasury.totalAum || 0).toLocaleString()}`;
+        const pnlVal = pnl.report?.totalPnl || 0;
+        const pnlEl = document.getElementById('statPnl');
+        pnlEl.textContent = `$${pnlVal >= 0 ? '+' : ''}${pnlVal.toLocaleString()}`;
+        pnlEl.className = `stat-value ${pnlVal >= 0 ? 'positive' : 'negative'}`;
+        document.getElementById('statPositions').textContent = pnl.report?.trades || 0;
+        document.getElementById('statKeys').textContent = keys.keys?.length || 0;
+    } catch { /* silent */ }
+}
+
+async function loadAuditDashboard() {
+    try {
+        const res = await apiFetch('/reports/audit?limit=10');
+        renderAuditTable('auditTable', res.trail || []);
+    } catch { /* silent */ }
+}
+
+// ==================== TEAM ====================
+async function loadTeam() {
+    try {
+        const [members, invites] = await Promise.all([
+            apiFetch('/org/members'),
+            apiFetch('/org/invites').catch(() => ({ invites: [] }))
+        ]);
+        renderMembers(members.members || []);
+        renderInvites(invites.invites || []);
+    } catch { /* silent */ }
+}
+
+function renderMembers(members) {
+    const tbody = document.getElementById('membersTable');
+    if (!members.length) { tbody.innerHTML = '<tr><td colspan="6" style="color:var(--muted);text-align:center">No members</td></tr>'; return; }
+    tbody.innerHTML = members.map(m => `
+        <tr>
+            <td>${truncAddr(m.wallet_address)}</td>
+            <td><span class="badge badge-${m.role}">${m.role}</span></td>
+            <td>$${(m.capital_allocation || 0).toLocaleString()}</td>
+            <td>${m.position_limit || 0}</td>
+            <td>$${(m.daily_loss_limit || 0).toLocaleString()}</td>
+            <td>${m.role !== 'owner' ? `<button class="btn btn-sm btn-danger" onclick="removeMember('${m.user_id}')">Remove</button>` : ''}</td>
+        </tr>
+    `).join('');
+}
+
+function renderInvites(invites) {
+    const panel = document.getElementById('pendingInvitesPanel');
+    const tbody = document.getElementById('invitesTable');
+    if (!invites.length) { panel.style.display = 'none'; return; }
+    panel.style.display = 'block';
+    tbody.innerHTML = invites.map(i => `
+        <tr>
+            <td>${truncAddr(i.wallet_address)}</td>
+            <td><span class="badge badge-${i.role}">${i.role}</span></td>
+            <td>${formatTime(i.expires_at)}</td>
+            <td><button class="btn btn-sm btn-danger" onclick="cancelInvite('${i.id}')">Cancel</button></td>
+        </tr>
+    `).join('');
+}
+
+async function inviteMember() {
+    const wallet = document.getElementById('inviteWallet').value.trim();
+    if (!wallet) return showToast('Wallet required', 'error');
+    const role = document.getElementById('inviteRole').value;
+    const res = await apiFetch('/org/invite', { method: 'POST', body: JSON.stringify({ wallet, role }) });
+    if (res.success) { showToast('Invite sent', 'success'); loadTeam(); document.getElementById('inviteWallet').value = ''; }
+    else showToast(res.error, 'error');
+}
+
+async function removeMember(userId) {
+    if (!confirm('Remove this member?')) return;
+    const res = await apiFetch(`/org/member/${userId}`, { method: 'DELETE' });
+    if (res.success) { showToast('Member removed', 'success'); loadTeam(); }
+    else showToast(res.error, 'error');
+}
+
+async function cancelInvite(id) {
+    const res = await apiFetch(`/org/invite/${id}`, { method: 'DELETE' });
+    if (res.success) { showToast('Invite cancelled', 'success'); loadTeam(); }
+}
+
+// ==================== API KEYS ====================
+async function loadApiKeys() {
+    try {
+        const [keys, webhooks] = await Promise.all([
+            apiFetch('/api-keys'),
+            apiFetch('/webhooks').catch(() => ({ webhooks: [] }))
+        ]);
+        renderKeys(keys.keys || []);
+        renderWebhooks(webhooks.webhooks || []);
+    } catch { /* silent */ }
+}
+
+function renderKeys(keys) {
+    const tbody = document.getElementById('keysTable');
+    if (!keys.length) { tbody.innerHTML = '<tr><td colspan="6" style="color:var(--muted);text-align:center">No API keys</td></tr>'; return; }
+    tbody.innerHTML = keys.map(k => `
+        <tr>
+            <td>${k.bot_name}</td>
+            <td style="color:var(--cyan)">${k.preview}</td>
+            <td>${(k.scopes || []).join(', ')}</td>
+            <td>${k.rate_limit_tier || 'basic'}</td>
+            <td>${k.requests || 0}</td>
+            <td><button class="btn btn-sm btn-danger" onclick="revokeKey('${k.bot_id}')">Revoke</button></td>
+        </tr>
+    `).join('');
+}
+
+async function createApiKey() {
+    const name = document.getElementById('keyName').value.trim();
+    if (!name) return showToast('Name required', 'error');
+    const scopes = [...document.querySelectorAll('#tab-apikeys .checkbox-group input:checked')].map(c => c.value);
+    const tier = document.getElementById('keyTier').value;
+    const ipWhitelist = document.getElementById('keyIp').value.trim() || null;
+    const res = await apiFetch('/api-keys', { method: 'POST', body: JSON.stringify({ name, scopes, tier, ipWhitelist }) });
+    if (res.success) {
+        showToast('Key created! Copy it now - it won\'t be shown again.', 'success');
+        alert('API Key: ' + res.apiKey.key);
+        loadApiKeys();
+        document.getElementById('keyName').value = '';
+    } else showToast(res.error, 'error');
+}
+
+async function revokeKey(botId) {
+    if (!confirm('Revoke this API key?')) return;
+    const res = await apiFetch(`/api-keys/${botId}`, { method: 'DELETE' });
+    if (res.success) { showToast('Key revoked', 'success'); loadApiKeys(); }
+}
+
+// ==================== WEBHOOKS ====================
+function renderWebhooks(webhooks) {
+    const tbody = document.getElementById('webhooksTable');
+    if (!webhooks.length) { tbody.innerHTML = '<tr><td colspan="5" style="color:var(--muted);text-align:center">No webhooks</td></tr>'; return; }
+    tbody.innerHTML = webhooks.map(w => `
+        <tr>
+            <td style="max-width:200px;overflow:hidden;text-overflow:ellipsis">${w.url}</td>
+            <td>${(w.events || []).join(', ') || 'all'}</td>
+            <td><span class="badge ${w.is_active ? 'badge-active' : 'badge-inactive'}">${w.is_active ? 'Active' : 'Inactive'}</span></td>
+            <td style="color:${w.fail_count > 0 ? 'var(--red)' : 'var(--green)'}">${w.fail_count}</td>
+            <td>
+                <button class="btn btn-sm" onclick="testWebhook('${w.id}')">Test</button>
+                <button class="btn btn-sm btn-danger" onclick="deleteWebhook('${w.id}')">Delete</button>
+            </td>
+        </tr>
+    `).join('');
+}
+
+async function createWebhook() {
+    const url = document.getElementById('webhookUrl').value.trim();
+    if (!url) return showToast('URL required', 'error');
+    const events = [...document.querySelectorAll('.wh-event:checked')].map(c => c.value);
+    const threshold = document.getElementById('webhookThreshold').value || null;
+    const res = await apiFetch('/webhooks', { method: 'POST', body: JSON.stringify({ url, events, pnlThreshold: threshold ? parseFloat(threshold) : null }) });
+    if (res.success) {
+        showToast('Webhook created. Secret: ' + res.webhook.secret, 'success');
+        loadApiKeys();
+        document.getElementById('webhookUrl').value = '';
+    } else showToast(res.error, 'error');
+}
+
+async function testWebhook(id) {
+    const res = await apiFetch(`/webhooks/${id}/test`, { method: 'POST' });
+    if (res.success && res.result.success) showToast('Webhook test OK', 'success');
+    else showToast('Webhook test failed', 'error');
+}
+
+async function deleteWebhook(id) {
+    if (!confirm('Delete this webhook?')) return;
+    const res = await apiFetch(`/webhooks/${id}`, { method: 'DELETE' });
+    if (res.success) { showToast('Webhook deleted', 'success'); loadApiKeys(); }
+}
+
+// ==================== REPORTS ====================
+let currentPeriod = 'daily';
+
+async function loadReports() {
+    try {
+        const res = await apiFetch(`/reports/pnl?period=${currentPeriod}`);
+        if (res.success && res.report) {
+            const r = res.report;
+            document.getElementById('reportPnl').textContent = `$${r.totalPnl >= 0 ? '+' : ''}${r.totalPnl}`;
+            document.getElementById('reportPnl').className = `stat-value ${r.totalPnl >= 0 ? 'positive' : 'negative'}`;
+            document.getElementById('reportWinRate').textContent = `${r.winRate}%`;
+            document.getElementById('reportTrades').textContent = r.trades;
+            document.getElementById('reportFees').textContent = `$${r.fees}`;
+        }
+    } catch { /* silent */ }
+    loadAuditTrail();
+}
+
+async function loadAuditTrail() {
+    const action = document.getElementById('auditFilter').value;
+    const res = await apiFetch(`/reports/audit?limit=50${action ? '&action=' + action : ''}`);
+    renderAuditTable('reportAuditTable', res.trail || []);
+}
+
+function renderAuditTable(tableId, trail) {
+    const tbody = document.getElementById(tableId);
+    if (!trail.length) { tbody.innerHTML = '<tr><td colspan="5" style="color:var(--muted);text-align:center">No entries</td></tr>'; return; }
+    tbody.innerHTML = trail.map(t => `
+        <tr>
+            <td>${formatTime(t.created_at)}</td>
+            <td>${truncAddr(t.user_id)}</td>
+            <td><span style="color:var(--cyan)">${t.action}</span></td>
+            <td>${t.resource_type}:${truncAddr(t.resource_id)}</td>
+            <td style="color:var(--muted);max-width:200px;overflow:hidden;text-overflow:ellipsis">${JSON.stringify(t.details)}</td>
+        </tr>
+    `).join('');
+}
+
+async function exportCsv() {
+    window.open(`${API}/reports/trades?format=csv`, '_blank');
+}
+
+async function loadTaxReport() {
+    const year = prompt('Year?', new Date().getFullYear());
+    if (!year) return;
+    const res = await apiFetch(`/reports/tax?year=${year}`);
+    if (res.success && res.report) {
+        const r = res.report;
+        alert(`Tax Report ${r.year}\nRealized Gains: $${r.realizedGains}\nRealized Losses: $${r.realizedLosses}\nNet: $${r.net}\nTrades: ${r.tradeCount}`);
+    }
+}
+
+// ==================== TREASURY ====================
+const ALLOC_COLORS = ['#c9a227', '#00d4ff', '#00ff88', '#ff8800', '#ff4444', '#8b5cf6', '#ec4899', '#6366f1'];
+
+async function loadTreasury() {
+    try {
+        const [overview, dca, budgets] = await Promise.all([
+            apiFetch('/treasury/overview'),
+            apiFetch('/treasury/dca'),
+            apiFetch('/treasury/budget')
+        ]);
+
+        // AUM & PnL
+        document.getElementById('treasuryAum').textContent = `$${(overview.totalAum || 0).toLocaleString()}`;
+        const pnl = overview.totalPnl || 0;
+        const pnlEl = document.getElementById('treasuryPnl');
+        pnlEl.textContent = `$${pnl >= 0 ? '+' : ''}${pnl.toLocaleString()}`;
+        pnlEl.className = `stat-value ${pnl >= 0 ? 'positive' : 'negative'}`;
+
+        renderDonut(overview.allocations || []);
+        renderAllocations(overview.allocations || []);
+        renderDca(dca.schedules || []);
+        renderBudgets(budgets.budgets || []);
+    } catch { /* silent */ }
+}
+
+function renderDonut(allocations) {
+    const donut = document.getElementById('allocationDonut');
+    const legend = document.getElementById('donutLegend');
+    const total = allocations.reduce((s, a) => s + a.current_value, 0);
+
+    if (!allocations.length || total === 0) {
+        donut.style.background = 'var(--border)';
+        donut.innerHTML = '<div class="donut-center"><div class="amount">$0</div><div class="label">Total AUM</div></div>';
+        legend.innerHTML = '';
+        return;
+    }
+
+    let gradient = [];
+    let cumulative = 0;
+    allocations.forEach((a, i) => {
+        const pct = (a.current_value / total) * 100;
+        const color = ALLOC_COLORS[i % ALLOC_COLORS.length];
+        gradient.push(`${color} ${cumulative}% ${cumulative + pct}%`);
+        cumulative += pct;
+    });
+
+    donut.style.background = `conic-gradient(${gradient.join(', ')})`;
+    donut.innerHTML = `<div class="donut-center"><div class="amount">$${total.toLocaleString()}</div><div class="label">Total AUM</div></div>`;
+
+    legend.innerHTML = allocations.map((a, i) => `
+        <div class="legend-item">
+            <div class="legend-dot" style="background:${ALLOC_COLORS[i % ALLOC_COLORS.length]}"></div>
+            ${a.strategy} ($${a.current_value.toLocaleString()})
+        </div>
+    `).join('');
+}
+
+function renderAllocations(allocs) {
+    const tbody = document.getElementById('allocationsTable');
+    if (!allocs.length) { tbody.innerHTML = '<tr><td colspan="6" style="color:var(--muted);text-align:center">No allocations</td></tr>'; return; }
+    tbody.innerHTML = allocs.map(a => {
+        const pnlPct = a.allocated_amount > 0 ? ((a.pnl / a.allocated_amount) * 100).toFixed(1) : 0;
+        const progressPct = a.allocated_amount > 0 ? Math.min(100, (a.current_value / a.allocated_amount) * 100) : 0;
+        return `
+        <tr>
+            <td>${a.strategy}</td>
+            <td>$${a.allocated_amount.toLocaleString()}</td>
+            <td>$${a.current_value.toLocaleString()}</td>
+            <td style="color:${a.pnl >= 0 ? 'var(--green)' : 'var(--red)'}">$${a.pnl >= 0 ? '+' : ''}${a.pnl.toLocaleString()} (${pnlPct}%)</td>
+            <td style="width:120px"><div class="progress"><div class="progress-bar" style="width:${progressPct}%;background:${a.pnl >= 0 ? 'var(--green)' : 'var(--red)'}"></div></div></td>
+            <td><button class="btn btn-sm btn-danger" onclick="deleteAllocation('${a.id}')">Delete</button></td>
+        </tr>`;
+    }).join('');
+}
+
+function renderDca(schedules) {
+    const tbody = document.getElementById('dcaTable');
+    if (!schedules.length) { tbody.innerHTML = '<tr><td colspan="7" style="color:var(--muted);text-align:center">No DCA schedules</td></tr>'; return; }
+    const intervals = { 3600: 'Hourly', 86400: 'Daily', 604800: 'Weekly', 2592000: 'Monthly' };
+    tbody.innerHTML = schedules.map(d => `
+        <tr>
+            <td style="color:var(--gold)">${d.token}</td>
+            <td>$${d.amount_per_interval}</td>
+            <td>${intervals[d.interval_seconds] || d.interval_seconds + 's'}</td>
+            <td>${formatTime(d.next_execution)}</td>
+            <td>$${d.total_invested.toLocaleString()}</td>
+            <td>
+                <label class="toggle"><input type="checkbox" ${d.is_active ? 'checked' : ''} onchange="toggleDca('${d.id}', this.checked)"><span class="toggle-slider"></span></label>
+            </td>
+            <td><button class="btn btn-sm btn-danger" onclick="deleteDca('${d.id}')">Delete</button></td>
+        </tr>
+    `).join('');
+}
+
+function renderBudgets(budgets) {
+    const tbody = document.getElementById('budgetTable');
+    if (!budgets.length) { tbody.innerHTML = '<tr><td colspan="7" style="color:var(--muted);text-align:center">No budgets set</td></tr>'; return; }
+    tbody.innerHTML = budgets.map(b => {
+        const dailyRem = b.daily_limit > 0 ? Math.max(0, b.daily_limit - b.spent_today) : '-';
+        return `
+        <tr>
+            <td>${truncAddr(b.wallet_address || b.user_id)}</td>
+            <td>$${b.daily_limit.toLocaleString()}</td>
+            <td>$${b.weekly_limit.toLocaleString()}</td>
+            <td>$${b.monthly_limit.toLocaleString()}</td>
+            <td>$${b.spent_today.toLocaleString()}</td>
+            <td style="color:var(--green)">${typeof dailyRem === 'number' ? '$' + dailyRem.toLocaleString() : dailyRem}</td>
+            <td><button class="btn btn-sm" onclick="editBudget('${b.user_id}')">Edit</button></td>
+        </tr>`;
+    }).join('');
+}
+
+async function allocateCapital() {
+    const strategy = document.getElementById('allocStrategy').value.trim();
+    const amount = parseFloat(document.getElementById('allocAmount').value);
+    if (!strategy || !amount) return showToast('Strategy and amount required', 'error');
+    const res = await apiFetch('/treasury/allocations', { method: 'POST', body: JSON.stringify({ strategy, amount }) });
+    if (res.success) { showToast('Capital allocated', 'success'); loadTreasury(); document.getElementById('allocStrategy').value = ''; document.getElementById('allocAmount').value = ''; }
+    else showToast(res.error, 'error');
+}
+
+async function deleteAllocation(id) {
+    if (!confirm('Delete this allocation?')) return;
+    await apiFetch(`/treasury/allocations/${id}`, { method: 'DELETE' });
+    loadTreasury();
+}
+
+async function createDca() {
+    const token = document.getElementById('dcaToken').value.trim().toUpperCase();
+    const amount = parseFloat(document.getElementById('dcaAmount').value);
+    const intervalSeconds = parseInt(document.getElementById('dcaInterval').value);
+    if (!token || !amount) return showToast('Token and amount required', 'error');
+    const res = await apiFetch('/treasury/dca', { method: 'POST', body: JSON.stringify({ token, amount, intervalSeconds }) });
+    if (res.success) { showToast('DCA schedule created', 'success'); loadTreasury(); }
+    else showToast(res.error, 'error');
+}
+
+async function toggleDca(id, active) {
+    await apiFetch(`/treasury/dca/${id}`, { method: 'PUT', body: JSON.stringify({ active }) });
+}
+
+async function deleteDca(id) {
+    if (!confirm('Delete this DCA schedule?')) return;
+    await apiFetch(`/treasury/dca/${id}`, { method: 'DELETE' });
+    loadTreasury();
+}
+
+async function editBudget(userId) {
+    const daily = prompt('Daily limit ($):', '0');
+    if (daily === null) return;
+    const weekly = prompt('Weekly limit ($):', '0');
+    const monthly = prompt('Monthly limit ($):', '0');
+    await apiFetch(`/treasury/budget/${userId}`, { method: 'PUT', body: JSON.stringify({ daily: parseFloat(daily), weekly: parseFloat(weekly), monthly: parseFloat(monthly) }) });
+    loadTreasury();
+}
+
+// ==================== TABS ====================
+document.querySelectorAll('.tab').forEach(tab => {
+    tab.addEventListener('click', () => {
+        document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+        document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
+        tab.classList.add('active');
+        document.getElementById(`tab-${tab.dataset.tab}`).classList.add('active');
+
+        // Load tab data
+        const tabName = tab.dataset.tab;
+        if (tabName === 'dashboard') loadDashboard();
+        else if (tabName === 'team') loadTeam();
+        else if (tabName === 'apikeys') loadApiKeys();
+        else if (tabName === 'reports') loadReports();
+        else if (tabName === 'treasury') loadTreasury();
+    });
+});
+
+// Period selector
+document.querySelectorAll('.period-btn').forEach(btn => {
+    btn.addEventListener('click', () => {
+        document.querySelectorAll('.period-btn').forEach(b => b.classList.remove('active'));
+        btn.classList.add('active');
+        currentPeriod = btn.dataset.period;
+        loadReports();
+    });
+});
+
+// ==================== UTILS ====================
+function truncAddr(addr) {
+    if (!addr) return '-';
+    if (addr.length > 12) return addr.substring(0, 6) + '...' + addr.substring(addr.length - 4);
+    return addr;
+}
+
+function formatTime(ts) {
+    if (!ts) return '-';
+    return new Date(ts * 1000).toLocaleString();
+}
+
+function showToast(msg, type = 'success') {
+    const toast = document.getElementById('toast');
+    toast.textContent = msg;
+    toast.className = `toast ${type} show`;
+    setTimeout(() => toast.classList.remove('show'), 3000);
+}
+
+// Start
+init();
+</script>
+
+</body>
+</html>

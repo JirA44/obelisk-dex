@@ -1,0 +1,15 @@
+[project]
+name = "obelisk-dex"
+description = "Obelisk DEX AMM for Bitcoin (Stacks Layer 2)"
+authors = ["Obelisk Team"]
+telemetry = false
+cache_dir = "./.cache"
+
+[contracts.obelisk-amm]
+path = "contracts/obelisk-amm.clar"
+clarity_version = 2
+epoch = 2.5
+
+[repl.analysis]
+passes = ["check_checker"]
+check_checker = { trusted_sender = false, trusted_caller = false, callee_filter = false }

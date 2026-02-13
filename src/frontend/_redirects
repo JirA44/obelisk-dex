@@ -1,0 +1,5 @@
+# Cloudflare Pages Redirects
+
+# Block debug page in production
+/debug.html / 302
+/debug / 302

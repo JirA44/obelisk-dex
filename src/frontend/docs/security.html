@@ -1,0 +1,443 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sécurité Obelisk - Cryptographie Post-Quantique</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: 'Segoe UI', system-ui, sans-serif;
+            background: linear-gradient(135deg, #0d0d1a 0%, #1a1a2e 100%);
+            color: #fff;
+            min-height: 100vh;
+            padding: 40px 20px;
+        }
+        .container { max-width: 900px; margin: 0 auto; }
+        .breadcrumb { color: #888; margin-bottom: 30px; font-size: 14px; }
+        .breadcrumb a { color: #00aaff; text-decoration: none; }
+        h1 { color: #00ff88; margin-bottom: 16px; font-size: 36px; }
+        h2 { color: #00aaff; margin: 50px 0 20px; padding-bottom: 10px; border-bottom: 2px solid rgba(0,170,255,0.3); }
+        h3 { color: #f59e0b; margin: 30px 0 15px; }
+        h4 { color: #a855f7; margin: 20px 0 10px; }
+        p { color: #aaa; line-height: 1.8; margin-bottom: 16px; }
+        ul, ol { color: #aaa; padding-left: 24px; margin-bottom: 16px; line-height: 2; }
+        code {
+            background: rgba(0,255,136,0.1);
+            padding: 2px 8px;
+            border-radius: 4px;
+            color: #00ff88;
+            font-family: 'Fira Code', monospace;
+        }
+        .security-card {
+            background: rgba(255,255,255,0.03);
+            border: 1px solid rgba(0,255,136,0.3);
+            border-radius: 16px;
+            padding: 24px;
+            margin: 20px 0;
+        }
+        .security-header {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+            margin-bottom: 16px;
+        }
+        .security-icon { font-size: 40px; }
+        .security-title { color: #00ff88; font-size: 22px; font-weight: bold; }
+        table { width: 100%; border-collapse: collapse; margin: 15px 0; }
+        th, td { padding: 12px; text-align: left; border-bottom: 1px solid rgba(255,255,255,0.1); }
+        th { color: #888; font-weight: 600; background: rgba(0,0,0,0.3); }
+        .badge {
+            display: inline-block;
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 11px;
+            font-weight: bold;
+        }
+        .badge-secure { background: rgba(0,255,136,0.2); color: #00ff88; }
+        .badge-nist { background: rgba(0,170,255,0.2); color: #00aaff; }
+        .tip {
+            background: rgba(0,255,136,0.1);
+            border-left: 4px solid #00ff88;
+            padding: 16px 20px;
+            margin: 20px 0;
+            border-radius: 0 8px 8px 0;
+        }
+        .warning {
+            background: rgba(245,158,11,0.1);
+            border-left: 4px solid #f59e0b;
+            padding: 16px 20px;
+            margin: 20px 0;
+            border-radius: 0 8px 8px 0;
+        }
+        .danger {
+            background: rgba(239,68,68,0.1);
+            border-left: 4px solid #ef4444;
+            padding: 16px 20px;
+            margin: 20px 0;
+            border-radius: 0 8px 8px 0;
+        }
+        .architecture-box {
+            background: rgba(0,0,0,0.4);
+            border: 1px solid rgba(0,255,136,0.2);
+            border-radius: 12px;
+            padding: 24px;
+            margin: 20px 0;
+            font-family: 'Fira Code', monospace;
+            font-size: 13px;
+            white-space: pre-wrap;
+            color: #00ff88;
+        }
+        .checklist {
+            background: rgba(0,255,136,0.05);
+            border-radius: 12px;
+            padding: 20px;
+            margin: 20px 0;
+        }
+        .checklist-item {
+            display: flex;
+            align-items: flex-start;
+            gap: 12px;
+            padding: 10px 0;
+            border-bottom: 1px solid rgba(255,255,255,0.05);
+        }
+        .checklist-item:last-child { border-bottom: none; }
+        .checklist-item .check { color: #00ff88; font-size: 18px; }
+        .nav {
+            display: flex;
+            gap: 12px;
+            margin: 30px 0;
+            flex-wrap: wrap;
+        }
+        .nav a {
+            padding: 12px 18px;
+            background: rgba(0,255,136,0.1);
+            border: 1px solid rgba(0,255,136,0.3);
+            border-radius: 8px;
+            color: #00ff88;
+            text-decoration: none;
+            font-size: 14px;
+        }
+        .nav a:hover { background: rgba(0,255,136,0.2); }
+        .nav-bottom {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 60px;
+            padding-top: 30px;
+            border-top: 1px solid rgba(255,255,255,0.1);
+        }
+        .nav-btn {
+            padding: 16px 24px;
+            background: rgba(0,255,136,0.1);
+            border: 1px solid rgba(0,255,136,0.3);
+            border-radius: 10px;
+            color: #00ff88;
+            text-decoration: none;
+        }
+        .comparison {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+            margin: 20px 0;
+        }
+        .comparison-card {
+            background: rgba(255,255,255,0.03);
+            border-radius: 12px;
+            padding: 20px;
+        }
+        .comparison-card.bad { border: 1px solid rgba(239,68,68,0.3); }
+        .comparison-card.good { border: 1px solid rgba(0,255,136,0.3); }
+        .comparison-card h5 { margin-bottom: 12px; }
+        .comparison-card.bad h5 { color: #ef4444; }
+        .comparison-card.good h5 { color: #00ff88; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="breadcrumb">
+            <a href="index.html">Documentation</a> / Sécurité
+        </div>
+
+        <h1>🔐 Sécurité & Architecture</h1>
+        <p style="font-size:18px;color:#888;margin-bottom:20px;">
+            Comment Obelisk protège vos fonds avec la cryptographie post-quantique et le self-custody
+        </p>
+
+        <div class="nav">
+            <a href="#postquantum">🛡️ Post-Quantique</a>
+            <a href="#selfcustody">👛 Self-Custody</a>
+            <a href="#architecture">🏗️ Architecture</a>
+            <a href="#bestpractices">✅ Bonnes Pratiques</a>
+            <a href="#threats">⚠️ Menaces</a>
+        </div>
+
+        <!-- POST-QUANTUM -->
+        <h2 id="postquantum">🛡️ Cryptographie Post-Quantique</h2>
+
+        <p>
+            Les ordinateurs quantiques menacent la cryptographie actuelle (RSA, ECDSA). Obelisk utilise des algorithmes
+            résistants aux attaques quantiques, approuvés par le NIST (National Institute of Standards and Technology).
+        </p>
+
+        <div class="security-card">
+            <div class="security-header">
+                <span class="security-icon">🔷</span>
+                <div>
+                    <div class="security-title">CRYSTALS-Kyber</div>
+                    <span class="badge badge-nist">NIST Approved</span>
+                </div>
+            </div>
+            <p><strong>Usage:</strong> Échange de clés (Key Encapsulation Mechanism)</p>
+            <p><strong>Sécurité:</strong> Basé sur le problème Module-LWE (Learning With Errors)</p>
+            <p><strong>Avantage:</strong> Clés plus petites que les alternatives, performances excellentes</p>
+            <table>
+                <tr><th>Niveau</th><th>Sécurité équivalente</th><th>Taille clé publique</th></tr>
+                <tr><td>Kyber-512</td><td>AES-128</td><td>800 bytes</td></tr>
+                <tr><td>Kyber-768</td><td>AES-192</td><td>1,184 bytes</td></tr>
+                <tr><td>Kyber-1024</td><td>AES-256</td><td>1,568 bytes</td></tr>
+            </table>
+        </div>
+
+        <div class="security-card">
+            <div class="security-header">
+                <span class="security-icon">✍️</span>
+                <div>
+                    <div class="security-title">CRYSTALS-Dilithium</div>
+                    <span class="badge badge-nist">NIST Approved</span>
+                </div>
+            </div>
+            <p><strong>Usage:</strong> Signatures digitales</p>
+            <p><strong>Sécurité:</strong> Basé sur le problème Module-LWE et Module-SIS</p>
+            <p><strong>Avantage:</strong> Signatures compactes, vérification rapide</p>
+            <table>
+                <tr><th>Niveau</th><th>Sécurité</th><th>Signature</th></tr>
+                <tr><td>Dilithium2</td><td>~128 bits</td><td>2,420 bytes</td></tr>
+                <tr><td>Dilithium3</td><td>~192 bits</td><td>3,293 bytes</td></tr>
+                <tr><td>Dilithium5</td><td>~256 bits</td><td>4,595 bytes</td></tr>
+            </table>
+        </div>
+
+        <div class="security-card">
+            <div class="security-header">
+                <span class="security-icon">🌲</span>
+                <div>
+                    <div class="security-title">SPHINCS+</div>
+                    <span class="badge badge-nist">NIST Approved</span>
+                </div>
+            </div>
+            <p><strong>Usage:</strong> Signatures stateless (backup)</p>
+            <p><strong>Sécurité:</strong> Basé sur les hash functions uniquement</p>
+            <p><strong>Avantage:</strong> Sécurité conservatrice, aucune hypothèse algébrique</p>
+        </div>
+
+        <div class="tip">
+            <strong>💡 Pourquoi 3 algorithmes?</strong> Defense in depth. Si l'un est compromis, les autres restent sécurisés. Kyber pour l'échange de clés, Dilithium pour les signatures quotidiennes, SPHINCS+ en backup.
+        </div>
+
+        <!-- SELF-CUSTODY -->
+        <h2 id="selfcustody">👛 Self-Custody</h2>
+
+        <p>
+            Avec Obelisk, vous êtes votre propre banque. Vos clés privées ne quittent <strong>jamais</strong> votre appareil.
+        </p>
+
+        <div class="comparison">
+            <div class="comparison-card bad">
+                <h5>❌ Exchange Centralisé (Binance, Coinbase)</h5>
+                <ul>
+                    <li>Ils détiennent vos clés</li>
+                    <li>Peuvent geler vos fonds</li>
+                    <li>Risque de hack (Mt. Gox, FTX)</li>
+                    <li>KYC obligatoire</li>
+                    <li>"Not your keys, not your coins"</li>
+                </ul>
+            </div>
+            <div class="comparison-card good">
+                <h5>✅ Obelisk (Self-Custody)</h5>
+                <ul>
+                    <li>Vous détenez vos clés</li>
+                    <li>Personne ne peut geler vos fonds</li>
+                    <li>Pas de point de défaillance unique</li>
+                    <li>Pas de KYC requis</li>
+                    <li>"Your keys, your crypto"</li>
+                </ul>
+            </div>
+        </div>
+
+        <h3>Comment ça fonctionne?</h3>
+        <div class="architecture-box">
+┌─────────────────────────────────────────────────────────┐
+│                    VOTRE NAVIGATEUR                      │
+│  ┌─────────────────────────────────────────────────┐    │
+│  │              Obelisk Frontend                    │    │
+│  │  ┌─────────────┐  ┌─────────────┐              │    │
+│  │  │   Wallet    │  │  Trading    │              │    │
+│  │  │  (Encrypted)│  │   Module    │              │    │
+│  │  └─────────────┘  └─────────────┘              │    │
+│  │         │                 │                     │    │
+│  │         ▼                 ▼                     │    │
+│  │  ┌─────────────────────────────────────┐       │    │
+│  │  │     Local Storage (Encrypted)        │       │    │
+│  │  │  - Private Keys (AES-256-GCM)       │       │    │
+│  │  │  - Seed Phrase (Never transmitted)   │       │    │
+│  │  └─────────────────────────────────────┘       │    │
+│  └─────────────────────────────────────────────────┘    │
+│                          │                               │
+│                          ▼                               │
+│  ┌─────────────────────────────────────────────────┐    │
+│  │     Signed Transactions Only                     │    │
+│  │     (Private key never leaves browser)          │    │
+│  └─────────────────────────────────────────────────┘    │
+└─────────────────────────────────────────────────────────┘
+                           │
+                           ▼
+              ┌─────────────────────────┐
+              │      Blockchain         │
+              │  (Arbitrum, Ethereum)   │
+              └─────────────────────────┘
+        </div>
+
+        <h3>Encryption locale</h3>
+        <table>
+            <tr><th>Composant</th><th>Algorithme</th><th>Notes</th></tr>
+            <tr><td>Private Key Storage</td><td>AES-256-GCM</td><td>Chiffré avec votre mot de passe</td></tr>
+            <tr><td>Key Derivation</td><td>PBKDF2 (100k iterations)</td><td>Résistant au brute-force</td></tr>
+            <tr><td>Seed Generation</td><td>BIP-39</td><td>Mnemonic 12-24 mots</td></tr>
+            <tr><td>Transaction Signing</td><td>Dilithium</td><td>Post-quantique</td></tr>
+        </table>
+
+        <!-- ARCHITECTURE -->
+        <h2 id="architecture">🏗️ Architecture Technique</h2>
+
+        <h3>Stack technologique</h3>
+        <table>
+            <tr><th>Couche</th><th>Technologie</th><th>Rôle</th></tr>
+            <tr><td>Frontend</td><td>Vanilla JS + HTML5</td><td>Interface utilisateur</td></tr>
+            <tr><td>Hosting</td><td>Cloudflare Pages</td><td>CDN global, DDoS protection</td></tr>
+            <tr><td>Blockchain</td><td>Arbitrum One</td><td>Layer 2 rapide et pas cher</td></tr>
+            <tr><td>Crypto</td><td>Web Crypto API + PQ libs</td><td>Cryptographie</td></tr>
+            <tr><td>Storage</td><td>LocalStorage + IndexedDB</td><td>Données locales chiffrées</td></tr>
+        </table>
+
+        <h3>Sécurité du code</h3>
+        <ul>
+            <li><strong>Content Security Policy (CSP)</strong>: Bloque les scripts non autorisés</li>
+            <li><strong>DOMPurify</strong>: Sanitize tous les inputs (anti-XSS)</li>
+            <li><strong>No external calls</strong>: Pas de tracking, pas de analytics tiers</li>
+            <li><strong>Open Source</strong>: Code auditable par tous</li>
+        </ul>
+
+        <!-- BEST PRACTICES -->
+        <h2 id="bestpractices">✅ Bonnes Pratiques</h2>
+
+        <div class="checklist">
+            <div class="checklist-item">
+                <span class="check">✅</span>
+                <div>
+                    <strong>Sauvegardez votre seed phrase sur PAPIER</strong>
+                    <p style="color:#888;font-size:13px;">Jamais sur un appareil électronique. Gardez 2 copies dans 2 lieux différents.</p>
+                </div>
+            </div>
+            <div class="checklist-item">
+                <span class="check">✅</span>
+                <div>
+                    <strong>Utilisez un mot de passe UNIQUE et FORT</strong>
+                    <p style="color:#888;font-size:13px;">Minimum 16 caractères, mélange lettres/chiffres/symboles. Utilisez un password manager.</p>
+                </div>
+            </div>
+            <div class="checklist-item">
+                <span class="check">✅</span>
+                <div>
+                    <strong>Vérifiez TOUJOURS l'URL</strong>
+                    <p style="color:#888;font-size:13px;">obelisk-dex.pages.dev est le seul domaine officiel. Méfiez-vous des imitations.</p>
+                </div>
+            </div>
+            <div class="checklist-item">
+                <span class="check">✅</span>
+                <div>
+                    <strong>Ne partagez JAMAIS votre seed ou clé privée</strong>
+                    <p style="color:#888;font-size:13px;">Obelisk ne vous demandera JAMAIS votre seed. Personne de légitime ne le fera.</p>
+                </div>
+            </div>
+            <div class="checklist-item">
+                <span class="check">✅</span>
+                <div>
+                    <strong>Testez avec de petits montants d'abord</strong>
+                    <p style="color:#888;font-size:13px;">Familiarisez-vous avec l'interface avant d'y mettre des sommes importantes.</p>
+                </div>
+            </div>
+            <div class="checklist-item">
+                <span class="check">✅</span>
+                <div>
+                    <strong>Activez la Liquidation Protection sur vos positions leverage</strong>
+                    <p style="color:#888;font-size:13px;">Voir <a href="innovations.html#liq-protection" style="color:#00aaff;">Innovation Lab > Liquidation Protection</a></p>
+                </div>
+            </div>
+        </div>
+
+        <!-- THREATS -->
+        <h2 id="threats">⚠️ Menaces à connaître</h2>
+
+        <div class="danger">
+            <h4>🎣 Phishing</h4>
+            <p>Des sites imitant Obelisk pour voler vos credentials. Vérifiez TOUJOURS l'URL.</p>
+            <p><strong>Protection:</strong> Bookmarkez le site officiel, ne cliquez pas sur les liens Discord/Telegram.</p>
+        </div>
+
+        <div class="danger">
+            <h4>🦠 Malware / Keylogger</h4>
+            <p>Des logiciels qui enregistrent vos frappes ou modifient les adresses de destination.</p>
+            <p><strong>Protection:</strong> Antivirus à jour, ne téléchargez pas de fichiers suspects, vérifiez les adresses avant d'envoyer.</p>
+        </div>
+
+        <div class="danger">
+            <h4>📱 SIM Swap</h4>
+            <p>Un attaquant prend le contrôle de votre numéro de téléphone.</p>
+            <p><strong>Protection:</strong> N'utilisez PAS le SMS comme 2FA. Utilisez des apps authentificator ou des clés hardware.</p>
+        </div>
+
+        <div class="danger">
+            <h4>🔗 Approval Scams</h4>
+            <p>Des smart contracts malveillants demandent des approvals illimités pour vider votre wallet.</p>
+            <p><strong>Protection:</strong> Lisez toujours ce que vous signez. Révoquez les approvals inutiles avec revoke.cash.</p>
+        </div>
+
+        <div class="danger">
+            <h4>💻 Ordinateurs quantiques (futur)</h4>
+            <p>Dans 10-20 ans, les ordinateurs quantiques pourraient casser la cryptographie actuelle.</p>
+            <p><strong>Protection:</strong> Obelisk utilise déjà la cryptographie post-quantique. Vous êtes protégé!</p>
+        </div>
+
+        <!-- EMERGENCY -->
+        <h2 id="emergency">🚨 En cas de problème</h2>
+
+        <div class="warning">
+            <h4>Vous pensez avoir été compromis?</h4>
+            <ol style="margin-top:10px;">
+                <li>Ne paniquez pas</li>
+                <li>Transférez immédiatement vos fonds vers un nouveau wallet sécurisé</li>
+                <li>Ne réutilisez jamais la seed compromise</li>
+                <li>Scannez votre appareil avec un antivirus</li>
+                <li>Changez tous vos mots de passe</li>
+            </ol>
+        </div>
+
+        <!-- AUDIT -->
+        <h2 id="audit">📋 Audits & Transparence</h2>
+
+        <table>
+            <tr><th>Aspect</th><th>Status</th><th>Notes</th></tr>
+            <tr><td>Code source</td><td style="color:#00ff88;">Open Source</td><td>Auditable par tous</td></tr>
+            <tr><td>Smart contracts</td><td style="color:#f59e0b;">En cours</td><td>Audit prévu Q2 2026</td></tr>
+            <tr><td>Cryptographie PQ</td><td style="color:#00ff88;">NIST Approved</td><td>Standards validés</td></tr>
+            <tr><td>Bug bounty</td><td style="color:#00ff88;">Actif</td><td>Récompenses pour bugs trouvés</td></tr>
+        </table>
+
+        <!-- NAVIGATION -->
+        <nav class="nav-bottom">
+            <a href="learn-api.html" class="nav-btn">← API Docs</a>
+            <a href="index.html" class="nav-btn">Documentation →</a>
+        </nav>
+    </div>
+</body>
+</html>

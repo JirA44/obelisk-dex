@@ -1,188 +1,172 @@
-# OBELISK DEX
+# Obelisk - Crypto Banking Platform
 
-Plateforme de trading décentralisée non-custodiale avec prix en temps réel et investissements passifs.
-
-## Architecture
-
-```
-obelisk/
-├── obelisk-backend/     # API Node.js + WebSocket
-├── obelisk-dex/         # Frontend statique
-├── docker-compose.yml   # Stack Docker complète
-├── nginx.conf           # Config reverse proxy
-├── Caddyfile            # Alternative simple à nginx
-└── deploy.sh            # Script de déploiement
-```
-
-## Quick Start (Développement)
-
-```bash
-# Backend
-cd obelisk-backend
-npm install
-npm start
-# → http://localhost:3001
-
-# Frontend
-cd obelisk-dex
-# Ouvrir index.html ou utiliser un serveur local
-npx serve .
-# → http://localhost:3000
-```
-
-## Déploiement Production
-
-### Option 1: Docker (Recommandé)
-
-```bash
-# Setup initial
-./deploy.sh setup
-
-# Obtenir certificat SSL
-export OBELISK_DOMAIN=votre-domaine.com
-export OBELISK_EMAIL=admin@votre-domaine.com
-./deploy.sh ssl
-
-# Démarrer
-./deploy.sh start
-
-# Status
-./deploy.sh status
-```
-
-### Option 2: Caddy (Simple)
-
-```bash
-# Installer Caddy
-# https://caddyserver.com/docs/install
-
-# Éditer le domaine dans Caddyfile
-# Puis:
-cd obelisk-backend && npm start &
-caddy run --config ../Caddyfile
-```
-
-### Option 3: Manual
-
-```bash
-# Backend
-cd obelisk-backend
-npm ci --production
-NODE_ENV=production node server-ultra.js
-
-# Frontend: servir obelisk-dex/ avec nginx/apache
-# Configurer reverse proxy pour /api/* → localhost:3001
-```
-
-## Fonctionnalités
-
-### Trading
-- 24 paires de trading (BTC, ETH, SOL, ARB, etc.)
-- Order book en temps réel
-- Prix multi-sources (Binance, Coinbase, Kraken)
-- Frais: 0.1% par transaction
-
-### Outils
-- Grid Trading Bot
-- DCA Automation
-- Copy Trading
-- Trailing Stop
-- Arbitrage Scanner
-
-### Investissements Passifs (Sans Perte)
-- Liquid Staking (stETH, stSOL)
-- Protected Vaults (90-100% capital protection)
-- Fixed Income Bonds (4-12% APY)
-- Auto-DCA
-- 14 Combo Strategies
-
-## API
-
-```bash
-# Health check
-curl http://localhost:3001/health
-
-# Markets
-curl http://localhost:3001/api/markets
-
-# Ticker
-curl http://localhost:3001/api/ticker/BTC/USDC
-
-# WebSocket
-wscat -c ws://localhost:3001
-> {"type":"subscribe","payload":{"channels":["ticker:BTC/USDC"]}}
-```
-
-Voir `obelisk-backend/API_DOCS.md` pour la documentation complète.
-
-## Sécurité
-
-- **Non-Custodial**: Les clés privées ne sont jamais stockées
-- **SIWE Auth**: Sign-In With Ethereum
-- **Rate Limiting**: 60 req/min par IP
-- **Input Validation**: Protection XSS/injection
-
-## Monitoring
-
-```bash
-# Logs
-./deploy.sh logs backend
-
-# Status
-./deploy.sh status
-
-# Health
-curl https://votre-domaine.com/health
-```
-
-## Structure du Backend
-
-| Fichier | Description |
-|---------|-------------|
-| `server-ultra.js` | Serveur principal, prix, WebSocket |
-| `security.js` | Rate limiting, validation |
-| `auth.js` | Authentification SIWE |
-| `database.js` | SQLite (users, trades, balances) |
-| `passive-products.js` | Staking, vaults, bonds |
-| `sentry.js` | Error tracking (optionnel) |
-
-## Configuration
-
-Copier `.env.example` → `.env`:
-
-```env
-PORT=3001
-NODE_ENV=production
-ADMIN_API_KEY=your-secure-key
-ALLOWED_ORIGINS=https://your-domain.com
-SENTRY_DSN=https://xxx@sentry.io/xxx
-```
-
-## Tests
-
-```bash
-cd obelisk-backend
-npm test           # Tous les tests
-npm run test:e2e   # End-to-end
-npm run test:auth  # Authentification
-```
-
-## Contribution
-
-1. Fork le repo
-2. Créer une branche (`git checkout -b feature/amazing`)
-3. Commit (`git commit -m 'Add amazing feature'`)
-4. Push (`git push origin feature/amazing`)
-5. Ouvrir une Pull Request
-
-## License
-
-MIT
+**Version**: 2.1.0
+**Repository**: https://github.com/JirA44/obelisk-dex
+**UI**: https://obelisk-dex.pages.dev
+**API**: http://localhost:3001
 
 ---
 
-**Documentation**:
-- [Guide Utilisateur](USER_GUIDE.md)
-- [Checklist Production](PRODUCTION_CHECKLIST.md)
-- [Architecture](obelisk-backend/ARCHITECTURE.md)
-- [API Docs](obelisk-backend/API_DOCS.md)
+## 📁 Project Structure
+
+```
+obelisk/
+├── docs/                      # 📚 Documentation
+│   ├── ARCHITECTURE.md
+│   ├── INTEGRATION_GUIDE.md
+│   └── ... (all documentation)
+│
+├── src/
+│   ├── backend/               # 🔧 Backend API (Node.js)
+│   │   ├── server-ultra.js    # Main server
+│   │   ├── obelisk-perps.js   # Perpetuals engine
+│   │   ├── obelisk-amm.js     # AMM engine
+│   │   └── ... (services, executors)
+│   │
+│   ├── frontend/              # 🎨 Web UI
+│   │   ├── index.html
+│   │   ├── trade.html
+│   │   └── ... (pages)
+│   │
+│   ├── executors/             # 🚀 Trading executors
+│   │   ├── full_executor.js   # Multi-venue executor
+│   │   ├── dryrun_executor.js # Dry-run mode
+│   │   └── secure_connector.js
+│   │
+│   └── integration/           # 🔗 MixBot integration
+│       ├── integration.js
+│       └── prices.js
+│
+├── scripts/                   # 🛠️ Utility scripts
+│   ├── verify-display.js
+│   └── test-governance.js
+│
+└── tests/                     # ✅ Tests
+    └── archived/              # Old test results
+```
+
+---
+
+## 🚀 Quick Start
+
+### Development
+
+```bash
+# Start server (via PM2)
+pm2 start src/backend/server-ultra.js --name obelisk
+
+# View logs
+pm2 logs obelisk
+
+# Restart
+pm2 restart obelisk
+```
+
+### Production
+
+```bash
+# Deploy frontend to Cloudflare Pages
+cd src/frontend
+npx wrangler pages deploy . --project-name=obelisk-dex --commit-dirty=true
+```
+
+---
+
+## 🏗️ Architecture
+
+### Backend API (Port 3001)
+
+| Module | Description |
+|--------|-------------|
+| **server-ultra.js** | Main API server |
+| **obelisk-perps.js** | Perpetuals engine ($100K pool, 36 coins, 50x leverage) |
+| **obelisk-amm.js** | AMM (10 pools, $545K TVL virtual) |
+| **trading-router.js** | Smart router (GMX/HYP/Gains/MUX) |
+| **venue-capital.js** | MixBot venue ($5 capital tracking) |
+| **passive-products.js** | Staking, vaults, bonds, DCA, index, yield, insurance |
+
+### MixBot Integration
+
+Obelisk serves as a **trading venue** for MixBot:
+- **Capital**: $5 dedicated
+- **Execution**: Via internal perpetuals engine
+- **API**: `/api/trade/*` endpoints
+
+**Connector**: `mixbot/obelisk_connector.js` → `localhost:3001/api/trade/*`
+
+**Endpoints**:
+- `GET /api/trade/equity?venue=mixbot` - Equity & positions
+- `POST /api/trade/order` (source=mixbot) - Place order
+- `POST /api/trade/venue/close` - Close position
+- `GET /api/trade/venue/stats` - Stats
+
+---
+
+## 📚 Documentation
+
+See `docs/` directory:
+- [Architecture](docs/ARCHITECTURE.md)
+- [Integration Guide](docs/INTEGRATION_GUIDE.md)
+- [API Documentation](docs/API_DOCS.md)
+- [Governance](docs/GOVERNANCE_README.md)
+- [OBL Token](docs/OBL_TOKEN_README.md)
+
+---
+
+## 🔧 Configuration
+
+**Environment**: `src/backend/.env`
+
+```env
+JWT_SECRET=your_secret_here
+DATABASE_URL=./obelisk.db
+PORT=3001
+```
+
+---
+
+## 📊 Features
+
+### Perpetuals Engine
+- **Pool**: $100K USDC virtual
+- **Coins**: 36 supported
+- **Leverage**: Up to 50x
+- **Fees**: 0.1% (competitive)
+
+### AMM
+- **Pools**: 10 active pools
+- **TVL**: $545K virtual
+- **Routing**: Smart path finding
+
+### Passive Products
+- Staking (OBL token)
+- Vaults (yield farming)
+- Bonds (fixed returns)
+- DCA (dollar-cost averaging)
+- Index funds
+- Yield aggregator
+- Insurance pools
+
+---
+
+## 🎯 Wallet
+
+**Address**: `0x377706801308ac4c3Fe86EEBB295FeC6E1279140`
+**Chain**: Arbitrum One (42161)
+**Shared with**: MixBot
+
+---
+
+## 📈 Status
+
+**PM2 Service**: `obelisk`
+**Uptime**: Check with `pm2 status obelisk`
+**API Health**: `curl http://localhost:3001/api/health`
+
+---
+
+## 🔄 Migration Note
+
+**Date**: 2026-02-13
+**Reorganization**: Flattened git structure, moved to monorepo
+**Backup**: Branch `backup-before-reorganization-20260213`
