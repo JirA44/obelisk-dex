@@ -56,6 +56,8 @@ const helpRouter = require('./routes/help');
 const featuresRouter = require('./routes/features');
 const kycRouter = require('./routes/kyc');
 const defiRouter = require('./routes/defi');
+const liquidityRouter = require('./routes/liquidity');
+const marketIntelRouter = require('./routes/market_intel');
 const { getFeatureStatus, isDemoMode, canDeposit } = require('./config/features');
 
 const cookieParser = require('cookie-parser');
@@ -95,6 +97,36 @@ const obeliskAMM = new ObeliskAMM();
 // V2.6: Import Obelisk Perps (internal perpetuals engine)
 const { ObeliskPerps } = require('./obelisk-perps');
 const obeliskPerps = new ObeliskPerps();
+
+// V3.0 TURBO: Import Blockchain Settlement Engines (Multi-chain settlement)
+const BlockchainSettlementEngine = require('./blockchain-settlement');
+const SmartAccountExecutor = require('./executors/smart-account-executor');
+const ArbitrumExecutor = require('./executors/arbitrum-executor');
+const BaseExecutor = require('./executors/base-executor');
+const OptimismExecutor = require('./executors/optimism-executor');
+const SonicExecutor = require('./executors/sonic-executor');
+
+// Initialize blockchain settlement engine
+const blockchainSettlement = new BlockchainSettlementEngine({
+    solanaMode: 'MAINNET',
+    cosmosNetwork: 'COSMOS_TESTNET',
+    arbitrumNetwork: 'MAINNET',
+    strategy: 'CHEAPEST_FIRST'
+});
+
+// Initialize Smart Account executor (Arbitrum by default)
+const smartAccountExecutor = new SmartAccountExecutor({
+    network: 'ARBITRUM',
+    mode: 'MAINNET'
+});
+
+// Initialize additional executors
+const arbitrumExecutor = new ArbitrumExecutor({ network: 'MAINNET' });
+const baseExecutor = new BaseExecutor({ network: 'MAINNET' });
+const optimismExecutor = new OptimismExecutor({ network: 'MAINNET' });
+const sonicExecutor = new SonicExecutor({ network: 'MAINNET' });
+
+console.log('✅ V3 TURBO Blockchain Settlement Engines initialized');
 
 // ===========================================
 // MULTI-SOURCE PRICE AGGREGATION
@@ -241,6 +273,9 @@ const app = express();
 const server = http.createServer(app);
 const wss = new WebSocketServer({ server });
 
+// Inject Obelisk Perps for venue trading
+app.set('obeliskPerps', obeliskPerps);
+
 // SECURITY: Disable Express server header
 app.disable('x-powered-by');
 
@@ -317,6 +352,24 @@ app.use('/api/trade', tradingRoutes);
 
 // V3.0: Trading Academy API (simulated traders)
 app.use('/api/academy', academyRoutes);
+
+// V2.1: Global Liquidity Indicators
+app.use('/api/liquidity', liquidityRouter);
+
+// V2.1: Market Intelligence (all indicators aggregated)
+app.use('/api/market-intel', marketIntelRouter);
+
+// V3.0 TURBO: Blockchain Settlement API (Multi-chain with Smart Accounts)
+const { router: blockchainRouter, initBlockchainRoutes } = require('./routes/blockchain');
+initBlockchainRoutes({
+    settlement: blockchainSettlement,
+    smartAccount: smartAccountExecutor,
+    arbitrum: arbitrumExecutor,
+    base: baseExecutor,
+    optimism: optimismExecutor,
+    sonic: sonicExecutor
+});
+app.use('/api/blockchain', blockchainRouter);
 
 // Public announcements (from admin)
 app.get('/api/announcements', (req, res) => {

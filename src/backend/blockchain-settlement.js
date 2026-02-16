@@ -4,15 +4,46 @@
  *
  * Supported chains (sorted by speed & cost):
  * 1. Solana - 65,000 TPS, $0.00025/tx
- * 2. Avalanche - 4,500 TPS, $0.001/tx
- * 3. Base - 2s blocks, $0.01/tx
- * 4. Arbitrum - 250ms blocks, $0.02/tx
- * 5. Optimism - 2s blocks, $0.02/tx
+ * 2. Cosmos Hub - 10,000 TPS, $0.001/tx (dYdX v4 runs here)
+ * 3. Avalanche - 4,500 TPS, $0.001/tx
+ * 4. Base - 2s blocks, $0.01/tx
+ * 5. Arbitrum - 250ms blocks, $0.02/tx
+ * 6. Optimism - 2s blocks, $0.02/tx
  */
+
+const SolanaExecutor = require('./executors/solana-executor');
+const CosmosExecutor = require('./executors/cosmos-executor');
+const ArbitrumExecutor = require('./executors/arbitrum-executor');
 
 class BlockchainSettlementEngine {
     constructor(config = {}) {
         this.config = config;
+
+        // Initialize Solana executor (TESTNET for now)
+        try {
+            this.solanaExecutor = new SolanaExecutor({
+                mode: config.solanaMode || 'TESTNET'
+            });
+        } catch (error) {
+            console.warn('⚠️  Solana executor not available:', error.message);
+            this.solanaExecutor = null;
+        }
+
+        // Initialize Cosmos executor (TESTNET for now)
+        this.cosmosExecutor = null;
+        this.initCosmosExecutor(config).catch(err => {
+            console.warn('⚠️  Cosmos executor not available:', err.message);
+        });
+
+        // Initialize Arbitrum executor (MAINNET by default)
+        try {
+            this.arbitrumExecutor = new ArbitrumExecutor({
+                network: config.arbitrumNetwork || 'MAINNET'
+            });
+        } catch (error) {
+            console.warn('⚠️  Arbitrum executor not available:', error.message);
+            this.arbitrumExecutor = null;
+        }
 
         // Chain specifications
         this.chains = {
@@ -27,6 +58,17 @@ class BlockchainSettlementEngine {
                 enabled: true,
                 priority: 1             // Highest priority (fastest + cheapest)
             },
+            COSMOS: {
+                name: 'Cosmos Hub',
+                chainId: 'cosmoshub-4',
+                maxTPS: 10000,
+                avgBlockTime: 6,        // ~6s
+                avgGasCost: 0.001,      // $0.001
+                finality: 'instant',    // BFT consensus
+                rpc: 'https://cosmos-rpc.polkachu.com',
+                enabled: true,
+                priority: 2             // dYdX v4 runs on Cosmos
+            },
             AVALANCHE: {
                 name: 'Avalanche C-Chain',
                 chainId: 43114,
@@ -36,7 +78,7 @@ class BlockchainSettlementEngine {
                 finality: 'instant',
                 rpc: 'https://api.avax.network/ext/bc/C/rpc',
                 enabled: true,
-                priority: 2
+                priority: 3
             },
             BASE: {
                 name: 'Base (Coinbase L2)',
@@ -47,7 +89,7 @@ class BlockchainSettlementEngine {
                 finality: 'optimistic', // 7 days for L1 finality
                 rpc: 'https://mainnet.base.org',
                 enabled: true,
-                priority: 3
+                priority: 4
             },
             ARBITRUM: {
                 name: 'Arbitrum One',
@@ -58,7 +100,7 @@ class BlockchainSettlementEngine {
                 finality: 'optimistic',
                 rpc: 'https://arb1.arbitrum.io/rpc',
                 enabled: true,
-                priority: 4
+                priority: 5
             },
             OPTIMISM: {
                 name: 'Optimism',
@@ -69,7 +111,7 @@ class BlockchainSettlementEngine {
                 finality: 'optimistic',
                 rpc: 'https://mainnet.optimism.io',
                 enabled: true,
-                priority: 5
+                priority: 6
             }
         };
 
@@ -106,6 +148,23 @@ class BlockchainSettlementEngine {
         console.log('⛓️  Blockchain Settlement Engine initialized');
         console.log(`   Strategy: ${this.strategy}`);
         console.log(`   Chains enabled: ${Object.keys(this.chains).filter(k => this.chains[k].enabled).length}`);
+    }
+
+    /**
+     * Initialize Cosmos executor (async)
+     */
+    async initCosmosExecutor(config) {
+        try {
+            const network = config.cosmosNetwork || 'COSMOS_TESTNET';
+            this.cosmosExecutor = new CosmosExecutor({ network });
+            await this.cosmosExecutor.loadWalletFromEnv();
+            if (this.cosmosExecutor.wallet) {
+                await this.cosmosExecutor.connect();
+            }
+        } catch (error) {
+            this.cosmosExecutor = null;
+            throw error;
+        }
     }
 
     /**
@@ -202,9 +261,76 @@ class BlockchainSettlementEngine {
     }
 
     /**
-     * Execute settlement on specific chain (simulated for now)
+     * Execute settlement on specific chain
      */
     async executeOnChain(chain, trade) {
+        // REAL EXECUTOR FOR SOLANA
+        if (chain.key === 'SOLANA' && this.solanaExecutor) {
+            try {
+                const result = await this.solanaExecutor.executeSettlement(trade);
+
+                if (result.success) {
+                    return {
+                        txHash: result.txHash,
+                        gasCost: result.gasCost,
+                        blockTime: chain.avgBlockTime,
+                        confirmed: result.confirmed,
+                        explorer: result.explorer
+                    };
+                } else {
+                    throw new Error(result.error);
+                }
+            } catch (error) {
+                console.error('Solana settlement failed, falling back to simulation:', error.message);
+                // Fall through to simulation
+            }
+        }
+
+        // REAL EXECUTOR FOR COSMOS
+        if (chain.key === 'COSMOS' && this.cosmosExecutor && this.cosmosExecutor.wallet) {
+            try {
+                const result = await this.cosmosExecutor.executeSettlement(trade);
+
+                if (result.success) {
+                    return {
+                        txHash: result.txHash,
+                        gasCost: result.gasCost,
+                        blockTime: chain.avgBlockTime,
+                        confirmed: result.confirmed,
+                        explorer: result.explorer
+                    };
+                } else {
+                    throw new Error(result.error);
+                }
+            } catch (error) {
+                console.error('Cosmos settlement failed, falling back to simulation:', error.message);
+                // Fall through to simulation
+            }
+        }
+
+        // REAL EXECUTOR FOR ARBITRUM
+        if (chain.key === 'ARBITRUM' && this.arbitrumExecutor && this.arbitrumExecutor.wallet) {
+            try {
+                const result = await this.arbitrumExecutor.executeSettlement(trade);
+
+                if (result.success) {
+                    return {
+                        txHash: result.txHash,
+                        gasCost: result.gasCost,
+                        blockTime: chain.avgBlockTime,
+                        confirmed: result.confirmed,
+                        explorer: result.explorer
+                    };
+                } else {
+                    throw new Error(result.error);
+                }
+            } catch (error) {
+                console.error('Arbitrum settlement failed, falling back to simulation:', error.message);
+                // Fall through to simulation
+            }
+        }
+
+        // SIMULATION FOR OTHER CHAINS (Avalanche, Base, Optimism, etc.)
         // Simulate network latency
         const latency = chain.avgBlockTime * 1000;
         await new Promise(resolve => setTimeout(resolve, latency));
@@ -278,7 +404,7 @@ class BlockchainSettlementEngine {
      * Get settlement stats
      */
     getStats() {
-        return {
+        const stats = {
             summary: {
                 totalSettlements: this.stats.totalSettlements,
                 totalGasCost: this.stats.totalGasCost.toFixed(4),
@@ -301,6 +427,53 @@ class BlockchainSettlementEngine {
                         : '0x'
                 }))
         };
+
+        // Add Solana executor stats if available
+        if (this.solanaExecutor) {
+            stats.solanaExecutor = this.solanaExecutor.getStats();
+        }
+
+        // Add Cosmos executor stats if available
+        if (this.cosmosExecutor) {
+            stats.cosmosExecutor = this.cosmosExecutor.getStats();
+        }
+
+        // Add Arbitrum executor stats if available
+        if (this.arbitrumExecutor) {
+            stats.arbitrumExecutor = this.arbitrumExecutor.getStats();
+        }
+
+        return stats;
+    }
+
+    /**
+     * Get Solana wallet balance (testnet/mainnet)
+     */
+    async getSolanaBalance() {
+        if (!this.solanaExecutor) {
+            return null;
+        }
+        return await this.solanaExecutor.getBalance();
+    }
+
+    /**
+     * Get Cosmos wallet balance (testnet/mainnet)
+     */
+    async getCosmosBalance() {
+        if (!this.cosmosExecutor) {
+            return null;
+        }
+        return await this.cosmosExecutor.getBalance();
+    }
+
+    /**
+     * Get Arbitrum wallet balance (testnet/mainnet)
+     */
+    async getArbitrumBalance() {
+        if (!this.arbitrumExecutor) {
+            return null;
+        }
+        return await this.arbitrumExecutor.getBalance();
     }
 
     /**
