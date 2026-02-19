@@ -13,10 +13,10 @@ class SolanaExecutor {
     constructor(config = {}) {
         this.mode = config.mode || 'TESTNET'; // TESTNET or MAINNET
 
-        // Select RPC based on mode
+        // Select RPC based on mode — env var overrides default
         const rpcUrls = {
             TESTNET: 'https://api.testnet.solana.com',
-            MAINNET: 'https://api.mainnet-beta.solana.com'
+            MAINNET: process.env.SOLANA_RPC_URL || 'https://solana-mainnet.rpc.extrnode.com'
         };
 
         this.connection = new Connection(
@@ -27,7 +27,7 @@ class SolanaExecutor {
         // Load wallet from private key (if provided)
         // Try mode-specific key first, then fall back to generic key
         const envKey = this.mode === 'MAINNET'
-            ? (process.env.SOLANA_MAINNET_PRIVATE_KEY || process.env.SOLANA_PRIVATE_KEY)
+            ? (process.env.SOLANA_PHANTOM_PRIVATE_KEY || process.env.SOLANA_MAINNET_PRIVATE_KEY || process.env.SOLANA_PRIVATE_KEY)
             : (process.env.SOLANA_TESTNET_PRIVATE_KEY || process.env.SOLANA_PRIVATE_KEY);
 
         if (envKey) {
