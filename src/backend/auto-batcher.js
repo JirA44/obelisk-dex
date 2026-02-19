@@ -7,11 +7,28 @@
  * - COUNT: Batch when N trades accumulated
  * - HYBRID: Whichever comes first
  *
- * Version: 1.0
- * Date: 2026-02-17
+ * HFT Profit Guard (Sonic):
+ * - Before executing a batch of 10 trades, verifies net PnL > 0
+ * - Net PnL = sum(trade.pnl) - gasCost - dexFees
+ * - Sonic batch gas: $0.00021 flat (Multicall3, any batch size)
+ * - DEX fees deducted per trade based on exchange
+ *
+ * Version: 1.1 | Date: 2026-02-19
  */
 
 const EventEmitter = require('events');
+
+// ─── Sonic HFT costs ──────────────────────────────────────────────────────────
+const SONIC_BATCH_GAS_USD = 0.00021;   // Multicall3 batch (any size, flat)
+const DEX_FEE_RATES = {                 // Taker fee rates
+    odos:       0.000,  // 0%    — Odos aggregator
+    equalizer:  0.0003, // 0.03% — Solidly AMM avg
+    metropolis: 0.002,  // 0.2%  — Trader Joe LB
+    shadow_v2:  0.0003, // 0.03%
+    shadow_cl:  0.0005, // 0.05%
+    swapx:      0.0003, // dynamic, use 0.03% avg
+    default:    0.001,  // 0.1%  — fallback
+};
 
 class AutoBatcher extends EventEmitter {
     constructor(smartAccountExecutor, config = {}) {
@@ -21,12 +38,16 @@ class AutoBatcher extends EventEmitter {
 
         // Configuration
         this.config = {
-            mode: config.mode || 'HYBRID',           // TIME, COUNT, HYBRID
+            mode: config.mode || 'HYBRID',                 // TIME, COUNT, HYBRID
             batchInterval: config.batchInterval || 10000,  // 10 seconds
-            batchSize: config.batchSize || 10,       // 10 trades per batch
-            minBatchSize: config.minBatchSize || 1,  // Min 1 trade to batch
-            maxBatchSize: config.maxBatchSize || 50, // Max 50 trades per batch
-            enabled: config.enabled !== false
+            batchSize: config.batchSize || 10,             // 10 trades per batch
+            minBatchSize: config.minBatchSize || 10,       // Min 10 for profit guard
+            maxBatchSize: config.maxBatchSize || 50,       // Max 50 trades per batch
+            enabled: config.enabled !== false,
+            // HFT Profit Guard
+            profitGuard: config.profitGuard !== false,     // ON by default
+            minNetProfitUsd: config.minNetProfitUsd || 0,  // Must be > 0 net (strict)
+            chain: config.chain || 'SONIC',                // For gas cost lookup
         };
 
         // Pending trades queue
@@ -37,8 +58,11 @@ class AutoBatcher extends EventEmitter {
         this.stats = {
             tradesQueued: 0,
             batchesExecuted: 0,
+            batchesSkipped: 0,       // batches rejected by profit guard
             tradesSettled: 0,
+            tradesDiscarded: 0,      // trades dropped (never profitable after 3x accumulation)
             totalGasSaved: 0,
+            totalNetPnl: 0,          // cumulative net PnL after costs
             lastBatchTime: null
         };
 
@@ -113,16 +137,70 @@ class AutoBatcher extends EventEmitter {
     }
 
     /**
+     * Calculate net PnL for a batch of trades after gas + DEX fees
+     * @param {Array} trades - batch of trades (each must have .pnl and .size)
+     * @returns {object} { grossPnl, gasCost, dexFees, netPnl, profitable }
+     */
+    _calcBatchNetPnl(trades) {
+        // Gas cost: flat Sonic Multicall3 rate regardless of batch size
+        const gasCost = this.config.chain === 'SONIC' ? SONIC_BATCH_GAS_USD : SONIC_BATCH_GAS_USD * 2;
+
+        // Sum gross PnL + DEX fees per trade
+        let grossPnl = 0;
+        let dexFees = 0;
+
+        for (const trade of trades) {
+            // PnL: use realizedPnl, pnl, or estimate from signal
+            const pnl = trade.realizedPnl ?? trade.pnl ?? trade.estimatedPnl ?? 0;
+            grossPnl += pnl;
+
+            // DEX fee = size × fee_rate (for the opening + closing swap)
+            const size = trade.size || trade.sizeUsd || 0;
+            const feeRate = DEX_FEE_RATES[trade.dex] ?? DEX_FEE_RATES[trade.exchange] ?? DEX_FEE_RATES.default;
+            dexFees += size * feeRate * 2; // ×2 for open + close
+        }
+
+        const netPnl = grossPnl - gasCost - dexFees;
+        return {
+            grossPnl: +grossPnl.toFixed(6),
+            gasCost:  +gasCost.toFixed(6),
+            dexFees:  +dexFees.toFixed(6),
+            netPnl:   +netPnl.toFixed(6),
+            profitable: netPnl > this.config.minNetProfitUsd,
+        };
+    }
+
+    /**
      * Execute batch settlement
      */
     async executeBatch() {
         if (this.pendingTrades.length < this.config.minBatchSize) {
-            console.log(`[AUTO-BATCH] Not enough trades to batch (${this.pendingTrades.length}/${this.config.minBatchSize})`);
-            return;
+            return; // Not enough trades yet — wait silently
         }
 
-        // Take up to maxBatchSize trades
-        const tradesToSettle = this.pendingTrades.splice(0, this.config.maxBatchSize);
+        // Take exactly batchSize trades (10)
+        const tradesToSettle = this.pendingTrades.splice(0, this.config.batchSize);
+
+        // ── HFT Profit Guard ──────────────────────────────────────────────────
+        if (this.config.profitGuard) {
+            const { grossPnl, gasCost, dexFees, netPnl, profitable } = this._calcBatchNetPnl(tradesToSettle);
+
+            console.log(`[PROFIT-GUARD] Batch ${tradesToSettle.length} trades:`);
+            console.log(`   Gross PnL : $${grossPnl.toFixed(4)}`);
+            console.log(`   Gas cost  : $${gasCost.toFixed(6)} (Sonic Multicall3)`);
+            console.log(`   DEX fees  : $${dexFees.toFixed(6)}`);
+            console.log(`   Net PnL   : $${netPnl.toFixed(4)} ${profitable ? '✅ EXECUTE' : '❌ SKIP'}`);
+
+            if (!profitable) {
+                this.stats.batchesSkipped++;
+                // Put trades back — they'll accumulate more until profitable
+                this.pendingTrades.unshift(...tradesToSettle);
+                this.emit('batch-skipped', { netPnl, grossPnl, gasCost, dexFees, trades: tradesToSettle.length });
+                return;
+            }
+
+            this.stats.totalNetPnl += netPnl;
+        }
 
         console.log(`\n${'═'.repeat(60)}`);
         console.log(`[AUTO-BATCH] Executing batch of ${tradesToSettle.length} trades...`);
@@ -209,13 +287,23 @@ class AutoBatcher extends EventEmitter {
             ? (this.stats.tradesSettled / this.stats.batchesExecuted)
             : 0;
 
+        const skipRate = (this.stats.batchesExecuted + this.stats.batchesSkipped) > 0
+            ? (this.stats.batchesSkipped / (this.stats.batchesExecuted + this.stats.batchesSkipped) * 100).toFixed(1)
+            : '0';
+
         return {
             ...this.stats,
             avgSavingsPerBatch: avgSavingsPerBatch.toFixed(6),
             avgTradesPerBatch: avgTradesPerBatch.toFixed(1),
             efficiency: this.stats.batchesExecuted > 0
                 ? `${((this.stats.totalGasSaved / this.stats.batchesExecuted) * 100).toFixed(1)}% per batch`
-                : 'N/A'
+                : 'N/A',
+            profitGuard: {
+                enabled: this.config.profitGuard,
+                batchesSkipped: this.stats.batchesSkipped,
+                skipRate: `${skipRate}%`,
+                totalNetPnl: `$${this.stats.totalNetPnl.toFixed(4)}`,
+            },
         };
     }
 
