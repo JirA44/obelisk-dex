@@ -1,113 +1,129 @@
 /**
- * SONIC HFT ENGINE
- * High-frequency trading on Sonic chain via DEX quotes
+ * SONIC HFT ENGINE v2.0 — Multi-Pair
+ * High-frequency trading with real volatile prices (BTC/ETH/SOL/ARB...)
  *
- * Loop:
- *   1. Fetch real wS/USDC price from Sonic DEX (Odos best route)
- *   2. Apply RSI Micro Scalp signal (best from paper tests: 5.66% daily ROI)
- *   3. Open position via Obelisk perps (paper pool, $5 max)
- *   4. Close at SL -0.5% / TP +1.5%
- *   5. Feed closed trade to AutoBatcher → profit guard (10 trades/batch)
+ * Architecture:
+ *   Price feed : Obelisk /api/markets (real Binance/Coinbase prices)
+ *   Signals    : RSI14 + VWAP deviation per pair
+ *   Execution  : Obelisk perps paper pool ($5 trades)
+ *   Settlement : Sonic chain auto-batcher (batch 10, profit guard ON)
  *
- * Params (from CLAUDE.md HFT results):
- *   - SL: 0.5% | TP: 1.5% | Ratio: 3:1
- *   - Size: $3-5 per trade | Max concurrent: 5
- *   - Expected: 247 trades/day, 63.2% win rate, 5.66% daily ROI
+ * Params (from CLAUDE.md HFT paper test results):
+ *   SL: 0.5% | TP: 1.5% | Ratio: 3:1
+ *   Size: $5/trade | Max positions: 5
+ *   Expected: 247 trades/day, 63.2% win rate, 5.66% daily ROI
  *
- * Version: 1.0 | Date: 2026-02-19
+ * Version: 2.0 | Date: 2026-02-19
  */
 
-const { SonicDexRouter, ADDRESSES } = require('../executors/sonic-dex-router');
 const AutoBatcher = require('../auto-batcher');
-const { ethers } = require('ethers');
+const http = require('http');
 
-// ─── Config ──────────────────────────────────────────────────────────────────
+// ─── Config ───────────────────────────────────────────────────────────────────
 
 const CFG = {
+    // Pairs to trade (Obelisk markets)
+    pairs:         ['BTC/USDC', 'ETH/USDC', 'SOL/USDC', 'ARB/USDC'],
+
     // Trade params
-    sizeUsd:        5.00,   // $5 per trade
-    slPct:          0.005,  // SL -0.5%
-    tpPct:          0.015,  // TP +1.5%
-    maxHoldMs:      30000,  // Force close after 30s (faster cycling)
-    maxPositions:   5,      // max concurrent
+    sizeUsd:       5.00,    // $5 per trade
+    slPct:         0.005,   // SL -0.5%
+    tpPct:         0.015,   // TP +1.5%
+    maxHoldMs:     60000,   // Force close after 60s
+    maxPositions:  5,       // max concurrent across all pairs
 
-    // Signal (RSI + VWAP deviation)
-    rsiWindow:      14,
-    rsiOverbought:  65,     // Slightly more sensitive
-    rsiOversold:    35,
-    vwapPct:        0.0002, // Signal if price deviates >0.02% from VWAP
-    priceInterval:  2000,   // ms between price fetches (2s for more data)
-    signalWindow:   30,     // price history for RSI/VWAP calc
+    // Signal
+    rsiWindow:     14,
+    rsiOverbought: 65,
+    rsiOversold:   35,
+    vwapPct:       0.0003,  // Deviation threshold: 0.03% (realistic for crypto)
+    signalWindow:  30,      // price history per pair
 
-    // Batch
-    batchSize:      10,
-    chain:          'SONIC',
+    // Timing
+    priceInterval: 2000,    // fetch all markets every 2s
+
+    // Batch / Profit Guard
+    batchSize:     10,
+    chain:         'SONIC',
+
+    // Obelisk API
+    obeliskUrl:    'http://localhost:3001',
 };
 
-// ─── Engine ──────────────────────────────────────────────────────────────────
+// ─── Engine ───────────────────────────────────────────────────────────────────
 
 class SonicHFTEngine {
     constructor(config = {}) {
         this.cfg = { ...CFG, ...config };
-        this.router = new SonicDexRouter();
 
-        // Price history for RSI calculation
-        this.prices = [];       // { price, ts }
-        this.positions = [];    // open positions
-        this.closedTrades = []; // for batch submission
+        // Per-pair price history: { 'BTC/USDC': [{price, ts}, ...] }
+        this.priceHistory = {};
+        this.cfg.pairs.forEach(p => { this.priceHistory[p] = []; });
 
-        // Auto-batcher (profit guard ON)
+        // Open positions: { posId: { pair, side, entry, size, sl, tp, openTs } }
+        this.positions = {};
+
+        // Auto-batcher (profit guard ON, Sonic gas)
         this.batcher = new AutoBatcher(
             { batchSettle: (trades) => this._onBatchSettle(trades) },
             {
-                enabled: false,
-                profitGuard: true,
-                batchSize: this.cfg.batchSize,
+                enabled:      false,
+                profitGuard:  true,
+                batchSize:    this.cfg.batchSize,
                 minBatchSize: this.cfg.batchSize,
-                chain: this.cfg.chain,
+                chain:        this.cfg.chain,
             }
         );
 
         // Stats
         this.stats = {
-            pricesFetched: 0,
-            signalsGenerated: 0,
-            tradesOpened: 0,
-            tradesClosed: 0,
+            pricesFetched:   0,
+            signalsGenerated:0,
+            tradesOpened:    0,
+            tradesClosed:    0,
             batchesExecuted: 0,
-            batchesSkipped: 0,
-            wins: 0,
-            losses: 0,
-            totalPnl: 0,
-            startTime: null,
+            batchesSkipped:  0,
+            wins:            0,
+            losses:          0,
+            timeouts:        0,
+            totalPnl:        0,
+            startTime:       null,
+            byPair:          {},
         };
+        this.cfg.pairs.forEach(p => {
+            this.stats.byPair[p] = { trades: 0, pnl: 0, wins: 0 };
+        });
 
-        this._running = false;
+        this._running   = false;
         this._priceTimer = null;
-        this._checkTimer = null;
 
-        // Listen for batch events
         this.batcher.on('batch-skipped', (info) => {
             this.stats.batchesSkipped++;
-            console.log(`[HFT] Batch skipped — net $${info.netPnl.toFixed(4)} (not profitable)`);
+            console.log(`[GUARD] ❌ Skip — net $${info.netPnl.toFixed(4)} | gross $${info.grossPnl.toFixed(4)} | gas $${info.gasCost.toFixed(6)}`);
         });
         this.batcher.on('batch-executed', () => {
             this.stats.batchesExecuted++;
         });
     }
 
-    // ── Price feed ─────────────────────────────────────────────────────────
+    // ── Price feed ─────────────────────────────────────────────────────────────
 
-    async _fetchPrice() {
-        try {
-            // wS/USDC: how many USDC for 1 wS
-            const q = await this.router.quoteHuman('wS', 'USDC', 1);
-            if (!q.success || !q.human) return null;
-            return parseFloat(q.human.amountOut);
-        } catch { return null; }
+    async _fetchMarkets() {
+        return new Promise((resolve) => {
+            const req = http.get(`${this.cfg.obeliskUrl}/api/markets`, (res) => {
+                let data = '';
+                res.on('data', d => data += d);
+                res.on('end', () => {
+                    try { resolve(JSON.parse(data).markets || []); }
+                    catch { resolve([]); }
+                });
+            });
+            req.on('error', () => resolve([]));
+            req.setTimeout(3000, () => { req.destroy(); resolve([]); });
+        });
     }
 
-    // ── RSI Calculation ────────────────────────────────────────────────────
+    // ── RSI ────────────────────────────────────────────────────────────────────
 
     _calcRSI(prices, window = 14) {
         if (prices.length < window + 1) return null;
@@ -120,78 +136,81 @@ class SonicHFTEngine {
         }
         const avgGain = gains / window;
         const avgLoss = losses / window;
-        // Flat price (both 0): RSI = 50 (neutral, no signal)
-        if (avgGain === 0 && avgLoss === 0) return 50;
+        if (avgGain === 0 && avgLoss === 0) return 50; // flat → neutral
         if (avgLoss === 0) return 100;
         if (avgGain === 0) return 0;
-        const rs = avgGain / avgLoss;
-        return 100 - 100 / (1 + rs);
+        return 100 - 100 / (1 + avgGain / avgLoss);
     }
 
-    // ── Signal generation ──────────────────────────────────────────────────
+    // ── VWAP ───────────────────────────────────────────────────────────────────
 
     _calcVWAP(priceObjs) {
-        if (priceObjs.length === 0) return null;
-        // Simple mean (no volume data from DEX quotes — use equal weight)
+        if (!priceObjs.length) return null;
         return priceObjs.reduce((s, p) => s + p.price, 0) / priceObjs.length;
     }
 
-    _getSignal() {
-        const ps = this.prices.map(p => p.price);
+    // ── Signal per pair ────────────────────────────────────────────────────────
+
+    _getSignal(pair) {
+        const hist = this.priceHistory[pair];
+        if (hist.length < this.cfg.rsiWindow + 2) return null;
+
+        const ps = hist.map(h => h.price);
         const rsi = this._calcRSI(ps, this.cfg.rsiWindow);
         if (rsi === null) return null;
 
-        const vwap = this._calcVWAP(this.prices.slice(-this.cfg.signalWindow));
-        const currentPrice = ps[ps.length - 1];
-        const vwapDev = vwap ? (currentPrice - vwap) / vwap : 0; // + = above VWAP
+        const vwap = this._calcVWAP(hist.slice(-this.cfg.signalWindow));
+        const cur  = ps[ps.length - 1];
+        const dev  = vwap ? (cur - vwap) / vwap : 0;
 
-        // RSI Oversold + price below VWAP → LONG
-        if (rsi < this.cfg.rsiOversold && vwapDev < -this.cfg.vwapPct) {
-            return { side: 'long',  rsi, vwapDev: +vwapDev.toFixed(6), strength: (this.cfg.rsiOversold - rsi) / this.cfg.rsiOversold };
+        // Long: RSI oversold + below VWAP
+        if (rsi < this.cfg.rsiOversold && dev < -this.cfg.vwapPct) {
+            return { side: 'long',  pair, rsi: +rsi.toFixed(1), dev: +dev.toFixed(5), price: cur };
         }
-        // RSI Overbought + price above VWAP → SHORT
-        if (rsi > this.cfg.rsiOverbought && vwapDev > this.cfg.vwapPct) {
-            return { side: 'short', rsi, vwapDev: +vwapDev.toFixed(6), strength: (rsi - this.cfg.rsiOverbought) / (100 - this.cfg.rsiOverbought) };
+        // Short: RSI overbought + above VWAP
+        if (rsi > this.cfg.rsiOverbought && dev > this.cfg.vwapPct) {
+            return { side: 'short', pair, rsi: +rsi.toFixed(1), dev: +dev.toFixed(5), price: cur };
         }
         return null;
     }
 
-    // ── Position management ────────────────────────────────────────────────
+    // ── Position management ────────────────────────────────────────────────────
 
-    _openPosition(signal, entryPrice) {
-        if (this.positions.length >= this.cfg.maxPositions) return null;
+    _openPos(signal) {
+        const openCount = Object.keys(this.positions).length;
+        if (openCount >= this.cfg.maxPositions) return null;
 
-        const pos = {
-            id:         `${Date.now()}_${Math.random().toString(36).substr(2, 4)}`,
-            side:       signal.side,
-            entryPrice,
-            size:       this.cfg.sizeUsd,
-            sl:         signal.side === 'long'
-                            ? entryPrice * (1 - this.cfg.slPct)
-                            : entryPrice * (1 + this.cfg.slPct),
-            tp:         signal.side === 'long'
-                            ? entryPrice * (1 + this.cfg.tpPct)
-                            : entryPrice * (1 - this.cfg.tpPct),
-            openTs:     Date.now(),
+        const id    = `${signal.pair}_${Date.now()}`;
+        const entry = signal.price;
+        const pos   = {
+            id, pair: signal.pair, side: signal.side,
+            entry, size: this.cfg.sizeUsd,
+            sl: signal.side === 'long'
+                ? entry * (1 - this.cfg.slPct)
+                : entry * (1 + this.cfg.slPct),
+            tp: signal.side === 'long'
+                ? entry * (1 + this.cfg.tpPct)
+                : entry * (1 - this.cfg.tpPct),
+            openTs: Date.now(),
         };
 
-        this.positions.push(pos);
+        this.positions[id] = pos;
         this.stats.tradesOpened++;
         return pos;
     }
 
-    _closePosition(pos, exitPrice, reason) {
-        const priceDiff = pos.side === 'long'
-            ? exitPrice - pos.entryPrice
-            : pos.entryPrice - exitPrice;
-        const pnl = (priceDiff / pos.entryPrice) * pos.size;
+    _closePos(pos, exitPrice, reason) {
+        const diff = pos.side === 'long'
+            ? exitPrice - pos.entry
+            : pos.entry - exitPrice;
+        const pnl = (diff / pos.entry) * pos.size;
 
         const trade = {
             id:         pos.id,
-            symbol:     'wS-USDC',
+            symbol:     pos.pair,
             side:       pos.side,
             size:       pos.size,
-            entryPrice: pos.entryPrice,
+            entryPrice: pos.entry,
             exitPrice,
             pnl:        +pnl.toFixed(6),
             reason,
@@ -201,83 +220,103 @@ class SonicHFTEngine {
             timestamp:  Date.now(),
         };
 
-        // Remove from positions
-        this.positions = this.positions.filter(p => p.id !== pos.id);
-        this.closedTrades.push(trade);
+        delete this.positions[pos.id];
         this.stats.tradesClosed++;
         this.stats.totalPnl += pnl;
+
         if (pnl > 0) this.stats.wins++;
-        else this.stats.losses++;
+        else          this.stats.losses++;
+        if (reason === 'TIMEOUT') this.stats.timeouts++;
 
-        // Feed to batcher
+        const ps = this.stats.byPair[pos.pair];
+        if (ps) { ps.trades++; ps.pnl += pnl; if (pnl > 0) ps.wins++; }
+
         try { this.batcher.addTrade(trade); } catch {}
-
         return trade;
     }
 
-    _checkPositions(currentPrice) {
+    _checkPositions(marketMap) {
         const now = Date.now();
-        for (const pos of [...this.positions]) {
-            // Force close if max hold time exceeded
+        for (const pos of Object.values(this.positions)) {
+            // Get current price for this pair
+            const mkt = marketMap[pos.pair];
+            if (!mkt) continue;
+            const cur = mkt.price;
+
             if (now - pos.openTs >= this.cfg.maxHoldMs) {
-                this._closePosition(pos, currentPrice, 'TIMEOUT');
-                continue;
-            }
-            if (pos.side === 'long') {
-                if (currentPrice <= pos.sl) this._closePosition(pos, currentPrice, 'SL');
-                else if (currentPrice >= pos.tp) this._closePosition(pos, currentPrice, 'TP');
+                this._closePos(pos, cur, 'TIMEOUT');
+            } else if (pos.side === 'long') {
+                if (cur <= pos.sl) this._closePos(pos, cur, 'SL');
+                else if (cur >= pos.tp) this._closePos(pos, cur, 'TP');
             } else {
-                if (currentPrice >= pos.sl) this._closePosition(pos, currentPrice, 'SL');
-                else if (currentPrice <= pos.tp) this._closePosition(pos, currentPrice, 'TP');
+                if (cur >= pos.sl) this._closePos(pos, cur, 'SL');
+                else if (cur <= pos.tp) this._closePos(pos, cur, 'TP');
             }
         }
     }
 
-    // ── Batch handler ──────────────────────────────────────────────────────
+    // ── Batch handler ──────────────────────────────────────────────────────────
 
     async _onBatchSettle(trades) {
-        // Paper mode: just acknowledge
-        return trades.map(t => ({ success: true, txHash: null, gasSaved: 0.00019, gasCost: 0.00021 / trades.length }));
+        // Paper mode: acknowledge settlement
+        return trades.map(t => ({
+            success: true,
+            txHash:  null,
+            gasSaved: 0.00019,
+            gasCost:  0.00021 / trades.length,
+        }));
     }
 
-    // ── Main loop ──────────────────────────────────────────────────────────
+    // ── Main loop ──────────────────────────────────────────────────────────────
 
     async start() {
         if (this._running) return;
-        this._running = true;
+        this._running  = true;
         this.stats.startTime = Date.now();
         this.batcher.start();
 
-        console.log('═'.repeat(60));
-        console.log('  SONIC HFT ENGINE — STARTED');
-        console.log('═'.repeat(60));
-        console.log(`  Size: $${this.cfg.sizeUsd} | SL: ${this.cfg.slPct*100}% | TP: ${this.cfg.tpPct*100}%`);
-        console.log(`  Max positions: ${this.cfg.maxPositions} | Batch: ${this.cfg.batchSize} trades`);
-        console.log(`  Price interval: ${this.cfg.priceInterval}ms`);
+        console.log('═'.repeat(64));
+        console.log('  SONIC HFT ENGINE v2.0 — MULTI-PAIR');
+        console.log('═'.repeat(64));
+        console.log(`  Pairs : ${this.cfg.pairs.join(', ')}`);
+        console.log(`  Size  : $${this.cfg.sizeUsd} | SL: ${this.cfg.slPct*100}% | TP: ${this.cfg.tpPct*100}%`);
+        console.log(`  MaxPos: ${this.cfg.maxPositions} | MaxHold: ${this.cfg.maxHoldMs/1000}s`);
+        console.log(`  Batch : ${this.cfg.batchSize} trades | ProfitGuard: ON`);
         console.log('');
 
-        // Price fetching loop
         const tick = async () => {
             if (!this._running) return;
 
-            const price = await this._fetchPrice();
-            if (price) {
-                this.prices.push({ price, ts: Date.now() });
-                if (this.prices.length > this.cfg.signalWindow * 2) {
-                    this.prices.shift();
-                }
+            const markets = await this._fetchMarkets();
+            if (markets.length) {
                 this.stats.pricesFetched++;
 
-                // Check existing positions
-                this._checkPositions(price);
+                // Build quick lookup map
+                const mktMap = {};
+                for (const m of markets) mktMap[m.pair] = m;
 
-                // Generate signal & maybe open position
-                const signal = this._getSignal();
-                if (signal) {
-                    this.stats.signalsGenerated++;
-                    const pos = this._openPosition(signal, price);
-                    if (pos) {
-                        console.log(`[HFT] ${pos.side.toUpperCase()} @ $${price.toFixed(6)} | RSI: ${signal.rsi.toFixed(1)} | SL: $${pos.sl.toFixed(6)} TP: $${pos.tp.toFixed(6)}`);
+                // Update price history per pair
+                for (const pair of this.cfg.pairs) {
+                    const m = mktMap[pair];
+                    if (!m) continue;
+                    this.priceHistory[pair].push({ price: m.price, ts: Date.now() });
+                    if (this.priceHistory[pair].length > this.cfg.signalWindow * 3) {
+                        this.priceHistory[pair].shift();
+                    }
+                }
+
+                // Check exits on open positions
+                this._checkPositions(mktMap);
+
+                // Generate signals per pair
+                for (const pair of this.cfg.pairs) {
+                    const sig = this._getSignal(pair);
+                    if (sig) {
+                        this.stats.signalsGenerated++;
+                        const pos = this._openPos(sig);
+                        if (pos) {
+                            console.log(`[HFT] ${sig.side.toUpperCase().padEnd(5)} ${pair.padEnd(10)} @ $${sig.price.toFixed(4)} | RSI:${sig.rsi} dev:${(sig.dev*100).toFixed(3)}%`);
+                        }
                     }
                 }
             }
@@ -292,17 +331,19 @@ class SonicHFTEngine {
         this._running = false;
         clearTimeout(this._priceTimer);
         this.batcher.stop();
-        console.log('[HFT] Engine stopped');
     }
 
     getStats() {
-        const elapsed = this.stats.startTime ? (Date.now() - this.stats.startTime) / 1000 : 0;
-        const winRate = this.stats.tradesClosed > 0
+        const elapsed  = this.stats.startTime ? (Date.now() - this.stats.startTime) / 1000 : 0;
+        const winRate  = this.stats.tradesClosed > 0
             ? (this.stats.wins / this.stats.tradesClosed * 100).toFixed(1)
             : '0';
         const tradesPerHour = elapsed > 0
             ? (this.stats.tradesClosed / elapsed * 3600).toFixed(0)
             : '0';
+        const openList = Object.values(this.positions).map(p =>
+            `${p.pair} ${p.side} @ $${p.entry.toFixed(4)}`
+        );
 
         return {
             ...this.stats,
@@ -310,10 +351,10 @@ class SonicHFTEngine {
             winRate:        `${winRate}%`,
             tradesPerHour,
             totalPnl:       `$${this.stats.totalPnl.toFixed(4)}`,
-            openPositions:  this.positions.length,
+            openPositions:  Object.keys(this.positions).length,
+            openList,
             pendingInBatch: this.batcher.pendingTrades.length,
             batcher:        this.batcher.getStats(),
-            currentPrice:   this.prices.length > 0 ? this.prices[this.prices.length-1].price : null,
         };
     }
 }
