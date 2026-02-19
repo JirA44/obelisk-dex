@@ -8,12 +8,24 @@ const router = express.Router();
 
 // Will be initialized in server-ultra.js
 let tradingRouter = null;
+let settlementBatcher = null;
+
+// V2.1: Venue-specific equity tracking for MixBot
+const venueEquityRouter = require('./venue_equity');
+router.use('/', venueEquityRouter);
 
 /**
- * Initialize with trading router instance
+ * Initialize with trading router instance and optional settlement batcher
  */
-function initTradingRoutes(routerInstance) {
+function initTradingRoutes(routerInstance, batcher) {
     tradingRouter = routerInstance;
+    if (batcher) {
+        settlementBatcher = batcher;
+        // Log TX hashes when batches settle on Sonic
+        settlementBatcher.on('batch-settled', (info) => {
+            console.log(`[SONIC SETTLEMENT] ✅ ${info.count} trades → TX: ${info.txHash} | $${(info.gasCost || 0).toFixed(6)} | ${info.explorer || ''}`);
+        });
+    }
 }
 
 /**
@@ -64,6 +76,21 @@ router.post('/order', async (req, res) => {
             rejectPaper: rejectPaper === true,
             priority: priority || 'normal'
         });
+
+        // Queue to Sonic settlement batcher after any successful order
+        if (result.success && settlementBatcher) {
+            try {
+                settlementBatcher.addTrade({
+                    symbol: symbol.toUpperCase(),
+                    side: side.toLowerCase(),
+                    size: parseFloat(size),
+                    source: source || 'api',
+                    strategy: strategy || 'unknown',
+                    exchange: result.exchange || 'unknown',
+                    timestamp: Date.now()
+                });
+            } catch (e) { /* batcher may be disabled */ }
+        }
 
         res.json(result);
     } catch (err) {

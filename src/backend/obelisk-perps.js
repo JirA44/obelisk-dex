@@ -1,3 +1,5 @@
+const ENABLE_LOGS = false; // Quick Win: Disable for performance
+
 /**
  * OBELISK PERPS ENGINE V2.0
  * Trading de perpetuels multi-venue
@@ -34,11 +36,14 @@ class ObeliskPerps {
         };
 
         // Liquidity pool for perps (protocol is counterparty)
+        // ⚠️ SIMULATED — $100K liquidity est fictive (paper mode)
+        // Pour passer en real: connecter GMX ou Hyperliquid executor
         this.liquidityPool = {
-            USDC: 100000,
+            USDC: 100000,       // SIMULATED — pas de vrais fonds
             totalLongs: 0,
             totalShorts: 0,
-            openInterest: 0
+            openInterest: 0,
+            mode: 'PAPER',      // 'PAPER' | 'LIVE'
         };
 
         // Config V2.0
@@ -99,9 +104,9 @@ class ObeliskPerps {
         if (this.executors.gmx) venues.push('GMX');
         if (this.executors.hyperliquid) venues.push('HYPERLIQUID');
 
-        console.log(`[OBELISK-PERPS] Pool: $${this.liquidityPool.USDC.toFixed(0)} USDC`);
-        console.log(`[OBELISK-PERPS] Max Leverage: ${this.config.maxLeverage}x | Coins: ${this.coins.length}`);
-        console.log(`[OBELISK-PERPS] Venues: ${venues.join(', ')}`);
+        if (ENABLE_LOGS) console.log(`[OBELISK-PERPS] Pool: $${this.liquidityPool.USDC.toFixed(0)} USDC`);
+        if (ENABLE_LOGS) console.log(`[OBELISK-PERPS] Max Leverage: ${this.config.maxLeverage}x | Coins: ${this.coins.length}`);
+        if (ENABLE_LOGS) console.log(`[OBELISK-PERPS] Venues: ${venues.join(', ')}`);
 
         return true;
     }
@@ -172,10 +177,17 @@ class ObeliskPerps {
             return { success: false, error: 'Max open interest reached' };
         }
 
-        const positionKey = `${userId}_${coinUpper}`;
-        if (this.positions.has(positionKey)) {
-            return { success: false, error: `Already have position on ${coinUpper}. Close first.` };
+        // V3.1: Allow up to 3 positions per coin (for HFT scaling)
+        const existingPositions = Array.from(this.positions.values()).filter(
+            p => p.userId === userId && p.coin === coinUpper
+        );
+        const MAX_POSITIONS_PER_COIN = 3;
+        if (existingPositions.length >= MAX_POSITIONS_PER_COIN) {
+            return { success: false, error: `Max ${MAX_POSITIONS_PER_COIN} positions on ${coinUpper}. Close one first.` };
         }
+
+        // Unique position key with timestamp
+        const positionKey = `${userId}_${coinUpper}_${Date.now()}_${Math.random().toString(36).substr(2, 6)}`;
 
         // V2.0: Execute on venue if not PAPER
         let txHash = null;
@@ -185,11 +197,11 @@ class ObeliskPerps {
                     coin: coinUpper, side, size, leverage, entryPrice
                 });
                 if (!result.success) {
-                    console.log(`[OBELISK-PERPS] ${venueUpper} failed, fallback to PAPER`);
+                    if (ENABLE_LOGS) console.log(`[OBELISK-PERPS] ${venueUpper} failed, fallback to PAPER`);
                 }
                 txHash = result.txHash;
             } catch (e) {
-                console.log(`[OBELISK-PERPS] ${venueUpper} error: ${e.message}`);
+                if (ENABLE_LOGS) console.log(`[OBELISK-PERPS] ${venueUpper} error: ${e.message}`);
             }
         }
 
@@ -236,7 +248,24 @@ class ObeliskPerps {
         this.saveState();
 
         const emoji = venueUpper === 'PAPER' ? '📝' : '🔥';
-        console.log(`[OBELISK-PERPS] ${emoji} OPEN ${venueUpper}: ${side.toUpperCase()} ${coinUpper} $${notionalValue} @ ${leverage}x`);
+        if (ENABLE_LOGS) console.log(`[OBELISK-PERPS] ${emoji} OPEN ${venueUpper}: ${side.toUpperCase()} ${coinUpper} $${notionalValue} @ ${leverage}x`);
+
+        // V3.1: Queue for blockchain settlement (async, non-blocking)
+        if (this.settlementEngine && this.batcher) {
+            const tradeData = {
+                type: 'OPEN',
+                coin: coinUpper,
+                side: position.side,
+                size: notionalValue,
+                price: entryPrice,
+                leverage,
+                userId: userId,
+                timestamp: Date.now()
+            };
+            try { this.batcher.addTrade(tradeData); } catch(err) {
+                console.warn('[OBELISK-PERPS] Settlement queue error:', err.message);
+            }
+        }
 
         return {
             success: true,
@@ -282,10 +311,24 @@ class ObeliskPerps {
 
     // Close position
     async closePosition(order) {
-        const { coin, userId = 'default', reason = 'manual' } = order;
-        const positionKey = `${userId}_${coin.toUpperCase()}`;
+        const { coin, userId = 'default', reason = 'manual', positionId } = order;
 
-        const position = this.positions.get(positionKey);
+        // V3.1: Find position by userId + coin (or specific positionId)
+        let positionKey, position;
+        if (positionId) {
+            // Close specific position by ID
+            positionKey = positionId;
+            position = this.positions.get(positionKey);
+        } else {
+            // Close first matching position for this coin
+            const matches = Array.from(this.positions.entries()).filter(
+                ([key, pos]) => pos.userId === userId && pos.coin === coin.toUpperCase()
+            );
+            if (matches.length > 0) {
+                [positionKey, position] = matches[0];
+            }
+        }
+
         if (!position) {
             return { success: false, error: `No position found for ${coin}` };
         }
@@ -324,7 +367,25 @@ class ObeliskPerps {
         this.saveState();
 
         const emoji = netPnl > 0 ? '✅' : '❌';
-        console.log(`[OBELISK-PERPS] ${emoji} CLOSE: ${position.side.toUpperCase()} ${position.coin} | PnL: $${netPnl.toFixed(2)}`);
+        if (ENABLE_LOGS) console.log(`[OBELISK-PERPS] ${emoji} CLOSE: ${position.side.toUpperCase()} ${position.coin} | PnL: $${netPnl.toFixed(2)}`);
+
+        // V3.1: Queue settlement for closed position
+        if (this.settlementEngine && this.batcher) {
+            const tradeData = {
+                type: 'CLOSE',
+                coin: position.coin,
+                side: position.side,
+                size: position.size,
+                entryPrice: position.entryPrice,
+                exitPrice: exitPrice,
+                pnl: netPnl,
+                userId: position.userId,
+                timestamp: Date.now()
+            };
+            try { this.batcher.addTrade(tradeData); } catch(err) {
+                console.warn('[OBELISK-PERPS] Settlement queue error:', err.message);
+            }
+        }
 
         return {
             success: true,
@@ -381,7 +442,7 @@ class ObeliskPerps {
             }
 
             if (triggered) {
-                console.log(`[OBELISK-PERPS] 🎯 ${order.type.toUpperCase()} triggered for ${position.coin}`);
+                if (ENABLE_LOGS) console.log(`[OBELISK-PERPS] 🎯 ${order.type.toUpperCase()} triggered for ${position.coin}`);
                 this.closePosition({
                     coin: position.coin,
                     userId: position.userId,
@@ -425,7 +486,7 @@ class ObeliskPerps {
                 : currentPrice >= position.liquidationPrice;
 
             if (shouldLiquidate) {
-                console.log(`[OBELISK-PERPS] 💀 LIQUIDATION: ${position.side.toUpperCase()} ${position.coin}`);
+                if (ENABLE_LOGS) console.log(`[OBELISK-PERPS] 💀 LIQUIDATION: ${position.side.toUpperCase()} ${position.coin}`);
 
                 this.liquidityPool.USDC += position.margin * 0.9;
                 this.liquidityPool.openInterest -= position.size;
@@ -469,7 +530,7 @@ class ObeliskPerps {
 
         this.lastFundingTime = Date.now();
         if (this.positions.size > 0) {
-            console.log(`[OBELISK-PERPS] 💰 Funding applied to ${this.positions.size} positions`);
+            if (ENABLE_LOGS) console.log(`[OBELISK-PERPS] 💰 Funding applied to ${this.positions.size} positions`);
         }
         this.saveState();
     }

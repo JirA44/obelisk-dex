@@ -85,18 +85,18 @@ class ObeliskExchangeV3Turbo {
         console.log('\n🚀 Initializing Obelisk Exchange V3 TURBO...\n');
 
         // Display fee tiers
-        this.feeManager.displayFeeTiers();
+        this.feeManager.displayTiers();
 
         // Display blockchains
-        this.settlement.displayBlockchains();
+        this.settlement.displayChains();
 
         // Start tracking run
-        this.runID = this.tracker.startRun('v3-turbo', {
+        this.runID = this.tracker.startTestRun('v3-turbo', 'Obelisk Exchange V3 TURBO', {
             mode: this.config.mode,
             internalPool: this.config.internalPoolSize,
             batchSize: this.config.batchSize,
             maxConcurrent: this.config.maxConcurrent
-        }, 'Obelisk Exchange V3 TURBO');
+        });
 
         console.log(`🚀 Started test run [v3-turbo]: ${this.runID} (Obelisk Exchange V3 TURBO)`);
         console.log(`📊 Tracking Run: ${this.runID}\n`);
@@ -334,7 +334,7 @@ class ObeliskExchangeV3Turbo {
 
         // Complete tracking run
         const runtime = (Date.now() - this.stats.startTime) / 1000;
-        this.tracker.completeRun(this.runID, {
+        this.tracker.endTestRun(this.runID, {
             duration: runtime,
             trades: this.stats.totalTrades,
             winRate: 100,
