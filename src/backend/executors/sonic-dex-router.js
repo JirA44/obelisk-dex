@@ -9,10 +9,14 @@
  *   - Beets         (Balancer V2)              0xBA122222...
  *   - Equalizer V2  (Solidly fork)             0x7635cD59...
  *   - Metropolis    (Trader Joe LB DLMM)       0x67803fe6...
- *   - Odos V3       (Aggregator fallback)      0x0D05a7D3...
+ *   - Odos V3       (Aggregator API)           api.odos.xyz ✅ LIVE
+ *
+ * Status: Equalizer/Metropolis/ShadowV2 = on-chain quotes
+ *         SwapX/ShadowCL = no liquidity on USDC/wS pair (skipped)
+ *         Odos = best aggregated route (API, all DEXes)
  *
  * Chain: Sonic Mainnet (ID 146)
- * Version: 1.0 | Date: 2026-02-19
+ * Version: 1.1 | Date: 2026-02-19
  */
 
 const { ethers } = require('ethers');
@@ -141,7 +145,7 @@ class SonicDexRouter {
         this.defaultSlippage = config.slippage || 0.005; // 0.5%
         this.stats = {
             totalSwaps: 0,
-            byDex: { shadow_cl: 0, shadow_v2: 0, swapx: 0, beets: 0, equalizer: 0, metropolis: 0 },
+            byDex: { shadow_cl: 0, shadow_v2: 0, swapx: 0, beets: 0, equalizer: 0, metropolis: 0, odos: 0 },
             totalVolumeUsd: 0,
             errors: 0,
         };
@@ -191,6 +195,7 @@ class SonicDexRouter {
             this._quoteSwapX(tokenIn, tokenOut, amountIn),
             this._quoteEqualizer(tokenIn, tokenOut, amountIn),
             this._quoteMetroV2(tokenIn, tokenOut, amountIn),
+            this._quoteOdos(tokenIn, tokenOut, amountIn),
         ]);
 
         const results = quotes
@@ -271,6 +276,34 @@ class SonicDexRouter {
             const amountOut = amounts[1];
             if (!amountOut || amountOut === 0n) return null;
             return { dex: 'metropolis', amountOut, tokenIn, tokenOut, amountIn };
+        } catch { return null; }
+    }
+
+    // Odos aggregator — best route across all Sonic DEXes (API-based)
+    async _quoteOdos(tokenIn, tokenOut, amountIn) {
+        try {
+            const controller = new AbortController();
+            const timeout = setTimeout(() => controller.abort(), 5000);
+            const res = await fetch('https://api.odos.xyz/sor/quote/v2', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                    chainId: 146,
+                    inputTokens: [{ tokenAddress: tokenIn, amount: amountIn.toString() }],
+                    outputTokens: [{ tokenAddress: tokenOut, proportion: 1 }],
+                    slippageLimitPercent: 0.5,
+                    userAddr: this.wallet?.address || '0x377706801308ac4c3Fe86EEBB295FeC6E1279140',
+                    compact: true,
+                }),
+                signal: controller.signal,
+            });
+            clearTimeout(timeout);
+            const data = await res.json();
+            if (!data.outAmounts?.[0]) return null;
+            const amountOut = BigInt(data.outAmounts[0]);
+            if (amountOut === 0n) return null;
+            // Store pathId for execution
+            return { dex: 'odos', amountOut, tokenIn, tokenOut, amountIn, pathId: data.pathId };
         } catch { return null; }
     }
 
@@ -460,7 +493,7 @@ class SonicDexRouter {
             byDex: this.stats.byDex,
             errors: this.stats.errors,
             wallet: this.wallet?.address || null,
-            supportedDexes: ['shadow_cl', 'shadow_v2', 'swapx', 'equalizer', 'metropolis'],
+            supportedDexes: ['shadow_cl', 'shadow_v2', 'swapx', 'equalizer', 'metropolis', 'odos'],
             tokenAliases: Object.keys(ADDRESSES).filter(k => !k.includes('_')),
         };
     }

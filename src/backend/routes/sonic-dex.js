@@ -29,11 +29,12 @@ function getDexRouter() {
 router.get('/dexes', (req, res) => {
     res.json({
         dexes: [
-            { id: 'shadow_cl',  name: 'ShadowDEX CL',  type: 'UniV3 CLAMM',         fees: '0.01-1%' },
-            { id: 'shadow_v2',  name: 'ShadowDEX V2',  type: 'Solidly AMM',          fees: '0.02-0.05%' },
-            { id: 'swapx',      name: 'SwapX',          type: 'Algebra V4 CLAMM',     fees: 'dynamic' },
-            { id: 'equalizer',  name: 'Equalizer',      type: 'Solidly AMM',          fees: '0.02-0.05%' },
-            { id: 'metropolis', name: 'Metropolis',     type: 'Trader Joe V2 AMM',    fees: '0.15-0.3%' },
+            { id: 'odos',       name: 'Odos',           type: 'Aggregator (all DEXes)', fees: '0%',         status: 'live' },
+            { id: 'equalizer',  name: 'Equalizer',      type: 'Solidly AMM',            fees: '0.02-0.05%', status: 'live' },
+            { id: 'metropolis', name: 'Metropolis',     type: 'Trader Joe V2 AMM',      fees: '0.15-0.3%',  status: 'live' },
+            { id: 'shadow_v2',  name: 'ShadowDEX V2',  type: 'Solidly AMM',            fees: '0.02-0.05%', status: 'live' },
+            { id: 'shadow_cl',  name: 'ShadowDEX CL',  type: 'UniV3 CLAMM',            fees: '0.01-1%',    status: 'no-pool' },
+            { id: 'swapx',      name: 'SwapX',          type: 'Algebra V4 CLAMM',       fees: 'dynamic',    status: 'no-pool' },
         ],
         tokens: Object.entries(ADDRESSES)
             .filter(([k]) => !k.includes('_'))
