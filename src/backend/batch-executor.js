@@ -24,7 +24,9 @@ class BatchExecutor {
             AVALANCHE: [],
             BASE: [],
             ARBITRUM: [],
-            OPTIMISM: []
+            OPTIMISM: [],
+            SONIC: [],
+            COSMOS_HUB: []
         };
 
         // Batch timers
@@ -51,6 +53,8 @@ class BatchExecutor {
      */
     async addTrade(trade, chain) {
         return new Promise((resolve, reject) => {
+            // Fallback to BASE if chain not supported
+            if (!this.pendingTrades[chain]) chain = 'BASE';
             // Add to pending queue
             this.pendingTrades[chain].push({
                 trade,

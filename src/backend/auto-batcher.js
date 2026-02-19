@@ -24,7 +24,7 @@ class AutoBatcher extends EventEmitter {
             mode: config.mode || 'HYBRID',           // TIME, COUNT, HYBRID
             batchInterval: config.batchInterval || 10000,  // 10 seconds
             batchSize: config.batchSize || 10,       // 10 trades per batch
-            minBatchSize: config.minBatchSize || 2,  // Min 2 trades to batch
+            minBatchSize: config.minBatchSize || 1,  // Min 1 trade to batch
             maxBatchSize: config.maxBatchSize || 50, // Max 50 trades per batch
             enabled: config.enabled !== false
         };
@@ -145,6 +145,11 @@ class AutoBatcher extends EventEmitter {
             console.log(`   Gas saved: $${totalSaved.toFixed(6)}`);
             console.log(`   TX: ${results[0]?.txHash || 'N/A'}`);
 
+            // Emit batch-settled with TX info for logging
+            const txHash = results.find(r => r.txHash)?.txHash;
+            const gasCost = results.reduce((sum, r) => sum + (r.gasCost || 0), 0);
+            const explorer = results.find(r => r.explorer)?.explorer;
+            this.emit('batch-settled', { count: successCount, txHash, gasCost, explorer });
             this.emit('batch-executed', {
                 trades: tradesToSettle,
                 results,

@@ -27,9 +27,10 @@ function initBlockchainRoutes(engines) {
     // Initialize dashboard
     dashboard = new BlockchainDashboard(engines);
 
-    // Initialize auto-batcher (disabled by default)
-    if (engines.smartAccount) {
-        autoBatcher = new AutoBatcher(engines.smartAccount, {
+    // Initialize auto-batcher on settlementEngine (Sonic) if available, else smartAccount
+    const batcherExecutor = engines.settlement || engines.smartAccount;
+    if (batcherExecutor) {
+        autoBatcher = new AutoBatcher(batcherExecutor, {
             mode: 'HYBRID',
             batchInterval: 10000,  // 10 seconds
             batchSize: 10,
@@ -94,8 +95,8 @@ router.post('/settle', async (req, res) => {
  */
 router.post('/batch', async (req, res) => {
     try {
-        if (!smartAccountExecutor) {
-            return res.status(503).json({ error: 'Smart Account executor not initialized' });
+        if (!settlementEngine && !smartAccountExecutor) {
+            return res.status(503).json({ error: 'No settlement executor initialized' });
         }
 
         const { trades, network } = req.body;
@@ -109,7 +110,12 @@ router.post('/batch', async (req, res) => {
 
         console.log(`[BLOCKCHAIN API] 🔄 Batch settlement: ${trades.length} trades`);
 
-        const results = await smartAccountExecutor.batchSettle(trades);
+        // Prefer settlementEngine (uses real Sonic) over smartAccountExecutor (Arbitrum simulation)
+        const executor = settlementEngine || smartAccountExecutor;
+        if (!executor) {
+            return res.status(503).json({ error: 'No settlement executor available' });
+        }
+        const results = await executor.batchSettle(trades);
 
         // Calculate total cost and savings
         const totalCost = results.reduce((sum, r) => sum + (r.gasCost || 0), 0);
@@ -211,10 +217,13 @@ router.get('/balance/:chain', async (req, res) => {
             case 'ARBITRUM':
                 balance = await settlementEngine.getArbitrumBalance();
                 break;
+            case 'SONIC':
+                balance = await settlementEngine.getSonicBalance();
+                break;
             default:
                 return res.status(400).json({
                     error: `Unsupported chain: ${chain}`,
-                    supported: ['SOLANA', 'COSMOS', 'ARBITRUM']
+                    supported: ['SOLANA', 'COSMOS', 'ARBITRUM', 'SONIC']
                 });
         }
 
@@ -222,11 +231,12 @@ router.get('/balance/:chain', async (req, res) => {
             return res.status(503).json({ error: `${chain} executor not available` });
         }
 
+        const units = { SOLANA: 'SOL', COSMOS: 'ATOM', ARBITRUM: 'ETH', SONIC: 'S' };
         res.json({
             success: true,
             chain,
             balance,
-            unit: chain === 'SOLANA' ? 'SOL' : (chain === 'COSMOS' ? 'ATOM' : 'ETH')
+            unit: units[chain] || 'ETH'
         });
 
     } catch (err) {

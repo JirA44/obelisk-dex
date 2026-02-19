@@ -12,6 +12,7 @@
  */
 
 const SolanaExecutor = require('./executors/solana-executor');
+const SonicExecutor = require('./executors/sonic-executor');
 const CosmosExecutor = require('./executors/cosmos-executor');
 const ArbitrumExecutor = require('./executors/arbitrum-executor');
 
@@ -27,6 +28,16 @@ class BlockchainSettlementEngine {
         } catch (error) {
             console.warn('⚠️  Solana executor not available:', error.message);
             this.solanaExecutor = null;
+        }
+
+        // Initialize Sonic executor (EVM, ultra-cheap)
+        try {
+            this.sonicExecutor = new SonicExecutor({
+                network: config.sonicNetwork || 'MAINNET'
+            });
+        } catch (error) {
+            console.warn('⚠️  Sonic executor not available:', error.message);
+            this.sonicExecutor = null;
         }
 
         // Initialize Cosmos executor (TESTNET for now)
@@ -58,6 +69,17 @@ class BlockchainSettlementEngine {
                 enabled: true,
                 priority: 1             // Highest priority (fastest + cheapest)
             },
+            SONIC: {
+                name: 'Sonic (ex-Fantom)',
+                chainId: 146,
+                maxTPS: 10000,
+                avgBlockTime: 1,        // ~1s
+                avgGasCost: 0.0000516,  // $0.0000516 (real: 0.00105 S × $0.049106/S)
+                finality: 'instant',    // BFT consensus
+                rpc: 'https://rpc.soniclabs.com',
+                enabled: true,
+                priority: 2             // Backup #1 - EVM + ultra cheap
+            },
             COSMOS: {
                 name: 'Cosmos Hub',
                 chainId: 'cosmoshub-4',
@@ -67,7 +89,7 @@ class BlockchainSettlementEngine {
                 finality: 'instant',    // BFT consensus
                 rpc: 'https://cosmos-rpc.polkachu.com',
                 enabled: true,
-                priority: 2             // dYdX v4 runs on Cosmos
+                priority: 3             // dYdX v4 runs on Cosmos
             },
             AVALANCHE: {
                 name: 'Avalanche C-Chain',
@@ -78,7 +100,7 @@ class BlockchainSettlementEngine {
                 finality: 'instant',
                 rpc: 'https://api.avax.network/ext/bc/C/rpc',
                 enabled: true,
-                priority: 3
+                priority: 4
             },
             BASE: {
                 name: 'Base (Coinbase L2)',
@@ -86,10 +108,10 @@ class BlockchainSettlementEngine {
                 maxTPS: 1000,
                 avgBlockTime: 2,        // 2s
                 avgGasCost: 0.01,       // $0.01
-                finality: 'optimistic', // 7 days for L1 finality
+                finality: 'optimistic',
                 rpc: 'https://mainnet.base.org',
                 enabled: true,
-                priority: 4
+                priority: 5
             },
             ARBITRUM: {
                 name: 'Arbitrum One',
@@ -100,7 +122,7 @@ class BlockchainSettlementEngine {
                 finality: 'optimistic',
                 rpc: 'https://arb1.arbitrum.io/rpc',
                 enabled: true,
-                priority: 5
+                priority: 6
             },
             OPTIMISM: {
                 name: 'Optimism',
@@ -111,7 +133,7 @@ class BlockchainSettlementEngine {
                 finality: 'optimistic',
                 rpc: 'https://mainnet.optimism.io',
                 enabled: true,
-                priority: 6
+                priority: 7
             }
         };
 
@@ -286,6 +308,28 @@ class BlockchainSettlementEngine {
             }
         }
 
+        // REAL EXECUTOR FOR SONIC
+        if (chain.key === 'SONIC' && this.sonicExecutor && this.sonicExecutor.wallet) {
+            try {
+                const result = await this.sonicExecutor.executeSettlement(trade);
+
+                if (result.success) {
+                    return {
+                        txHash: result.txHash,
+                        gasCost: result.gasCost,
+                        blockTime: chain.avgBlockTime,
+                        confirmed: result.confirmed,
+                        explorer: result.explorer
+                    };
+                } else {
+                    throw new Error(result.error);
+                }
+            } catch (error) {
+                console.error('Sonic settlement failed, falling back to simulation:', error.message);
+                // Fall through to simulation
+            }
+        }
+
         // REAL EXECUTOR FOR COSMOS
         if (chain.key === 'COSMOS' && this.cosmosExecutor && this.cosmosExecutor.wallet) {
             try {
@@ -352,6 +396,7 @@ class BlockchainSettlementEngine {
 
     /**
      * Batch settle multiple trades
+     * Uses real Sonic executor if available, otherwise falls back to sequential settleTrade
      */
     async batchSettle(trades, options = {}) {
         if (!this.batch.enabled || trades.length === 0) {
@@ -361,39 +406,39 @@ class BlockchainSettlementEngine {
         const chain = options.chain || this.selectChain();
         const startTime = Date.now();
 
+        // Use real Sonic executor for SONIC chain (or when it's the cheapest selected)
+        if (chain.key === 'SONIC' && this.sonicExecutor && this.sonicExecutor.wallet) {
+            console.log(`🔥 Real Sonic batch: ${trades.length} trades (sequential on-chain)`);
+            try {
+                const results = await this.sonicExecutor.batchSettle(trades);
+                const latency = Date.now() - startTime;
+
+                const totalGasCost = results.reduce((sum, r) => sum + (r.gasCost || 0), 0);
+                this.stats.totalSettlements++;
+                this.stats.totalGasCost += totalGasCost;
+                const chainStats = this.stats.byChain['SONIC'];
+                chainStats.settlements++;
+                chainStats.trades += trades.length;
+                chainStats.gasCost += totalGasCost;
+
+                return results.map((r, i) => ({
+                    ...r,
+                    chain: chain.name,
+                    chainKey: 'SONIC',
+                    batch: true,
+                    batchSize: trades.length,
+                    latency: r.latency || latency
+                }));
+            } catch (error) {
+                this.stats.byChain['SONIC'].errors++;
+                throw error;
+            }
+        }
+
+        // Fallback: real sequential settleTrade for other chains
         try {
-            // Simulate batch transaction
-            const batchLatency = chain.avgBlockTime * 1000;
-            await new Promise(resolve => setTimeout(resolve, batchLatency));
-
-            // Gas cost for batch (cheaper than individual!)
-            const baseCost = chain.avgGasCost;
-            const perTradeCost = baseCost * 0.1; // 90% savings per trade!
-            const totalGasCost = baseCost + (perTradeCost * trades.length);
-
-            const latency = Date.now() - startTime;
-            const txHash = `0xBATCH${Date.now()}`;
-
-            // Update stats
-            this.stats.totalSettlements++;
-            this.stats.totalGasCost += totalGasCost;
-
-            const chainStats = this.stats.byChain[chain.key];
-            chainStats.settlements++;
-            chainStats.trades += trades.length;
-            chainStats.gasCost += totalGasCost;
-
-            return trades.map((trade, index) => ({
-                success: true,
-                chain: chain.name,
-                chainKey: chain.key,
-                txHash: `${txHash}-${index}`,
-                gasCost: (totalGasCost / trades.length),
-                latency: latency,
-                batch: true,
-                batchSize: trades.length
-            }));
-
+            const results = await Promise.all(trades.map(t => this.settleTrade(t, { ...options, chain })));
+            return results.map(r => ({ ...r, batch: true, batchSize: trades.length }));
         } catch (error) {
             this.stats.byChain[chain.key].errors++;
             throw error;
@@ -433,6 +478,11 @@ class BlockchainSettlementEngine {
             stats.solanaExecutor = this.solanaExecutor.getStats();
         }
 
+        // Add Sonic executor stats if available
+        if (this.sonicExecutor) {
+            stats.sonicExecutor = this.sonicExecutor.getStats();
+        }
+
         // Add Cosmos executor stats if available
         if (this.cosmosExecutor) {
             stats.cosmosExecutor = this.cosmosExecutor.getStats();
@@ -454,6 +504,16 @@ class BlockchainSettlementEngine {
             return null;
         }
         return await this.solanaExecutor.getBalance();
+    }
+
+    /**
+     * Get Sonic wallet balance
+     */
+    async getSonicBalance() {
+        if (!this.sonicExecutor) {
+            return null;
+        }
+        return await this.sonicExecutor.getBalance();
     }
 
     /**
