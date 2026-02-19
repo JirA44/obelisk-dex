@@ -4,7 +4,7 @@
  *
  * Usage:
  *   node scripts/test_sonic_dex.js          # Quotes only (pas de tx)
- *   node scripts/test_sonic_dex.js --swap   # Swap réel 1 USDC → wS
+ *   node scripts/test_sonic_dex.js --swap   # Swap réel 0.01 S → USDC
  */
 
 require('dotenv').config({ path: require('path').join(__dirname, '../.env') });
@@ -37,6 +37,7 @@ async function main() {
 
     // ── 3. Quotes: USDC → wS ─────────────────────────────────────────────
     const PAIRS = [
+        { from: 'S',    to: 'USDC', amount: 0.05 },
         { from: 'USDC', to: 'wS',   amount: 10   },
         { from: 'USDC', to: 'WETH', amount: 10   },
         { from: 'wS',   to: 'USDC', amount: 100  },
@@ -79,18 +80,18 @@ async function main() {
             process.exit(1);
         }
 
-        console.log('\n\n🚀 SWAP RÉEL: 1 USDC → wS');
-        console.log('   Slippage: 0.5%');
+        console.log('\n\n🚀 SWAP RÉEL: 0.005 S (natif) → USDC');
+        console.log('   Slippage: 2%');
 
-        // 1 USDC = 1_000_000 (6 decimals)
-        const amountIn = ethers.parseUnits('1', 6);
+        // 0.005 S = 5_000_000_000_000_000 (18 decimals)
+        const amountIn = ethers.parseEther('0.005');
 
         try {
             const result = await router.executeSwap(
+                ADDRESSES.S,
                 ADDRESSES.USDC,
-                ADDRESSES.wS,
                 amountIn,
-                0.005
+                0.02
             );
 
             console.log('\n   ✅ Swap exécuté!');

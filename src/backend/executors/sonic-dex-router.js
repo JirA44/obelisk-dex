@@ -283,7 +283,7 @@ class SonicDexRouter {
     }
 
     // Odos aggregator — best route across all Sonic DEXes (API-based)
-    async _quoteOdos(tokenIn, tokenOut, amountIn) {
+    async _quoteOdos(tokenIn, tokenOut, amountIn, slippage = 0.5) {
         try {
             const controller = new AbortController();
             const timeout = setTimeout(() => controller.abort(), 5000);
@@ -294,7 +294,7 @@ class SonicDexRouter {
                     chainId: 146,
                     inputTokens: [{ tokenAddress: tokenIn, amount: amountIn.toString() }],
                     outputTokens: [{ tokenAddress: tokenOut, proportion: 1 }],
-                    slippageLimitPercent: 0.5,
+                    slippageLimitPercent: slippage,
                     userAddr: this.wallet?.address || '0x377706801308ac4c3Fe86EEBB295FeC6E1279140',
                     compact: true,
                 }),
@@ -450,13 +450,18 @@ class SonicDexRouter {
         const assembled = await assembleRes.json();
         if (!assembled.transaction) throw new Error(`Odos assemble failed: ${JSON.stringify(assembled).slice(0, 200)}`);
 
-        // 3. Send tx
+        // 3. Send tx immediately (no extra estimateGas to avoid pathId expiry)
         const txReq = assembled.transaction;
+        const rawGas = Number(txReq.gas || 0);
+        const gasLimit = rawGas > 10000
+            ? BigInt(Math.ceil(rawGas * 1.3))  // Odos gas estimate + 30% buffer
+            : 450000n;                           // fallback when simulation failed
+
         const tx = await this.wallet.sendTransaction({
             to:    txReq.to,
             data:  txReq.data,
             value: BigInt(txReq.value || 0),
-            gasLimit: BigInt(Math.ceil((txReq.gas || 300000) * 1.1)),
+            gasLimit,
         });
         const receipt = await tx.wait();
         const latency = Date.now() - startTime;
