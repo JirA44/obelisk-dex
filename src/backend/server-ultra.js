@@ -128,6 +128,20 @@ const sonicExecutor = new SonicExecutor({ network: 'MAINNET' });
 
 console.log('✅ V3 TURBO Blockchain Settlement Engines initialized');
 
+// V3.1: Auto-Batcher for blockchain settlements (batch every 10s)
+const AutoBatcher = require('./auto-batcher');
+const settlementBatcher = new AutoBatcher(blockchainSettlement, {
+    mode: 'HYBRID',
+    batchInterval: 10000,  // 10s batches
+    batchSize: 10,          // Or when 10 trades accumulated
+    enabled: true           // Auto-settlement ON
+});
+
+// Connect settlement to Obelisk Perps
+obeliskPerps.settlementEngine = blockchainSettlement;
+obeliskPerps.batcher = settlementBatcher;
+console.log('✅ Auto-Batcher initialized - Settlement enabled (Sonic Multicall3 priority)');
+
 // ===========================================
 // MULTI-SOURCE PRICE AGGREGATION
 // ===========================================
@@ -370,6 +384,11 @@ initBlockchainRoutes({
     sonic: sonicExecutor
 });
 app.use('/api/blockchain', blockchainRouter);
+
+// Sonic DEX Router (ShadowDEX, SwapX, Beets, Equalizer, Metropolis)
+const sonicDexRouter = require('./routes/sonic-dex');
+app.use('/api/sonic-dex', sonicDexRouter);
+console.log('✅ Sonic DEX Router: ShadowDEX CL/V2, SwapX, Beets, Equalizer, Metropolis');
 
 // Public announcements (from admin)
 app.get('/api/announcements', (req, res) => {
@@ -2222,25 +2241,86 @@ app.get('/api/perps/stats', (req, res) => {
 // Open perps position
 app.post('/api/perps/open', async (req, res) => {
     try {
-        const { coin, side, size, leverage, userId } = req.body;
+        const { coin, side, size, leverage, userId, tp, sl } = req.body;
 
         if (!coin || !side || !size) {
             return res.status(400).json({ error: 'coin, side, size required' });
         }
 
+        const parsedLeverage = parseInt(leverage) || 2;
+        const parsedSize = parseFloat(size);
+
         const result = await obeliskPerps.openPosition({
             coin: coin.toUpperCase(),
             side: side.toLowerCase(),
-            size: parseFloat(size),
-            leverage: parseInt(leverage) || 2,
-            userId: userId || 'api'
+            size: parsedSize,
+            leverage: parsedLeverage,
+            userId: userId || 'api',
+            tp: tp || null,
+            sl: sl || null
         });
+
+        // Auto TP/SL if not provided: SL -1% / TP +2% (RR 2:1 HFT)
+        if (result.success && result.position && !tp && !sl) {
+            const ep = result.position.entryPrice;
+            const autoSl = side.toLowerCase() === 'long'
+                ? parseFloat((ep * 0.99).toFixed(6))
+                : parseFloat((ep * 1.01).toFixed(6));
+            const autoTp = side.toLowerCase() === 'long'
+                ? parseFloat((ep * 1.02).toFixed(6))
+                : parseFloat((ep * 0.98).toFixed(6));
+            const posKey = result.position.id;
+            obeliskPerps.createTpSlOrder(posKey, 'sl', autoSl);
+            obeliskPerps.createTpSlOrder(posKey, 'tp', autoTp);
+            result.position.sl = autoSl;
+            result.position.tp = autoTp;
+        }
+
+        // Queue to settlement batcher
+        if (result.success && typeof settlementBatcher !== 'undefined' && settlementBatcher) {
+            try {
+                settlementBatcher.addTrade({
+                    type: 'OPEN', coin: coin.toUpperCase(), side,
+                    size: parsedSize, leverage: parsedLeverage,
+                    userId: userId || 'api', timestamp: Date.now()
+                });
+            } catch(e) {}
+        }
 
         res.json({
             ...result,
             type: 'PAPER_TRADING',
             disclaimer: 'SIMULÉ - Pas de vrais fonds'
         });
+    } catch (e) {
+        res.status(500).json({ error: e.message });
+    }
+});
+
+// Update TP/SL on existing position
+app.post('/api/perps/update-tpsl', (req, res) => {
+    try {
+        const { positionId, tp, sl } = req.body;
+        if (!positionId) return res.status(400).json({ error: 'positionId required' });
+
+        // Find by position.id (Map key != position.id)
+        let mapKey = null;
+        let position = null;
+        for (const [key, pos] of obeliskPerps.positions.entries()) {
+            if (pos.id === positionId) { mapKey = key; position = pos; break; }
+        }
+        if (!position) return res.status(404).json({ error: 'Position not found' });
+
+        if (tp !== undefined) {
+            position.tp = tp;
+            obeliskPerps.createTpSlOrder(mapKey, 'tp', tp);
+        }
+        if (sl !== undefined) {
+            position.sl = sl;
+            obeliskPerps.createTpSlOrder(mapKey, 'sl', sl);
+        }
+
+        res.json({ success: true, positionId, mapKey, tp: position.tp, sl: position.sl });
     } catch (e) {
         res.status(500).json({ error: e.message });
     }
@@ -4009,7 +4089,7 @@ server.listen(PORT, () => {
         dydx: dydxExecutor,
         gains: gainsExecutor
     }).then(() => {
-        initTradingRoutes(tradingRouter);
+        initTradingRoutes(tradingRouter, settlementBatcher);
         console.log('[OBELISK] ✅ Trading Router ready - Routes: HYP/DEX/dYdX/GAINS');
         console.log(`[OBELISK]    Config: ${tradingRouter.config.dexPriorityMode ? 'DEX Priority' : 'HYP Priority'}`);
     });
