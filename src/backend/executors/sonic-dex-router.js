@@ -23,8 +23,11 @@ const { ethers } = require('ethers');
 
 // ─── SONIC MAINNET ADDRESSES ─────────────────────────────────────────────────
 
+const NATIVE = '0x0000000000000000000000000000000000000000'; // Native S token
+
 const ADDRESSES = {
     // Native tokens
+    S:    NATIVE,                                        // Native Sonic (gas token)
     wS:   '0x039e2fB66102314Ce7b64Ce5Ce3E5183bc94aD38', // Wrapped Sonic
     WETH: '0x50c42dEAcD8Fc9773493ED674b675bE577f2634b',
     USDC: '0x29219dd400f2Bf60E5a23d13Be72B486D4038894',
@@ -326,16 +329,23 @@ class SonicDexRouter {
         const q = await this.getBestQuote(tokenIn, tokenOut, amountIn);
         if (!q.success) throw new Error(q.error);
 
-        const { dex, amountOut, fee } = q.best;
+        const { dex, amountOut, fee, pathId } = q.best;
         const amountOutMin = amountOut * BigInt(Math.floor((1 - slippage) * 10000)) / 10000n;
+        const startTime = Date.now();
 
-        // 2. Approve token spend
-        await this._ensureApproval(tokenIn, this._routerAddress(dex), amountIn);
+        // If Odos won, use Odos execute path (supports native S + best aggregation)
+        if (dex === 'odos') {
+            return this._executeOdos(pathId, tokenIn, amountIn, amountOut, amountOutMin, startTime);
+        }
+
+        // 2. Approve token spend (ERC20 only)
+        if (tokenIn !== NATIVE) {
+            await this._ensureApproval(tokenIn, this._routerAddress(dex), amountIn);
+        }
 
         // 3. Execute on chosen DEX
         const deadline = BigInt(Math.floor(Date.now() / 1000) + 120); // 2 min
         const contracts = this._signerContracts();
-        const startTime = Date.now();
 
         let tx, receipt;
 
@@ -419,6 +429,63 @@ class SonicDexRouter {
         };
     }
 
+    // ─── ODOS EXECUTE ────────────────────────────────────────────────────────
+
+    async _executeOdos(pathId, tokenIn, amountIn, amountOut, amountOutMin, startTime) {
+        // 1. Approve Odos router if ERC20
+        if (tokenIn !== NATIVE) {
+            await this._ensureApproval(tokenIn, ADDRESSES.ODOS_ROUTER, amountIn);
+        }
+
+        // 2. Assemble transaction
+        const assembleRes = await fetch('https://api.odos.xyz/sor/assemble', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+                pathId,
+                userAddr: this.wallet.address,
+                simulate: false,
+            }),
+        });
+        const assembled = await assembleRes.json();
+        if (!assembled.transaction) throw new Error(`Odos assemble failed: ${JSON.stringify(assembled).slice(0, 200)}`);
+
+        // 3. Send tx
+        const txReq = assembled.transaction;
+        const tx = await this.wallet.sendTransaction({
+            to:    txReq.to,
+            data:  txReq.data,
+            value: BigInt(txReq.value || 0),
+            gasLimit: BigInt(Math.ceil((txReq.gas || 300000) * 1.1)),
+        });
+        const receipt = await tx.wait();
+        const latency = Date.now() - startTime;
+
+        const gasUsed = receipt.gasUsed;
+        const gasPrice = receipt.gasPrice || tx.gasPrice;
+        const gasCostS = parseFloat(ethers.formatEther(gasUsed * gasPrice));
+        const gasCostUsd = gasCostS * 0.049106;
+
+        this.stats.totalSwaps++;
+        this.stats.byDex.odos = (this.stats.byDex.odos || 0) + 1;
+
+        console.log(`✅ Odos swap: ${amountIn} → ~${amountOut} | gas $${gasCostUsd.toFixed(6)} | ${latency}ms`);
+
+        return {
+            success: true,
+            dex: 'odos',
+            txHash: receipt.hash,
+            tokenIn, tokenOut: null, // tokenOut resolved by Odos
+            amountIn: amountIn.toString(),
+            amountOut: amountOut.toString(),
+            amountOutMin: amountOutMin.toString(),
+            gasCostUsd: gasCostUsd.toFixed(6),
+            latencyMs: latency,
+            blockNumber: receipt.blockNumber,
+            explorer: `https://sonicscan.org/tx/${receipt.hash}`,
+        };
+    }
+
     // ─── APPROVE ERC20 ───────────────────────────────────────────────────────
 
     async _ensureApproval(token, spender, amount) {
@@ -459,10 +526,13 @@ class SonicDexRouter {
         if (!tokenInAddr)  throw new Error(`Unknown token: ${tokenInSymbol}`);
         if (!tokenOutAddr) throw new Error(`Unknown token: ${tokenOutSymbol}`);
 
-        // Get decimals
+        // Native S has 18 decimals (no contract needed)
+        const getNativeDecimals = (addr) => addr === NATIVE ? Promise.resolve(18n) :
+            new ethers.Contract(addr, ABI.ERC20, this.provider).decimals();
+
         const [decIn, decOut] = await Promise.all([
-            new ethers.Contract(tokenInAddr,  ABI.ERC20, this.provider).decimals(),
-            new ethers.Contract(tokenOutAddr, ABI.ERC20, this.provider).decimals(),
+            getNativeDecimals(tokenInAddr),
+            getNativeDecimals(tokenOutAddr),
         ]);
 
         const amountInBig = ethers.parseUnits(amountIn.toString(), decIn);
