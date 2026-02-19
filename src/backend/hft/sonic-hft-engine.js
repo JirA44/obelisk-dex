@@ -13,7 +13,7 @@
  *   Size: $5/trade | Max positions: 5
  *   Expected: 247 trades/day, 63.2% win rate, 5.66% daily ROI
  *
- * Version: 2.0 | Date: 2026-02-19
+ * Version: 2.1 | Date: 2026-02-19
  */
 
 const AutoBatcher = require('../auto-batcher');
@@ -34,10 +34,13 @@ const CFG = {
 
     // Signal
     rsiWindow:     14,
-    rsiOverbought: 65,
-    rsiOversold:   35,
-    vwapPct:       0.0003,  // Deviation threshold: 0.03% (realistic for crypto)
+    rsiOverbought: 72,      // Tighter: was 65 (too many false SHORT signals)
+    rsiOversold:   28,      // Tighter: was 35
+    vwapPct:       0.0005,  // Deviation threshold: 0.05% (was 0.03%, stronger signal)
     signalWindow:  30,      // price history per pair
+    emaFast:       5,       // EMA cross fast period
+    emaSlow:       20,      // EMA cross slow period
+    cooldownMs:    45000,   // 45s cooldown per pair per side after signal
 
     // Timing
     priceInterval: 2000,    // fetch all markets every 2s
@@ -58,6 +61,9 @@ class SonicHFTEngine {
 
         // Per-pair price history: { 'BTC/USDC': [{price, ts}, ...] }
         this.priceHistory = {};
+
+        // Cooldown tracker: { 'BTC/USDC_long': lastSignalTs, ... }
+        this.cooldowns = {};
         this.cfg.pairs.forEach(p => { this.priceHistory[p] = []; });
 
         // Open positions: { posId: { pair, side, entry, size, sl, tp, openTs } }
@@ -149,26 +155,52 @@ class SonicHFTEngine {
         return priceObjs.reduce((s, p) => s + p.price, 0) / priceObjs.length;
     }
 
+    // ── EMA ────────────────────────────────────────────────────────────────────
+
+    _calcEMA(prices, period) {
+        if (prices.length < period) return null;
+        const k = 2 / (period + 1);
+        let ema = prices.slice(0, period).reduce((a, b) => a + b, 0) / period;
+        for (let i = period; i < prices.length; i++) {
+            ema = prices[i] * k + ema * (1 - k);
+        }
+        return ema;
+    }
+
     // ── Signal per pair ────────────────────────────────────────────────────────
 
     _getSignal(pair) {
         const hist = this.priceHistory[pair];
-        if (hist.length < this.cfg.rsiWindow + 2) return null;
+        const minLen = Math.max(this.cfg.rsiWindow + 2, this.cfg.emaSlow + 1);
+        if (hist.length < minLen) return null;
 
-        const ps = hist.map(h => h.price);
+        const ps  = hist.map(h => h.price);
         const rsi = this._calcRSI(ps, this.cfg.rsiWindow);
         if (rsi === null) return null;
 
-        const vwap = this._calcVWAP(hist.slice(-this.cfg.signalWindow));
-        const cur  = ps[ps.length - 1];
-        const dev  = vwap ? (cur - vwap) / vwap : 0;
+        const vwap    = this._calcVWAP(hist.slice(-this.cfg.signalWindow));
+        const cur     = ps[ps.length - 1];
+        const dev     = vwap ? (cur - vwap) / vwap : 0;
 
-        // Long: RSI oversold + below VWAP
-        if (rsi < this.cfg.rsiOversold && dev < -this.cfg.vwapPct) {
+        // EMA cross filter — only trade when short-term trend confirms reversal
+        const emaFast = this._calcEMA(ps, this.cfg.emaFast);
+        const emaSlow = this._calcEMA(ps, this.cfg.emaSlow);
+        if (emaFast === null || emaSlow === null) return null;
+
+        const now = Date.now();
+
+        // Long: RSI oversold + below VWAP + EMA5 < EMA20 (downtrend about to reverse)
+        if (rsi < this.cfg.rsiOversold && dev < -this.cfg.vwapPct && emaFast < emaSlow) {
+            const key = `${pair}_long`;
+            if ((this.cooldowns[key] || 0) + this.cfg.cooldownMs > now) return null; // cooldown
+            this.cooldowns[key] = now;
             return { side: 'long',  pair, rsi: +rsi.toFixed(1), dev: +dev.toFixed(5), price: cur };
         }
-        // Short: RSI overbought + above VWAP
-        if (rsi > this.cfg.rsiOverbought && dev > this.cfg.vwapPct) {
+        // Short: RSI overbought + above VWAP + EMA5 > EMA20 (uptrend about to reverse)
+        if (rsi > this.cfg.rsiOverbought && dev > this.cfg.vwapPct && emaFast > emaSlow) {
+            const key = `${pair}_short`;
+            if ((this.cooldowns[key] || 0) + this.cfg.cooldownMs > now) return null; // cooldown
+            this.cooldowns[key] = now;
             return { side: 'short', pair, rsi: +rsi.toFixed(1), dev: +dev.toFixed(5), price: cur };
         }
         return null;
@@ -276,7 +308,7 @@ class SonicHFTEngine {
         this.batcher.start();
 
         console.log('═'.repeat(64));
-        console.log('  SONIC HFT ENGINE v2.0 — MULTI-PAIR');
+        console.log('  SONIC HFT ENGINE v2.1 — MULTI-PAIR + EMA FILTER');
         console.log('═'.repeat(64));
         console.log(`  Pairs : ${this.cfg.pairs.join(', ')}`);
         console.log(`  Size  : $${this.cfg.sizeUsd} | SL: ${this.cfg.slPct*100}% | TP: ${this.cfg.tpPct*100}%`);

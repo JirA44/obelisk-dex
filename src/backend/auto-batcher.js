@@ -178,6 +178,13 @@ class AutoBatcher extends EventEmitter {
             return; // Not enough trades yet — wait silently
         }
 
+        // Sort by PnL descending so profitable trades settle first
+        this.pendingTrades.sort((a, b) => {
+            const pnlA = a.realizedPnl ?? a.pnl ?? a.estimatedPnl ?? 0;
+            const pnlB = b.realizedPnl ?? b.pnl ?? b.estimatedPnl ?? 0;
+            return pnlB - pnlA;
+        });
+
         // Take exactly batchSize trades (10)
         const tradesToSettle = this.pendingTrades.splice(0, this.config.batchSize);
 
