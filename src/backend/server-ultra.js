@@ -390,6 +390,21 @@ const sonicDexRouter = require('./routes/sonic-dex');
 app.use('/api/sonic-dex', sonicDexRouter);
 console.log('✅ Sonic DEX Router: ShadowDEX CL/V2, SwapX, Beets, Equalizer, Metropolis');
 
+// Sonic HFT Engine stats proxy (sonic-hft PM2 process on port 3002)
+app.get('/api/hft/status', (req, res) => {
+    const hftHttp = require('http');
+    const hftReq = hftHttp.get('http://localhost:3002/', (hftRes) => {
+        let data = '';
+        hftRes.on('data', d => data += d);
+        hftRes.on('end', () => {
+            try { res.json(JSON.parse(data)); }
+            catch { res.status(502).json({ error: 'HFT parse error' }); }
+        });
+    });
+    hftReq.on('error', () => res.status(503).json({ ok: false, error: 'sonic-hft not running', hint: 'pm2 start ecosystem.config.js --only sonic-hft' }));
+    hftReq.setTimeout(3000, () => { hftReq.destroy(); res.status(504).json({ error: 'HFT timeout' }); });
+});
+
 // Public announcements (from admin)
 app.get('/api/announcements', (req, res) => {
     res.json({ announcements: adminRouter.getAnnouncements() });

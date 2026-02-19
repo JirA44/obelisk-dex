@@ -11,7 +11,10 @@
  */
 
 require('dotenv').config({ path: require('path').join(__dirname, '.env') });
+const http = require('http');
 const SonicHFTEngine = require('./src/backend/hft/sonic-hft-engine');
+
+const STATS_PORT = 3002;
 
 const engine = new SonicHFTEngine({
     priceInterval: 2000,   // 2s intervals (stable for long runs)
@@ -31,7 +34,22 @@ console.log(`  Filters: RSI(72/28) + EMA(5/20) + VWAP(0.05%) + Cooldown(45s)`);
 console.log(`  Profit guard: ON (batch 10, Sonic gas $0.00021)`);
 console.log('');
 
-// Stats every 60s
+// ── Stats HTTP server (port 3002) ──────────────────────────────────────────
+const statsServer = http.createServer((req, res) => {
+    if (req.url === '/health') {
+        res.writeHead(200, { 'Content-Type': 'text/plain' });
+        res.end('ok');
+        return;
+    }
+    const s = engine.getStats();
+    res.writeHead(200, { 'Content-Type': 'application/json', 'Access-Control-Allow-Origin': '*' });
+    res.end(JSON.stringify({ ok: true, engine: 'sonic-hft', version: '2.1', ...s }, null, 2));
+});
+statsServer.listen(STATS_PORT, () => {
+    console.log(`  Stats API: http://localhost:${STATS_PORT}/stats`);
+});
+
+// ── Stats log every 60s ────────────────────────────────────────────────────
 const reportInterval = setInterval(() => {
     const s = engine.getStats();
     const elapsed = Math.floor(s.elapsedSec / 60) + 'm' + (s.elapsedSec % 60) + 's';
@@ -43,6 +61,7 @@ const reportInterval = setInterval(() => {
 const shutdown = () => {
     console.log('\n[HFT] Shutdown signal — stopping engine...');
     clearInterval(reportInterval);
+    statsServer.close();
     engine.stop();
 
     setTimeout(() => {
