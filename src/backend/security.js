@@ -394,6 +394,11 @@ class SecurityModule {
         return (req, res, next) => {
             const ip = req.ip || req.connection.remoteAddress || 'unknown';
 
+            // Localhost is always trusted (internal tools, tests, MixBot)
+            if (ip === '127.0.0.1' || ip === '::1' || ip === '::ffff:127.0.0.1') {
+                return next();
+            }
+
             // Check if IP is blocked
             if (this.blockedIPs.has(ip)) {
                 return res.status(403).json({

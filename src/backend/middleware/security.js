@@ -7,11 +7,16 @@ const rateLimit = require('express-rate-limit');
 const helmet = require('helmet');
 
 // Rate limiters by endpoint type
+// Skip rate limit for localhost (HFT internal calls)
+const skipLocalhost = (req) =>
+  req.ip === '127.0.0.1' || req.ip === '::1' || req.ip === '::ffff:127.0.0.1';
+
 const rateLimiters = {
-  // General API - 100 req/min
+  // General API - 100 req/min (localhost bypassed for HFT)
   general: rateLimit({
     windowMs: 60 * 1000,
     max: 100,
+    skip: skipLocalhost,
     message: { error: 'Too many requests', code: 'RATE_LIMIT', retryAfter: 60 },
     standardHeaders: true,
     legacyHeaders: false,
@@ -26,10 +31,11 @@ const rateLimiters = {
     legacyHeaders: false,
   }),
 
-  // Trading endpoints - 30 req/min
+  // Trading endpoints - 600 req/min (HFT internal, localhost bypassed)
   trading: rateLimit({
     windowMs: 60 * 1000,
-    max: 30,
+    max: 600,
+    skip: (req) => req.ip === '127.0.0.1' || req.ip === '::1' || req.ip === '::ffff:127.0.0.1',
     message: { error: 'Trading rate limit reached', code: 'TRADE_RATE_LIMIT', retryAfter: 60 },
     standardHeaders: true,
     legacyHeaders: false,
