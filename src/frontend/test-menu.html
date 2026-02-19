@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Test Menu Wrapping - Obelisk</title>
+    <link rel="stylesheet" href="css/main.css">
+    <style>
+        body {
+            margin: 0;
+            padding: 20px;
+            background: var(--bg-primary, #050a14);
+        }
+        .test-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background: var(--bg-secondary, #0a1428);
+            border: 1px solid var(--border-color, rgba(201,162,39,0.2));
+            border-radius: 8px;
+        }
+        h1 {
+            color: var(--text-primary, #ffffff);
+            padding: 20px;
+            margin: 0;
+            border-bottom: 1px solid var(--border-color, rgba(201,162,39,0.2));
+        }
+    </style>
+</head>
+<body>
+    <div class="test-container">
+        <h1>🧪 Test Menu Multi-lignes</h1>
+
+        <!-- Row 2: Navigation - Line 1 -->
+        <div class="header-row header-nav">
+            <nav class="nav-tabs nav-row-1">
+                <button type="button" class="nav-tab active">🏠 Accueil</button>
+                <button type="button" class="nav-tab">📈 Trading</button>
+                <button type="button" class="nav-tab">🔄 Échange</button>
+                <button type="button" class="nav-tab">⚡ Fast</button>
+                <button type="button" class="nav-tab">🚀 HFT</button>
+                <button type="button" class="nav-tab">📉 Perps</button>
+                <button type="button" class="nav-tab">🏦 Banque</button>
+                <button type="button" class="nav-tab">👛 Portefeuille</button>
+                <button type="button" class="nav-tab">📊 Portfolio</button>
+                <button type="button" class="nav-tab">🎯 Combos</button>
+                <button type="button" class="nav-tab">💰 Investir</button>
+            </nav>
+        </div>
+
+        <!-- Row 3: Navigation - Line 2 -->
+        <div class="header-row header-nav nav-line-2">
+            <nav class="nav-tabs nav-row-2">
+                <button type="button" class="nav-tab">🛒 Produits</button>
+                <button type="button" class="nav-tab">📜 Obligations</button>
+                <button type="button" class="nav-tab">🔧 Outils</button>
+                <button type="button" class="nav-tab">🤖 Bots</button>
+                <button type="button" class="nav-tab">📚 Apprendre</button>
+                <button type="button" class="nav-tab">🏛️ À propos</button>
+                <button type="button" class="nav-tab">💡 Solutions</button>
+                <button type="button" class="nav-tab">🏗️ Entreprises</button>
+                <button type="button" class="nav-tab">🏢 Institutionnel</button>
+                <button type="button" class="nav-tab">⚙ Paramètres</button>
+            </nav>
+        </div>
+
+        <div style="padding: 20px; color: var(--text-primary, #fff);">
+            <h2>Instructions:</h2>
+            <ol>
+                <li>Réduisez la largeur de votre navigateur</li>
+                <li>Les menus doivent automatiquement passer sur plusieurs lignes</li>
+                <li>Aucun élément ne doit dépasser du bord droit</li>
+            </ol>
+            <p><strong>Si ça marche ici, ça marchera dans l'app !</strong></p>
+        </div>
+    </div>
+
+    <script>
+        // Add click feedback
+        document.querySelectorAll('.nav-tab').forEach(tab => {
+            tab.addEventListener('click', function() {
+                document.querySelectorAll('.nav-tab').forEach(t => t.classList.remove('active'));
+                this.classList.add('active');
+            });
+        });
+    </script>
+</body>
+</html>

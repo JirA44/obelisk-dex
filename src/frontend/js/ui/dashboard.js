@@ -133,14 +133,15 @@ const ObeliskDashboard = (function() {
     function getPortfolioData() {
         const portfolio = window.SimulatedPortfolio || null;
 
-        // Safe number helper
+        // Ultra-safe number helper - prevents any NaN leakage
         const safe = (val, def = 0) => {
-            if (val === null || val === undefined) return def;
+            if (val === null || val === undefined || val === '' || typeof val === 'string' && val.toLowerCase() === 'nan') return def;
             const num = parseFloat(val);
-            return Number.isFinite(num) ? num : def;
+            if (!Number.isFinite(num) || Number.isNaN(num)) return def;
+            return num;
         };
 
-        // Default demo values
+        // Default demo values with validation
         let totalValue = 10000;
         let pnl24h = 234.56;
 
@@ -160,19 +161,32 @@ const ObeliskDashboard = (function() {
 
         if (portfolio && typeof portfolio.getPnL24h === 'function') {
             try {
-                pnl24h = safe(portfolio.getPnL24h(), 234.56);
+                const rawPnl = portfolio.getPnL24h();
+                pnl24h = safe(rawPnl, 234.56);
             } catch (e) {
+                console.warn('[Dashboard] getPnL24h error:', e);
                 pnl24h = 234.56;
             }
         }
 
         const positions = portfolio?.portfolio?.investments?.length || 0;
-        const favs = JSON.parse(localStorage.getItem('obelisk_favorites') || '[]');
+
+        let favs = [];
+        try {
+            favs = JSON.parse(localStorage.getItem('obelisk_favorites') || '[]');
+            if (!Array.isArray(favs)) favs = [];
+        } catch {
+            favs = [];
+        }
+
+        // Final validation before return
+        const finalTotal = safe(totalValue, 10000);
+        const finalPnl = safe(pnl24h, 234.56);
 
         return {
-            totalValue: safe(totalValue, 10000),
-            pnl24h: safe(pnl24h, 234.56),
-            positions,
+            totalValue: finalTotal,
+            pnl24h: finalPnl,
+            positions: Math.max(0, parseInt(positions) || 0),
             favs
         };
     }
@@ -196,17 +210,22 @@ const ObeliskDashboard = (function() {
 
         const { totalValue, pnl24h, positions, favs } = getPortfolioData();
 
-        // Ultra-safe number handling
+        // Ultra-safe number handling with NaN prevention
         const safeNum = (v, d = 0) => {
-            if (v === null || v === undefined) return d;
+            if (v === null || v === undefined || v === '' || typeof v === 'string' && v.toLowerCase() === 'nan') return d;
             const n = parseFloat(v);
-            return Number.isFinite(n) ? n : d;
+            if (!Number.isFinite(n) || Number.isNaN(n)) return d;
+            return n;
         };
 
         const safeTotal = safeNum(totalValue, 10000);
-        const safePnl = safeNum(pnl24h, 0);
-        const base = safeTotal > safePnl ? safeTotal - safePnl : safeTotal;
-        const pnlPercent = base > 0 ? safeNum((safePnl / base) * 100, 0).toFixed(2) : '0.00';
+        const safePnl = safeNum(pnl24h, 234.56);
+
+        // Calculate base value safely
+        const base = safeTotal > Math.abs(safePnl) ? safeTotal - safePnl : safeTotal;
+        const pnlPercentRaw = base > 0 ? (safePnl / base) * 100 : 0;
+        const pnlPercent = safeNum(pnlPercentRaw, 0).toFixed(2);
+
         const pnlColor = safePnl >= 0 ? '#00ff88' : '#ff4444';
         const pnlSign = safePnl >= 0 ? '+' : '';
 
@@ -219,14 +238,18 @@ const ObeliskDashboard = (function() {
         const movers = getMarketMovers();
 
         // Use translations directly
-        // Ensure NaN-safe formatting helpers
+        // Ultra-safe formatting helpers - NEVER output NaN
         const fmtCurrency = (v) => {
-            const n = Number.isFinite(v) ? v : 0;
-            return '$' + Math.abs(n).toLocaleString('en-US', {minimumFractionDigits:2, maximumFractionDigits:2});
+            if (v === null || v === undefined || v === '' || typeof v === 'string' && v.toLowerCase() === 'nan') v = 0;
+            const n = parseFloat(v);
+            const safeN = (Number.isFinite(n) && !Number.isNaN(n)) ? n : 0;
+            return '$' + Math.abs(safeN).toLocaleString('en-US', {minimumFractionDigits:2, maximumFractionDigits:2});
         };
         const fmtPct = (v) => {
-            const n = Number.isFinite(parseFloat(v)) ? parseFloat(v) : 0;
-            return n.toFixed(2);
+            if (v === null || v === undefined || v === '' || typeof v === 'string' && v.toLowerCase() === 'nan') v = 0;
+            const n = parseFloat(v);
+            const safeN = (Number.isFinite(n) && !Number.isNaN(n)) ? n : 0;
+            return safeN.toFixed(2);
         };
 
         const labels = {
@@ -311,10 +334,12 @@ const ObeliskDashboard = (function() {
                                 const color = ch >= 0 ? '#00ff88' : '#ff4444';
                                 const sign = ch >= 0 ? '+' : '';
                                 const p = safeNum(m.price, 0);
+                                const priceDisplay = p >= 1000 ? safeNum(p, 0).toLocaleString('en-US',{maximumFractionDigits:0}) : safeNum(p, 0).toFixed(2);
+                                const changeDisplay = safeNum(ch, 0).toFixed(2);
                                 return `<div class="dash-mover-row">
-                                    <span class="dash-mover-symbol">${m.symbol}</span>
-                                    <span style="color:var(--text-muted)">$${p >= 1000 ? p.toLocaleString('en-US',{maximumFractionDigits:0}) : p.toFixed(2)}</span>
-                                    <span class="dash-mover-change" style="color:${color}">${sign}${ch.toFixed(2)}%</span>
+                                    <span class="dash-mover-symbol">${m.symbol || 'N/A'}</span>
+                                    <span style="color:var(--text-muted)">$${priceDisplay}</span>
+                                    <span class="dash-mover-change" style="color:${color}">${sign}${changeDisplay}%</span>
                                 </div>`;
                             }).join('')}
                         </div>
@@ -416,12 +441,15 @@ const ObeliskDashboard = (function() {
         drawDonut(canvas, segments);
 
         if (legend) {
-            const total = segments.reduce((s, seg) => s + seg.value, 0);
+            const total = segments.reduce((s, seg) => s + parseFloat(seg.value || 0), 0);
+            const safeTotal = total > 0 ? total : 1; // Prevent division by zero
             legend.innerHTML = segments.map(seg => {
-                const pct = ((seg.value / total) * 100).toFixed(1);
+                const segValue = parseFloat(seg.value || 0);
+                const pctRaw = (segValue / safeTotal) * 100;
+                const pct = (Number.isFinite(pctRaw) && !Number.isNaN(pctRaw)) ? pctRaw.toFixed(1) : '0.0';
                 return `<div style="display:flex;align-items:center;gap:8px;margin:4px 0;">
                     <span style="display:inline-block;width:10px;height:10px;border-radius:50%;background:${seg.color}"></span>
-                    <span style="color:var(--text-primary)">${seg.label}</span>
+                    <span style="color:var(--text-primary)">${seg.label || 'N/A'}</span>
                     <span style="color:var(--text-muted);margin-left:auto">${pct}%</span>
                 </div>`;
             }).join('');

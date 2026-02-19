@@ -89,7 +89,7 @@
             background-size: 200% 100%;
             animation: demo-gradient 3s ease infinite;
             color: #fff;
-            z-index: 600;
+            z-index: 40;
             padding: 10px 20px;
             font-size: 14px;
         }
@@ -4065,8 +4065,41 @@
                         </div>
                     </div>
 
+                    <!-- Investment Strategy Alert -->
+                    <div style="background:rgba(201,162,39,0.1);border:2px solid rgba(201,162,39,0.3);border-radius:16px;padding:24px;margin-bottom:32px;text-align:center;">
+                        <h3 style="color:#c9a227;margin-bottom:12px;font-size:1.3rem;">🛡️ Sécurité et Prudence Avant Tout</h3>
+                        <p style="color:#ddd;line-height:1.7;max-width:800px;margin:0 auto;">
+                            Obelisk Business privilégie les <strong style="color:#00ff88;">investissements diversifiés à faible risque</strong>,
+                            adaptés à la gestion de trésorerie d'entreprise. Le trading agressif n'est pas recommandé pour les fonds d'entreprise.
+                        </p>
+                    </div>
+
+                    <!-- Investment Products Grid -->
+                    <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:16px;margin-bottom:32px;">
+                        <div style="background:linear-gradient(145deg,#1a1a2e,#0d0d1a);border:1px solid rgba(0,255,136,0.3);border-radius:12px;padding:20px;">
+                            <span style="font-size:1.8rem;">🛡️</span>
+                            <h4 style="color:#00ff88;margin:10px 0 6px;font-size:1rem;">Staking Sécurisé</h4>
+                            <p style="color:#999;font-size:0.9rem;line-height:1.5;">ETH 2.0, stablecoins - 3-8% APY, risque minimal</p>
+                        </div>
+                        <div style="background:linear-gradient(145deg,#1a1a2e,#0d0d1a);border:1px solid rgba(201,162,39,0.3);border-radius:12px;padding:20px;">
+                            <span style="font-size:1.8rem;">📜</span>
+                            <h4 style="color:#c9a227;margin:10px 0 6px;font-size:1rem;">Obligations Crypto</h4>
+                            <p style="color:#999;font-size:0.9rem;line-height:1.5;">Produits à revenu fixe - 4-10% APY, capital protégé</p>
+                        </div>
+                        <div style="background:linear-gradient(145deg,#1a1a2e,#0d0d1a);border:1px solid rgba(0,170,255,0.3);border-radius:12px;padding:20px;">
+                            <span style="font-size:1.8rem;">📊</span>
+                            <h4 style="color:#00aaff;margin:10px 0 6px;font-size:1rem;">Index Diversifiés</h4>
+                            <p style="color:#999;font-size:0.9rem;line-height:1.5;">Top 10/20/50 cryptos, rééquilibrage auto</p>
+                        </div>
+                        <div style="background:linear-gradient(145deg,#1a1a2e,#0d0d1a);border:1px solid rgba(138,43,226,0.3);border-radius:12px;padding:20px;">
+                            <span style="font-size:1.8rem;">🏦</span>
+                            <h4 style="color:#a855f7;margin:10px 0 6px;font-size:1rem;">DeFi Prudent</h4>
+                            <p style="color:#999;font-size:0.9rem;line-height:1.5;">Pools stables, lending - 5-12% APY, audité</p>
+                        </div>
+                    </div>
+
                     <!-- Services Grid -->
-                    <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));gap:20px;">
+                    <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:20px;">
                         <div style="background:linear-gradient(145deg,#1a1a2e,#0d0d1a);border:1px solid #333;border-radius:16px;padding:24px;">
                             <span style="font-size:2rem;">💼</span>
                             <h3 style="color:#fff;margin:12px 0 8px;">Trésorerie d'entreprise</h3>
@@ -4079,8 +4112,8 @@
                         </div>
                         <div style="background:linear-gradient(145deg,#1a1a2e,#0d0d1a);border:1px solid #333;border-radius:16px;padding:24px;">
                             <span style="font-size:2rem;">📊</span>
-                            <h3 style="color:#fff;margin:12px 0 8px;">Gestion d'actifs</h3>
-                            <p style="color:#888;">Diversifiez la trésorerie de votre entreprise avec des produits à rendement garanti.</p>
+                            <h3 style="color:#fff;margin:12px 0 8px;">Portfolio Personnalisé</h3>
+                            <p style="color:#888;">Diversifiez avec staking, obligations, index et DeFi prudent. Rendements stables et prévisibles.</p>
                         </div>
                         <div style="background:linear-gradient(145deg,#1a1a2e,#0d0d1a);border:1px solid #333;border-radius:16px;padding:24px;">
                             <span style="font-size:2rem;">🔐</span>
@@ -4091,9 +4124,12 @@
 
                     <!-- CTA -->
                     <div style="text-align:center;padding:40px;margin-top:40px;background:linear-gradient(135deg,rgba(201,162,39,0.1),rgba(0,212,255,0.05));border-radius:24px;border:1px solid rgba(201,162,39,0.2);">
-                        <h2 style="color:#fff;margin-bottom:16px;">Prêt à démarrer ?</h2>
-                        <p style="color:#aaa;margin-bottom:24px;">Contactez notre équipe pour une démonstration personnalisée.</p>
-                        <button onclick="ObeliskApp.switchTab('about')" style="background:linear-gradient(135deg,#c9a227,#00d4ff);color:#000;font-size:16px;font-weight:700;padding:14px 32px;border:none;border-radius:12px;cursor:pointer;">En savoir plus</button>
+                        <h2 style="color:#fff;margin-bottom:16px;">Prêt à commencer ?</h2>
+                        <p style="color:#aaa;margin-bottom:24px;">Essayez gratuitement avec notre démo complète. Aucune carte requise.</p>
+                        <div style="display:flex;gap:16px;justify-content:center;flex-wrap:wrap;">
+                            <a href="business.html" style="display:inline-block;background:linear-gradient(135deg,#c9a227,#ff8800);color:#000;font-size:16px;font-weight:700;padding:14px 32px;border:none;border-radius:12px;cursor:pointer;text-decoration:none;">🚀 Essayer Gratuitement</a>
+                            <a href="mailto:business@obelisk-dex.com" style="display:inline-block;background:rgba(255,255,255,0.1);color:#fff;font-size:16px;font-weight:700;padding:14px 32px;border:1px solid rgba(201,162,39,0.3);border-radius:12px;cursor:pointer;text-decoration:none;">📧 Contacter Sales</a>
+                        </div>
                     </div>
                 </div>
             </section>
@@ -4101,10 +4137,42 @@
             <!-- Institutional & Enterprise Section -->
             <section class="tab-content" id="tab-institutional">
                 <div style="max-width:1200px;margin:0 auto;padding:40px 20px;">
-                    <div style="text-align:center;margin-bottom:60px;">
+                    <div style="text-align:center;margin-bottom:40px;">
                         <div style="font-size:80px;margin-bottom:20px;">🏢</div>
-                        <h1 data-i18n="institutional_title" style="font-size:42px;background:linear-gradient(135deg,#f59e0b,#00aaff);-webkit-background-clip:text;-webkit-text-fill-color:transparent;margin-bottom:16px;">Solutions Institutionnelles & Entreprises</h1>
+                        <h1 data-i18n="institutional_title" style="font-size:42px;background:linear-gradient(135deg,#f59e0b,#00aaff);-webkit-background-clip:text;-webkit-text-fill-color:transparent;margin-bottom:16px;">Solutions Institutionnelles</h1>
                         <p data-i18n="institutional_subtitle" style="font-size:18px;color:#888;max-width:700px;margin:0 auto;">Gestion multi-comptes, clés API scopées, rapports de conformité et gestion de trésorerie pour les organisations.</p>
+                    </div>
+
+                    <!-- Investment Strategy for Institutions -->
+                    <div style="background:rgba(0,170,255,0.1);border:2px solid rgba(0,170,255,0.3);border-radius:16px;padding:28px;margin-bottom:40px;text-align:center;">
+                        <h3 style="color:#00aaff;margin-bottom:14px;font-size:1.4rem;">🏦 Gestion Institutionnelle Prudente</h3>
+                        <p style="color:#ddd;line-height:1.8;max-width:900px;margin:0 auto 20px;">
+                            Pour les fonds institutionnels, hedge funds, family offices et asset managers :
+                            <strong style="color:#00ff88;">allocation diversifiée</strong> avec staking sécurisé, obligations tokenisées,
+                            index crypto et DeFi audité. <strong style="color:#f59e0b;">Conformité totale, reporting détaillé, custody sécurisé.</strong>
+                        </p>
+                        <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:16px;max-width:900px;margin:0 auto;">
+                            <div style="background:rgba(0,255,136,0.1);border:1px solid rgba(0,255,136,0.3);border-radius:10px;padding:16px;">
+                                <div style="font-size:1.5rem;margin-bottom:8px;">🛡️</div>
+                                <div style="color:#00ff88;font-weight:700;margin-bottom:4px;">Staking Institutionnel</div>
+                                <div style="color:#aaa;font-size:0.85rem;">3-8% APY garanti</div>
+                            </div>
+                            <div style="background:rgba(201,162,39,0.1);border:1px solid rgba(201,162,39,0.3);border-radius:10px;padding:16px;">
+                                <div style="font-size:1.5rem;margin-bottom:8px;">📜</div>
+                                <div style="color:#c9a227;font-weight:700;margin-bottom:4px;">Obligations & Bons</div>
+                                <div style="color:#aaa;font-size:0.85rem;">4-12% APY fixe</div>
+                            </div>
+                            <div style="background:rgba(0,170,255,0.1);border:1px solid rgba(0,170,255,0.3);border-radius:10px;padding:16px;">
+                                <div style="font-size:1.5rem;margin-bottom:8px;">📊</div>
+                                <div style="color:#00aaff;font-weight:700;margin-bottom:4px;">Index & Baskets</div>
+                                <div style="color:#aaa;font-size:0.85rem;">Diversification max</div>
+                            </div>
+                            <div style="background:rgba(138,43,226,0.1);border:1px solid rgba(138,43,226,0.3);border-radius:10px;padding:16px;">
+                                <div style="font-size:1.5rem;margin-bottom:8px;">🏛️</div>
+                                <div style="color:#a855f7;font-weight:700;margin-bottom:4px;">Custody Sécurisé</div>
+                                <div style="color:#aaa;font-size:0.85rem;">Multi-sig + Cold</div>
+                            </div>
+                        </div>
                     </div>
 
                     <!-- Institutional Features Grid -->
@@ -4165,10 +4233,13 @@
 
                     <!-- CTA -->
                     <div style="text-align:center;padding:40px;background:linear-gradient(135deg,rgba(245,158,11,0.15),rgba(0,170,255,0.1));border-radius:24px;border:1px solid rgba(245,158,11,0.3);">
-                        <h2 style="color:#fff;margin-bottom:16px;" data-i18n="inst_cta_title">Prêt à scaler votre organisation ?</h2>
-                        <p style="color:#aaa;margin-bottom:24px;" data-i18n="inst_cta_desc">Accédez aux outils institutionnels dès maintenant ou contactez notre équipe pour une démo personnalisée.</p>
-                        <button onclick="window.open('institutional.html','_blank')" style="background:linear-gradient(135deg,#f59e0b,#d97706);color:#000;font-size:16px;font-weight:700;padding:14px 32px;border:none;border-radius:12px;cursor:pointer;margin-right:12px;" data-i18n="inst_cta_open">Ouvrir le Panneau Institutionnel</button>
-                        <button onclick="ObeliskApp.switchTab('about')" style="background:transparent;color:#f59e0b;font-size:16px;font-weight:600;padding:14px 32px;border:2px solid #f59e0b;border-radius:12px;cursor:pointer;" data-i18n="inst_cta_learn">En savoir plus</button>
+                        <h2 style="color:#fff;margin-bottom:16px;" data-i18n="inst_cta_title">Prêt à commencer ?</h2>
+                        <p style="color:#aaa;margin-bottom:24px;" data-i18n="inst_cta_desc">Accédez aux outils institutionnels dès maintenant. Démo gratuite disponible, aucune carte requise.</p>
+                        <div style="display:flex;gap:12px;justify-content:center;flex-wrap:wrap;">
+                            <a href="institutional.html" target="_blank" style="display:inline-block;background:linear-gradient(135deg,#f59e0b,#d97706);color:#000;font-size:16px;font-weight:700;padding:14px 32px;border:none;border-radius:12px;cursor:pointer;text-decoration:none;" data-i18n="inst_cta_open">🚀 Accéder au Dashboard</a>
+                            <a href="business.html" style="display:inline-block;background:transparent;color:#00aaff;font-size:16px;font-weight:600;padding:14px 32px;border:2px solid #00aaff;border-radius:12px;cursor:pointer;text-decoration:none;">📊 Voir les Offres</a>
+                            <a href="mailto:institutional@obelisk-dex.com" style="display:inline-block;background:rgba(255,255,255,0.05);color:#f59e0b;font-size:16px;font-weight:600;padding:14px 32px;border:2px solid rgba(245,158,11,0.3);border-radius:12px;cursor:pointer;text-decoration:none;">📧 Contacter</a>
+                        </div>
                     </div>
                 </div>
             </section>

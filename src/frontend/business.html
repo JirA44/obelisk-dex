@@ -1,0 +1,704 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Obelisk Business - Solutions Entreprise</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+    <link rel="icon" type="image/svg+xml" href="assets/obelisk-icon.svg">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        :root {
+            --bg: #000000; --bg2: #050505; --bg3: #0a0a0a;
+            --card: #030303; --border: #1a1a1a;
+            --text: #e8e4d9; --text2: #c9a227; --muted: #6b5d3e;
+            --gold: #c9a227; --cyan: #00d4ff; --green: #00ff88;
+            --red: #ff4444; --orange: #ff8800;
+        }
+        body {
+            font-family: 'Inter', sans-serif;
+            background: linear-gradient(135deg, #0a0a0f 0%, #16213e 100%);
+            color: var(--text);
+            min-height: 100vh;
+        }
+        a { color: var(--cyan); text-decoration: none; }
+
+        /* NAV */
+        .nav {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 16px 32px;
+            border-bottom: 1px solid var(--border);
+            background: rgba(10, 10, 15, 0.95);
+            backdrop-filter: blur(10px);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+        .nav-brand { display: flex; align-items: center; gap: 12px; }
+        .nav-brand span { font-size: 1.3rem; font-weight: 700; color: var(--gold); }
+        .nav-links { display: flex; gap: 24px; align-items: center; }
+        .nav-links a { color: var(--muted); font-size: 0.9rem; font-weight: 500; transition: color 0.3s; }
+        .nav-links a:hover { color: var(--text); }
+        .nav-links a.active { color: var(--gold); }
+
+        /* HERO */
+        .hero {
+            text-align: center;
+            padding: 80px 24px 60px;
+            background: linear-gradient(135deg, rgba(201,162,39,0.1) 0%, rgba(0,212,255,0.05) 100%);
+            border-bottom: 1px solid var(--border);
+        }
+        .hero h1 {
+            font-size: 3rem;
+            color: var(--gold);
+            margin-bottom: 16px;
+            font-weight: 800;
+        }
+        .hero p {
+            color: var(--muted);
+            font-size: 1.1rem;
+            max-width: 700px;
+            margin: 0 auto 32px;
+            line-height: 1.8;
+        }
+
+        .hero-cta {
+            display: inline-flex;
+            gap: 16px;
+            flex-wrap: wrap;
+            justify-content: center;
+        }
+
+        .btn {
+            padding: 14px 32px;
+            border-radius: 8px;
+            font-weight: 600;
+            font-size: 1rem;
+            cursor: pointer;
+            transition: all 0.3s;
+            border: none;
+            text-decoration: none;
+            display: inline-block;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, var(--gold), var(--orange));
+            color: #000;
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 24px rgba(201, 162, 39, 0.4);
+        }
+
+        .btn-secondary {
+            background: rgba(255,255,255,0.05);
+            color: var(--cyan);
+            border: 1px solid var(--cyan);
+        }
+
+        .btn-secondary:hover {
+            background: rgba(0, 212, 255, 0.1);
+        }
+
+        /* CONTAINER */
+        .container { max-width: 1400px; margin: 0 auto; padding: 60px 24px; }
+        .section { margin-bottom: 80px; }
+        .section-title {
+            font-size: 2rem;
+            color: var(--gold);
+            margin-bottom: 32px;
+            text-align: center;
+            font-weight: 700;
+        }
+
+        /* CARDS */
+        .cards-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 24px;
+            margin-bottom: 32px;
+        }
+
+        .card {
+            background: rgba(26, 26, 46, 0.6);
+            border: 1px solid rgba(201, 162, 39, 0.3);
+            border-radius: 16px;
+            padding: 32px;
+            backdrop-filter: blur(10px);
+            transition: all 0.3s;
+        }
+
+        .card:hover {
+            transform: translateY(-8px);
+            border-color: var(--gold);
+            box-shadow: 0 16px 48px rgba(201, 162, 39, 0.2);
+        }
+
+        .card-icon {
+            font-size: 48px;
+            margin-bottom: 20px;
+            display: block;
+        }
+
+        .card-title {
+            font-size: 1.3rem;
+            font-weight: 700;
+            color: var(--gold);
+            margin-bottom: 12px;
+        }
+
+        .card-description {
+            color: var(--muted);
+            line-height: 1.8;
+            font-size: 0.95rem;
+        }
+
+        /* FEATURES LIST */
+        .features-list {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px;
+            margin: 32px 0;
+        }
+
+        .feature-item {
+            display: flex;
+            align-items: flex-start;
+            gap: 12px;
+            padding: 16px;
+            background: rgba(26, 26, 46, 0.4);
+            border-radius: 12px;
+            border: 1px solid rgba(255,255,255,0.05);
+        }
+
+        .feature-icon {
+            font-size: 24px;
+            flex-shrink: 0;
+        }
+
+        .feature-text h4 {
+            color: var(--green);
+            font-size: 1rem;
+            margin-bottom: 4px;
+        }
+
+        .feature-text p {
+            color: var(--muted);
+            font-size: 0.85rem;
+            line-height: 1.6;
+        }
+
+        /* PRICING TABLE */
+        .pricing-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 24px;
+            margin-top: 40px;
+        }
+
+        .pricing-card {
+            background: rgba(26, 26, 46, 0.6);
+            border: 2px solid rgba(201, 162, 39, 0.3);
+            border-radius: 16px;
+            padding: 32px;
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+            gap: 16px;
+        }
+
+        .pricing-card.featured {
+            border-color: var(--gold);
+            box-shadow: 0 0 40px rgba(201, 162, 39, 0.3);
+        }
+
+        .pricing-badge {
+            position: absolute;
+            top: 16px;
+            right: 16px;
+            background: var(--gold);
+            color: #000;
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 0.75rem;
+            font-weight: 700;
+            text-transform: uppercase;
+        }
+
+        .pricing-name {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: var(--gold);
+            margin-bottom: 8px;
+        }
+
+        .pricing-price {
+            font-size: 2.5rem;
+            font-weight: 800;
+            color: var(--text);
+            margin-bottom: 8px;
+        }
+
+        .pricing-period {
+            color: var(--muted);
+            font-size: 0.9rem;
+            margin-bottom: 24px;
+        }
+
+        .pricing-features {
+            list-style: none;
+            text-align: left;
+            margin-bottom: 24px;
+        }
+
+        .pricing-features li {
+            padding: 8px 0;
+            color: var(--text);
+            font-size: 0.9rem;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .pricing-features li::before {
+            content: '✓';
+            color: var(--green);
+            font-weight: bold;
+        }
+
+        /* STATS */
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 24px;
+            margin: 40px 0;
+        }
+
+        .stat-card {
+            background: rgba(26, 26, 46, 0.6);
+            border: 1px solid rgba(201, 162, 39, 0.3);
+            border-radius: 12px;
+            padding: 24px;
+            text-align: center;
+        }
+
+        .stat-value {
+            font-size: 2.5rem;
+            font-weight: 800;
+            font-family: 'JetBrains Mono', monospace;
+            background: linear-gradient(135deg, var(--gold), var(--cyan));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            margin-bottom: 8px;
+        }
+
+        .stat-label {
+            color: var(--muted);
+            font-size: 0.9rem;
+        }
+
+        /* CONTACT SECTION */
+        .contact-box {
+            background: linear-gradient(135deg, rgba(201,162,39,0.1), rgba(0,212,255,0.05));
+            border: 1px solid var(--gold);
+            border-radius: 16px;
+            padding: 48px;
+            text-align: center;
+            max-width: 800px;
+            margin: 60px auto;
+        }
+
+        .contact-box h3 {
+            font-size: 2rem;
+            color: var(--gold);
+            margin-bottom: 16px;
+        }
+
+        .contact-box p {
+            color: var(--text);
+            font-size: 1.1rem;
+            margin-bottom: 32px;
+            line-height: 1.8;
+        }
+
+        /* Footer */
+        .footer {
+            background: rgba(10, 10, 15, 0.95);
+            padding: 40px 24px;
+            text-align: center;
+            border-top: 1px solid var(--border);
+            margin-top: 80px;
+        }
+
+        .footer-links {
+            display: flex;
+            gap: 24px;
+            justify-content: center;
+            flex-wrap: wrap;
+            margin-bottom: 20px;
+        }
+
+        .footer-links a {
+            color: var(--muted);
+            font-size: 0.9rem;
+        }
+
+        .footer-links a:hover {
+            color: var(--gold);
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .hero h1 { font-size: 2rem; }
+            .section-title { font-size: 1.5rem; }
+            .cards-grid { grid-template-columns: 1fr; }
+            .nav { padding: 16px; }
+            .nav-links { gap: 16px; font-size: 0.8rem; }
+        }
+    </style>
+</head>
+<body>
+    <!-- Navigation -->
+    <nav class="nav">
+        <div class="nav-brand">
+            <span>🏛️ Obelisk Business</span>
+        </div>
+        <div class="nav-links">
+            <a href="index.html">App</a>
+            <a href="institutional.html">Institutionnel</a>
+            <a href="welcome.html">Accueil</a>
+            <a href="#contact">Contact</a>
+        </div>
+    </nav>
+
+    <!-- Hero -->
+    <section class="hero">
+        <h1>🏢 Solutions Entreprise</h1>
+        <p>
+            Gérez la trésorerie crypto de votre entreprise avec Obelisk Business.
+            Investissements diversifiés personnalisés, produits passifs sécurisés, reporting avancé, et conformité totale.
+            <strong>Sécurité et prudence avant tout.</strong>
+        </p>
+        <div class="hero-cta">
+            <a href="app.html?mode=business" class="btn btn-primary">🚀 Essayer Gratuitement (Démo)</a>
+            <a href="#pricing" class="btn btn-secondary">Voir les Offres</a>
+        </div>
+    </section>
+
+    <!-- Main Content -->
+    <div class="container">
+        <!-- Why Obelisk Business -->
+        <section class="section">
+            <h2 class="section-title">Pourquoi Obelisk Business ?</h2>
+            <div class="cards-grid">
+                <div class="card">
+                    <span class="card-icon">💼</span>
+                    <h3 class="card-title">Gestion de Trésorerie</h3>
+                    <p class="card-description">
+                        Gérez les fonds crypto de votre entreprise avec des outils professionnels :
+                        multi-wallets, approbations hiérarchiques, limites par utilisateur, audit trail complet.
+                    </p>
+                </div>
+
+                <div class="card">
+                    <span class="card-icon">💰</span>
+                    <h3 class="card-title">Investissements Diversifiés</h3>
+                    <p class="card-description">
+                        Portefeuille personnalisé adapté au profil de votre entreprise : staking sécurisé,
+                        obligations crypto, index diversifiés, DeFi à faible risque. Rendements stables et prévisibles.
+                    </p>
+                </div>
+
+                <div class="card">
+                    <span class="card-icon">📊</span>
+                    <h3 class="card-title">Reporting & Analytics</h3>
+                    <p class="card-description">
+                        Rapports financiers détaillés, exports comptables (CSV, Excel), dashboard temps réel,
+                        alertes configurables, intégration avec vos outils existants (API).
+                    </p>
+                </div>
+
+                <div class="card">
+                    <span class="card-icon">🔒</span>
+                    <h3 class="card-title">Sécurité & Compliance</h3>
+                    <p class="card-description">
+                        Multi-signature, MFA obligatoire, whitelist d'adresses, logs d'audit,
+                        conformité RGPD, certification ISO en cours. Vos fonds en sécurité totale.
+                    </p>
+                </div>
+
+                <div class="card">
+                    <span class="card-icon">👥</span>
+                    <h3 class="card-title">Gestion d'Équipe</h3>
+                    <p class="card-description">
+                        Rôles et permissions granulaires (Admin, Trader, Viewer), workflow d'approbation,
+                        historique d'activité par utilisateur, notifications personnalisables.
+                    </p>
+                </div>
+
+                <div class="card">
+                    <span class="card-icon">🌐</span>
+                    <h3 class="card-title">API & Intégrations</h3>
+                    <p class="card-description">
+                        API REST complète, webhooks, intégrations avec ERP/CRM (SAP, Salesforce),
+                        exports automatiques, SDK disponible en Python/JavaScript/Go.
+                    </p>
+                </div>
+            </div>
+        </section>
+
+        <!-- Investment Strategy for Business -->
+        <section class="section" style="background: rgba(201, 162, 39, 0.05); border: 1px solid rgba(201, 162, 39, 0.2); border-radius: 16px; padding: 40px;">
+            <h2 class="section-title">Stratégie d'Investissement pour Entreprises</h2>
+            <p style="text-align: center; color: var(--muted); margin-bottom: 32px; max-width: 800px; margin-left: auto; margin-right: auto;">
+                <strong style="color: var(--gold);">Sécurité et prudence avant tout.</strong>
+                Obelisk Business privilégie les investissements diversifiés à faible risque,
+                adaptés à la gestion de trésorerie d'entreprise. Le trading agressif n'est pas recommandé.
+            </p>
+            <div class="cards-grid">
+                <div class="card">
+                    <span class="card-icon">🛡️</span>
+                    <h3 class="card-title">Staking Sécurisé</h3>
+                    <p class="card-description">
+                        Staking sur protocoles établis (ETH 2.0, stablecoins) avec rendements prévisibles de 3-8% APY.
+                        Risque minimal, liquidité contrôlée.
+                    </p>
+                </div>
+
+                <div class="card">
+                    <span class="card-icon">📜</span>
+                    <h3 class="card-title">Obligations Crypto</h3>
+                    <p class="card-description">
+                        Obligations tokenisées, bons du Trésor on-chain, produits à revenu fixe.
+                        Rendements stables 4-10% avec capital protégé.
+                    </p>
+                </div>
+
+                <div class="card">
+                    <span class="card-icon">📊</span>
+                    <h3 class="card-title">Index Diversifiés</h3>
+                    <p class="card-description">
+                        Exposition aux top 10, 20 ou 50 cryptos avec rééquilibrage automatique.
+                        Diversification maximale, risque systématique réduit.
+                    </p>
+                </div>
+
+                <div class="card">
+                    <span class="card-icon">🏦</span>
+                    <h3 class="card-title">DeFi Prudent</h3>
+                    <p class="card-description">
+                        Pools de liquidité stables (USDC/USDT), lending sur Aave/Compound.
+                        Rendements 5-12% APY avec protocoles audités et assurés.
+                    </p>
+                </div>
+
+                <div class="card">
+                    <span class="card-icon">💼</span>
+                    <h3 class="card-title">Vaults Automatisés</h3>
+                    <p class="card-description">
+                        Stratégies automatisées à faible risque (yield farming conservateur, arbitrage sécurisé).
+                        Gestion passive optimisée.
+                    </p>
+                </div>
+
+                <div class="card">
+                    <span class="card-icon">⚠️</span>
+                    <h3 class="card-title">Trading Encadré (Optionnel)</h3>
+                    <p class="card-description">
+                        Si nécessaire : stratégies à faible volatilité uniquement, stop-loss stricts,
+                        allocation limitée à max 10% du portefeuille.
+                    </p>
+                </div>
+            </div>
+        </section>
+
+        <!-- Features Details -->
+        <section class="section">
+            <h2 class="section-title">Fonctionnalités Clés</h2>
+            <div class="features-list">
+                <div class="feature-item">
+                    <span class="feature-icon">✅</span>
+                    <div class="feature-text">
+                        <h4>Multi-Comptes</h4>
+                        <p>Jusqu'à 100 sous-comptes par entreprise</p>
+                    </div>
+                </div>
+
+                <div class="feature-item">
+                    <span class="feature-icon">✅</span>
+                    <div class="feature-text">
+                        <h4>Approbations</h4>
+                        <p>Workflow d'approbation configurable</p>
+                    </div>
+                </div>
+
+                <div class="feature-item">
+                    <span class="feature-icon">✅</span>
+                    <div class="feature-text">
+                        <h4>Allocation Prudente</h4>
+                        <p>Limites d'allocation par classe d'actif et profil de risque</p>
+                    </div>
+                </div>
+
+                <div class="feature-item">
+                    <span class="feature-icon">✅</span>
+                    <div class="feature-text">
+                        <h4>Alertes</h4>
+                        <p>Notifications Slack, Email, SMS</p>
+                    </div>
+                </div>
+
+                <div class="feature-item">
+                    <span class="feature-icon">✅</span>
+                    <div class="feature-text">
+                        <h4>White-label</h4>
+                        <p>Interface personnalisable à vos couleurs</p>
+                    </div>
+                </div>
+
+                <div class="feature-item">
+                    <span class="feature-icon">✅</span>
+                    <div class="feature-text">
+                        <h4>Support Dédié</h4>
+                        <p>Account manager + support 24/7</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Stats -->
+        <section class="section">
+            <h2 class="section-title">Obelisk Business en Chiffres</h2>
+            <div class="stats-grid">
+                <div class="stat-card">
+                    <div class="stat-value">100+</div>
+                    <div class="stat-label">Entreprises</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-value">$50M+</div>
+                    <div class="stat-label">Volume Géré</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-value">99.9%</div>
+                    <div class="stat-label">Uptime</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-value">24/7</div>
+                    <div class="stat-label">Support</div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Pricing -->
+        <section class="section" id="pricing">
+            <h2 class="section-title">Offres Business</h2>
+            <div class="pricing-grid">
+                <div class="pricing-card">
+                    <h3 class="pricing-name">Starter</h3>
+                    <div class="pricing-price">$499</div>
+                    <div class="pricing-period">/mois</div>
+                    <ul class="pricing-features">
+                        <li>Jusqu'à 5 utilisateurs</li>
+                        <li>10 sous-comptes</li>
+                        <li>Investissements diversifiés (staking, DeFi sécurisé)</li>
+                        <li>Dashboard basique</li>
+                        <li>Support email</li>
+                        <li>API REST</li>
+                    </ul>
+                    <div style="display: flex; flex-direction: column; gap: 8px; margin-top: auto;">
+                        <a href="app.html?mode=business&plan=starter" class="btn btn-primary" style="width: 100%;">💳 S'abonner ($499/mois)</a>
+                        <a href="app.html?mode=business&demo=true" class="btn btn-secondary" style="width: 100%;">🎯 Démo Gratuite</a>
+                    </div>
+                </div>
+
+                <div class="pricing-card featured">
+                    <div class="pricing-badge">Populaire</div>
+                    <h3 class="pricing-name">Professional</h3>
+                    <div class="pricing-price">$1,499</div>
+                    <div class="pricing-period">/mois</div>
+                    <ul class="pricing-features">
+                        <li>Jusqu'à 20 utilisateurs</li>
+                        <li>50 sous-comptes</li>
+                        <li>Tous produits d'investissement + stratégies sécurisées</li>
+                        <li>Dashboard avancé avec analytics</li>
+                        <li>Support prioritaire 24/7</li>
+                        <li>API + Webhooks</li>
+                        <li>White-label</li>
+                        <li>Account manager dédié</li>
+                    </ul>
+                    <div style="display: flex; flex-direction: column; gap: 8px; margin-top: auto;">
+                        <a href="app.html?mode=business&plan=professional" class="btn btn-primary" style="width: 100%;">💳 S'abonner ($1,499/mois)</a>
+                        <a href="app.html?mode=business&demo=true" class="btn btn-secondary" style="width: 100%;">🎯 Démo Gratuite</a>
+                    </div>
+                </div>
+
+                <div class="pricing-card">
+                    <h3 class="pricing-name">Enterprise</h3>
+                    <div class="pricing-price">Custom</div>
+                    <div class="pricing-period">sur mesure</div>
+                    <ul class="pricing-features">
+                        <li>Utilisateurs illimités</li>
+                        <li>Sous-comptes illimités</li>
+                        <li>Infrastructure dédiée</li>
+                        <li>SLA 99.99%</li>
+                        <li>Support dédié 24/7</li>
+                        <li>Intégrations custom</li>
+                        <li>Audit et compliance</li>
+                        <li>Formation sur site</li>
+                    </ul>
+                    <div style="display: flex; flex-direction: column; gap: 8px; margin-top: auto;">
+                        <a href="mailto:business@obelisk-dex.com?subject=Enterprise%20Plan" class="btn btn-primary" style="width: 100%;">📧 Discuter avec Sales</a>
+                        <a href="app.html?mode=business&demo=true" class="btn btn-secondary" style="width: 100%;">🎯 Démo Gratuite</a>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Contact -->
+        <section class="section" id="contact">
+            <div class="contact-box">
+                <h3>Prêt à Commencer ?</h3>
+                <p>
+                    Essayez Obelisk Business gratuitement dès maintenant avec notre démo complète.
+                    Aucune carte de crédit requise pour tester. Abonnez-vous quand vous êtes prêt.
+                </p>
+                <div style="display: flex; gap: 16px; justify-content: center; flex-wrap: wrap;">
+                    <a href="app.html?mode=business&demo=true" class="btn btn-primary">🚀 Essayer Gratuitement</a>
+                    <a href="mailto:business@obelisk-dex.com" class="btn btn-secondary">📧 Contacter Sales</a>
+                </div>
+                <p style="margin-top: 16px; font-size: 0.9rem; color: var(--muted);">
+                    Questions ? <a href="mailto:business@obelisk-dex.com" style="color: var(--gold);">business@obelisk-dex.com</a>
+                </p>
+            </div>
+        </section>
+    </div>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="footer-links">
+            <a href="index.html">Dashboard</a>
+            <a href="institutional.html">Institutionnel</a>
+            <a href="welcome.html">Accueil</a>
+            <a href="docs.html">Documentation</a>
+            <a href="api-docs.html">API</a>
+        </div>
+        <p style="color: var(--muted); font-size: 0.9rem;">
+            © 2026 Obelisk DEX Business - Solutions professionnelles de gestion crypto
+        </p>
+        <p style="color: var(--gold); font-size: 0.85rem; margin-top: 10px;">
+            🏛️ Quantum-resistant security on Arbitrum
+        </p>
+        <p style="color: var(--muted); font-size: 0.8rem; margin-top: 15px;">
+            <strong style="color: var(--green);">Version Alpha v2.1.0</strong>
+        </p>
+    </footer>
+</body>
+</html>

@@ -1,5 +1,8 @@
 # Cloudflare Pages Redirects
 
+# Welcome page as homepage
+/ /welcome.html 200
+
 # Block debug page in production
-/debug.html / 302
-/debug / 302
+/debug.html /welcome.html 302
+/debug /welcome.html 302

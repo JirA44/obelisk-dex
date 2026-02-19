@@ -521,6 +521,13 @@ const SimulatedPortfolio = {
     /**
      * Calculer le PnL par période (projeté)
      */
+    /**
+     * Get 24h PnL for dashboard
+     */
+    getPnL24h() {
+        return this.getPnLByPeriod().daily;
+    },
+
     getPnLByPeriod() {
         let daily = 0, weekly = 0, monthly = 0, yearly = 0;
         this.portfolio.investments.forEach(inv => {
