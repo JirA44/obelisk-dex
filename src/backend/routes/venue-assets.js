@@ -58,9 +58,9 @@ const VENUES = {
         url: 'https://omni.apex.exchange',
         description: '0% maker fees. Best for HFT and high-frequency strategies.',
         crypto: [
-            'BTC','ETH','SOL','ARB','BNB','XRP','ADA','DOGE','AVAX','MATIC',
-            'LINK','UNI','AAVE','LTC','BCH','OP','APT','SUI','NEAR','INJ',
-            'IMX','WIF','PEPE','TIA','SEI','ENA',
+            'BTC','ETH','SOL','ARB','DOGE','LINK','XRP','AVAX','APT','SUI',
+            'NEAR','OP','MATIC','ATOM','INJ','SEI','TIA','LTC','WLD','FET',
+            'PEPE','WIF','BONK','RNDR',
         ],
         stocks: [], etfs: [], commodities: [], indices: [],
     },
@@ -80,22 +80,56 @@ const VENUES = {
         stocks: [], etfs: [], commodities: [], indices: [],
     },
 
-    // ── AsterDEX (Binance-compatible) ─────────────────────────────────────
+    // ── AsterDEX (Binance-compatible, 35 pairs) ───────────────────────────
     ASTERDEX: {
         name: 'AsterDEX',
         type: 'perps',
         chain: 'Blast L2',
-        fees: '0.035% maker+taker',
+        fees: '0.01% maker / 0.035% taker',
         leverage: '1–50x',
         minSize: '$3',
         status: 'live',
         url: 'https://asterdex.com',
-        description: 'Binance-compatible API. Low fees, liquid markets.',
+        description: 'Binance-compatible API. 35 pairs, good liquidity.',
         crypto: [
-            'BTC','ETH','SOL','ARB','BNB','XRP','ADA','DOGE','AVAX',
-            'LINK','UNI','MATIC','OP','APT','SUI','INJ',
+            // Majors
+            'BTC','ETH','SOL','BNB',
+            // L1s
+            'AVAX','ATOM','NEAR','APT','SUI','SEI','INJ','TIA',
+            // L2s
+            'ARB','OP','MATIC','STX',
+            // DeFi
+            'LINK','UNI','AAVE','MKR','LDO','CRV','SNX',
+            // Meme
+            'DOGE','SHIB','PEPE','WIF','BONK',
+            // Legacy
+            'XRP','LTC','BCH','ETC',
+            // AI
+            'WLD','FET','RNDR',
         ],
         stocks: [], etfs: [], commodities: [], indices: [],
+    },
+
+    // ── Morpher (0% fees, synthetic) ──────────────────────────────────────
+    MORPHER: {
+        name: 'Morpher',
+        type: 'synthetic',
+        chain: 'Base L2 (bundler)',
+        fees: '0%',
+        leverage: '1–10x',
+        minSize: '$1',
+        status: 'errors',
+        url: 'https://www.morpher.com',
+        description: '0% fees synthetic trading. Stocks, forex, crypto, commodities & indices.',
+        crypto: [
+            'BTC','ETH','SOL','AVAX','ATOM','NEAR','APT','SUI','INJ','LINK',
+            'DOGE','ARB','OP','MATIC','UNI','AAVE','XRP','LTC','PEPE','SHIB','TIA',
+        ],
+        stocks: ['AAPL','MSFT','GOOGL','AMZN','TSLA','NVDA','META','AMD','NFLX','COIN'],
+        etfs: [],
+        commodities: ['GOLD','SILVER','OIL','BRENT','COPPER','GAS'],
+        indices: ['SPX','NDX','DJI','DAX','CAC40','FTSE100','NIKKEI','HSI'],
+        notes: 'Bundler eth_estimateUserOperationGas errors — fix pending',
     },
 
     // ── Solana / Drift ────────────────────────────────────────────────────
@@ -108,11 +142,8 @@ const VENUES = {
         minSize: '$1',
         status: 'live',
         url: 'https://app.drift.trade',
-        description: 'Solana-native perps. Fast, cheap ($0.00025/tx), high liquidity.',
-        crypto: [
-            'BTC','ETH','SOL','ARB','AVAX','BNB','XRP','DOGE','SUI','APT',
-            'JUP','WIF','BONK','PEPE','JTO','PYTH','W',
-        ],
+        description: 'Solana-native perps. Fast, cheap ($0.00025/tx).',
+        crypto: ['BTC','ETH','SOL','ARB','DOGE','SUI'],
         stocks: [], etfs: [], commodities: [], indices: [],
     },
 
@@ -126,7 +157,7 @@ const VENUES = {
         minSize: '$5',
         status: 'active',
         url: 'https://mux.network',
-        description: 'Aggregated liquidity across GMX, APEX, etc. Auto-routing best price.',
+        description: 'Aggregated liquidity across GMX/APEX. Auto-routing best price.',
         crypto: ['BTC','ETH','SOL','ARB','AVAX','BNB','LINK','UNI','OP'],
         stocks: [], etfs: [], commodities: [], indices: [],
     },
@@ -137,28 +168,31 @@ const VENUES = {
         type: 'lp',
         chain: 'Base',
         fees: '0%–0.3% LP spread',
-        leverage: '1x (no leverage)',
+        leverage: '1x',
         minSize: '$0.50',
         status: 'live',
         url: 'https://aerodrome.finance',
-        description: 'Liquidity provision on Base chain. Earn AERO rewards + fees.',
+        description: 'Liquidity provision on Base. Earn AERO rewards + trading fees.',
         crypto: ['ETH','USDC','AERO','cbBTC','cbETH','DEGEN','BRETT','VIRTUAL'],
         stocks: [], etfs: [], commodities: [], indices: [],
-        notes: 'Bridge ETH from Arbitrum first. 1-click invest via /api/aerodrome/invest/1click',
+        notes: 'Bridge ETH from Arbitrum. 1-click invest via /api/aerodrome/invest/1click',
     },
 
     // ── Lighter.xyz (0% maker CLOB) ───────────────────────────────────────
     LIGHTER: {
         name: 'Lighter.xyz',
-        type: 'perps',
+        type: 'clob',
         chain: 'Arbitrum',
         fees: '0% maker / 0.02% taker',
         leverage: '1–20x',
         minSize: '$3',
         status: 'sig_err',
         url: 'https://lighter.xyz',
-        description: 'CLOB with 0% maker fees. Needs API key regen on portal.',
-        crypto: ['BTC','ETH','SOL','ARB','AVAX'],
+        description: 'CLOB with 0% maker fees. 20 perp pairs on Arbitrum.',
+        crypto: [
+            'ETH','BTC','SOL','DOGE','WIF','WLD','XRP','LINK','AVAX','NEAR',
+            'DOT','SUI','POL','APT','SEI','LTC','ARB','OP','TIA',
+        ],
         stocks: [], etfs: [], commodities: [], indices: [],
         notes: 'SIG ERR — regen API key at lighter.xyz portal',
     },
