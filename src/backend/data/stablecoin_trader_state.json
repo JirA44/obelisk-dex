@@ -1,0 +1,88 @@
+{
+  "pairPhase": {
+    "USDE": "PAPER",
+    "FDUSD": "PAPER",
+    "FRAX": "PAPER",
+    "PAXG": "PAPER",
+    "XAUT": "PAPER"
+  },
+  "pStats": {
+    "USDE:STABLE_DEPEG": {
+      "trades": 1,
+      "wins": 1,
+      "losses": 0,
+      "pnl": -0.0012000000000000242,
+      "peakPnl": 0,
+      "maxDD": 0,
+      "consecL": 0,
+      "shadowSince": null,
+      "promotedAt": null
+    },
+    "FDUSD:STABLE_DEPEG": {
+      "trades": 12,
+      "wins": 10,
+      "losses": 2,
+      "pnl": -0.018900000000001114,
+      "peakPnl": 0,
+      "maxDD": 0,
+      "consecL": 0,
+      "shadowSince": null,
+      "promotedAt": null
+    },
+    "FRAX:STABLE_DEPEG": {
+      "trades": 0,
+      "wins": 0,
+      "losses": 0,
+      "pnl": 0,
+      "peakPnl": 0,
+      "maxDD": 0,
+      "consecL": 0,
+      "shadowSince": null,
+      "promotedAt": null
+    },
+    "PAXG:SPREAD": {
+      "trades": 0,
+      "wins": 0,
+      "losses": 0,
+      "pnl": 0,
+      "peakPnl": 0,
+      "maxDD": 0,
+      "consecL": 0,
+      "shadowSince": null,
+      "promotedAt": null
+    },
+    "PAXG:RSI_EXTREME": {
+      "trades": 0,
+      "wins": 0,
+      "losses": 0,
+      "pnl": 0,
+      "peakPnl": 0,
+      "maxDD": 0,
+      "consecL": 0,
+      "shadowSince": null,
+      "promotedAt": null
+    },
+    "XAUT:SPREAD": {
+      "trades": 0,
+      "wins": 0,
+      "losses": 0,
+      "pnl": 0,
+      "peakPnl": 0,
+      "maxDD": 0,
+      "consecL": 0,
+      "shadowSince": null,
+      "promotedAt": null
+    },
+    "XAUT:RSI_EXTREME": {
+      "trades": 0,
+      "wins": 0,
+      "losses": 0,
+      "pnl": 0,
+      "peakPnl": 0,
+      "maxDD": 0,
+      "consecL": 0,
+      "shadowSince": null,
+      "promotedAt": null
+    }
+  }
+}

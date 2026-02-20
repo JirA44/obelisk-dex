@@ -58,6 +58,8 @@ const kycRouter = require('./routes/kyc');
 const defiRouter = require('./routes/defi');
 const liquidityRouter = require('./routes/liquidity');
 const marketIntelRouter = require('./routes/market_intel');
+const derivativesRouter = require('./routes/derivatives');  // V3.3: Structured derivatives
+const totRouter         = require('./tot_router');           // V3.4: ToT Venue Router
 const { getFeatureStatus, isDemoMode, canDeposit } = require('./config/features');
 
 const cookieParser = require('cookie-parser');
@@ -408,6 +410,20 @@ app.use('/api/academy', academyRoutes);
 
 // V2.1: Global Liquidity Indicators
 app.use('/api/liquidity', liquidityRouter);
+app.use('/api/derivatives', derivativesRouter);  // V3.3: Structured derivatives 1:1
+
+// V3.4: ToT Venue Router — route optimal par trade
+app.post('/api/tot/route', (req, res) => {
+    try {
+        const result = totRouter.route(req.body || {});
+        res.json({ success: true, ...result });
+    } catch (e) {
+        res.status(500).json({ error: e.message });
+    }
+});
+app.get('/api/tot/venues', (req, res) => {
+    res.json({ success: true, venues: totRouter.VENUES });
+});
 
 // V2.1: Market Intelligence (all indicators aggregated)
 app.use('/api/market-intel', marketIntelRouter);

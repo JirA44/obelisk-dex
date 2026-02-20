@@ -15,6 +15,20 @@ module.exports = {
       }
     },
     {
+      name: 'stablecoin-trader',
+      script: 'src/backend/stablecoin-trader.js',
+      cwd: __dirname,
+      exec_mode: 'fork',
+      instances: 1,
+      autorestart: true,
+      watch: false,
+      max_memory_restart: '150M',
+      restart_delay: 15000,
+      env: {
+        NODE_ENV: 'production',
+      }
+    },
+    {
       name: 'sonic-hft',
       script: 'sonic-hft-pm2.js',
       exec_mode: 'fork',
@@ -25,6 +39,20 @@ module.exports = {
       restart_delay: 10000,
       env: {
         NODE_ENV: 'production'
+      }
+    },
+    {
+      name: 'sonic-hft-apex',
+      script: 'sonic-hft-apex-pm2.js',
+      exec_mode: 'fork',
+      instances: 1,
+      autorestart: true,
+      watch: false,
+      max_memory_restart: '200M',
+      restart_delay: 10000,
+      env: {
+        NODE_ENV: 'production',
+        HFT_APEX_SIZE: '1'
       }
     },
     {

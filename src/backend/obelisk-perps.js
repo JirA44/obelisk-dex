@@ -85,7 +85,7 @@ class ObeliskPerps {
             'USDE',  // Ethena synthetic dollar — $3B+ volume/jour Binance, fluctuations réelles
             'FDUSD', // First Digital USD (Binance stablecoin) — perps actifs
             'FRAX',  // Frax Finance — algo-stable, price action sur depeg events
-            'ENA',   // Ethena governance token — corrélé à USDE
+            // ENA déjà présent ligne 79 (Ethena governance, corrélé à USDE)
         ];
 
         // V3.2: Global synthetic assets (stocks, ETFs, indices, commodities)

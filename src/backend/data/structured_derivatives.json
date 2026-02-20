@@ -1,0 +1,28 @@
+{
+  "insuranceFund": 5295,
+  "stats": {
+    "totalIssued": 1,
+    "totalRedeemed": 0,
+    "totalFeesCollected": 5.9,
+    "insuranceClaims": 0
+  },
+  "holdings": {
+    "OBL-PAXGP-1771591238311-hugo": {
+      "id": "OBL-PAXGP-1771591238311-hugo",
+      "userId": "hugo",
+      "asset": "PAXG",
+      "product": "PROTECTED",
+      "quantity": 1,
+      "entryPrice": 2950,
+      "notional": 2950,
+      "collateral": 2955.9,
+      "fee": 5.9,
+      "insuranceReserve": 295,
+      "protectionFloor": 2655,
+      "issuedAt": 1771591238311,
+      "status": "ACTIVE",
+      "yieldRate": 0,
+      "yieldAccrued": 0
+    }
+  }
+}

@@ -41,7 +41,10 @@ class ObeliskAMM {
             WIF: 1.40, PEPE: 0.000008, BONK: 0.000015, JUP: 0.65,
             RENDER: 3.80, STX: 1.10, IMX: 1.25, GALA: 0.025, AXS: 4.80,
             SAND: 0.35, ENJ: 0.20, CHZ: 0.055, GMT: 0.12, APE: 0.75,
-            USDC: 1, USDT: 1
+            USDC: 1, USDT: 1, DAI: 1, FDUSD: 1, USDE: 1, FRAX: 1,
+            // V3.3: RWA — Gold-backed (DeFiLlama top RWA)
+            PAXG: 2950,  // ~1 troy oz gold
+            XAUT: 2950,  // ~1 troy oz gold (Tether Gold)
         };
 
         this.dataFile = path.join(__dirname, 'data', 'obelisk_amm.json');
@@ -82,7 +85,17 @@ class ObeliskAMM {
             { tokenA: 'XRP', tokenB: 'USDC', amountA: 15000, amountB: 37500 },  // ~$2.50 XRP
             { tokenA: 'ADA', tokenB: 'USDC', amountA: 40000, amountB: 36000 },  // ~$0.90 ADA
             { tokenA: 'AVAX', tokenB: 'USDC', amountA: 1000, amountB: 35000 },  // ~$35 AVAX
-            { tokenA: 'OP', tokenB: 'USDC', amountA: 20000, amountB: 34000 },   // ~$1.70 OP
+            { tokenA: 'OP',   tokenB: 'USDC', amountA: 20000, amountB: 34000 },   // ~$1.70 OP
+            // V3.3: RWA — Gold-backed (DeFiLlama top RWA)
+            { tokenA: 'PAXG', tokenB: 'USDC', amountA: 10,    amountB: 29500 },  // 10 PAXG ~$2950/oz
+            { tokenA: 'XAUT', tokenB: 'USDC', amountA: 10,    amountB: 29500 },  // 10 XAUT ~$2950/oz (Tether Gold)
+            // V3.3: Stablecoin pools (USDT/USDC, DAI/USDC)
+            { tokenA: 'USDT', tokenB: 'USDC', amountA: 50000, amountB: 50000 },  // $100K stable pool
+            { tokenA: 'DAI',  tokenB: 'USDC', amountA: 40000, amountB: 40000 },  // $80K stable pool
+            // V3.4: Depeg trading pools
+            { tokenA: 'USDE',  tokenB: 'USDC', amountA: 30000, amountB: 30000 }, // Ethena synthetic $
+            { tokenA: 'FDUSD', tokenB: 'USDC', amountA: 25000, amountB: 25000 }, // First Digital USD
+            { tokenA: 'FRAX',  tokenB: 'USDC', amountA: 20000, amountB: 20000 }, // Frax algo-stable
         ];
 
         for (const pool of initialPools) {
@@ -335,7 +348,8 @@ class ObeliskAMM {
     // Sync oracle prices from Binance
     async syncOraclePrices() {
         try {
-            const symbols = ['BTCUSDT', 'ETHUSDT', 'SOLUSDT', 'ARBUSDT', 'LINKUSDT', 'DOGEUSDT', 'XRPUSDT', 'ADAUSDT', 'AVAXUSDT', 'OPUSDT'];
+            const symbols = ['BTCUSDT', 'ETHUSDT', 'SOLUSDT', 'ARBUSDT', 'LINKUSDT', 'DOGEUSDT', 'XRPUSDT', 'ADAUSDT', 'AVAXUSDT', 'OPUSDT',
+                             'PAXGUSDT', 'XAUTUSDT', 'DAIUSDT', 'USDEUSDT', 'FRAXUSDT'];  // V3.3: RWA gold + stables
             const res = await fetch(`https://api.binance.com/api/v3/ticker/price?symbols=${JSON.stringify(symbols)}`);
             const data = await res.json();
 
@@ -346,6 +360,8 @@ class ObeliskAMM {
 
             this.oraclePrices['USDC'] = 1;
             this.oraclePrices['USDT'] = 1;
+            this.oraclePrices['DAI']  = 1;
+            this.oraclePrices['FDUSD'] = 1;
         } catch (e) {
             console.log('[OBELISK-AMM] Oracle sync error:', e.message);
         }
@@ -354,7 +370,7 @@ class ObeliskAMM {
     // Helper to get consistent pair ID
     getPairId(tokenA, tokenB) {
         // Always put the "base" token first for consistency
-        const bases = ['BTC', 'ETH', 'SOL'];
+        const bases = ['BTC', 'ETH', 'SOL', 'PAXG', 'XAUT'];
         if (bases.includes(tokenB) && !bases.includes(tokenA)) {
             return `${tokenB}/${tokenA}`;
         }
