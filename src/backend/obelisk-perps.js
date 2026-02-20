@@ -70,7 +70,7 @@ class ObeliskPerps {
             byVenue: { PAPER: 0, GMX: 0, HYPERLIQUID: 0 }
         };
 
-        // V2.0: Extended coins (36 coins)
+        // V2.0: Extended coins (36 crypto) + V3.2: Global stocks/ETFs
         this.prices = {};
         this.fundingRates = {};  // V2.0: Real funding rates
         this.coins = [
@@ -79,6 +79,36 @@ class ObeliskPerps {
             'TIA', 'INJ', 'SEI', 'PENDLE', 'ENA', 'WIF', 'PEPE', 'BONK', 'JUP',
             'RENDER', 'STX', 'IMX', 'GALA', 'AXS', 'SAND', 'ENJ'
         ];
+
+        // V3.2: Global synthetic assets (stocks, ETFs, indices, commodities)
+        // Price feed: Yahoo Finance v8. Key = symbol, stored in this.prices directly.
+        this.globalSymbols = [
+            // Korea
+            '005930.KS', '000660.KS', '035420.KS', '005380.KS', '035720.KS',
+            // China/HK
+            'BABA', 'PDD', 'NIO', 'BIDU', 'NTES', 'JD', 'XPEV',
+            // US Tech (non-crypto)
+            'NVDA', 'AAPL', 'MSFT', 'AMZN', 'GOOGL', 'META', 'TSM', 'TSLA',
+            // US Finance
+            'JPM', 'V', 'MA', 'GS', 'BAC', 'BRK-B',
+            // ETFs
+            'SPY', 'QQQ', 'GLD', 'SLV', 'EEM', 'EWY',
+            // India
+            'INFY', 'HDB', 'WIT', 'IBN',
+            // Brazil
+            'PBR', 'VALE', 'ITUB', 'ABEV',
+            // EU
+            'ASML', 'SAP', 'NVO', 'TTE', 'NKE', 'MCD',
+            // Pharma
+            'LLY', 'JNJ', 'PFE', 'MRK',
+            // Energy
+            'XOM', 'CVX', 'RIO', 'BHP',
+            // Commodities futures
+            'GC=F', 'SI=F', 'CL=F',
+            // Indices
+            '^GSPC', '^IXIC', '^N225', '^KS11',
+        ];
+        this._globalPriceTs = 0; // last Yahoo fetch timestamp
 
         this.dataFile = path.join(__dirname, 'data', 'obelisk_perps.json');
         this.historyFile = path.join(__dirname, 'data', 'obelisk_perps_history.json');
@@ -92,11 +122,13 @@ class ObeliskPerps {
         this.loadState();
         await this.syncPrices();
         await this.syncFundingRates();
+        await this.syncGlobalPrices();  // V3.2: Load stock/ETF prices on boot
 
         // Start intervals
         setInterval(() => this.applyFunding(), this.config.fundingInterval);
         setInterval(() => this.syncPrices(), 5000);  // V2.0: 5s price updates
         setInterval(() => this.syncFundingRates(), 60000);  // V2.0: Funding rates every min
+        setInterval(() => this.syncGlobalPrices(), 60000); // V3.2: Stocks/ETFs every 60s
         setInterval(() => this.checkLiquidations(), 2000);  // V2.0: 2s liquidation check
         setInterval(() => this.checkTpSlOrders(), 2000);  // V2.0: TP/SL check
 
@@ -109,6 +141,25 @@ class ObeliskPerps {
         if (ENABLE_LOGS) console.log(`[OBELISK-PERPS] Venues: ${venues.join(', ')}`);
 
         return true;
+    }
+
+    // V3.2: Sync global stock/ETF prices via Yahoo Finance v8
+    async syncGlobalPrices() {
+        try {
+            const now = Date.now();
+            if (now - this._globalPriceTs < 30000) return; // 30s cache
+            const gm = require('./services/global-markets');
+            // Fetch all at once via the cache
+            for (const sym of this.globalSymbols) {
+                const p = await gm.getPrice(sym);
+                if (p && p.price > 0) {
+                    this.prices[sym] = p.price;
+                }
+            }
+            this._globalPriceTs = now;
+        } catch (e) {
+            // Keep existing prices on error
+        }
     }
 
     // V2.0: Sync all prices from Binance
@@ -154,14 +205,21 @@ class ObeliskPerps {
             source = 'api'
         } = order;
 
-        const coinUpper = coin.toUpperCase();
+        // V3.2: Global symbols keep original case (e.g. '005930.KS', 'SPY', 'GC=F')
+        // Crypto coins are uppercase (e.g. 'BTC', 'ETH')
+        const isGlobal = this.globalSymbols.includes(coin) || this.globalSymbols.includes(coin.toUpperCase());
+        const coinUpper = isGlobal ? coin : coin.toUpperCase();
         const venueUpper = (venue || 'PAPER').toUpperCase();
 
-        // Validate
+        // Validate — try global fetch if not found
         if (!this.prices[coinUpper]) {
-            await this.syncPrices();
+            if (isGlobal) {
+                await this.syncGlobalPrices();
+            } else {
+                await this.syncPrices();
+            }
             if (!this.prices[coinUpper]) {
-                return { success: false, error: `Unknown coin: ${coinUpper}` };
+                return { success: false, error: `Unknown asset: ${coinUpper}` };
             }
         }
 

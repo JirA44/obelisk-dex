@@ -150,6 +150,130 @@ const ASSETS = {
             { symbol: 'SAP',    name: 'SAP',            sector: 'SaaS',   color: '#0070f2' },
             { symbol: 'NVO',    name: 'Novo Nordisk',   sector: 'Pharma', color: '#005ad2' },
             { symbol: 'SHEL',   name: 'Shell',          sector: 'Energy', color: '#e41e0a' },
+            { symbol: 'TTE',    name: 'TotalEnergies',  sector: 'Energy', color: '#ff0000' },
+            { symbol: 'SIEGY',  name: 'Siemens',        sector: 'Indust', color: '#009999' },
+            { symbol: 'ALIZY',  name: 'Allianz',        sector: 'Insur',  color: '#003781' },
+        ],
+    },
+
+    // ── China / HK ────────────────────────────────────────────────────────
+    CN: {
+        name: 'China',
+        flag: '🇨🇳',
+        assets: [
+            { symbol: '0700.HK',  name: 'Tencent',          sector: 'Tech',    color: '#1da1f2' },
+            { symbol: '9988.HK',  name: 'Alibaba',          sector: 'E-Com',   color: '#ff6a00' },
+            { symbol: '1211.HK',  name: 'BYD',              sector: 'EV',      color: '#1a6f37' },
+            { symbol: 'BABA',     name: 'Alibaba (US)',      sector: 'E-Com',   color: '#ff6a00' },
+            { symbol: 'PDD',      name: 'PDD / Temu',       sector: 'E-Com',   color: '#e02020' },
+            { symbol: 'NIO',      name: 'NIO',              sector: 'EV',      color: '#00aaff' },
+            { symbol: 'XPEV',     name: 'XPeng',            sector: 'EV',      color: '#00b0ff' },
+            { symbol: 'JD',       name: 'JD.com',           sector: 'E-Com',   color: '#cc0000' },
+            { symbol: 'BIDU',     name: 'Baidu',            sector: 'AI',      color: '#2932e1' },
+            { symbol: 'NTES',     name: 'NetEase',          sector: 'Gaming',  color: '#c0392b' },
+        ],
+    },
+
+    // ── India ─────────────────────────────────────────────────────────────
+    IN: {
+        name: 'India',
+        flag: '🇮🇳',
+        assets: [
+            { symbol: 'RELIANCE.NS', name: 'Reliance Industries', sector: 'Congl',  color: '#cc0000' },
+            { symbol: 'TCS.NS',      name: 'TCS',                 sector: 'IT',     color: '#0033a0' },
+            { symbol: 'INFY',        name: 'Infosys',             sector: 'IT',     color: '#007cc3' },
+            { symbol: 'HDB',         name: 'HDFC Bank',           sector: 'Bank',   color: '#004c97' },
+            { symbol: 'WIT',         name: 'Wipro',               sector: 'IT',     color: '#341f6e' },
+            { symbol: 'IBN',         name: 'ICICI Bank',          sector: 'Bank',   color: '#f37a20' },
+            { symbol: 'TATAMOTORS.NS', name: 'Tata Motors',       sector: 'Auto',   color: '#1c1c1c' },
+        ],
+    },
+
+    // ── Brazil ────────────────────────────────────────────────────────────
+    BR: {
+        name: 'Brazil',
+        flag: '🇧🇷',
+        assets: [
+            { symbol: 'PBR',    name: 'Petrobras',   sector: 'Energy',  color: '#009c3b' },
+            { symbol: 'VALE',   name: 'Vale',        sector: 'Mining',  color: '#003d80' },
+            { symbol: 'ITUB',   name: 'Itaú Unibanco', sector: 'Bank', color: '#f48024' },
+            { symbol: 'ABEV',   name: 'Ambev',       sector: 'Drinks',  color: '#ffcc00' },
+            { symbol: 'BBD',    name: 'Bradesco',    sector: 'Bank',    color: '#cc0000' },
+        ],
+    },
+
+    // ── US Finance ────────────────────────────────────────────────────────
+    US_FINANCE: {
+        name: 'US Finance',
+        flag: '🏦',
+        assets: [
+            { symbol: 'BRK-B', name: 'Berkshire Hathaway', sector: 'Congl',  color: '#6c4e03' },
+            { symbol: 'JPM',   name: 'JPMorgan Chase',     sector: 'Bank',   color: '#005689' },
+            { symbol: 'V',     name: 'Visa',               sector: 'Fin',    color: '#1a1f71' },
+            { symbol: 'MA',    name: 'Mastercard',         sector: 'Fin',    color: '#eb001b' },
+            { symbol: 'GS',    name: 'Goldman Sachs',      sector: 'Bank',   color: '#1c4e80' },
+            { symbol: 'BAC',   name: 'Bank of America',    sector: 'Bank',   color: '#dc1431' },
+            { symbol: 'BX',    name: 'Blackstone',         sector: 'PE',     color: '#000' },
+        ],
+    },
+
+    // ── US Health / Pharma ────────────────────────────────────────────────
+    US_HEALTH: {
+        name: 'Pharma & Health',
+        flag: '💊',
+        assets: [
+            { symbol: 'LLY',   name: 'Eli Lilly',         sector: 'Pharma', color: '#d52b1e' },
+            { symbol: 'UNH',   name: 'UnitedHealth',      sector: 'Health', color: '#002677' },
+            { symbol: 'JNJ',   name: 'Johnson & Johnson', sector: 'Pharma', color: '#cc0000' },
+            { symbol: 'ABBV',  name: 'AbbVie',            sector: 'Pharma', color: '#071d49' },
+            { symbol: 'MRK',   name: 'Merck',             sector: 'Pharma', color: '#00857c' },
+            { symbol: 'PFE',   name: 'Pfizer',            sector: 'Pharma', color: '#0093c8' },
+        ],
+    },
+
+    // ── Luxury & Consumer ─────────────────────────────────────────────────
+    LUXURY: {
+        name: 'Luxury & Consumer',
+        flag: '💎',
+        assets: [
+            { symbol: 'LVMHF',  name: 'LVMH',           sector: 'Luxury',    color: '#c8a96e' },
+            { symbol: 'HESAY',  name: 'Hermès',          sector: 'Luxury',    color: '#e07b39' },
+            { symbol: 'CFRUY',  name: 'Richemont',       sector: 'Luxury',    color: '#8b0000' },
+            { symbol: 'PRDSF',  name: 'Prada',           sector: 'Fashion',   color: '#000' },
+            { symbol: 'NKE',    name: 'Nike',            sector: 'Sport',     color: '#000' },
+            { symbol: 'SBUX',   name: 'Starbucks',       sector: 'Food',      color: '#00704a' },
+            { symbol: 'MCD',    name: "McDonald's",      sector: 'Food',      color: '#ffc72c' },
+        ],
+    },
+
+    // ── Energy & Mining ───────────────────────────────────────────────────
+    ENERGY: {
+        name: 'Energy & Mining',
+        flag: '⚡',
+        assets: [
+            { symbol: 'XOM',   name: 'ExxonMobil',   sector: 'Oil',     color: '#cc0000' },
+            { symbol: 'CVX',   name: 'Chevron',      sector: 'Oil',     color: '#009dd9' },
+            { symbol: 'NEE',   name: 'NextEra',      sector: 'Green',   color: '#00a3e0' },
+            { symbol: 'RIO',   name: 'Rio Tinto',    sector: 'Mining',  color: '#e8002d' },
+            { symbol: 'BHP',   name: 'BHP',          sector: 'Mining',  color: '#ef3d42' },
+            { symbol: 'FCX',   name: 'Freeport-McMoRan', sector: 'Copper', color: '#c8860a' },
+        ],
+    },
+
+    // ── Indices / Macro ───────────────────────────────────────────────────
+    INDICES: {
+        name: 'Indices & Macro',
+        flag: '📈',
+        assets: [
+            { symbol: '^GSPC',  name: 'S&P 500',       sector: 'Index', color: '#0052cc' },
+            { symbol: '^IXIC',  name: 'Nasdaq',        sector: 'Index', color: '#00a3cc' },
+            { symbol: '^DJI',   name: 'Dow Jones',     sector: 'Index', color: '#003087' },
+            { symbol: '^N225',  name: 'Nikkei 225',    sector: 'Index', color: '#bc002d' },
+            { symbol: '^KS11',  name: 'KOSPI',         sector: 'Index', color: '#1428A0' },
+            { symbol: '^HSI',   name: 'Hang Seng',     sector: 'Index', color: '#ff0000' },
+            { symbol: '^FTSE',  name: 'FTSE 100',      sector: 'Index', color: '#012169' },
+            { symbol: '^GDAXI', name: 'DAX',           sector: 'Index', color: '#000' },
+            { symbol: 'DX-Y.NYB', name: 'USD Index',  sector: 'FX',    color: '#006b3f' },
         ],
     },
 };
@@ -261,14 +385,15 @@ async function getAll(forceRefresh = false) {
 async function getPrice(symbol) {
     if (!CACHE.prices[symbol] || Date.now() - (CACHE.prices[symbol]?.ts || 0) > CACHE.TTL_MS) {
         const results = await yahooQuote(symbol);
-        if (results[0]) {
+        if (results[0] && results[0].price > 0) {
             const q = results[0];
             CACHE.prices[symbol] = {
-                price:    q.regularMarketPrice || 0,
-                change24h: q.regularMarketChangePercent || 0,
-                volume:   q.regularMarketVolume || 0,
+                price:     q.price     || 0,
+                change24h: q.change24h || 0,
+                volume:    q.volume    || 0,
                 marketCap: q.marketCap || 0,
-                ts:       Date.now(),
+                currency:  q.currency  || 'USD',
+                ts:        Date.now(),
             };
         }
     }

@@ -439,6 +439,11 @@ const globalMarketsRouter = require('./routes/global-markets');
 app.use('/api/markets/global', globalMarketsRouter);
 console.log('✅ Global Markets: KR/US/JP/EU stocks + ETFs + Commodities (Yahoo Finance)');
 
+// Venue Assets Catalog — tradeable assets per venue
+const venueAssetsRouter = require('./routes/venue-assets');
+app.use('/api/venues', venueAssetsRouter);
+console.log('✅ Venue Assets: OBELISK_PERPS/APEX/DRIFT/ASTERDEX/AERODROME catalog');
+
 // Sonic HFT Engine stats proxy (sonic-hft PM2 process on port 3002)
 app.get('/api/hft/status', (req, res) => {
     const hftHttp = require('http');
