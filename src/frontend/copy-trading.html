@@ -1,0 +1,1270 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Copy Trading — Obelisk DEX</title>
+    <meta name="description" content="Copy top strategy managers on Obelisk DEX. Ranked by total yield, win rate, and risk level.">
+
+    <!-- Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+    <link rel="icon" type="image/svg+xml" href="assets/obelisk-icon.svg">
+
+    <style>
+        :root {
+            --bg: #08080f;
+            --bg2: #0d0d1a;
+            --bg3: #111122;
+            --card: #12121f;
+            --card2: #161628;
+            --border: rgba(255,255,255,0.07);
+            --border2: rgba(255,255,255,0.12);
+            --green: #00ff88;
+            --green2: #00cc6a;
+            --red: #ff4466;
+            --blue: #4488ff;
+            --purple: #8866ff;
+            --yellow: #ffcc00;
+            --orange: #ff8844;
+            --text: #e8e8f0;
+            --text2: #9999bb;
+            --text3: #5555aa;
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        body {
+            background: var(--bg);
+            color: var(--text);
+            font-family: 'Inter', sans-serif;
+            min-height: 100vh;
+        }
+
+        /* ─── TOP NAV ─── */
+        .nav {
+            display: flex;
+            align-items: center;
+            gap: 24px;
+            padding: 16px 32px;
+            background: rgba(8,8,15,0.95);
+            border-bottom: 1px solid var(--border);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            backdrop-filter: blur(12px);
+        }
+
+        .nav-logo {
+            font-size: 20px;
+            font-weight: 800;
+            color: var(--green);
+            text-decoration: none;
+            letter-spacing: -0.5px;
+        }
+
+        .nav-logo span { color: var(--text2); }
+
+        .nav-links {
+            display: flex;
+            gap: 8px;
+            margin-left: auto;
+        }
+
+        .nav-links a {
+            color: var(--text2);
+            text-decoration: none;
+            font-size: 13px;
+            padding: 6px 14px;
+            border-radius: 6px;
+            transition: all 0.2s;
+        }
+
+        .nav-links a:hover { color: var(--text); background: var(--bg3); }
+        .nav-links a.active { color: var(--green); background: rgba(0,255,136,0.08); }
+
+        /* ─── HEADER ─── */
+        .page-header {
+            padding: 40px 32px 24px;
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+
+        .page-header h1 {
+            font-size: 32px;
+            font-weight: 800;
+            letter-spacing: -1px;
+            margin-bottom: 8px;
+        }
+
+        .page-header h1 span { color: var(--green); }
+
+        .page-header p {
+            color: var(--text2);
+            font-size: 15px;
+        }
+
+        /* ─── STATS BAR ─── */
+        .stats-bar {
+            display: grid;
+            grid-template-columns: repeat(5, 1fr);
+            gap: 12px;
+            max-width: 1400px;
+            margin: 0 auto 28px;
+            padding: 0 32px;
+        }
+
+        .stat-card {
+            background: var(--card);
+            border: 1px solid var(--border);
+            border-radius: 10px;
+            padding: 16px 20px;
+        }
+
+        .stat-label {
+            font-size: 11px;
+            color: var(--text3);
+            text-transform: uppercase;
+            letter-spacing: 0.8px;
+            margin-bottom: 6px;
+        }
+
+        .stat-value {
+            font-size: 22px;
+            font-weight: 700;
+            color: var(--text);
+            font-family: 'JetBrains Mono', monospace;
+        }
+
+        .stat-value.green { color: var(--green); }
+        .stat-value.blue { color: var(--blue); }
+
+        /* ─── FILTERS ─── */
+        .filters-bar {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            max-width: 1400px;
+            margin: 0 auto 20px;
+            padding: 0 32px;
+            flex-wrap: wrap;
+        }
+
+        .filter-group {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .filter-label {
+            font-size: 12px;
+            color: var(--text3);
+        }
+
+        .filter-select {
+            background: var(--card);
+            border: 1px solid var(--border);
+            color: var(--text);
+            padding: 7px 12px;
+            border-radius: 7px;
+            font-size: 13px;
+            cursor: pointer;
+            outline: none;
+        }
+
+        .filter-select:focus { border-color: var(--green); }
+
+        .filter-btn {
+            padding: 7px 16px;
+            border-radius: 7px;
+            border: 1px solid var(--border);
+            background: var(--card);
+            color: var(--text2);
+            font-size: 13px;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .filter-btn:hover, .filter-btn.active {
+            border-color: var(--green);
+            color: var(--green);
+            background: rgba(0,255,136,0.05);
+        }
+
+        .filter-input {
+            background: var(--card);
+            border: 1px solid var(--border);
+            color: var(--text);
+            padding: 7px 12px;
+            border-radius: 7px;
+            font-size: 13px;
+            outline: none;
+            width: 140px;
+        }
+
+        .filter-input:focus { border-color: var(--green); }
+
+        .filter-input::placeholder { color: var(--text3); }
+
+        /* ─── TABS (My Copies / Leaderboard) ─── */
+        .tabs {
+            display: flex;
+            gap: 4px;
+            max-width: 1400px;
+            margin: 0 auto 20px;
+            padding: 0 32px;
+        }
+
+        .tab {
+            padding: 10px 22px;
+            border-radius: 8px 8px 0 0;
+            border: 1px solid var(--border);
+            border-bottom: none;
+            background: var(--bg2);
+            color: var(--text2);
+            font-size: 14px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .tab.active {
+            background: var(--card);
+            color: var(--green);
+            border-color: var(--border2);
+        }
+
+        /* ─── TABLE ─── */
+        .table-wrap {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 0 32px 40px;
+        }
+
+        .leaderboard-table {
+            width: 100%;
+            border-collapse: separate;
+            border-spacing: 0;
+            background: var(--card);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            overflow: hidden;
+        }
+
+        .leaderboard-table thead th {
+            padding: 14px 16px;
+            text-align: left;
+            font-size: 11px;
+            font-weight: 600;
+            color: var(--text3);
+            text-transform: uppercase;
+            letter-spacing: 0.8px;
+            background: var(--card2);
+            border-bottom: 1px solid var(--border);
+            cursor: pointer;
+            user-select: none;
+            white-space: nowrap;
+        }
+
+        .leaderboard-table thead th:hover { color: var(--text2); }
+        .leaderboard-table thead th.sorted { color: var(--green); }
+
+        .leaderboard-table tbody tr {
+            border-bottom: 1px solid var(--border);
+            transition: background 0.15s;
+        }
+
+        .leaderboard-table tbody tr:last-child { border-bottom: none; }
+        .leaderboard-table tbody tr:hover { background: var(--bg3); }
+        .leaderboard-table tbody tr.featured-row { background: rgba(0,255,136,0.025); }
+
+        .leaderboard-table td {
+            padding: 14px 16px;
+            font-size: 13px;
+            vertical-align: middle;
+        }
+
+        /* Rank */
+        .rank-cell {
+            font-family: 'JetBrains Mono', monospace;
+            font-weight: 700;
+            color: var(--text3);
+            width: 40px;
+        }
+
+        .rank-cell.top3 { color: var(--yellow); }
+
+        /* Manager */
+        .manager-cell {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .avatar {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, var(--purple), var(--blue));
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 12px;
+            font-weight: 700;
+            color: white;
+            flex-shrink: 0;
+        }
+
+        .manager-info .name {
+            font-weight: 600;
+            font-size: 14px;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .verified-badge {
+            background: var(--blue);
+            color: white;
+            font-size: 9px;
+            padding: 1px 5px;
+            border-radius: 3px;
+            font-weight: 700;
+        }
+
+        .featured-badge {
+            background: var(--yellow);
+            color: #000;
+            font-size: 9px;
+            padding: 1px 5px;
+            border-radius: 3px;
+            font-weight: 700;
+        }
+
+        .manager-info .style {
+            font-size: 11px;
+            color: var(--text3);
+            margin-top: 2px;
+        }
+
+        /* ROI cells */
+        .roi-cell {
+            font-family: 'JetBrains Mono', monospace;
+            font-weight: 600;
+            font-size: 14px;
+        }
+
+        .roi-cell.pos { color: var(--green); }
+        .roi-cell.neg { color: var(--red); }
+
+        /* Sparkline */
+        .sparkline-cell { width: 100px; }
+
+        canvas.sparkline {
+            display: block;
+        }
+
+        /* Risk badge */
+        .risk-badge {
+            display: inline-block;
+            padding: 3px 10px;
+            border-radius: 20px;
+            font-size: 11px;
+            font-weight: 600;
+        }
+
+        .risk-low { background: rgba(0,255,136,0.1); color: var(--green); border: 1px solid rgba(0,255,136,0.2); }
+        .risk-medium { background: rgba(255,204,0,0.1); color: var(--yellow); border: 1px solid rgba(255,204,0,0.2); }
+        .risk-high { background: rgba(255,68,102,0.1); color: var(--red); border: 1px solid rgba(255,68,102,0.2); }
+        .risk-very-high { background: rgba(255,68,102,0.2); color: #ff2244; border: 1px solid rgba(255,68,102,0.4); }
+
+        /* Copy button */
+        .copy-btn {
+            padding: 7px 18px;
+            background: var(--green);
+            color: #000;
+            border: none;
+            border-radius: 7px;
+            font-size: 12px;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.2s;
+            white-space: nowrap;
+        }
+
+        .copy-btn:hover { background: var(--green2); transform: translateY(-1px); }
+        .copy-btn.copying { background: var(--purple); color: white; }
+
+        /* DD */
+        .dd-cell {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 12px;
+            color: var(--red);
+        }
+
+        /* Followers / AUM */
+        .followers-cell {
+            font-size: 13px;
+            color: var(--text2);
+            font-family: 'JetBrains Mono', monospace;
+        }
+
+        /* ─── MODAL ─── */
+        .modal-overlay {
+            display: none;
+            position: fixed;
+            inset: 0;
+            background: rgba(0,0,0,0.75);
+            z-index: 1000;
+            backdrop-filter: blur(6px);
+            align-items: center;
+            justify-content: center;
+        }
+
+        .modal-overlay.open { display: flex; }
+
+        .modal {
+            background: var(--card);
+            border: 1px solid var(--border2);
+            border-radius: 16px;
+            width: 540px;
+            max-width: 95vw;
+            padding: 28px;
+        }
+
+        .modal-header {
+            display: flex;
+            align-items: center;
+            gap: 14px;
+            margin-bottom: 24px;
+        }
+
+        .modal-avatar {
+            width: 56px;
+            height: 56px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, var(--purple), var(--blue));
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 18px;
+            font-weight: 700;
+            color: white;
+        }
+
+        .modal-title { font-size: 20px; font-weight: 700; }
+        .modal-subtitle { font-size: 13px; color: var(--text2); margin-top: 2px; }
+
+        .modal-close {
+            margin-left: auto;
+            background: none;
+            border: none;
+            color: var(--text2);
+            font-size: 22px;
+            cursor: pointer;
+            padding: 4px;
+        }
+
+        .modal-stats {
+            display: grid;
+            grid-template-columns: 1fr 1fr 1fr;
+            gap: 12px;
+            margin-bottom: 20px;
+        }
+
+        .modal-stat {
+            background: var(--bg2);
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            padding: 12px 14px;
+        }
+
+        .modal-stat-label {
+            font-size: 10px;
+            color: var(--text3);
+            text-transform: uppercase;
+            letter-spacing: 0.8px;
+            margin-bottom: 4px;
+        }
+
+        .modal-stat-value {
+            font-size: 18px;
+            font-weight: 700;
+            font-family: 'JetBrains Mono', monospace;
+        }
+
+        .amount-input-wrap {
+            margin-bottom: 16px;
+        }
+
+        .amount-label {
+            font-size: 13px;
+            color: var(--text2);
+            margin-bottom: 8px;
+            display: flex;
+            justify-content: space-between;
+        }
+
+        .amount-input {
+            width: 100%;
+            background: var(--bg2);
+            border: 1px solid var(--border2);
+            color: var(--text);
+            padding: 12px 16px;
+            border-radius: 8px;
+            font-size: 18px;
+            font-family: 'JetBrains Mono', monospace;
+            outline: none;
+        }
+
+        .amount-input:focus { border-color: var(--green); }
+
+        .copy-confirm-btn {
+            width: 100%;
+            padding: 14px;
+            background: var(--green);
+            color: #000;
+            border: none;
+            border-radius: 8px;
+            font-size: 15px;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .copy-confirm-btn:hover { background: var(--green2); }
+
+        .fee-note {
+            font-size: 11px;
+            color: var(--text3);
+            text-align: center;
+            margin-top: 10px;
+        }
+
+        /* ─── MY COPIES TAB ─── */
+        .my-copies-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 16px;
+        }
+
+        .copy-card {
+            background: var(--card);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            padding: 20px;
+        }
+
+        .copy-card-header {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin-bottom: 16px;
+        }
+
+        .copy-card-metrics {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 10px;
+            margin-bottom: 16px;
+        }
+
+        .copy-metric { }
+        .copy-metric-label { font-size: 10px; color: var(--text3); text-transform: uppercase; letter-spacing: 0.8px; }
+        .copy-metric-value { font-size: 16px; font-weight: 700; font-family: 'JetBrains Mono', monospace; }
+
+        .stop-btn {
+            width: 100%;
+            padding: 8px;
+            background: none;
+            border: 1px solid var(--red);
+            color: var(--red);
+            border-radius: 7px;
+            font-size: 12px;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .stop-btn:hover { background: rgba(255,68,102,0.1); }
+
+        /* ─── EMPTY STATE ─── */
+        .empty-state {
+            text-align: center;
+            padding: 60px 20px;
+            color: var(--text3);
+        }
+
+        .empty-state .icon { font-size: 48px; margin-bottom: 16px; }
+        .empty-state p { font-size: 15px; }
+
+        /* ─── TOAST ─── */
+        .toast {
+            position: fixed;
+            bottom: 30px;
+            right: 30px;
+            background: var(--card2);
+            border: 1px solid var(--border2);
+            border-radius: 10px;
+            padding: 14px 20px;
+            font-size: 14px;
+            z-index: 2000;
+            transform: translateY(100px);
+            opacity: 0;
+            transition: all 0.3s;
+        }
+
+        .toast.show { transform: translateY(0); opacity: 1; }
+        .toast.success { border-color: var(--green); color: var(--green); }
+        .toast.error { border-color: var(--red); color: var(--red); }
+
+        /* ─── LOADING ─── */
+        .loading-row td {
+            text-align: center;
+            padding: 40px;
+            color: var(--text3);
+        }
+
+        .spinner {
+            display: inline-block;
+            width: 20px;
+            height: 20px;
+            border: 2px solid var(--border);
+            border-top-color: var(--green);
+            border-radius: 50%;
+            animation: spin 0.8s linear infinite;
+            vertical-align: middle;
+            margin-right: 8px;
+        }
+
+        @keyframes spin { to { transform: rotate(360deg); } }
+
+        /* ─── SORT ARROW ─── */
+        .sort-arrow { margin-left: 4px; opacity: 0.5; }
+        .sorted .sort-arrow { opacity: 1; color: var(--green); }
+
+        /* Tags */
+        .tag {
+            display: inline-block;
+            padding: 2px 8px;
+            border-radius: 4px;
+            font-size: 10px;
+            background: var(--bg3);
+            color: var(--text3);
+            border: 1px solid var(--border);
+            margin: 2px;
+        }
+
+        @media (max-width: 1100px) {
+            .stats-bar { grid-template-columns: repeat(3, 1fr); }
+            .leaderboard-table td:nth-child(7),
+            .leaderboard-table th:nth-child(7) { display: none; }
+        }
+
+        @media (max-width: 768px) {
+            .nav { padding: 12px 16px; }
+            .page-header, .stats-bar, .filters-bar, .tabs, .table-wrap { padding-left: 16px; padding-right: 16px; }
+            .stats-bar { grid-template-columns: 1fr 1fr; }
+            .leaderboard-table td:nth-child(5),
+            .leaderboard-table th:nth-child(5),
+            .leaderboard-table td:nth-child(6),
+            .leaderboard-table th:nth-child(6) { display: none; }
+        }
+    </style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav class="nav">
+    <a href="index.html" class="nav-logo">Obelisk<span>DEX</span></a>
+    <div class="nav-links">
+        <a href="index.html">Home</a>
+        <a href="app.html">Trading</a>
+        <a href="copy-trading.html" class="active">Copy Trading</a>
+        <a href="defi-test.html">DeFi</a>
+        <a href="docs.html">Docs</a>
+    </div>
+</nav>
+
+<!-- HEADER -->
+<div class="page-header">
+    <h1>Copy <span>Strategy</span> Managers</h1>
+    <p>Follow top traders • Mirror their trades automatically • Ranked by total ROI</p>
+</div>
+
+<!-- STATS BAR -->
+<div class="stats-bar" id="statsBar">
+    <div class="stat-card">
+        <div class="stat-label">Total Managers</div>
+        <div class="stat-value blue" id="statManagers">—</div>
+    </div>
+    <div class="stat-card">
+        <div class="stat-label">Total Followers</div>
+        <div class="stat-value" id="statFollowers">—</div>
+    </div>
+    <div class="stat-card">
+        <div class="stat-label">Total AUM</div>
+        <div class="stat-value" id="statAUM">—</div>
+    </div>
+    <div class="stat-card">
+        <div class="stat-label">Best All-Time ROI</div>
+        <div class="stat-value green" id="statBest">—</div>
+    </div>
+    <div class="stat-card">
+        <div class="stat-label">Top Daily ROI</div>
+        <div class="stat-value green" id="statDaily">—</div>
+    </div>
+</div>
+
+<!-- TABS -->
+<div class="tabs">
+    <div class="tab active" onclick="switchTab('leaderboard')">🏆 Leaderboard</div>
+    <div class="tab" onclick="switchTab('my-copies')">📋 My Copies</div>
+</div>
+
+<!-- FILTERS BAR -->
+<div class="filters-bar" id="filtersBar">
+    <div class="filter-group">
+        <span class="filter-label">Sort:</span>
+        <select class="filter-select" id="sortSelect" onchange="applyFilters()">
+            <option value="totalROI">Total ROI</option>
+            <option value="monthlyROI">Monthly ROI</option>
+            <option value="dailyROI">Daily ROI</option>
+            <option value="weeklyROI">Weekly ROI</option>
+            <option value="winRate">Win Rate</option>
+            <option value="followers">Followers</option>
+            <option value="aum">AUM</option>
+            <option value="sharpe">Sharpe</option>
+            <option value="maxDrawdown">Min Drawdown</option>
+        </select>
+    </div>
+
+    <div class="filter-group">
+        <span class="filter-label">Risk:</span>
+        <select class="filter-select" id="riskFilter" onchange="applyFilters()">
+            <option value="">All</option>
+            <option value="Low">Low</option>
+            <option value="Medium">Medium</option>
+            <option value="High">High</option>
+            <option value="Very High">Very High</option>
+        </select>
+    </div>
+
+    <div class="filter-group">
+        <span class="filter-label">Min ROI %:</span>
+        <input type="number" class="filter-input" id="minROI" placeholder="e.g. 100" onchange="applyFilters()">
+    </div>
+
+    <div class="filter-group">
+        <input type="text" class="filter-input" id="searchInput" placeholder="Search manager..." oninput="applyFilters()" style="width:160px">
+    </div>
+
+    <button class="filter-btn active" id="verifiedBtn" onclick="toggleVerified()">✓ Verified only</button>
+    <button class="filter-btn" onclick="resetFilters()">Reset</button>
+</div>
+
+<!-- TABLE (Leaderboard tab) -->
+<div class="table-wrap" id="leaderboardTab">
+    <table class="leaderboard-table" id="leaderboardTable">
+        <thead>
+            <tr>
+                <th onclick="setSort('rank')" id="th-rank">#</th>
+                <th>Manager</th>
+                <th onclick="setSort('totalROI')" id="th-totalROI" class="sorted">Total ROI <span class="sort-arrow">▼</span></th>
+                <th onclick="setSort('monthlyROI')" id="th-monthlyROI">Monthly <span class="sort-arrow">▼</span></th>
+                <th onclick="setSort('weeklyROI')" id="th-weeklyROI">Weekly <span class="sort-arrow">▼</span></th>
+                <th onclick="setSort('winRate')" id="th-winRate">Win Rate <span class="sort-arrow">▼</span></th>
+                <th>Equity Curve</th>
+                <th onclick="setSort('maxDrawdown')" id="th-maxDrawdown">Max DD <span class="sort-arrow">▼</span></th>
+                <th onclick="setSort('followers')" id="th-followers">Followers <span class="sort-arrow">▼</span></th>
+                <th>Risk</th>
+                <th>Action</th>
+            </tr>
+        </thead>
+        <tbody id="leaderboardBody">
+            <tr class="loading-row">
+                <td colspan="11"><span class="spinner"></span> Loading managers...</td>
+            </tr>
+        </tbody>
+    </table>
+</div>
+
+<!-- MY COPIES TAB -->
+<div class="table-wrap" id="myCopiesTab" style="display:none">
+    <div id="myCopiesContent">
+        <div class="empty-state">
+            <div class="icon">📋</div>
+            <p>You're not copying any managers yet.<br>Browse the leaderboard to get started.</p>
+        </div>
+    </div>
+</div>
+
+<!-- COPY MODAL -->
+<div class="modal-overlay" id="copyModal">
+    <div class="modal">
+        <div class="modal-header">
+            <div class="modal-avatar" id="modalAvatar">?</div>
+            <div>
+                <div class="modal-title" id="modalName">Manager</div>
+                <div class="modal-subtitle" id="modalStyle">Style</div>
+            </div>
+            <button class="modal-close" onclick="closeModal()">×</button>
+        </div>
+
+        <div class="modal-stats" id="modalStats"></div>
+
+        <div class="amount-input-wrap">
+            <div class="amount-label">
+                <span>Copy Amount (USDC)</span>
+                <span id="modalMinCopy" style="color:var(--text3)">Min: $1 · Recommended: $1</span>
+            </div>
+            <input type="number" class="amount-input" id="copyAmount" placeholder="1" min="1" step="0.01">
+        </div>
+
+        <button class="copy-confirm-btn" onclick="confirmCopy()">🔗 Start Copying</button>
+        <div class="fee-note" id="feeNote">Performance fee: 20% on profits only</div>
+    </div>
+</div>
+
+<!-- TOAST -->
+<div class="toast" id="toast"></div>
+
+<script>
+const API = 'http://localhost:3001/api/copy-trading';
+let currentSort = 'totalROI';
+let currentOrder = 'desc';
+let verifiedOnly = true;
+let activeTab = 'leaderboard';
+let selectedManager = null;
+let copiedManagers = new Set();
+
+// ─── INIT ───
+async function init() {
+    await Promise.all([loadStats(), loadLeaderboard()]);
+    setInterval(loadLeaderboard, 30000);
+    setInterval(loadStats, 60000);
+}
+
+// ─── STATS ───
+async function loadStats() {
+    try {
+        const r = await fetch(`${API}/stats`);
+        const d = await r.json();
+        if (!d.success) return;
+        const s = d.stats;
+        document.getElementById('statManagers').textContent = s.totalManagers;
+        document.getElementById('statFollowers').textContent = fmtNum(s.totalFollowers);
+        document.getElementById('statAUM').textContent = '$' + fmtNum(s.totalAUM);
+        document.getElementById('statBest').textContent = '+' + s.bestManager.totalROI + '%';
+        document.getElementById('statDaily').textContent = '+' + s.topDailyROI.toFixed(2) + '%';
+    } catch(e) {
+        console.warn('Stats unavailable, using demo data');
+        showDemoStats();
+    }
+}
+
+function showDemoStats() {
+    document.getElementById('statManagers').textContent = '20';
+    document.getElementById('statFollowers').textContent = '8,432';
+    document.getElementById('statAUM').textContent = '$2.4M';
+    document.getElementById('statBest').textContent = '+5,870%';
+    document.getElementById('statDaily').textContent = '+2.8%';
+}
+
+// ─── LEADERBOARD ───
+async function loadLeaderboard() {
+    try {
+        const params = buildParams();
+        const r = await fetch(`${API}/leaderboard?${params}`);
+        const d = await r.json();
+        if (!d.success) return;
+        renderLeaderboard(d.managers);
+    } catch(e) {
+        console.warn('API unavailable, loading demo data');
+        renderDemoLeaderboard();
+    }
+}
+
+function buildParams() {
+    const p = new URLSearchParams();
+    p.set('sort', currentSort);
+    p.set('order', currentOrder);
+    if (verifiedOnly) p.set('verified', 'true');
+    const risk = document.getElementById('riskFilter').value;
+    if (risk) p.set('riskLevel', risk);
+    const minROI = document.getElementById('minROI').value;
+    if (minROI) p.set('minROI', minROI);
+    p.set('limit', '20');
+    return p.toString();
+}
+
+function renderLeaderboard(managers) {
+    const search = document.getElementById('searchInput').value.toLowerCase();
+    let filtered = managers;
+    if (search) {
+        filtered = managers.filter(m =>
+            m.name.toLowerCase().includes(search) ||
+            m.style.toLowerCase().includes(search) ||
+            m.tags.some(t => t.toLowerCase().includes(search))
+        );
+    }
+
+    const tbody = document.getElementById('leaderboardBody');
+    if (filtered.length === 0) {
+        tbody.innerHTML = `<tr class="loading-row"><td colspan="11">No managers match your filters.</td></tr>`;
+        return;
+    }
+
+    tbody.innerHTML = filtered.map(m => renderRow(m)).join('');
+
+    // Draw sparklines
+    filtered.forEach(m => {
+        const canvas = document.getElementById(`spark-${m.id}`);
+        if (canvas) drawSparkline(canvas, m.equityCurve);
+    });
+}
+
+function renderRow(m) {
+    const rank = m.rank;
+    const rankClass = rank <= 3 ? 'top3' : '';
+    const featured = m.featured ? `<span class="featured-badge">⭐ FEATURED</span>` : '';
+    const verified = m.verified ? `<span class="verified-badge">✓</span>` : '';
+    const copying = copiedManagers.has(m.id);
+    const riskClass = {
+        'Low': 'risk-low',
+        'Medium': 'risk-medium',
+        'High': 'risk-high',
+        'Very High': 'risk-very-high'
+    }[m.riskLevel] || 'risk-medium';
+
+    return `
+    <tr class="${m.featured ? 'featured-row' : ''}">
+        <td class="rank-cell ${rankClass}">${rank <= 3 ? ['🥇','🥈','🥉'][rank-1] : rank}</td>
+        <td>
+            <div class="manager-cell">
+                <div class="avatar">${m.avatar}</div>
+                <div class="manager-info">
+                    <div class="name">${m.flag} ${escHtml(m.name)} ${verified} ${featured}</div>
+                    <div class="style">${escHtml(m.style)}</div>
+                </div>
+            </div>
+        </td>
+        <td class="roi-cell pos">+${m.performance.totalROI.toFixed(0)}%</td>
+        <td class="roi-cell pos">+${m.performance.monthlyROI.toFixed(1)}%</td>
+        <td class="roi-cell pos">+${m.performance.weeklyROI.toFixed(1)}%</td>
+        <td style="font-family:'JetBrains Mono',monospace;color:var(--text)">${m.performance.winRate.toFixed(1)}%</td>
+        <td class="sparkline-cell">
+            <canvas id="spark-${m.id}" width="100" height="36" class="sparkline"></canvas>
+        </td>
+        <td class="dd-cell">-${m.performance.maxDrawdown.toFixed(1)}%</td>
+        <td class="followers-cell">${fmtNum(m.followers)}</td>
+        <td><span class="risk-badge ${riskClass}">${m.riskLevel}</span></td>
+        <td>
+            <button class="copy-btn ${copying ? 'copying' : ''}"
+                onclick="openCopyModal('${m.id}')">
+                ${copying ? '✓ Copying' : 'Copy'}
+            </button>
+        </td>
+    </tr>`;
+}
+
+// ─── SPARKLINE ───
+function drawSparkline(canvas, data) {
+    if (!data || data.length < 2) return;
+    const ctx = canvas.getContext('2d');
+    const w = canvas.width, h = canvas.height;
+    const min = Math.min(...data);
+    const max = Math.max(...data);
+    const range = max - min || 1;
+
+    ctx.clearRect(0, 0, w, h);
+
+    // Gradient fill
+    const grad = ctx.createLinearGradient(0, 0, 0, h);
+    grad.addColorStop(0, 'rgba(0,255,136,0.3)');
+    grad.addColorStop(1, 'rgba(0,255,136,0)');
+
+    ctx.beginPath();
+    data.forEach((v, i) => {
+        const x = (i / (data.length - 1)) * w;
+        const y = h - ((v - min) / range) * (h - 4) - 2;
+        i === 0 ? ctx.moveTo(x, y) : ctx.lineTo(x, y);
+    });
+
+    // Fill area
+    ctx.lineTo(w, h);
+    ctx.lineTo(0, h);
+    ctx.closePath();
+    ctx.fillStyle = grad;
+    ctx.fill();
+
+    // Line
+    ctx.beginPath();
+    data.forEach((v, i) => {
+        const x = (i / (data.length - 1)) * w;
+        const y = h - ((v - min) / range) * (h - 4) - 2;
+        i === 0 ? ctx.moveTo(x, y) : ctx.lineTo(x, y);
+    });
+    ctx.strokeStyle = '#00ff88';
+    ctx.lineWidth = 1.5;
+    ctx.stroke();
+}
+
+// ─── MODAL ───
+async function openCopyModal(managerId) {
+    try {
+        const r = await fetch(`${API}/managers/${managerId}`);
+        const d = await r.json();
+        if (!d.success) return;
+        selectedManager = d.manager;
+    } catch {
+        // Use cached data from leaderboard
+        selectedManager = { id: managerId, name: managerId, style: '', fee: 20, minCopy: 100, performance: {} };
+    }
+
+    const m = selectedManager;
+    document.getElementById('modalAvatar').textContent = m.avatar || m.id.slice(0,2).toUpperCase();
+    document.getElementById('modalName').textContent = m.name;
+    document.getElementById('modalStyle').textContent = m.style;
+    document.getElementById('modalMinCopy').textContent = `Min: $1 · Recommended: $1 USDC`;
+    document.getElementById('copyAmount').value = 1; // $1 USDC recommended
+    document.getElementById('feeNote').textContent = `Performance fee: ${m.fee}% on profits only`;
+
+    const p = m.performance || {};
+    document.getElementById('modalStats').innerHTML = `
+        <div class="modal-stat">
+            <div class="modal-stat-label">Total ROI</div>
+            <div class="modal-stat-value" style="color:var(--green)">+${(p.totalROI||0).toFixed(0)}%</div>
+        </div>
+        <div class="modal-stat">
+            <div class="modal-stat-label">Win Rate</div>
+            <div class="modal-stat-value">${(p.winRate||0).toFixed(1)}%</div>
+        </div>
+        <div class="modal-stat">
+            <div class="modal-stat-label">Max Drawdown</div>
+            <div class="modal-stat-value" style="color:var(--red)">-${(p.maxDrawdown||0).toFixed(1)}%</div>
+        </div>
+        <div class="modal-stat">
+            <div class="modal-stat-label">Total Trades</div>
+            <div class="modal-stat-value">${fmtNum(p.totalTrades||0)}</div>
+        </div>
+        <div class="modal-stat">
+            <div class="modal-stat-label">Sharpe Ratio</div>
+            <div class="modal-stat-value">${(p.sharpe||0).toFixed(2)}</div>
+        </div>
+        <div class="modal-stat">
+            <div class="modal-stat-label">Daily ROI</div>
+            <div class="modal-stat-value" style="color:var(--green)">+${(p.dailyROI||0).toFixed(2)}%</div>
+        </div>
+    `;
+
+    document.getElementById('copyModal').classList.add('open');
+}
+
+function closeModal() {
+    document.getElementById('copyModal').classList.remove('open');
+    selectedManager = null;
+}
+
+async function confirmCopy() {
+    if (!selectedManager) return;
+    const amount = parseFloat(document.getElementById('copyAmount').value);
+    if (!amount || amount <= 0) { showToast('Enter a valid amount', 'error'); return; }
+
+    try {
+        const r = await fetch(`${API}/copy`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ managerId: selectedManager.id, amount, userId: 'default' })
+        });
+        const d = await r.json();
+        if (d.success) {
+            copiedManagers.add(selectedManager.id);
+            showToast(`✓ Now copying ${selectedManager.name}!`, 'success');
+            closeModal();
+            loadLeaderboard();
+            loadMyCopies();
+        } else {
+            showToast(d.error || 'Failed to copy', 'error');
+        }
+    } catch {
+        // Demo mode
+        copiedManagers.add(selectedManager.id);
+        showToast(`✓ Now copying ${selectedManager.name}! (Demo)`, 'success');
+        closeModal();
+        loadLeaderboard();
+    }
+}
+
+// ─── MY COPIES ───
+async function loadMyCopies() {
+    try {
+        const r = await fetch(`${API}/my-copies?userId=default`);
+        const d = await r.json();
+        if (!d.success) return;
+        renderMyCopies(d.copies);
+    } catch {
+        renderMyCopies([]);
+    }
+}
+
+function renderMyCopies(copies) {
+    const el = document.getElementById('myCopiesContent');
+    if (copies.length === 0) {
+        el.innerHTML = `<div class="empty-state"><div class="icon">📋</div><p>You're not copying any managers yet.<br>Browse the leaderboard to get started.</p></div>`;
+        return;
+    }
+
+    el.innerHTML = `<div class="my-copies-grid">${copies.map(c => `
+        <div class="copy-card">
+            <div class="copy-card-header">
+                <div class="avatar">${c.avatar || c.name.slice(0,2)}</div>
+                <div>
+                    <div style="font-weight:600">${escHtml(c.name)}</div>
+                    <div style="font-size:11px;color:var(--text3)">${new Date(c.startedAt).toLocaleDateString()}</div>
+                </div>
+            </div>
+            <div class="copy-card-metrics">
+                <div class="copy-metric">
+                    <div class="copy-metric-label">Invested</div>
+                    <div class="copy-metric-value">$${c.amount}</div>
+                </div>
+                <div class="copy-metric">
+                    <div class="copy-metric-label">PnL</div>
+                    <div class="copy-metric-value" style="color:${c.currentPnL >= 0 ? 'var(--green)' : 'var(--red)'}">
+                        ${c.currentPnL >= 0 ? '+' : ''}$${c.currentPnL.toFixed(2)}
+                    </div>
+                </div>
+                <div class="copy-metric">
+                    <div class="copy-metric-label">ROI Since</div>
+                    <div class="copy-metric-value" style="color:${c.currentROI >= 0 ? 'var(--green)' : 'var(--red)'}">
+                        ${c.currentROI >= 0 ? '+' : ''}${c.currentROI.toFixed(2)}%
+                    </div>
+                </div>
+                <div class="copy-metric">
+                    <div class="copy-metric-label">Open Pos.</div>
+                    <div class="copy-metric-value">${c.openPositions}</div>
+                </div>
+            </div>
+            <button class="stop-btn" onclick="stopCopy('${c.managerId}', '${escHtml(c.name)}')">Stop Copying</button>
+        </div>
+    `).join('')}</div>`;
+}
+
+async function stopCopy(managerId, name) {
+    if (!confirm(`Stop copying ${name}?`)) return;
+    try {
+        const r = await fetch(`${API}/copy/${managerId}?userId=default`, { method: 'DELETE' });
+        const d = await r.json();
+        if (d.success) {
+            copiedManagers.delete(managerId);
+            showToast(`Stopped copying ${name}. PnL: $${d.pnl}`, 'success');
+            loadMyCopies();
+            loadLeaderboard();
+        }
+    } catch {
+        copiedManagers.delete(managerId);
+        showToast(`Stopped copying ${name}`, 'success');
+        loadMyCopies();
+    }
+}
+
+// ─── TABS ───
+function switchTab(tab) {
+    activeTab = tab;
+    document.querySelectorAll('.tab').forEach((t, i) => {
+        t.classList.toggle('active', ['leaderboard','my-copies'][i] === tab);
+    });
+    document.getElementById('leaderboardTab').style.display = tab === 'leaderboard' ? 'block' : 'none';
+    document.getElementById('myCopiesTab').style.display = tab === 'my-copies' ? 'block' : 'none';
+    document.getElementById('filtersBar').style.display = tab === 'leaderboard' ? 'flex' : 'none';
+    if (tab === 'my-copies') loadMyCopies();
+}
+
+// ─── FILTERS ───
+function applyFilters() {
+    loadLeaderboard();
+}
+
+function setSort(col) {
+    if (currentSort === col) {
+        currentOrder = currentOrder === 'desc' ? 'asc' : 'desc';
+    } else {
+        currentSort = col;
+        currentOrder = 'desc';
+    }
+    document.querySelectorAll('thead th').forEach(th => th.classList.remove('sorted'));
+    const th = document.getElementById(`th-${col}`);
+    if (th) th.classList.add('sorted');
+    applyFilters();
+}
+
+function toggleVerified() {
+    verifiedOnly = !verifiedOnly;
+    const btn = document.getElementById('verifiedBtn');
+    btn.classList.toggle('active', verifiedOnly);
+    applyFilters();
+}
+
+function resetFilters() {
+    document.getElementById('riskFilter').value = '';
+    document.getElementById('minROI').value = '';
+    document.getElementById('searchInput').value = '';
+    verifiedOnly = false;
+    document.getElementById('verifiedBtn').classList.remove('active');
+    currentSort = 'totalROI';
+    currentOrder = 'desc';
+    applyFilters();
+}
+
+// ─── DEMO DATA ───
+function renderDemoLeaderboard() {
+    const demo = [
+        { rank:1, id:'btc_maximalist', name:'BTC Maximalist', avatar:'BM', flag:'🇺🇸', style:'Bitcoin Only', verified:true, featured:false,
+          performance:{totalROI:5870,monthlyROI:21,weeklyROI:5.2,winRate:71,maxDrawdown:22.3,totalTrades:4412,sharpe:2.8,dailyROI:0.7},
+          followers:1240, riskLevel:'Medium', equityCurve:[100,110,108,125,119,138,145,162,171,188,210,198,225,240,231,268] },
+        { rank:2, id:'quant_alpha', name:'QuantAlpha', avatar:'QA', flag:'🇨🇭', style:'Algorithmic HFT', verified:true, featured:true,
+          performance:{totalROI:2840,monthlyROI:42,weeklyROI:10.5,winRate:67,maxDrawdown:7.8,totalTrades:8921,sharpe:3.1,dailyROI:1.4},
+          followers:892, riskLevel:'Medium', equityCurve:[100,114,111,128,122,140,148,165,179,195,218,209,232,248,239,275] },
+        { rank:3, id:'trend_master', name:'TrendMaster', avatar:'TM', flag:'🇫🇷', style:'Trend Following', verified:true, featured:true,
+          performance:{totalROI:3421,monthlyROI:27,weeklyROI:6.7,winRate:64,maxDrawdown:8.1,totalTrades:3089,sharpe:2.6,dailyROI:0.9},
+          followers:2140, riskLevel:'Low', equityCurve:[100,108,112,118,115,124,131,139,136,148,155,162,158,170,178,185] },
+        { rank:4, id:'altseason_pro', name:'AltseasonPro', avatar:'AP', flag:'🇮🇳', style:'Altcoin Rotation', verified:true, featured:false,
+          performance:{totalROI:4230,monthlyROI:36,weeklyROI:9.0,winRate:49,maxDrawdown:29.4,totalTrades:5234,sharpe:1.9,dailyROI:1.2},
+          followers:678, riskLevel:'High', equityCurve:[100,95,88,110,108,125,142,138,165,189,170,205,198,230,215,248] },
+        { rank:5, id:'crypto_king', name:'CryptoKing', avatar:'CK', flag:'🇺🇸', style:'Momentum Scalper', verified:true, featured:true,
+          performance:{totalROI:1243,monthlyROI:54,weeklyROI:13.5,winRate:61,maxDrawdown:12.4,totalTrades:12890,sharpe:2.4,dailyROI:1.8},
+          followers:456, riskLevel:'High', equityCurve:[100,118,112,132,128,150,145,168,180,199,192,215,209,230,225,248] },
+    ];
+    renderLeaderboard(demo);
+    showDemoStats();
+}
+
+// ─── UTILS ───
+function fmtNum(n) {
+    if (n >= 1000000) return (n/1000000).toFixed(1) + 'M';
+    if (n >= 1000) return (n/1000).toFixed(1) + 'K';
+    return String(n);
+}
+
+function escHtml(s) {
+    return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+}
+
+function showToast(msg, type = 'success') {
+    const t = document.getElementById('toast');
+    t.textContent = msg;
+    t.className = `toast ${type} show`;
+    setTimeout(() => t.classList.remove('show'), 3500);
+}
+
+// Close modal on overlay click
+document.getElementById('copyModal').addEventListener('click', e => {
+    if (e.target === e.currentTarget) closeModal();
+});
+
+// ─── START ───
+init();
+</script>
+</body>
+</html>

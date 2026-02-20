@@ -434,6 +434,12 @@ const aerodromeInvestRouter = require('./routes/aerodrome-invest');
 app.use('/api/aerodrome', aerodromeInvestRouter);
 console.log('✅ Aerodrome Invest: Bridge+Swap+LP in 1-click (Base chain)');
 
+// Copy-Trading Leaderboard — PrimeXBT Covesting-style ranking
+const { router: copyTradingRouter, initCopyTradingRoutes } = require('./routes/copy-trading');
+initCopyTradingRoutes();
+app.use('/api/copy-trading', copyTradingRouter);
+console.log('✅ Copy Trading: 20 strategy managers, leaderboard, copy system');
+
 // Global Markets — Stocks, ETFs, Commodities (Korean, US, Japan, EU...)
 const globalMarketsRouter = require('./routes/global-markets');
 app.use('/api/markets/global', globalMarketsRouter);
