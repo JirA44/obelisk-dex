@@ -1,95 +1,197 @@
 {
   "positions": [
     [
-      "MIXBOT_CRV",
+      "mixbot_ETH_1771570840696_wjmiie",
       {
-        "id": "PERP_1769368045656_70flyz",
-        "userId": "MIXBOT",
-        "coin": "CRV",
-        "side": "long",
-        "size": 18.4181725,
-        "margin": 9.20908625,
+        "id": "PERP_1771570840696_yue022",
+        "userId": "mixbot",
+        "coin": "ETH",
+        "side": "short",
+        "size": 3,
+        "margin": 1.5,
         "leverage": 2,
-        "entryPrice": 0.3412,
-        "liquidationPrice": 0.18766000000000002,
-        "tp": null,
-        "sl": null,
+        "entryPrice": 1958.66,
+        "liquidationPrice": 2840.0570000000002,
+        "tp": 1899.9002,
+        "sl": 1997.8332,
         "venue": "PAPER",
         "txHash": null,
         "source": "api",
-        "openedAt": 1769368045656,
-        "lastFundingTime": 1769368045656,
+        "openedAt": 1771570840696,
+        "lastFundingTime": 1771570840696,
         "accumulatedFunding": 0,
-        "realizedPnl": -0.00920908625
+        "realizedPnl": 0
       }
     ],
     [
-      "MIXBOT_AAVE",
+      "sonic-hft_ETH_1771589015169_43z0os",
       {
-        "id": "PERP_1769372186683_18k331",
-        "userId": "MIXBOT",
-        "coin": "AAVE",
+        "id": "PERP_1771589015169_sr6kdr",
+        "userId": "sonic-hft",
+        "coin": "ETH",
         "side": "long",
-        "size": 15.13,
-        "margin": 7.565,
-        "leverage": 2,
-        "entryPrice": 146.57,
-        "liquidationPrice": 80.6135,
+        "size": 5,
+        "margin": 5,
+        "leverage": 1,
+        "entryPrice": 1945.68,
+        "liquidationPrice": 194.56799999999996,
         "tp": null,
         "sl": null,
         "venue": "PAPER",
         "txHash": null,
         "source": "api",
-        "openedAt": 1769372186683,
-        "lastFundingTime": 1769372186683,
+        "openedAt": 1771589015169,
+        "lastFundingTime": 1771589015169,
         "accumulatedFunding": 0,
-        "realizedPnl": -0.0075650000000000005
+        "realizedPnl": 0
       }
     ],
     [
-      "MIXBOT_UNI",
+      "sonic-hft_SOL_1771589165950_46r2it",
       {
-        "id": "PERP_1769372606672_5wt1qi",
-        "userId": "MIXBOT",
-        "coin": "UNI",
-        "side": "long",
-        "size": 15.04,
-        "margin": 7.52,
-        "leverage": 2,
-        "entryPrice": 4.604,
-        "liquidationPrice": 2.5322000000000005,
+        "id": "PERP_1771589165950_4tz5y9",
+        "userId": "sonic-hft",
+        "coin": "SOL",
+        "side": "short",
+        "size": 5,
+        "margin": 5,
+        "leverage": 1,
+        "entryPrice": 83.69,
+        "liquidationPrice": 159.011,
         "tp": null,
         "sl": null,
         "venue": "PAPER",
         "txHash": null,
         "source": "api",
-        "openedAt": 1769372606672,
-        "lastFundingTime": 1769372606672,
+        "openedAt": 1771589165950,
+        "lastFundingTime": 1771589165950,
         "accumulatedFunding": 0,
-        "realizedPnl": -0.00752
+        "realizedPnl": 0
+      }
+    ],
+    [
+      "sonic_mixbot_PAXG_1771593755458_nf4x0f",
+      {
+        "id": "PERP_1771593755458_mn8e9p",
+        "userId": "sonic_mixbot",
+        "coin": "PAXG",
+        "side": "long",
+        "size": 1,
+        "margin": 0.5,
+        "leverage": 2,
+        "entryPrice": 5042.41,
+        "liquidationPrice": 2773.3255,
+        "tp": 5193.6823,
+        "sl": 4941.5617999999995,
+        "venue": "PAPER",
+        "txHash": null,
+        "source": "api",
+        "openedAt": 1771593755458,
+        "lastFundingTime": 1771593755458,
+        "accumulatedFunding": 0,
+        "realizedPnl": 0
+      }
+    ],
+    [
+      "solana_mixbot_PAXG_1771593755495_pmjnlk",
+      {
+        "id": "PERP_1771593755495_0phd4a",
+        "userId": "solana_mixbot",
+        "coin": "PAXG",
+        "side": "long",
+        "size": 3,
+        "margin": 1,
+        "leverage": 3,
+        "entryPrice": 5042.41,
+        "liquidationPrice": 3529.687,
+        "tp": 5193.6823,
+        "sl": 4941.5617999999995,
+        "venue": "PAPER",
+        "txHash": null,
+        "source": "api",
+        "openedAt": 1771593755495,
+        "lastFundingTime": 1771593755495,
+        "accumulatedFunding": 0,
+        "realizedPnl": 0
       }
     ]
   ],
-  "tpslOrders": [],
+  "tpslOrders": [
+    [
+      "mixbot_ETH_1771570840696_wjmiie_tp",
+      {
+        "positionKey": "mixbot_ETH_1771570840696_wjmiie",
+        "type": "tp",
+        "triggerPrice": 1899.9002,
+        "createdAt": 1771570840696
+      }
+    ],
+    [
+      "mixbot_ETH_1771570840696_wjmiie_sl",
+      {
+        "positionKey": "mixbot_ETH_1771570840696_wjmiie",
+        "type": "sl",
+        "triggerPrice": 1997.8332,
+        "createdAt": 1771570840696
+      }
+    ],
+    [
+      "sonic_mixbot_PAXG_1771593755458_nf4x0f_tp",
+      {
+        "positionKey": "sonic_mixbot_PAXG_1771593755458_nf4x0f",
+        "type": "tp",
+        "triggerPrice": 5193.6823,
+        "createdAt": 1771593755458
+      }
+    ],
+    [
+      "sonic_mixbot_PAXG_1771593755458_nf4x0f_sl",
+      {
+        "positionKey": "sonic_mixbot_PAXG_1771593755458_nf4x0f",
+        "type": "sl",
+        "triggerPrice": 4941.5617999999995,
+        "createdAt": 1771593755458
+      }
+    ],
+    [
+      "solana_mixbot_PAXG_1771593755495_pmjnlk_tp",
+      {
+        "positionKey": "solana_mixbot_PAXG_1771593755495_pmjnlk",
+        "type": "tp",
+        "triggerPrice": 5193.6823,
+        "createdAt": 1771593755495
+      }
+    ],
+    [
+      "solana_mixbot_PAXG_1771593755495_pmjnlk_sl",
+      {
+        "positionKey": "solana_mixbot_PAXG_1771593755495_pmjnlk",
+        "type": "sl",
+        "triggerPrice": 4941.5617999999995,
+        "createdAt": 1771593755495
+      }
+    ]
+  ],
   "liquidityPool": {
-    "USDC": 100103.0350701981,
-    "totalLongs": 48.58817250000001,
-    "totalShorts": 0,
-    "openInterest": 48.58817250000004
+    "USDC": 0.2300729638387275,
+    "totalLongs": 15,
+    "totalShorts": 10.999999999999993,
+    "openInterest": 26.000000000000007,
+    "mode": "PAPER"
   },
   "stats": {
-    "totalTrades": 94,
-    "totalVolume": 881.391726867599,
-    "totalLiquidations": 1,
-    "feesCollected": 1.0922643591989003,
-    "fundingCollected": 3.9949376514833306,
-    "pnlPaid": -80.07271375831955,
+    "totalTrades": 9282,
+    "totalVolume": 10199.200000000053,
+    "totalLiquidations": 0,
+    "feesCollected": 7.407499999999524,
+    "fundingCollected": 0,
+    "pnlPaid": -0.2300729638387275,
     "byVenue": {
-      "PAPER": 38,
+      "PAPER": 4645,
       "GMX": 0,
       "HYPERLIQUID": 0
     }
   },
-  "lastFundingTime": 1769195187184,
-  "savedAt": "2026-01-26T05:07:43.977Z"
+  "lastFundingTime": 1771514141350,
+  "savedAt": "2026-02-20T13:24:33.786Z"
 }

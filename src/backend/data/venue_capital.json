@@ -89,5 +89,114 @@
       }
     ]
   ],
-  "savedAt": "2026-02-12T23:00:35.203Z"
+  "savedAt": "2026-02-12T23:00:35.203Z",
+  "mixbot": {
+    "equity": 5.004335778932669,
+    "deposited": 5,
+    "pnl": 0.0043357789326690654,
+    "positions": [
+      {
+        "id": "PERP_1771570840696_yue022",
+        "coin": "ETH",
+        "side": "sell",
+        "size": 3,
+        "leverage": 2,
+        "entryPrice": 1958.66,
+        "tp": 1899.9002,
+        "sl": 1997.8332,
+        "openedAt": 1771570840703
+      }
+    ],
+    "lastUpdated": 1771570840703
+  },
+  "sonic_mixbot": {
+    "equity": 4.098917347023422,
+    "deposited": 10,
+    "pnl": -5.9010826529765765,
+    "positions": [
+      {
+        "id": "PERP_1771593755458_mn8e9p",
+        "coin": "PAXG",
+        "side": "buy",
+        "size": 1,
+        "leverage": 2,
+        "entryPrice": 5042.41,
+        "tp": 5193.6823,
+        "sl": 4941.5617999999995,
+        "openedAt": 1771593755465
+      }
+    ],
+    "mode": "REAL",
+    "capital": "20 S tokens (~$1 @ $0.049/S)",
+    "chain": "SONIC",
+    "note": "Capital réel = 20 S tokens. Trades $0.25 max. Settlement live Sonic.",
+    "lastUpdated": 1771593873797
+  },
+  "test_hft": {
+    "equity": 98.31639517051634,
+    "deposited": 100,
+    "pnl": -1.6836048294835533,
+    "positions": [],
+    "lastUpdated": 1771365265781
+  },
+  "solana_mixbot": {
+    "equity": 2.9739797552152427,
+    "deposited": 6,
+    "pnl": -3.026020244784752,
+    "positions": [
+      {
+        "id": "PERP_1771593755495_0phd4a",
+        "coin": "PAXG",
+        "side": "buy",
+        "size": 3,
+        "leverage": 3,
+        "entryPrice": 5042.41,
+        "tp": 5193.6823,
+        "sl": 4941.5617999999995,
+        "openedAt": 1771593755503
+      }
+    ],
+    "lastUpdated": 1771593755503
+  },
+  "paper_rsi7": {
+    "equity": 9.996365393453043,
+    "deposited": 10,
+    "pnl": -0.0036346065469563087,
+    "positions": [
+      {
+        "id": "PERP_1771441391014_zb75ce",
+        "coin": "BTC",
+        "side": "sell",
+        "size": 3,
+        "leverage": 2,
+        "entryPrice": 66505.99,
+        "tp": 65169.2258,
+        "sl": 67164.2021,
+        "openedAt": 1771441391019
+      },
+      {
+        "id": "PERP_1771441391063_1lau5m",
+        "coin": "ETH",
+        "side": "sell",
+        "size": 3,
+        "leverage": 2,
+        "entryPrice": 1955.52,
+        "tp": 1916.096,
+        "sl": 1974.752,
+        "openedAt": 1771441391069
+      },
+      {
+        "id": "PERP_1771441391077_8bd3ht",
+        "coin": "SOL",
+        "side": "sell",
+        "size": 3,
+        "leverage": 2,
+        "entryPrice": 81.49,
+        "tp": 79.8406,
+        "sl": 82.2847,
+        "openedAt": 1771441391099
+      }
+    ],
+    "lastUpdated": 1771441391099
+  }
 }
