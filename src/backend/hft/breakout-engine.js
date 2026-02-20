@@ -19,6 +19,7 @@
 const http = require('http');
 const fs   = require('fs');
 const path = require('path');
+const PriceTouchIndicator = require('./price-touch-indicator');
 
 const TRACKING_DIR  = path.join(__dirname, '../../../data/tracking');
 const TRADES_FILE   = path.join(TRACKING_DIR, 'breakout_trades.jsonl');
@@ -80,6 +81,15 @@ class BreakoutEngine {
         this.positions = {};
         this.cooldowns = {};
 
+        // ── Price Touch Indicator ─────────────────────────────────────────────
+        // Tracks how many times price touches a level → breakout probability
+        this.touchIndicator = new PriceTouchIndicator({
+            touchTolerance:      this.cfg.touchTolerance,    // reuse breakout engine tolerance
+            breakoutTouches:     this.cfg.minTouches + 2,    // e.g. 5 if minTouches=3
+            minTouchInterval:    30000,  // 30s debounce
+            zoneExpiry:          3600000,
+            maxZones:            30,
+        });
         // Executor
         this._executor = null;
         if (this.cfg.executor === 'obelisk') {
@@ -258,6 +268,16 @@ class BreakoutEngine {
         const boPct     = this.cfg.breakoutPct;
 
         for (const lvl of levels) {
+                // ── Confluence: check PriceTouchIndicator for this level ──────────
+            // If the touch indicator also flagged this level, boost confidence.
+            // Same tolerance as the detection band (no multiplier — consistent).
+            const touchZones  = this.touchIndicator.getZones(pair);
+            const touchMatch  = touchZones.find(z =>
+                Math.abs(z.level - lvl.level) / lvl.level <= this.cfg.touchTolerance
+            );
+            const touchBoost   = touchMatch && touchMatch.readyForBreakout;
+            const totalTouches = lvl.touches + (touchMatch ? touchMatch.touches : 0);
+
             // ── BULL BREAKOUT: resistance level ───────────────────────────────
             // Condition: last N candles consolidated BELOW level (closes < level),
             // current price breaks ABOVE level by breakoutPct
@@ -270,10 +290,15 @@ class BreakoutEngine {
                     if ((this.cooldowns[key] || 0) + this.cfg.cooldownMs > now) continue;
                     this.cooldowns[key] = now;
 
+                    const touchSuffix = touchBoost
+                        ? ` | TOUCH-CONF ${touchMatch.touches}x real-time`
+                        : '';
                     return {
                         side: 'long', pair, price: curPrice,
-                        level: lvl.level, touches: lvl.touches, mtf: mtfBias,
-                        reason: `Bull breakout above $${lvl.level.toFixed(4)} (${lvl.touches}x tested) | MTF: ${mtfBias}`,
+                        level: lvl.level, touches: totalTouches, mtf: mtfBias,
+                        touchConfluence: touchBoost,
+                        touchStrength: touchMatch ? touchMatch.strength : 0,
+                        reason: `Bull breakout above $${lvl.level.toFixed(4)} (${totalTouches}x tested) | MTF: ${mtfBias}${touchSuffix}`,
                     };
                 }
             }
@@ -290,10 +315,15 @@ class BreakoutEngine {
                     if ((this.cooldowns[key] || 0) + this.cfg.cooldownMs > now) continue;
                     this.cooldowns[key] = now;
 
+                    const touchSuffix = touchBoost
+                        ? ` | TOUCH-CONF ${touchMatch.touches}x real-time`
+                        : '';
                     return {
                         side: 'short', pair, price: curPrice,
-                        level: lvl.level, touches: lvl.touches, mtf: mtfBias,
-                        reason: `Bear breakout below $${lvl.level.toFixed(4)} (${lvl.touches}x tested) | MTF: ${mtfBias}`,
+                        level: lvl.level, touches: totalTouches, mtf: mtfBias,
+                        touchConfluence: touchBoost,
+                        touchStrength: touchMatch ? touchMatch.strength : 0,
+                        reason: `Bear breakout below $${lvl.level.toFixed(4)} (${totalTouches}x tested) | MTF: ${mtfBias}${touchSuffix}`,
                     };
                 }
             }
@@ -327,8 +357,12 @@ class BreakoutEngine {
         if (this.stats.byPair[signal.pair]) this.stats.byPair[signal.pair].breakouts++;
 
         const dir = signal.side === 'long' ? '🟢 BULL' : '🔴 BEAR';
-        console.log(`[BREAKOUT] ${dir} ${signal.pair} @ $${signal.price.toFixed(4)}`);
+        const confTag = signal.touchConfluence ? ' 🔥 TOUCH-CONFIRMED' : '';
+        console.log(`[BREAKOUT] ${dir} ${signal.pair} @ $${signal.price.toFixed(4)}${confTag}`);
         console.log(`[BREAKOUT]   Level: $${signal.level.toFixed(4)} × ${signal.touches}x | MTF: ${signal.mtf}`);
+        if (signal.touchConfluence) {
+            console.log(`[BREAKOUT]   ↳ PriceTouchIndicator: strength=${signal.touchStrength} — HIGH CONFIDENCE`);
+        }
         console.log(`[BREAKOUT]   SL: $${pos.sl.toFixed(4)} | TP: $${pos.tp.toFixed(4)} | ${signal.reason}`);
 
         if (this._executor) {
@@ -470,12 +504,53 @@ class BreakoutEngine {
 
                 const now = Date.now();
 
-                // Update candles + check for signals
+                // Update candles + feed PriceTouchIndicator
                 for (const pair of this.cfg.pairs) {
                     const m = mktMap[pair];
                     if (!m) continue;
 
-                    this._addTick(pair, m.price, now);
+                    const newCandle = this._addTick(pair, m.price, now);
+
+                    // When a candle completes → seed detected S/R levels into the
+                    // touch indicator so both systems share the same key levels.
+                    if (newCandle && this.candles1m[pair].length >= this.cfg.minTouches * 2) {
+                        const candleLevels = this._detectLevels(pair);
+                        for (const lvl of candleLevels) {
+                            this.touchIndicator.seedLevel(pair, lvl.level, lvl.touches, lvl.type);
+                        }
+                    }
+
+                    // Feed tick to touch indicator → detect multi-touch breakout zones
+                    const touchSigs = this.touchIndicator.tick(pair, m.price, now);
+                    for (const tsig of touchSigs) {
+                        const arrow = tsig.breakoutBias === 'up' ? '⬆' : tsig.breakoutBias === 'down' ? '⬇' : '↔';
+                        console.log(`[TOUCH] ${arrow} ${pair} $${tsig.level.toFixed(2)} × ${tsig.touches} → ${tsig.breakoutBias.toUpperCase()} | str=${tsig.strength}`);
+
+                        // Direct entry from touch signal (without waiting for candle breakout).
+                        // Only if the touch indicator is highly directional (strength >= 0.7)
+                        // and we're not already positioned on this pair.
+                        if (tsig.side && tsig.strength >= 0.7) {
+                            const alreadyOpen = Object.values(this.positions)
+                                .some(p => p.pair === pair && p.side === tsig.side);
+                            if (!alreadyOpen) {
+                                const key = `${pair}_${tsig.side}_touch`;
+                                if (!this.cooldowns[key] || (now - this.cooldowns[key]) >= this.cfg.cooldownMs) {
+                                    this.cooldowns[key] = now;
+                                    this._openPos({
+                                        side:            tsig.side,
+                                        pair,
+                                        price:           m.price,
+                                        level:           tsig.level,
+                                        touches:         tsig.touches,
+                                        mtf:             'touch',
+                                        touchConfluence: true,
+                                        touchStrength:   tsig.strength,
+                                        reason:          tsig.reason,
+                                    });
+                                }
+                            }
+                        }
+                    }
                 }
 
                 // Check exits
@@ -510,6 +585,16 @@ class BreakoutEngine {
             this.cfg.pairs.map(p => [p, `${this.candles1m[p].length}m candles`])
         );
 
+        // Collect touch indicator zones (non-empty, sorted by touches desc)
+        const touchZones = {};
+        for (const pair of this.cfg.pairs) {
+            const zones = this.touchIndicator.getZones(pair)
+                .filter(z => z.touches > 0)
+                .sort((a, b) => b.touches - a.touches)
+                .slice(0, 5);
+            if (zones.length) touchZones[pair] = zones;
+        }
+
         return {
             ...this.stats,
             elapsedSec:    +elapsed.toFixed(0),
@@ -519,7 +604,8 @@ class BreakoutEngine {
             openList: Object.values(this.positions).map(p =>
                 `${p.pair} ${p.side} @ $${p.entry.toFixed(4)} | lvl:$${p.level.toFixed(4)} (${p.touches}x)`
             ),
-            candles: candleStatus,
+            candles:    candleStatus,
+            touchZones,  // live zones from PriceTouchIndicator
         };
     }
 }
