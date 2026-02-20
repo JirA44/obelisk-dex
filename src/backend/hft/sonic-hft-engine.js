@@ -38,7 +38,7 @@ const CFG = {
     // Trade params
     sizeUsd:       5.00,    // $5 per trade
     slPct:         0.001,   // SL -0.1%
-    tpPct:         0.005,   // TP +0.5% (5:1 RR, break-even 16.7% — was 0.3%)
+    tpPct:         0.002,   // TP +0.2% (2:1 RR, break-even 33% — was 0.5% trop loin, 1.3% TP hit rate)
     maxHoldMs:     120000,  // Force close after 120s (was 60s — more time for TP)
     maxPositions:  5,       // max concurrent across all pairs
 
@@ -107,11 +107,12 @@ class SonicHFTEngine {
         this.batcher = new AutoBatcher(
             { batchSettle: (trades) => this._onBatchSettle(trades) },
             {
-                enabled:      false,
-                profitGuard:  true,
-                batchSize:    this.cfg.batchSize,
-                minBatchSize: this.cfg.batchSize,
-                chain:        this.cfg.chain,
+                enabled:         false,
+                profitGuard:     true,
+                batchSize:       this.cfg.batchSize,
+                minBatchSize:    this.cfg.batchSize,
+                chain:           this.cfg.chain,
+                minNetProfitUsd: this.cfg.minNetProfitUsd || 0,
             }
         );
 
