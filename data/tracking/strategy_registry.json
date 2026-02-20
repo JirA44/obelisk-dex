@@ -1,0 +1,1700 @@
+{
+  "STRAT-20260215-0136-A35F": {
+    "id": "STRAT-20260215-0136-A35F",
+    "idVersion": "v2",
+    "name": "ObeliskExchangeV2",
+    "registeredAt": "2026-02-15T00:36:28.892Z",
+    "metadata": {
+      "trackingVersion": "2.0"
+    },
+    "testRuns": [
+      "RUN-20260215-0136-B195"
+    ],
+    "totalTrades": 15,
+    "totalPnL": 0,
+    "bestWinRate": 100,
+    "bestRun": "RUN-20260215-0136-B195"
+  },
+  "STRAT-20260215-0137-A35F": {
+    "id": "STRAT-20260215-0137-A35F",
+    "idVersion": "v2",
+    "name": "ObeliskExchangeV2",
+    "registeredAt": "2026-02-15T00:37:02.644Z",
+    "metadata": {
+      "trackingVersion": "2.0"
+    },
+    "testRuns": [
+      "RUN-20260215-0136-B195"
+    ],
+    "totalTrades": 62,
+    "totalPnL": 0,
+    "bestWinRate": 100,
+    "bestRun": "RUN-20260215-0136-B195"
+  },
+  "STRAT-20260215-0138-A35F": {
+    "id": "STRAT-20260215-0138-A35F",
+    "idVersion": "v2",
+    "name": "ObeliskExchangeV2",
+    "registeredAt": "2026-02-15T00:38:00.109Z",
+    "metadata": {
+      "trackingVersion": "2.0"
+    },
+    "testRuns": [
+      "RUN-20260215-0136-B195"
+    ],
+    "totalTrades": 82,
+    "totalPnL": 0,
+    "bestWinRate": 100,
+    "bestRun": "RUN-20260215-0136-B195"
+  },
+  "STRAT-20260215-0139-A35F": {
+    "id": "STRAT-20260215-0139-A35F",
+    "idVersion": "v2",
+    "name": "ObeliskExchangeV2",
+    "registeredAt": "2026-02-15T00:39:00.304Z",
+    "metadata": {
+      "trackingVersion": "2.0"
+    },
+    "testRuns": [
+      "RUN-20260215-0136-B195"
+    ],
+    "totalTrades": 41,
+    "totalPnL": 0,
+    "bestWinRate": 100,
+    "bestRun": "RUN-20260215-0136-B195"
+  },
+  "STRAT-20260215-0153-A35F": {
+    "id": "STRAT-20260215-0153-A35F",
+    "idVersion": "v2",
+    "name": "ObeliskExchangeV2",
+    "registeredAt": "2026-02-15T00:53:33.187Z",
+    "metadata": {
+      "trackingVersion": "2.0"
+    },
+    "testRuns": [
+      "RUN-20260215-0153-5EDB"
+    ],
+    "totalTrades": 120,
+    "totalPnL": 0,
+    "bestWinRate": 100,
+    "bestRun": "RUN-20260215-0153-5EDB"
+  },
+  "STRAT-20260215-0154-A35F": {
+    "id": "STRAT-20260215-0154-A35F",
+    "idVersion": "v2",
+    "name": "ObeliskExchangeV2",
+    "registeredAt": "2026-02-15T00:54:00.245Z",
+    "metadata": {
+      "trackingVersion": "2.0"
+    },
+    "testRuns": [
+      "RUN-20260215-0153-5EDB"
+    ],
+    "totalTrades": 258,
+    "totalPnL": 0,
+    "bestWinRate": 100,
+    "bestRun": "RUN-20260215-0153-5EDB"
+  },
+  "STRAT-20260215-0155-A35F": {
+    "id": "STRAT-20260215-0155-A35F",
+    "idVersion": "v2",
+    "name": "ObeliskExchangeV2",
+    "registeredAt": "2026-02-15T00:55:00.190Z",
+    "metadata": {
+      "trackingVersion": "2.0"
+    },
+    "testRuns": [
+      "RUN-20260215-0153-5EDB"
+    ],
+    "totalTrades": 233,
+    "totalPnL": 0,
+    "bestWinRate": 100,
+    "bestRun": "RUN-20260215-0153-5EDB"
+  },
+  "STRAT-20260215-0156-A35F": {
+    "id": "STRAT-20260215-0156-A35F",
+    "idVersion": "v2",
+    "name": "ObeliskExchangeV2",
+    "registeredAt": "2026-02-15T00:56:00.210Z",
+    "metadata": {
+      "trackingVersion": "2.0"
+    },
+    "testRuns": [
+      "RUN-20260215-0153-5EDB"
+    ],
+    "totalTrades": 263,
+    "totalPnL": 0,
+    "bestWinRate": 100,
+    "bestRun": "RUN-20260215-0153-5EDB"
+  },
+  "STRAT-20260215-0157-A35F": {
+    "id": "STRAT-20260215-0157-A35F",
+    "idVersion": "v2",
+    "name": "ObeliskExchangeV2",
+    "registeredAt": "2026-02-15T00:57:00.254Z",
+    "metadata": {
+      "trackingVersion": "2.0"
+    },
+    "testRuns": [
+      "RUN-20260215-0153-5EDB"
+    ],
+    "totalTrades": 126,
+    "totalPnL": 0,
+    "bestWinRate": 100,
+    "bestRun": "RUN-20260215-0153-5EDB"
+  },
+  "STRAT-20260215-0200-A35F": {
+    "id": "STRAT-20260215-0200-A35F",
+    "idVersion": "v2",
+    "name": "ObeliskExchangeV2",
+    "registeredAt": "2026-02-15T01:00:44.080Z",
+    "metadata": {
+      "trackingVersion": "2.0"
+    },
+    "testRuns": [],
+    "totalTrades": 43,
+    "totalPnL": 0,
+    "bestWinRate": 0,
+    "bestRun": null
+  },
+  "STRAT-20260215-0201-A35F": {
+    "id": "STRAT-20260215-0201-A35F",
+    "idVersion": "v2",
+    "name": "ObeliskExchangeV2",
+    "registeredAt": "2026-02-15T01:01:00.221Z",
+    "metadata": {
+      "trackingVersion": "2.0"
+    },
+    "testRuns": [],
+    "totalTrades": 275,
+    "totalPnL": 0,
+    "bestWinRate": 0,
+    "bestRun": null
+  },
+  "STRAT-20260215-0202-A35F": {
+    "id": "STRAT-20260215-0202-A35F",
+    "idVersion": "v2",
+    "name": "ObeliskExchangeV2",
+    "registeredAt": "2026-02-15T01:02:00.417Z",
+    "metadata": {
+      "trackingVersion": "2.0"
+    },
+    "testRuns": [],
+    "totalTrades": 256,
+    "totalPnL": 0,
+    "bestWinRate": 0,
+    "bestRun": null
+  },
+  "STRAT-20260215-0203-A35F": {
+    "id": "STRAT-20260215-0203-A35F",
+    "idVersion": "v2",
+    "name": "ObeliskExchangeV2",
+    "registeredAt": "2026-02-15T01:03:00.106Z",
+    "metadata": {
+      "trackingVersion": "2.0"
+    },
+    "testRuns": [],
+    "totalTrades": 226,
+    "totalPnL": 0,
+    "bestWinRate": 0,
+    "bestRun": null
+  },
+  "STRAT-20260215-0204-A35F": {
+    "id": "STRAT-20260215-0204-A35F",
+    "idVersion": "v2",
+    "name": "ObeliskExchangeV2",
+    "registeredAt": "2026-02-15T01:04:00.237Z",
+    "metadata": {
+      "trackingVersion": "2.0"
+    },
+    "testRuns": [],
+    "totalTrades": 257,
+    "totalPnL": 0,
+    "bestWinRate": 0,
+    "bestRun": null
+  },
+  "STRAT-20260215-0205-A35F": {
+    "id": "STRAT-20260215-0205-A35F",
+    "idVersion": "v2",
+    "name": "ObeliskExchangeV2",
+    "registeredAt": "2026-02-15T01:05:00.162Z",
+    "metadata": {
+      "trackingVersion": "2.0"
+    },
+    "testRuns": [],
+    "totalTrades": 235,
+    "totalPnL": 0,
+    "bestWinRate": 0,
+    "bestRun": null
+  },
+  "STRAT-20260215-0206-A35F": {
+    "id": "STRAT-20260215-0206-A35F",
+    "idVersion": "v2",
+    "name": "ObeliskExchangeV2",
+    "registeredAt": "2026-02-15T01:06:00.339Z",
+    "metadata": {
+      "trackingVersion": "2.0"
+    },
+    "testRuns": [],
+    "totalTrades": 209,
+    "totalPnL": 0,
+    "bestWinRate": 0,
+    "bestRun": null
+  },
+  "STRAT-20260215-0207-A35F": {
+    "id": "STRAT-20260215-0207-A35F",
+    "idVersion": "v2",
+    "name": "ObeliskExchangeV2",
+    "registeredAt": "2026-02-15T01:07:00.413Z",
+    "metadata": {
+      "trackingVersion": "2.0"
+    },
+    "testRuns": [],
+    "totalTrades": 242,
+    "totalPnL": 0,
+    "bestWinRate": 0,
+    "bestRun": null
+  },
+  "STRAT-20260215-0208-A35F": {
+    "id": "STRAT-20260215-0208-A35F",
+    "idVersion": "v2",
+    "name": "ObeliskExchangeV2",
+    "registeredAt": "2026-02-15T01:08:00.265Z",
+    "metadata": {
+      "trackingVersion": "2.0"
+    },
+    "testRuns": [],
+    "totalTrades": 217,
+    "totalPnL": 0,
+    "bestWinRate": 0,
+    "bestRun": null
+  },
+  "STRAT-20260215-0209-A35F": {
+    "id": "STRAT-20260215-0209-A35F",
+    "idVersion": "v2",
+    "name": "ObeliskExchangeV2",
+    "registeredAt": "2026-02-15T01:09:00.008Z",
+    "metadata": {
+      "trackingVersion": "2.0"
+    },
+    "testRuns": [],
+    "totalTrades": 242,
+    "totalPnL": 0,
+    "bestWinRate": 0,
+    "bestRun": null
+  },
+  "STRAT-20260215-0210-A35F": {
+    "id": "STRAT-20260215-0210-A35F",
+    "idVersion": "v2",
+    "name": "ObeliskExchangeV2",
+    "registeredAt": "2026-02-15T01:10:00.413Z",
+    "metadata": {
+      "trackingVersion": "2.0"
+    },
+    "testRuns": [],
+    "totalTrades": 237,
+    "totalPnL": 0,
+    "bestWinRate": 0,
+    "bestRun": null
+  },
+  "STRAT-20260215-0211-A35F": {
+    "id": "STRAT-20260215-0211-A35F",
+    "idVersion": "v2",
+    "name": "ObeliskExchangeV2",
+    "registeredAt": "2026-02-15T01:11:00.211Z",
+    "metadata": {
+      "trackingVersion": "2.0"
+    },
+    "testRuns": [],
+    "totalTrades": 228,
+    "totalPnL": 0,
+    "bestWinRate": 0,
+    "bestRun": null
+  },
+  "STRAT-20260215-0212-A35F": {
+    "id": "STRAT-20260215-0212-A35F",
+    "idVersion": "v2",
+    "name": "ObeliskExchangeV2",
+    "registeredAt": "2026-02-15T01:12:00.110Z",
+    "metadata": {
+      "trackingVersion": "2.0"
+    },
+    "testRuns": [],
+    "totalTrades": 214,
+    "totalPnL": 0,
+    "bestWinRate": 0,
+    "bestRun": null
+  },
+  "STRAT-20260215-0213-A35F": {
+    "id": "STRAT-20260215-0213-A35F",
+    "idVersion": "v2",
+    "name": "ObeliskExchangeV2",
+    "registeredAt": "2026-02-15T01:13:00.007Z",
+    "metadata": {
+      "trackingVersion": "2.0"
+    },
+    "testRuns": [],
+    "totalTrades": 217,
+    "totalPnL": 0,
+    "bestWinRate": 0,
+    "bestRun": null
+  },
+  "STRAT-20260215-0214-A35F": {
+    "id": "STRAT-20260215-0214-A35F",
+    "idVersion": "v2",
+    "name": "ObeliskExchangeV2",
+    "registeredAt": "2026-02-15T01:14:00.014Z",
+    "metadata": {
+      "trackingVersion": "2.0"
+    },
+    "testRuns": [],
+    "totalTrades": 231,
+    "totalPnL": 0,
+    "bestWinRate": 0,
+    "bestRun": null
+  },
+  "STRAT-20260215-0215-A35F": {
+    "id": "STRAT-20260215-0215-A35F",
+    "idVersion": "v2",
+    "name": "ObeliskExchangeV2",
+    "registeredAt": "2026-02-15T01:15:00.276Z",
+    "metadata": {
+      "trackingVersion": "2.0"
+    },
+    "testRuns": [],
+    "totalTrades": 220,
+    "totalPnL": 0,
+    "bestWinRate": 0,
+    "bestRun": null
+  },
+  "STRAT-20260215-0216-A35F": {
+    "id": "STRAT-20260215-0216-A35F",
+    "idVersion": "v2",
+    "name": "ObeliskExchangeV2",
+    "registeredAt": "2026-02-15T01:16:00.164Z",
+    "metadata": {
+      "trackingVersion": "2.0"
+    },
+    "testRuns": [],
+    "totalTrades": 197,
+    "totalPnL": 0,
+    "bestWinRate": 0,
+    "bestRun": null
+  },
+  "STRAT-20260215-0217-A35F": {
+    "id": "STRAT-20260215-0217-A35F",
+    "idVersion": "v2",
+    "name": "ObeliskExchangeV2",
+    "registeredAt": "2026-02-15T01:17:00.410Z",
+    "metadata": {
+      "trackingVersion": "2.0"
+    },
+    "testRuns": [],
+    "totalTrades": 204,
+    "totalPnL": 0,
+    "bestWinRate": 0,
+    "bestRun": null
+  },
+  "STRAT-20260215-0218-A35F": {
+    "id": "STRAT-20260215-0218-A35F",
+    "idVersion": "v2",
+    "name": "ObeliskExchangeV2",
+    "registeredAt": "2026-02-15T01:18:00.289Z",
+    "metadata": {
+      "trackingVersion": "2.0"
+    },
+    "testRuns": [],
+    "totalTrades": 198,
+    "totalPnL": 0,
+    "bestWinRate": 0,
+    "bestRun": null
+  },
+  "STRAT-20260215-0219-A35F": {
+    "id": "STRAT-20260215-0219-A35F",
+    "idVersion": "v2",
+    "name": "ObeliskExchangeV2",
+    "registeredAt": "2026-02-15T01:19:00.304Z",
+    "metadata": {
+      "trackingVersion": "2.0"
+    },
+    "testRuns": [],
+    "totalTrades": 209,
+    "totalPnL": 0,
+    "bestWinRate": 0,
+    "bestRun": null
+  },
+  "STRAT-20260215-0220-A35F": {
+    "id": "STRAT-20260215-0220-A35F",
+    "idVersion": "v2",
+    "name": "ObeliskExchangeV2",
+    "registeredAt": "2026-02-15T01:20:00.394Z",
+    "metadata": {
+      "trackingVersion": "2.0"
+    },
+    "testRuns": [],
+    "totalTrades": 209,
+    "totalPnL": 0,
+    "bestWinRate": 0,
+    "bestRun": null
+  },
+  "STRAT-20260215-0221-A35F": {
+    "id": "STRAT-20260215-0221-A35F",
+    "idVersion": "v2",
+    "name": "ObeliskExchangeV2",
+    "registeredAt": "2026-02-15T01:21:00.192Z",
+    "metadata": {
+      "trackingVersion": "2.0"
+    },
+    "testRuns": [],
+    "totalTrades": 227,
+    "totalPnL": 0,
+    "bestWinRate": 0,
+    "bestRun": null
+  },
+  "STRAT-20260215-0222-A35F": {
+    "id": "STRAT-20260215-0222-A35F",
+    "idVersion": "v2",
+    "name": "ObeliskExchangeV2",
+    "registeredAt": "2026-02-15T01:22:00.011Z",
+    "metadata": {
+      "trackingVersion": "2.0"
+    },
+    "testRuns": [],
+    "totalTrades": 197,
+    "totalPnL": 0,
+    "bestWinRate": 0,
+    "bestRun": null
+  },
+  "STRAT-20260215-0223-A35F": {
+    "id": "STRAT-20260215-0223-A35F",
+    "idVersion": "v2",
+    "name": "ObeliskExchangeV2",
+    "registeredAt": "2026-02-15T01:23:00.312Z",
+    "metadata": {
+      "trackingVersion": "2.0"
+    },
+    "testRuns": [],
+    "totalTrades": 204,
+    "totalPnL": 0,
+    "bestWinRate": 0,
+    "bestRun": null
+  },
+  "STRAT-20260215-0224-A35F": {
+    "id": "STRAT-20260215-0224-A35F",
+    "idVersion": "v2",
+    "name": "ObeliskExchangeV2",
+    "registeredAt": "2026-02-15T01:24:00.425Z",
+    "metadata": {
+      "trackingVersion": "2.0"
+    },
+    "testRuns": [],
+    "totalTrades": 212,
+    "totalPnL": 0,
+    "bestWinRate": 0,
+    "bestRun": null
+  },
+  "STRAT-20260215-0225-A35F": {
+    "id": "STRAT-20260215-0225-A35F",
+    "idVersion": "v2",
+    "name": "ObeliskExchangeV2",
+    "registeredAt": "2026-02-15T01:25:00.000Z",
+    "metadata": {
+      "trackingVersion": "2.0"
+    },
+    "testRuns": [],
+    "totalTrades": 224,
+    "totalPnL": 0,
+    "bestWinRate": 0,
+    "bestRun": null
+  },
+  "STRAT-20260215-0226-A35F": {
+    "id": "STRAT-20260215-0226-A35F",
+    "idVersion": "v2",
+    "name": "ObeliskExchangeV2",
+    "registeredAt": "2026-02-15T01:26:00.326Z",
+    "metadata": {
+      "trackingVersion": "2.0"
+    },
+    "testRuns": [],
+    "totalTrades": 207,
+    "totalPnL": 0,
+    "bestWinRate": 0,
+    "bestRun": null
+  },
+  "STRAT-20260215-0227-A35F": {
+    "id": "STRAT-20260215-0227-A35F",
+    "idVersion": "v2",
+    "name": "ObeliskExchangeV2",
+    "registeredAt": "2026-02-15T01:27:00.030Z",
+    "metadata": {
+      "trackingVersion": "2.0"
+    },
+    "testRuns": [],
+    "totalTrades": 209,
+    "totalPnL": 0,
+    "bestWinRate": 0,
+    "bestRun": null
+  },
+  "STRAT-20260215-0228-A35F": {
+    "id": "STRAT-20260215-0228-A35F",
+    "idVersion": "v2",
+    "name": "ObeliskExchangeV2",
+    "registeredAt": "2026-02-15T01:28:00.304Z",
+    "metadata": {
+      "trackingVersion": "2.0"
+    },
+    "testRuns": [],
+    "totalTrades": 176,
+    "totalPnL": 0,
+    "bestWinRate": 0,
+    "bestRun": null
+  },
+  "STRAT-20260215-0229-A35F": {
+    "id": "STRAT-20260215-0229-A35F",
+    "idVersion": "v2",
+    "name": "ObeliskExchangeV2",
+    "registeredAt": "2026-02-15T01:29:00.017Z",
+    "metadata": {
+      "trackingVersion": "2.0"
+    },
+    "testRuns": [],
+    "totalTrades": 197,
+    "totalPnL": 0,
+    "bestWinRate": 0,
+    "bestRun": null
+  },
+  "STRAT-20260215-0230-A35F": {
+    "id": "STRAT-20260215-0230-A35F",
+    "idVersion": "v2",
+    "name": "ObeliskExchangeV2",
+    "registeredAt": "2026-02-15T01:30:00.253Z",
+    "metadata": {
+      "trackingVersion": "2.0"
+    },
+    "testRuns": [],
+    "totalTrades": 197,
+    "totalPnL": 0,
+    "bestWinRate": 0,
+    "bestRun": null
+  },
+  "STRAT-20260215-0231-A35F": {
+    "id": "STRAT-20260215-0231-A35F",
+    "idVersion": "v2",
+    "name": "ObeliskExchangeV2",
+    "registeredAt": "2026-02-15T01:31:00.174Z",
+    "metadata": {
+      "trackingVersion": "2.0"
+    },
+    "testRuns": [],
+    "totalTrades": 177,
+    "totalPnL": 0,
+    "bestWinRate": 0,
+    "bestRun": null
+  },
+  "STRAT-20260215-0232-A35F": {
+    "id": "STRAT-20260215-0232-A35F",
+    "idVersion": "v2",
+    "name": "ObeliskExchangeV2",
+    "registeredAt": "2026-02-15T01:32:00.534Z",
+    "metadata": {
+      "trackingVersion": "2.0"
+    },
+    "testRuns": [],
+    "totalTrades": 156,
+    "totalPnL": 0,
+    "bestWinRate": 0,
+    "bestRun": null
+  },
+  "STRAT-20260215-0233-A35F": {
+    "id": "STRAT-20260215-0233-A35F",
+    "idVersion": "v2",
+    "name": "ObeliskExchangeV2",
+    "registeredAt": "2026-02-15T01:33:00.085Z",
+    "metadata": {
+      "trackingVersion": "2.0"
+    },
+    "testRuns": [],
+    "totalTrades": 176,
+    "totalPnL": 0,
+    "bestWinRate": 0,
+    "bestRun": null
+  },
+  "STRAT-20260215-0234-A35F": {
+    "id": "STRAT-20260215-0234-A35F",
+    "idVersion": "v2",
+    "name": "ObeliskExchangeV2",
+    "registeredAt": "2026-02-15T01:34:00.025Z",
+    "metadata": {
+      "trackingVersion": "2.0"
+    },
+    "testRuns": [],
+    "totalTrades": 183,
+    "totalPnL": 0,
+    "bestWinRate": 0,
+    "bestRun": null
+  },
+  "STRAT-20260215-0235-A35F": {
+    "id": "STRAT-20260215-0235-A35F",
+    "idVersion": "v2",
+    "name": "ObeliskExchangeV2",
+    "registeredAt": "2026-02-15T01:35:00.147Z",
+    "metadata": {
+      "trackingVersion": "2.0"
+    },
+    "testRuns": [],
+    "totalTrades": 188,
+    "totalPnL": 0,
+    "bestWinRate": 0,
+    "bestRun": null
+  },
+  "STRAT-20260215-0236-A35F": {
+    "id": "STRAT-20260215-0236-A35F",
+    "idVersion": "v2",
+    "name": "ObeliskExchangeV2",
+    "registeredAt": "2026-02-15T01:36:00.407Z",
+    "metadata": {
+      "trackingVersion": "2.0"
+    },
+    "testRuns": [],
+    "totalTrades": 185,
+    "totalPnL": 0,
+    "bestWinRate": 0,
+    "bestRun": null
+  },
+  "STRAT-20260215-0237-A35F": {
+    "id": "STRAT-20260215-0237-A35F",
+    "idVersion": "v2",
+    "name": "ObeliskExchangeV2",
+    "registeredAt": "2026-02-15T01:37:00.150Z",
+    "metadata": {
+      "trackingVersion": "2.0"
+    },
+    "testRuns": [],
+    "totalTrades": 172,
+    "totalPnL": 0,
+    "bestWinRate": 0,
+    "bestRun": null
+  },
+  "STRAT-20260215-0238-A35F": {
+    "id": "STRAT-20260215-0238-A35F",
+    "idVersion": "v2",
+    "name": "ObeliskExchangeV2",
+    "registeredAt": "2026-02-15T01:38:00.170Z",
+    "metadata": {
+      "trackingVersion": "2.0"
+    },
+    "testRuns": [],
+    "totalTrades": 172,
+    "totalPnL": 0,
+    "bestWinRate": 0,
+    "bestRun": null
+  },
+  "STRAT-20260215-0239-A35F": {
+    "id": "STRAT-20260215-0239-A35F",
+    "idVersion": "v2",
+    "name": "ObeliskExchangeV2",
+    "registeredAt": "2026-02-15T01:39:00.018Z",
+    "metadata": {
+      "trackingVersion": "2.0"
+    },
+    "testRuns": [],
+    "totalTrades": 187,
+    "totalPnL": 0,
+    "bestWinRate": 0,
+    "bestRun": null
+  },
+  "STRAT-20260215-0240-A35F": {
+    "id": "STRAT-20260215-0240-A35F",
+    "idVersion": "v2",
+    "name": "ObeliskExchangeV2",
+    "registeredAt": "2026-02-15T01:40:00.396Z",
+    "metadata": {
+      "trackingVersion": "2.0"
+    },
+    "testRuns": [],
+    "totalTrades": 191,
+    "totalPnL": 0,
+    "bestWinRate": 0,
+    "bestRun": null
+  },
+  "STRAT-20260215-0241-A35F": {
+    "id": "STRAT-20260215-0241-A35F",
+    "idVersion": "v2",
+    "name": "ObeliskExchangeV2",
+    "registeredAt": "2026-02-15T01:41:00.311Z",
+    "metadata": {
+      "trackingVersion": "2.0"
+    },
+    "testRuns": [],
+    "totalTrades": 173,
+    "totalPnL": 0,
+    "bestWinRate": 0,
+    "bestRun": null
+  },
+  "STRAT-20260215-0242-A35F": {
+    "id": "STRAT-20260215-0242-A35F",
+    "idVersion": "v2",
+    "name": "ObeliskExchangeV2",
+    "registeredAt": "2026-02-15T01:42:00.179Z",
+    "metadata": {
+      "trackingVersion": "2.0"
+    },
+    "testRuns": [],
+    "totalTrades": 180,
+    "totalPnL": 0,
+    "bestWinRate": 0,
+    "bestRun": null
+  },
+  "STRAT-20260215-0243-A35F": {
+    "id": "STRAT-20260215-0243-A35F",
+    "idVersion": "v2",
+    "name": "ObeliskExchangeV2",
+    "registeredAt": "2026-02-15T01:43:00.406Z",
+    "metadata": {
+      "trackingVersion": "2.0"
+    },
+    "testRuns": [],
+    "totalTrades": 172,
+    "totalPnL": 0,
+    "bestWinRate": 0,
+    "bestRun": null
+  },
+  "STRAT-20260215-0244-A35F": {
+    "id": "STRAT-20260215-0244-A35F",
+    "idVersion": "v2",
+    "name": "ObeliskExchangeV2",
+    "registeredAt": "2026-02-15T01:44:00.498Z",
+    "metadata": {
+      "trackingVersion": "2.0"
+    },
+    "testRuns": [],
+    "totalTrades": 168,
+    "totalPnL": 0,
+    "bestWinRate": 0,
+    "bestRun": null
+  },
+  "STRAT-20260215-0245-A35F": {
+    "id": "STRAT-20260215-0245-A35F",
+    "idVersion": "v2",
+    "name": "ObeliskExchangeV2",
+    "registeredAt": "2026-02-15T01:45:00.456Z",
+    "metadata": {
+      "trackingVersion": "2.0"
+    },
+    "testRuns": [],
+    "totalTrades": 166,
+    "totalPnL": 0,
+    "bestWinRate": 0,
+    "bestRun": null
+  },
+  "STRAT-20260215-0246-A35F": {
+    "id": "STRAT-20260215-0246-A35F",
+    "idVersion": "v2",
+    "name": "ObeliskExchangeV2",
+    "registeredAt": "2026-02-15T01:46:00.139Z",
+    "metadata": {
+      "trackingVersion": "2.0"
+    },
+    "testRuns": [],
+    "totalTrades": 176,
+    "totalPnL": 0,
+    "bestWinRate": 0,
+    "bestRun": null
+  },
+  "STRAT-20260215-0247-A35F": {
+    "id": "STRAT-20260215-0247-A35F",
+    "idVersion": "v2",
+    "name": "ObeliskExchangeV2",
+    "registeredAt": "2026-02-15T01:47:00.126Z",
+    "metadata": {
+      "trackingVersion": "2.0"
+    },
+    "testRuns": [],
+    "totalTrades": 162,
+    "totalPnL": 0,
+    "bestWinRate": 0,
+    "bestRun": null
+  },
+  "STRAT-20260215-0248-A35F": {
+    "id": "STRAT-20260215-0248-A35F",
+    "idVersion": "v2",
+    "name": "ObeliskExchangeV2",
+    "registeredAt": "2026-02-15T01:48:00.084Z",
+    "metadata": {
+      "trackingVersion": "2.0"
+    },
+    "testRuns": [],
+    "totalTrades": 171,
+    "totalPnL": 0,
+    "bestWinRate": 0,
+    "bestRun": null
+  },
+  "STRAT-20260215-0249-A35F": {
+    "id": "STRAT-20260215-0249-A35F",
+    "idVersion": "v2",
+    "name": "ObeliskExchangeV2",
+    "registeredAt": "2026-02-15T01:49:00.365Z",
+    "metadata": {
+      "trackingVersion": "2.0"
+    },
+    "testRuns": [],
+    "totalTrades": 166,
+    "totalPnL": 0,
+    "bestWinRate": 0,
+    "bestRun": null
+  },
+  "STRAT-20260215-0250-A35F": {
+    "id": "STRAT-20260215-0250-A35F",
+    "idVersion": "v2",
+    "name": "ObeliskExchangeV2",
+    "registeredAt": "2026-02-15T01:50:00.383Z",
+    "metadata": {
+      "trackingVersion": "2.0"
+    },
+    "testRuns": [],
+    "totalTrades": 165,
+    "totalPnL": 0,
+    "bestWinRate": 0,
+    "bestRun": null
+  },
+  "STRAT-20260215-0251-A35F": {
+    "id": "STRAT-20260215-0251-A35F",
+    "idVersion": "v2",
+    "name": "ObeliskExchangeV2",
+    "registeredAt": "2026-02-15T01:51:00.031Z",
+    "metadata": {
+      "trackingVersion": "2.0"
+    },
+    "testRuns": [],
+    "totalTrades": 169,
+    "totalPnL": 0,
+    "bestWinRate": 0,
+    "bestRun": null
+  },
+  "STRAT-20260215-0252-A35F": {
+    "id": "STRAT-20260215-0252-A35F",
+    "idVersion": "v2",
+    "name": "ObeliskExchangeV2",
+    "registeredAt": "2026-02-15T01:52:00.324Z",
+    "metadata": {
+      "trackingVersion": "2.0"
+    },
+    "testRuns": [],
+    "totalTrades": 165,
+    "totalPnL": 0,
+    "bestWinRate": 0,
+    "bestRun": null
+  },
+  "STRAT-20260215-0253-A35F": {
+    "id": "STRAT-20260215-0253-A35F",
+    "idVersion": "v2",
+    "name": "ObeliskExchangeV2",
+    "registeredAt": "2026-02-15T01:53:00.014Z",
+    "metadata": {
+      "trackingVersion": "2.0"
+    },
+    "testRuns": [],
+    "totalTrades": 183,
+    "totalPnL": 0,
+    "bestWinRate": 0,
+    "bestRun": null
+  },
+  "STRAT-20260215-0254-A35F": {
+    "id": "STRAT-20260215-0254-A35F",
+    "idVersion": "v2",
+    "name": "ObeliskExchangeV2",
+    "registeredAt": "2026-02-15T01:54:00.148Z",
+    "metadata": {
+      "trackingVersion": "2.0"
+    },
+    "testRuns": [],
+    "totalTrades": 167,
+    "totalPnL": 0,
+    "bestWinRate": 0,
+    "bestRun": null
+  },
+  "STRAT-20260215-0255-A35F": {
+    "id": "STRAT-20260215-0255-A35F",
+    "idVersion": "v2",
+    "name": "ObeliskExchangeV2",
+    "registeredAt": "2026-02-15T01:55:00.023Z",
+    "metadata": {
+      "trackingVersion": "2.0"
+    },
+    "testRuns": [],
+    "totalTrades": 169,
+    "totalPnL": 0,
+    "bestWinRate": 0,
+    "bestRun": null
+  },
+  "STRAT-20260215-0256-A35F": {
+    "id": "STRAT-20260215-0256-A35F",
+    "idVersion": "v2",
+    "name": "ObeliskExchangeV2",
+    "registeredAt": "2026-02-15T01:56:00.059Z",
+    "metadata": {
+      "trackingVersion": "2.0"
+    },
+    "testRuns": [],
+    "totalTrades": 176,
+    "totalPnL": 0,
+    "bestWinRate": 0,
+    "bestRun": null
+  },
+  "STRAT-20260215-0257-A35F": {
+    "id": "STRAT-20260215-0257-A35F",
+    "idVersion": "v2",
+    "name": "ObeliskExchangeV2",
+    "registeredAt": "2026-02-15T01:57:00.228Z",
+    "metadata": {
+      "trackingVersion": "2.0"
+    },
+    "testRuns": [],
+    "totalTrades": 169,
+    "totalPnL": 0,
+    "bestWinRate": 0,
+    "bestRun": null
+  },
+  "STRAT-20260215-0258-A35F": {
+    "id": "STRAT-20260215-0258-A35F",
+    "idVersion": "v2",
+    "name": "ObeliskExchangeV2",
+    "registeredAt": "2026-02-15T01:58:00.085Z",
+    "metadata": {
+      "trackingVersion": "2.0"
+    },
+    "testRuns": [],
+    "totalTrades": 170,
+    "totalPnL": 0,
+    "bestWinRate": 0,
+    "bestRun": null
+  },
+  "STRAT-20260215-0259-A35F": {
+    "id": "STRAT-20260215-0259-A35F",
+    "idVersion": "v2",
+    "name": "ObeliskExchangeV2",
+    "registeredAt": "2026-02-15T01:59:00.326Z",
+    "metadata": {
+      "trackingVersion": "2.0"
+    },
+    "testRuns": [],
+    "totalTrades": 164,
+    "totalPnL": 0,
+    "bestWinRate": 0,
+    "bestRun": null
+  },
+  "STRAT-20260215-0300-A35F": {
+    "id": "STRAT-20260215-0300-A35F",
+    "idVersion": "v2",
+    "name": "ObeliskExchangeV2",
+    "registeredAt": "2026-02-15T02:00:00.454Z",
+    "metadata": {
+      "trackingVersion": "2.0"
+    },
+    "testRuns": [],
+    "totalTrades": 173,
+    "totalPnL": 0,
+    "bestWinRate": 0,
+    "bestRun": null
+  },
+  "STRAT-20260215-0301-A35F": {
+    "id": "STRAT-20260215-0301-A35F",
+    "idVersion": "v2",
+    "name": "ObeliskExchangeV2",
+    "registeredAt": "2026-02-15T02:01:00.301Z",
+    "metadata": {
+      "trackingVersion": "2.0"
+    },
+    "testRuns": [],
+    "totalTrades": 176,
+    "totalPnL": 0,
+    "bestWinRate": 0,
+    "bestRun": null
+  },
+  "STRAT-20260215-0302-A35F": {
+    "id": "STRAT-20260215-0302-A35F",
+    "idVersion": "v2",
+    "name": "ObeliskExchangeV2",
+    "registeredAt": "2026-02-15T02:02:00.302Z",
+    "metadata": {
+      "trackingVersion": "2.0"
+    },
+    "testRuns": [],
+    "totalTrades": 182,
+    "totalPnL": 0,
+    "bestWinRate": 0,
+    "bestRun": null
+  },
+  "STRAT-20260215-0303-A35F": {
+    "id": "STRAT-20260215-0303-A35F",
+    "idVersion": "v2",
+    "name": "ObeliskExchangeV2",
+    "registeredAt": "2026-02-15T02:03:00.172Z",
+    "metadata": {
+      "trackingVersion": "2.0"
+    },
+    "testRuns": [],
+    "totalTrades": 174,
+    "totalPnL": 0,
+    "bestWinRate": 0,
+    "bestRun": null
+  },
+  "STRAT-20260215-0304-A35F": {
+    "id": "STRAT-20260215-0304-A35F",
+    "idVersion": "v2",
+    "name": "ObeliskExchangeV2",
+    "registeredAt": "2026-02-15T02:04:00.372Z",
+    "metadata": {
+      "trackingVersion": "2.0"
+    },
+    "testRuns": [],
+    "totalTrades": 171,
+    "totalPnL": 0,
+    "bestWinRate": 0,
+    "bestRun": null
+  },
+  "STRAT-20260215-0305-A35F": {
+    "id": "STRAT-20260215-0305-A35F",
+    "idVersion": "v2",
+    "name": "ObeliskExchangeV2",
+    "registeredAt": "2026-02-15T02:05:00.182Z",
+    "metadata": {
+      "trackingVersion": "2.0"
+    },
+    "testRuns": [],
+    "totalTrades": 189,
+    "totalPnL": 0,
+    "bestWinRate": 0,
+    "bestRun": null
+  },
+  "STRAT-20260215-0306-A35F": {
+    "id": "STRAT-20260215-0306-A35F",
+    "idVersion": "v2",
+    "name": "ObeliskExchangeV2",
+    "registeredAt": "2026-02-15T02:06:00.299Z",
+    "metadata": {
+      "trackingVersion": "2.0"
+    },
+    "testRuns": [],
+    "totalTrades": 176,
+    "totalPnL": 0,
+    "bestWinRate": 0,
+    "bestRun": null
+  },
+  "STRAT-20260215-0307-A35F": {
+    "id": "STRAT-20260215-0307-A35F",
+    "idVersion": "v2",
+    "name": "ObeliskExchangeV2",
+    "registeredAt": "2026-02-15T02:07:00.173Z",
+    "metadata": {
+      "trackingVersion": "2.0"
+    },
+    "testRuns": [],
+    "totalTrades": 162,
+    "totalPnL": 0,
+    "bestWinRate": 0,
+    "bestRun": null
+  },
+  "STRAT-20260215-0308-A35F": {
+    "id": "STRAT-20260215-0308-A35F",
+    "idVersion": "v2",
+    "name": "ObeliskExchangeV2",
+    "registeredAt": "2026-02-15T02:08:00.062Z",
+    "metadata": {
+      "trackingVersion": "2.0"
+    },
+    "testRuns": [],
+    "totalTrades": 164,
+    "totalPnL": 0,
+    "bestWinRate": 0,
+    "bestRun": null
+  },
+  "STRAT-20260215-0309-A35F": {
+    "id": "STRAT-20260215-0309-A35F",
+    "idVersion": "v2",
+    "name": "ObeliskExchangeV2",
+    "registeredAt": "2026-02-15T02:09:00.456Z",
+    "metadata": {
+      "trackingVersion": "2.0"
+    },
+    "testRuns": [],
+    "totalTrades": 172,
+    "totalPnL": 0,
+    "bestWinRate": 0,
+    "bestRun": null
+  },
+  "STRAT-20260215-0310-A35F": {
+    "id": "STRAT-20260215-0310-A35F",
+    "idVersion": "v2",
+    "name": "ObeliskExchangeV2",
+    "registeredAt": "2026-02-15T02:10:00.422Z",
+    "metadata": {
+      "trackingVersion": "2.0"
+    },
+    "testRuns": [],
+    "totalTrades": 165,
+    "totalPnL": 0,
+    "bestWinRate": 0,
+    "bestRun": null
+  },
+  "STRAT-20260215-0311-A35F": {
+    "id": "STRAT-20260215-0311-A35F",
+    "idVersion": "v2",
+    "name": "ObeliskExchangeV2",
+    "registeredAt": "2026-02-15T02:11:00.215Z",
+    "metadata": {
+      "trackingVersion": "2.0"
+    },
+    "testRuns": [],
+    "totalTrades": 168,
+    "totalPnL": 0,
+    "bestWinRate": 0,
+    "bestRun": null
+  },
+  "STRAT-20260215-0312-A35F": {
+    "id": "STRAT-20260215-0312-A35F",
+    "idVersion": "v2",
+    "name": "ObeliskExchangeV2",
+    "registeredAt": "2026-02-15T02:12:00.123Z",
+    "metadata": {
+      "trackingVersion": "2.0"
+    },
+    "testRuns": [],
+    "totalTrades": 163,
+    "totalPnL": 0,
+    "bestWinRate": 0,
+    "bestRun": null
+  },
+  "STRAT-20260215-0313-A35F": {
+    "id": "STRAT-20260215-0313-A35F",
+    "idVersion": "v2",
+    "name": "ObeliskExchangeV2",
+    "registeredAt": "2026-02-15T02:13:00.297Z",
+    "metadata": {
+      "trackingVersion": "2.0"
+    },
+    "testRuns": [],
+    "totalTrades": 152,
+    "totalPnL": 0,
+    "bestWinRate": 0,
+    "bestRun": null
+  },
+  "STRAT-20260215-0314-A35F": {
+    "id": "STRAT-20260215-0314-A35F",
+    "idVersion": "v2",
+    "name": "ObeliskExchangeV2",
+    "registeredAt": "2026-02-15T02:14:00.427Z",
+    "metadata": {
+      "trackingVersion": "2.0"
+    },
+    "testRuns": [],
+    "totalTrades": 149,
+    "totalPnL": 0,
+    "bestWinRate": 0,
+    "bestRun": null
+  },
+  "STRAT-20260215-0315-A35F": {
+    "id": "STRAT-20260215-0315-A35F",
+    "idVersion": "v2",
+    "name": "ObeliskExchangeV2",
+    "registeredAt": "2026-02-15T02:15:00.196Z",
+    "metadata": {
+      "trackingVersion": "2.0"
+    },
+    "testRuns": [],
+    "totalTrades": 159,
+    "totalPnL": 0,
+    "bestWinRate": 0,
+    "bestRun": null
+  },
+  "STRAT-20260215-0316-A35F": {
+    "id": "STRAT-20260215-0316-A35F",
+    "idVersion": "v2",
+    "name": "ObeliskExchangeV2",
+    "registeredAt": "2026-02-15T02:16:00.429Z",
+    "metadata": {
+      "trackingVersion": "2.0"
+    },
+    "testRuns": [],
+    "totalTrades": 175,
+    "totalPnL": 0,
+    "bestWinRate": 0,
+    "bestRun": null
+  },
+  "STRAT-20260215-0317-A35F": {
+    "id": "STRAT-20260215-0317-A35F",
+    "idVersion": "v2",
+    "name": "ObeliskExchangeV2",
+    "registeredAt": "2026-02-15T02:17:00.137Z",
+    "metadata": {
+      "trackingVersion": "2.0"
+    },
+    "testRuns": [],
+    "totalTrades": 177,
+    "totalPnL": 0,
+    "bestWinRate": 0,
+    "bestRun": null
+  },
+  "STRAT-20260215-0318-A35F": {
+    "id": "STRAT-20260215-0318-A35F",
+    "idVersion": "v2",
+    "name": "ObeliskExchangeV2",
+    "registeredAt": "2026-02-15T02:18:00.216Z",
+    "metadata": {
+      "trackingVersion": "2.0"
+    },
+    "testRuns": [],
+    "totalTrades": 173,
+    "totalPnL": 0,
+    "bestWinRate": 0,
+    "bestRun": null
+  },
+  "STRAT-20260215-0319-A35F": {
+    "id": "STRAT-20260215-0319-A35F",
+    "idVersion": "v2",
+    "name": "ObeliskExchangeV2",
+    "registeredAt": "2026-02-15T02:19:00.088Z",
+    "metadata": {
+      "trackingVersion": "2.0"
+    },
+    "testRuns": [],
+    "totalTrades": 164,
+    "totalPnL": 0,
+    "bestWinRate": 0,
+    "bestRun": null
+  },
+  "STRAT-20260215-0320-A35F": {
+    "id": "STRAT-20260215-0320-A35F",
+    "idVersion": "v2",
+    "name": "ObeliskExchangeV2",
+    "registeredAt": "2026-02-15T02:20:00.019Z",
+    "metadata": {
+      "trackingVersion": "2.0"
+    },
+    "testRuns": [],
+    "totalTrades": 169,
+    "totalPnL": 0,
+    "bestWinRate": 0,
+    "bestRun": null
+  },
+  "STRAT-20260215-0321-A35F": {
+    "id": "STRAT-20260215-0321-A35F",
+    "idVersion": "v2",
+    "name": "ObeliskExchangeV2",
+    "registeredAt": "2026-02-15T02:21:00.445Z",
+    "metadata": {
+      "trackingVersion": "2.0"
+    },
+    "testRuns": [],
+    "totalTrades": 190,
+    "totalPnL": 0,
+    "bestWinRate": 0,
+    "bestRun": null
+  },
+  "STRAT-20260215-0322-A35F": {
+    "id": "STRAT-20260215-0322-A35F",
+    "idVersion": "v2",
+    "name": "ObeliskExchangeV2",
+    "registeredAt": "2026-02-15T02:22:00.547Z",
+    "metadata": {
+      "trackingVersion": "2.0"
+    },
+    "testRuns": [],
+    "totalTrades": 166,
+    "totalPnL": 0,
+    "bestWinRate": 0,
+    "bestRun": null
+  },
+  "STRAT-20260215-0323-A35F": {
+    "id": "STRAT-20260215-0323-A35F",
+    "idVersion": "v2",
+    "name": "ObeliskExchangeV2",
+    "registeredAt": "2026-02-15T02:23:00.166Z",
+    "metadata": {
+      "trackingVersion": "2.0"
+    },
+    "testRuns": [],
+    "totalTrades": 153,
+    "totalPnL": 0,
+    "bestWinRate": 0,
+    "bestRun": null
+  },
+  "STRAT-20260215-0324-A35F": {
+    "id": "STRAT-20260215-0324-A35F",
+    "idVersion": "v2",
+    "name": "ObeliskExchangeV2",
+    "registeredAt": "2026-02-15T02:24:00.365Z",
+    "metadata": {
+      "trackingVersion": "2.0"
+    },
+    "testRuns": [],
+    "totalTrades": 172,
+    "totalPnL": 0,
+    "bestWinRate": 0,
+    "bestRun": null
+  },
+  "STRAT-20260215-0325-A35F": {
+    "id": "STRAT-20260215-0325-A35F",
+    "idVersion": "v2",
+    "name": "ObeliskExchangeV2",
+    "registeredAt": "2026-02-15T02:25:00.179Z",
+    "metadata": {
+      "trackingVersion": "2.0"
+    },
+    "testRuns": [],
+    "totalTrades": 184,
+    "totalPnL": 0,
+    "bestWinRate": 0,
+    "bestRun": null
+  },
+  "STRAT-20260215-0326-A35F": {
+    "id": "STRAT-20260215-0326-A35F",
+    "idVersion": "v2",
+    "name": "ObeliskExchangeV2",
+    "registeredAt": "2026-02-15T02:26:00.514Z",
+    "metadata": {
+      "trackingVersion": "2.0"
+    },
+    "testRuns": [],
+    "totalTrades": 168,
+    "totalPnL": 0,
+    "bestWinRate": 0,
+    "bestRun": null
+  },
+  "STRAT-20260215-0327-A35F": {
+    "id": "STRAT-20260215-0327-A35F",
+    "idVersion": "v2",
+    "name": "ObeliskExchangeV2",
+    "registeredAt": "2026-02-15T02:27:00.514Z",
+    "metadata": {
+      "trackingVersion": "2.0"
+    },
+    "testRuns": [],
+    "totalTrades": 168,
+    "totalPnL": 0,
+    "bestWinRate": 0,
+    "bestRun": null
+  },
+  "STRAT-20260215-0328-A35F": {
+    "id": "STRAT-20260215-0328-A35F",
+    "idVersion": "v2",
+    "name": "ObeliskExchangeV2",
+    "registeredAt": "2026-02-15T02:28:00.149Z",
+    "metadata": {
+      "trackingVersion": "2.0"
+    },
+    "testRuns": [],
+    "totalTrades": 168,
+    "totalPnL": 0,
+    "bestWinRate": 0,
+    "bestRun": null
+  },
+  "STRAT-20260215-0329-A35F": {
+    "id": "STRAT-20260215-0329-A35F",
+    "idVersion": "v2",
+    "name": "ObeliskExchangeV2",
+    "registeredAt": "2026-02-15T02:29:00.442Z",
+    "metadata": {
+      "trackingVersion": "2.0"
+    },
+    "testRuns": [],
+    "totalTrades": 169,
+    "totalPnL": 0,
+    "bestWinRate": 0,
+    "bestRun": null
+  },
+  "STRAT-20260215-0330-A35F": {
+    "id": "STRAT-20260215-0330-A35F",
+    "idVersion": "v2",
+    "name": "ObeliskExchangeV2",
+    "registeredAt": "2026-02-15T02:30:00.551Z",
+    "metadata": {
+      "trackingVersion": "2.0"
+    },
+    "testRuns": [],
+    "totalTrades": 163,
+    "totalPnL": 0,
+    "bestWinRate": 0,
+    "bestRun": null
+  },
+  "STRAT-20260215-0331-A35F": {
+    "id": "STRAT-20260215-0331-A35F",
+    "idVersion": "v2",
+    "name": "ObeliskExchangeV2",
+    "registeredAt": "2026-02-15T02:31:00.193Z",
+    "metadata": {
+      "trackingVersion": "2.0"
+    },
+    "testRuns": [],
+    "totalTrades": 28,
+    "totalPnL": 0,
+    "bestWinRate": 0,
+    "bestRun": null
+  },
+  "STRAT-20260217-2045-A35F": {
+    "id": "STRAT-20260217-2045-A35F",
+    "idVersion": "v2",
+    "name": "ObeliskExchangeV2",
+    "registeredAt": "2026-02-17T19:45:37.232Z",
+    "metadata": {
+      "trackingVersion": "2.0"
+    },
+    "testRuns": [
+      "RUN-20260217-2045-E251"
+    ],
+    "totalTrades": 3,
+    "totalPnL": 0,
+    "bestWinRate": 100,
+    "bestRun": "RUN-20260217-2045-E251"
+  },
+  "STRAT-20260217-2046-A35F": {
+    "id": "STRAT-20260217-2046-A35F",
+    "idVersion": "v2",
+    "name": "ObeliskExchangeV2",
+    "registeredAt": "2026-02-17T19:46:03.701Z",
+    "metadata": {
+      "trackingVersion": "2.0"
+    },
+    "testRuns": [
+      "RUN-20260217-2045-E251"
+    ],
+    "totalTrades": 33,
+    "totalPnL": 0,
+    "bestWinRate": 100,
+    "bestRun": "RUN-20260217-2045-E251"
+  },
+  "STRAT-20260217-2047-A35F": {
+    "id": "STRAT-20260217-2047-A35F",
+    "idVersion": "v2",
+    "name": "ObeliskExchangeV2",
+    "registeredAt": "2026-02-17T19:47:01.080Z",
+    "metadata": {
+      "trackingVersion": "2.0"
+    },
+    "testRuns": [
+      "RUN-20260217-2045-E251"
+    ],
+    "totalTrades": 36,
+    "totalPnL": 0,
+    "bestWinRate": 100,
+    "bestRun": "RUN-20260217-2045-E251"
+  },
+  "STRAT-20260217-2048-A35F": {
+    "id": "STRAT-20260217-2048-A35F",
+    "idVersion": "v2",
+    "name": "ObeliskExchangeV2",
+    "registeredAt": "2026-02-17T19:48:00.739Z",
+    "metadata": {
+      "trackingVersion": "2.0"
+    },
+    "testRuns": [
+      "RUN-20260217-2045-E251"
+    ],
+    "totalTrades": 35,
+    "totalPnL": 0,
+    "bestWinRate": 100,
+    "bestRun": "RUN-20260217-2045-E251"
+  },
+  "STRAT-20260217-2049-A35F": {
+    "id": "STRAT-20260217-2049-A35F",
+    "idVersion": "v2",
+    "name": "ObeliskExchangeV2",
+    "registeredAt": "2026-02-17T19:49:00.227Z",
+    "metadata": {
+      "trackingVersion": "2.0"
+    },
+    "testRuns": [
+      "RUN-20260217-2045-E251"
+    ],
+    "totalTrades": 40,
+    "totalPnL": 0,
+    "bestWinRate": 100,
+    "bestRun": "RUN-20260217-2045-E251"
+  },
+  "STRAT-20260217-2050-A35F": {
+    "id": "STRAT-20260217-2050-A35F",
+    "idVersion": "v2",
+    "name": "ObeliskExchangeV2",
+    "registeredAt": "2026-02-17T19:50:01.135Z",
+    "metadata": {
+      "trackingVersion": "2.0"
+    },
+    "testRuns": [
+      "RUN-20260217-2045-E251"
+    ],
+    "totalTrades": 40,
+    "totalPnL": 0,
+    "bestWinRate": 100,
+    "bestRun": "RUN-20260217-2045-E251"
+  },
+  "STRAT-20260217-2051-A35F": {
+    "id": "STRAT-20260217-2051-A35F",
+    "idVersion": "v2",
+    "name": "ObeliskExchangeV2",
+    "registeredAt": "2026-02-17T19:51:00.706Z",
+    "metadata": {
+      "trackingVersion": "2.0"
+    },
+    "testRuns": [
+      "RUN-20260217-2045-E251"
+    ],
+    "totalTrades": 13,
+    "totalPnL": 0,
+    "bestWinRate": 100,
+    "bestRun": "RUN-20260217-2045-E251"
+  },
+  "STRAT-20260217-2054-A35F": {
+    "id": "STRAT-20260217-2054-A35F",
+    "idVersion": "v2",
+    "name": "ObeliskExchangeV2",
+    "registeredAt": "2026-02-17T19:54:32.282Z",
+    "metadata": {
+      "trackingVersion": "2.0"
+    },
+    "testRuns": [],
+    "totalTrades": 26,
+    "totalPnL": 0,
+    "bestWinRate": 0,
+    "bestRun": null
+  },
+  "STRAT-20260217-2055-A35F": {
+    "id": "STRAT-20260217-2055-A35F",
+    "idVersion": "v2",
+    "name": "ObeliskExchangeV2",
+    "registeredAt": "2026-02-17T19:55:01.236Z",
+    "metadata": {
+      "trackingVersion": "2.0"
+    },
+    "testRuns": [],
+    "totalTrades": 28,
+    "totalPnL": 0,
+    "bestWinRate": 0,
+    "bestRun": null
+  },
+  "STRAT-20260217-2057-A35F": {
+    "id": "STRAT-20260217-2057-A35F",
+    "idVersion": "v2",
+    "name": "ObeliskExchangeV2",
+    "registeredAt": "2026-02-17T19:57:16.713Z",
+    "metadata": {
+      "trackingVersion": "2.0"
+    },
+    "testRuns": [],
+    "totalTrades": 33,
+    "totalPnL": 0,
+    "bestWinRate": 0,
+    "bestRun": null
+  },
+  "STRAT-20260217-2134-78C0": {
+    "id": "STRAT-20260217-2134-78C0",
+    "idVersion": "v2",
+    "name": "ObeliskExchangeV3Turbo",
+    "registeredAt": "2026-02-17T20:34:27.816Z",
+    "metadata": {
+      "trackingVersion": "2.0"
+    },
+    "testRuns": [],
+    "totalTrades": 106,
+    "totalPnL": 0,
+    "bestWinRate": 0,
+    "bestRun": null
+  },
+  "STRAT-20260217-2135-78C0": {
+    "id": "STRAT-20260217-2135-78C0",
+    "idVersion": "v2",
+    "name": "ObeliskExchangeV3Turbo",
+    "registeredAt": "2026-02-17T20:35:00.200Z",
+    "metadata": {
+      "trackingVersion": "2.0"
+    },
+    "testRuns": [],
+    "totalTrades": 190,
+    "totalPnL": 0,
+    "bestWinRate": 0,
+    "bestRun": null
+  },
+  "STRAT-20260217-2136-78C0": {
+    "id": "STRAT-20260217-2136-78C0",
+    "idVersion": "v2",
+    "name": "ObeliskExchangeV3Turbo",
+    "registeredAt": "2026-02-17T20:36:00.218Z",
+    "metadata": {
+      "trackingVersion": "2.0"
+    },
+    "testRuns": [],
+    "totalTrades": 193,
+    "totalPnL": 0,
+    "bestWinRate": 0,
+    "bestRun": null
+  },
+  "STRAT-20260217-2137-78C0": {
+    "id": "STRAT-20260217-2137-78C0",
+    "idVersion": "v2",
+    "name": "ObeliskExchangeV3Turbo",
+    "registeredAt": "2026-02-17T20:37:00.265Z",
+    "metadata": {
+      "trackingVersion": "2.0"
+    },
+    "testRuns": [],
+    "totalTrades": 233,
+    "totalPnL": 0,
+    "bestWinRate": 0,
+    "bestRun": null
+  },
+  "STRAT-20260217-2138-78C0": {
+    "id": "STRAT-20260217-2138-78C0",
+    "idVersion": "v2",
+    "name": "ObeliskExchangeV3Turbo",
+    "registeredAt": "2026-02-17T20:38:00.273Z",
+    "metadata": {
+      "trackingVersion": "2.0"
+    },
+    "testRuns": [],
+    "totalTrades": 188,
+    "totalPnL": 0,
+    "bestWinRate": 0,
+    "bestRun": null
+  },
+  "STRAT-20260217-2139-78C0": {
+    "id": "STRAT-20260217-2139-78C0",
+    "idVersion": "v2",
+    "name": "ObeliskExchangeV3Turbo",
+    "registeredAt": "2026-02-17T20:39:00.179Z",
+    "metadata": {
+      "trackingVersion": "2.0"
+    },
+    "testRuns": [],
+    "totalTrades": 181,
+    "totalPnL": 0,
+    "bestWinRate": 0,
+    "bestRun": null
+  },
+  "STRAT-20260217-2140-78C0": {
+    "id": "STRAT-20260217-2140-78C0",
+    "idVersion": "v2",
+    "name": "ObeliskExchangeV3Turbo",
+    "registeredAt": "2026-02-17T20:40:00.425Z",
+    "metadata": {
+      "trackingVersion": "2.0"
+    },
+    "testRuns": [],
+    "totalTrades": 176,
+    "totalPnL": 0,
+    "bestWinRate": 0,
+    "bestRun": null
+  },
+  "STRAT-20260217-2141-78C0": {
+    "id": "STRAT-20260217-2141-78C0",
+    "idVersion": "v2",
+    "name": "ObeliskExchangeV3Turbo",
+    "registeredAt": "2026-02-17T20:41:00.431Z",
+    "metadata": {
+      "trackingVersion": "2.0"
+    },
+    "testRuns": [],
+    "totalTrades": 139,
+    "totalPnL": 0,
+    "bestWinRate": 0,
+    "bestRun": null
+  }
+}

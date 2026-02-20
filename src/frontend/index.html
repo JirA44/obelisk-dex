@@ -2575,7 +2575,7 @@
                     <!-- Category: Liquidity -->
                     <div class="product-category" data-category="liquidity" style="margin-bottom:30px;">
                         <h3 style="color:#3b82f6;margin-bottom:15px;font-size:1.1rem;" data-i18n="liquidity_pools_cat">Liquidity & Pools</h3>
-                        <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(180px,1fr));gap:12px;">
+                        <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(180px,1fr));gap:12px;margin-bottom:20px;">
                             <div class="product-card" onclick="LiquidityPoolsModule.render('product-modal-content');document.getElementById('product-modal').style.display='flex'" style="background:linear-gradient(135deg,rgba(59,130,246,0.1),rgba(59,130,246,0.05));border:1px solid rgba(59,130,246,0.3);border-radius:12px;padding:16px;cursor:pointer;transition:all 0.3s;">
                                 <div style="font-size:24px;margin-bottom:8px;">🌊</div>
                                 <div style="color:#fff;font-weight:600;font-size:14px;" data-i18n="product_liquidity_pools">Liquidity Pools</div>
@@ -2587,6 +2587,11 @@
                                 <div style="color:#888;font-size:11px;" data-i18n="product_lending_desc">Supply & Borrow</div>
                             </div>
                         </div>
+                    </div>
+
+                        <!-- Aerodrome 1-Click Inline -->
+                        <div id="aero-widget-products" style="grid-column:1/-1;background:rgba(255,78,138,0.04);border:1px solid rgba(255,78,138,0.15);border-radius:14px;padding:16px;"></div>
+
                     </div>
 
                     <!-- Category: Trading -->
@@ -3294,9 +3299,10 @@
                                     <div style="font-size:24px;" id="icon-gmx">⏳</div>
                                     <div style="color:#888;font-size:12px;">GMX GLP</div>
                                 </div>
-                                <div class="defi-status-item" id="status-aerodrome" style="background:#1a1a2e;padding:12px;border-radius:8px;text-align:center;">
-                                    <div style="font-size:24px;" id="icon-aerodrome">⏳</div>
-                                    <div style="color:#888;font-size:12px;">Aerodrome</div>
+                                <div class="defi-status-item" id="status-aerodrome" style="background:#1a1a2e;padding:12px;border-radius:8px;text-align:center;cursor:pointer;" onclick="window.open('aerodrome.html','_blank')" title="Open Aerodrome 1-Click Invest">
+                                    <div style="font-size:24px;" id="icon-aerodrome">🚀</div>
+                                    <div style="color:#ff4e8a;font-size:12px;font-weight:600;">Aerodrome</div>
+                                    <div style="color:#555;font-size:10px;">1-Click Invest</div>
                                 </div>
                                 <div class="defi-status-item" id="status-manager" style="background:#1a1a2e;padding:12px;border-radius:8px;text-align:center;">
                                     <div style="font-size:24px;" id="icon-manager">⏳</div>
@@ -4731,6 +4737,27 @@ window.addEventListener('load', function() {
     <script defer src="js/defi/gmx-integration.js"></script>
     <script defer src="js/defi/gains-integration.js"></script>
     <script defer src="js/defi/aerodrome-integration.js"></script>
+    <script defer src="js/defi/aerodrome-widget.js"></script>
+    <script>
+    document.addEventListener('DOMContentLoaded', () => {
+        // Mount Aerodrome widget when Products tab is shown
+        const observer = new MutationObserver(() => {
+            const el = document.getElementById('aero-widget-products');
+            if (el && el.offsetParent !== null && !el.dataset.mounted) {
+                el.dataset.mounted = '1';
+                AeroWidget.mount('products', { maxHeight: '380px' });
+            }
+        });
+        observer.observe(document.body, { subtree: true, attributes: true, attributeFilter: ['class','style'] });
+        // Also try on tab click
+        document.querySelectorAll('[data-tab="products"]').forEach(btn => {
+            btn.addEventListener('click', () => setTimeout(() => {
+                const el = document.getElementById('aero-widget-products');
+                if (el && !el.dataset.mounted) { el.dataset.mounted='1'; AeroWidget.mount('products', { maxHeight:'380px' }); }
+            }, 100));
+        });
+    });
+    </script>
     <script defer src="js/defi/protocol-registry.js"></script>
     <script defer src="js/defi/defi-manager.js"></script>
     <script defer src="js/defi/defi-health-check.js"></script>
@@ -5257,6 +5284,7 @@ console.log('[Security] Attack simulator ready - start with: AttackSimulator.sta
             <a href="legal/terms.html" data-i18n="terms_of_service">Terms of Service</a>
             <a href="#" data-i18n="risk_disclosure">Risk Disclosure</a>
             <span data-i18n="footer_copyright">2026 Obelisk DEX. All rights reserved.</span>
+            <span style="background:linear-gradient(135deg,#f59e0b,#ef4444);color:#fff;font-size:10px;font-weight:700;padding:2px 8px;border-radius:4px;letter-spacing:0.5px;vertical-align:middle;margin-left:8px;">VERSION ALPHA</span>
         </div>
         <div class="footer-certifications">
             <span class="cert-badge" data-i18n="soc2_compliant">SOC2 Compliant</span>

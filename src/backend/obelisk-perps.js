@@ -55,7 +55,7 @@ class ObeliskPerps {
             maintenanceMargin: 0.05,
             fundingInterval: 8 * 60 * 60 * 1000,
             maxOpenInterest: 1000000,  // V2.0: $1M max OI
-            tradingFee: 0.0005,        // V2.0: 0.05% fee
+            tradingFee: 0.0,           // 0% fee for sonic-hft (internal venue)
             fundingRate: 0.0001,
         };
 

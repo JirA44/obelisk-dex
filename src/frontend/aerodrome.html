@@ -1,0 +1,1086 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Aerodrome Finance — 1-Click Invest | Obelisk</title>
+    <style>
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        body {
+            background: #050510;
+            color: #e8e8f0;
+            font-family: 'Inter', -apple-system, sans-serif;
+            min-height: 100vh;
+        }
+
+        /* ── NAV ── */
+        .nav {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 16px 32px;
+            border-bottom: 1px solid #1a1a3a;
+            background: rgba(5,5,16,0.95);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+        .nav-logo { display: flex; align-items: center; gap: 10px; text-decoration: none; }
+        .nav-logo span { font-size: 1.2rem; font-weight: 700; color: #fff; }
+        .nav-logo .badge {
+            background: linear-gradient(135deg, #ff4e8a, #ff8c42);
+            color: #fff;
+            font-size: 11px;
+            padding: 2px 8px;
+            border-radius: 20px;
+            font-weight: 600;
+        }
+        .nav-back {
+            color: #888;
+            text-decoration: none;
+            font-size: 14px;
+            transition: color 0.2s;
+        }
+        .nav-back:hover { color: #fff; }
+
+        /* ── HERO ── */
+        .hero {
+            text-align: center;
+            padding: 56px 24px 40px;
+            background: radial-gradient(ellipse at 50% 0%, rgba(255,78,138,0.12) 0%, transparent 65%);
+        }
+        .hero-icon {
+            font-size: 3.5rem;
+            margin-bottom: 16px;
+            display: block;
+        }
+        .hero h1 {
+            font-size: 2.4rem;
+            font-weight: 800;
+            background: linear-gradient(135deg, #ff4e8a, #ff8c42);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            margin-bottom: 10px;
+        }
+        .hero p {
+            color: #888;
+            font-size: 1rem;
+            max-width: 500px;
+            margin: 0 auto 24px;
+            line-height: 1.6;
+        }
+        .hero-badges {
+            display: flex;
+            gap: 10px;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+        .hero-badge {
+            background: rgba(255,255,255,0.06);
+            border: 1px solid rgba(255,255,255,0.1);
+            border-radius: 20px;
+            padding: 5px 14px;
+            font-size: 13px;
+            color: #bbb;
+        }
+        .hero-badge strong { color: #fff; }
+
+        /* ── BALANCES ── */
+        .balances-bar {
+            display: flex;
+            gap: 12px;
+            justify-content: center;
+            padding: 16px 24px;
+            flex-wrap: wrap;
+        }
+        .balance-chip {
+            background: rgba(255,255,255,0.04);
+            border: 1px solid rgba(255,255,255,0.08);
+            border-radius: 10px;
+            padding: 10px 18px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 13px;
+        }
+        .balance-chip .chain-label {
+            color: #666;
+            font-size: 11px;
+        }
+        .balance-chip .amount {
+            color: #fff;
+            font-weight: 600;
+        }
+        .balance-chip .chain-dot {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+        }
+        .dot-base { background: #0052ff; }
+        .dot-arb  { background: #28a0f0; }
+
+        /* ── FILTERS ── */
+        .filters {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 0 24px 20px;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+        .filter-btn {
+            background: rgba(255,255,255,0.05);
+            border: 1px solid rgba(255,255,255,0.1);
+            border-radius: 8px;
+            padding: 7px 16px;
+            color: #888;
+            cursor: pointer;
+            font-size: 13px;
+            transition: all 0.2s;
+        }
+        .filter-btn:hover, .filter-btn.active {
+            background: rgba(255,78,138,0.15);
+            border-color: #ff4e8a;
+            color: #ff4e8a;
+        }
+        .search-input {
+            background: rgba(255,255,255,0.05);
+            border: 1px solid rgba(255,255,255,0.1);
+            border-radius: 8px;
+            padding: 7px 14px;
+            color: #fff;
+            font-size: 13px;
+            outline: none;
+            width: 200px;
+        }
+        .search-input::placeholder { color: #555; }
+        .search-input:focus { border-color: #ff4e8a; }
+
+        /* ── POOL GRID ── */
+        .pool-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+            gap: 16px;
+            padding: 0 24px 40px;
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+
+        .pool-card {
+            background: rgba(255,255,255,0.03);
+            border: 1px solid rgba(255,255,255,0.07);
+            border-radius: 16px;
+            padding: 20px;
+            cursor: pointer;
+            transition: all 0.2s;
+            position: relative;
+            overflow: hidden;
+        }
+        .pool-card:hover {
+            border-color: rgba(255,78,138,0.4);
+            background: rgba(255,78,138,0.05);
+            transform: translateY(-2px);
+            box-shadow: 0 8px 30px rgba(255,78,138,0.1);
+        }
+        .pool-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 2px;
+            background: linear-gradient(90deg, #ff4e8a, #ff8c42);
+            opacity: 0;
+            transition: opacity 0.2s;
+        }
+        .pool-card:hover::before { opacity: 1; }
+
+        .pool-rank {
+            position: absolute;
+            top: 12px;
+            right: 12px;
+            background: rgba(255,255,255,0.06);
+            border-radius: 6px;
+            padding: 2px 8px;
+            font-size: 11px;
+            color: #555;
+        }
+        .pool-header {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin-bottom: 16px;
+        }
+        .pool-icons {
+            display: flex;
+            margin-right: 4px;
+        }
+        .pool-icon {
+            width: 36px;
+            height: 36px;
+            background: linear-gradient(135deg, #1a1a3a, #0d0d20);
+            border: 2px solid rgba(255,255,255,0.1);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 14px;
+            font-weight: 700;
+            color: #fff;
+        }
+        .pool-icon:not(:first-child) { margin-left: -10px; }
+        .pool-name { font-weight: 700; font-size: 1rem; color: #fff; }
+        .pool-type {
+            font-size: 11px;
+            padding: 2px 8px;
+            border-radius: 4px;
+            background: rgba(255,255,255,0.06);
+            color: #888;
+        }
+        .pool-type.stable {
+            background: rgba(0,200,120,0.1);
+            color: #00c878;
+        }
+        .pool-type.volatile {
+            background: rgba(255,140,66,0.1);
+            color: #ff8c42;
+        }
+
+        .pool-stats {
+            display: grid;
+            grid-template-columns: 1fr 1fr 1fr;
+            gap: 10px;
+            margin-bottom: 16px;
+        }
+        .pool-stat {
+            text-align: center;
+        }
+        .pool-stat-value {
+            font-size: 1.1rem;
+            font-weight: 700;
+            color: #fff;
+        }
+        .pool-stat-value.apy-high { color: #00e676; }
+        .pool-stat-value.apy-mid  { color: #ff8c42; }
+        .pool-stat-label {
+            font-size: 11px;
+            color: #555;
+            margin-top: 2px;
+        }
+
+        .pool-apy-breakdown {
+            display: flex;
+            gap: 6px;
+            margin-bottom: 14px;
+            flex-wrap: wrap;
+        }
+        .apy-tag {
+            font-size: 11px;
+            padding: 2px 8px;
+            border-radius: 4px;
+        }
+        .apy-tag.base-apy {
+            background: rgba(0,120,255,0.1);
+            color: #4da6ff;
+        }
+        .apy-tag.reward-apy {
+            background: rgba(0,230,118,0.1);
+            color: #00e676;
+        }
+        .apy-tag.il-risk {
+            background: rgba(255,70,70,0.1);
+            color: #ff6464;
+        }
+
+        .invest-btn {
+            width: 100%;
+            padding: 11px;
+            background: linear-gradient(135deg, #ff4e8a, #ff8c42);
+            border: none;
+            border-radius: 10px;
+            color: #fff;
+            font-weight: 700;
+            font-size: 14px;
+            cursor: pointer;
+            transition: opacity 0.2s;
+        }
+        .invest-btn:hover { opacity: 0.9; }
+
+        /* ── LOADING ── */
+        .loading-state {
+            text-align: center;
+            padding: 60px 24px;
+            color: #555;
+        }
+        .spinner {
+            width: 40px;
+            height: 40px;
+            border: 3px solid rgba(255,78,138,0.2);
+            border-top-color: #ff4e8a;
+            border-radius: 50%;
+            animation: spin 0.8s linear infinite;
+            margin: 0 auto 16px;
+        }
+        @keyframes spin { to { transform: rotate(360deg); } }
+
+        /* ── MODAL ── */
+        .modal-overlay {
+            position: fixed;
+            inset: 0;
+            background: rgba(0,0,0,0.8);
+            backdrop-filter: blur(8px);
+            z-index: 200;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.2s;
+        }
+        .modal-overlay.open {
+            opacity: 1;
+            pointer-events: all;
+        }
+        .modal {
+            background: #0d0d20;
+            border: 1px solid rgba(255,255,255,0.1);
+            border-radius: 20px;
+            padding: 28px;
+            width: 100%;
+            max-width: 480px;
+            max-height: 90vh;
+            overflow-y: auto;
+            transform: translateY(20px);
+            transition: transform 0.2s;
+        }
+        .modal-overlay.open .modal { transform: translateY(0); }
+
+        .modal-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 20px;
+        }
+        .modal-title {
+            font-size: 1.2rem;
+            font-weight: 700;
+            color: #fff;
+        }
+        .modal-close {
+            background: rgba(255,255,255,0.06);
+            border: none;
+            border-radius: 8px;
+            width: 32px;
+            height: 32px;
+            color: #888;
+            cursor: pointer;
+            font-size: 16px;
+            transition: all 0.2s;
+        }
+        .modal-close:hover { background: rgba(255,70,70,0.2); color: #ff6464; }
+
+        .pool-info-box {
+            background: rgba(255,78,138,0.06);
+            border: 1px solid rgba(255,78,138,0.2);
+            border-radius: 12px;
+            padding: 16px;
+            margin-bottom: 20px;
+        }
+        .pool-info-box .pair { font-size: 1.1rem; font-weight: 700; color: #fff; }
+        .pool-info-row {
+            display: flex;
+            justify-content: space-between;
+            font-size: 13px;
+            margin-top: 8px;
+        }
+        .pool-info-row .label { color: #666; }
+        .pool-info-row .value { color: #fff; font-weight: 600; }
+        .pool-info-row .value.green { color: #00e676; }
+        .pool-info-row .value.orange { color: #ff8c42; }
+
+        .amount-section { margin-bottom: 20px; }
+        .amount-label {
+            color: #888;
+            font-size: 13px;
+            margin-bottom: 8px;
+        }
+        .amount-input-wrap {
+            position: relative;
+        }
+        .amount-input {
+            width: 100%;
+            background: rgba(255,255,255,0.05);
+            border: 1px solid rgba(255,255,255,0.1);
+            border-radius: 12px;
+            padding: 14px 16px;
+            color: #fff;
+            font-size: 1.5rem;
+            font-weight: 700;
+            outline: none;
+            transition: border-color 0.2s;
+        }
+        .amount-input:focus { border-color: #ff4e8a; }
+        .amount-currency {
+            position: absolute;
+            right: 16px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: #555;
+            font-size: 14px;
+        }
+        .quick-amounts {
+            display: flex;
+            gap: 8px;
+            margin-top: 10px;
+        }
+        .quick-btn {
+            flex: 1;
+            padding: 7px;
+            background: rgba(255,255,255,0.05);
+            border: 1px solid rgba(255,255,255,0.08);
+            border-radius: 8px;
+            color: #888;
+            cursor: pointer;
+            font-size: 13px;
+            transition: all 0.2s;
+        }
+        .quick-btn:hover {
+            background: rgba(255,78,138,0.1);
+            border-color: rgba(255,78,138,0.3);
+            color: #ff4e8a;
+        }
+
+        .mode-toggle {
+            display: flex;
+            background: rgba(255,255,255,0.04);
+            border: 1px solid rgba(255,255,255,0.08);
+            border-radius: 10px;
+            padding: 4px;
+            margin-bottom: 20px;
+        }
+        .mode-btn {
+            flex: 1;
+            padding: 8px;
+            border: none;
+            border-radius: 7px;
+            font-size: 13px;
+            cursor: pointer;
+            transition: all 0.2s;
+            background: transparent;
+            color: #666;
+        }
+        .mode-btn.active {
+            background: rgba(255,78,138,0.15);
+            color: #ff4e8a;
+            font-weight: 600;
+        }
+
+        .steps-container { margin-bottom: 20px; }
+        .step-item {
+            display: flex;
+            align-items: flex-start;
+            gap: 12px;
+            padding: 10px 0;
+            border-bottom: 1px solid rgba(255,255,255,0.04);
+        }
+        .step-item:last-child { border-bottom: none; }
+        .step-dot {
+            width: 28px;
+            height: 28px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 12px;
+            font-weight: 700;
+            flex-shrink: 0;
+            margin-top: 1px;
+        }
+        .step-dot.pending  { background: rgba(255,255,255,0.08); color: #555; }
+        .step-dot.ok       { background: rgba(0,230,118,0.15); color: #00e676; }
+        .step-dot.simulated{ background: rgba(0,120,255,0.15); color: #4da6ff; }
+        .step-dot.failed   { background: rgba(255,70,70,0.15); color: #ff6464; }
+        .step-dot.skipped  { background: rgba(255,255,255,0.04); color: #444; }
+        .step-dot.running  { background: rgba(255,78,138,0.15); color: #ff4e8a; animation: pulse 1s infinite; }
+        @keyframes pulse { 0%,100%{ opacity:1; } 50%{ opacity:0.5; } }
+
+        .step-info { flex: 1; }
+        .step-name { font-size: 13px; color: #ccc; font-weight: 600; }
+        .step-detail { font-size: 11px; color: #555; margin-top: 3px; }
+        .step-tx { font-size: 11px; color: #4da6ff; margin-top: 3px; word-break: break-all; }
+        .step-tx a { color: #4da6ff; text-decoration: none; }
+        .step-tx a:hover { text-decoration: underline; }
+
+        .result-box {
+            border-radius: 12px;
+            padding: 16px;
+            margin-bottom: 20px;
+            display: none;
+        }
+        .result-box.success {
+            background: rgba(0,230,118,0.07);
+            border: 1px solid rgba(0,230,118,0.2);
+        }
+        .result-box.error {
+            background: rgba(255,70,70,0.07);
+            border: 1px solid rgba(255,70,70,0.2);
+        }
+        .result-msg { font-size: 14px; color: #fff; }
+
+        .invest-submit-btn {
+            width: 100%;
+            padding: 15px;
+            background: linear-gradient(135deg, #ff4e8a, #ff8c42);
+            border: none;
+            border-radius: 12px;
+            color: #fff;
+            font-weight: 700;
+            font-size: 15px;
+            cursor: pointer;
+            transition: opacity 0.2s;
+        }
+        .invest-submit-btn:hover { opacity: 0.9; }
+        .invest-submit-btn:disabled {
+            opacity: 0.4;
+            cursor: not-allowed;
+        }
+
+        /* ── EMPTY / ERROR ── */
+        .empty-state {
+            text-align: center;
+            padding: 60px 24px;
+            color: #555;
+        }
+        .empty-state h3 { color: #888; font-size: 1.1rem; margin-bottom: 8px; }
+
+        /* ── RESPONSIVE ── */
+        @media (max-width: 600px) {
+            .hero h1 { font-size: 1.8rem; }
+            .pool-grid { grid-template-columns: 1fr; padding: 0 16px 40px; }
+            .nav { padding: 14px 16px; }
+        }
+    </style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav class="nav">
+    <a href="index.html" class="nav-logo">
+        <span>Obelisk</span>
+        <span class="badge">Base Chain</span>
+    </a>
+    <a href="index.html" class="nav-back">← Back to Dashboard</a>
+</nav>
+
+<!-- HERO -->
+<div class="hero">
+    <span class="hero-icon">🚀</span>
+    <h1>Aerodrome 1-Click Invest</h1>
+    <p>Browse the highest-yield liquidity pools on Base. Invest in one click — we handle the bridge, swap &amp; LP automatically.</p>
+    <div class="hero-badges">
+        <span class="hero-badge">#1 DEX on Base</span>
+        <span class="hero-badge">Live APY from <strong>DeFi Llama</strong></span>
+        <span class="hero-badge">Bridge via <strong>Across</strong></span>
+        <span class="hero-badge">Auto Swap + LP</span>
+    </div>
+</div>
+
+<!-- BALANCES -->
+<div class="balances-bar" id="balances-bar">
+    <div class="balance-chip">
+        <div class="chain-dot dot-base"></div>
+        <div>
+            <div class="chain-label">Base</div>
+            <div class="amount" id="bal-base">—</div>
+        </div>
+    </div>
+    <div class="balance-chip">
+        <div class="chain-dot dot-arb"></div>
+        <div>
+            <div class="chain-label">Arbitrum</div>
+            <div class="amount" id="bal-arb">—</div>
+        </div>
+    </div>
+    <div class="balance-chip">
+        <div class="chain-dot" style="background:#00e676;"></div>
+        <div>
+            <div class="chain-label">Wallet</div>
+            <div class="amount" id="bal-wallet" style="font-size:11px;max-width:140px;overflow:hidden;text-overflow:ellipsis;">—</div>
+        </div>
+    </div>
+</div>
+
+<!-- FILTERS -->
+<div class="filters">
+    <button class="filter-btn active" data-filter="all" onclick="setFilter(this,'all')">All Pools</button>
+    <button class="filter-btn" data-filter="stable" onclick="setFilter(this,'stable')">Stable</button>
+    <button class="filter-btn" data-filter="volatile" onclick="setFilter(this,'volatile')">Volatile</button>
+    <button class="filter-btn" data-filter="high" onclick="setFilter(this,'high')">High APY (1000%+)</button>
+    <input class="search-input" id="search-input" type="text" placeholder="Search symbol..." oninput="renderPools()">
+    <button class="filter-btn" onclick="loadPools()" title="Refresh">↻ Refresh</button>
+</div>
+
+<!-- POOL GRID -->
+<div id="pool-container" class="pool-grid">
+    <div class="loading-state" style="grid-column:1/-1">
+        <div class="spinner"></div>
+        <p>Loading Aerodrome pools...</p>
+    </div>
+</div>
+
+<!-- ══════════════════════════════════════════════════════════ -->
+<!-- INVEST MODAL -->
+<!-- ══════════════════════════════════════════════════════════ -->
+<div class="modal-overlay" id="modal-overlay" onclick="closeModal(event)">
+    <div class="modal" id="modal">
+        <div class="modal-header">
+            <div class="modal-title" id="modal-title">Invest in Pool</div>
+            <button class="modal-close" onclick="closeModalDirect()">✕</button>
+        </div>
+
+        <!-- Pool info summary -->
+        <div class="pool-info-box" id="modal-pool-info">
+            <div class="pair" id="modal-pair">—</div>
+            <div class="pool-info-row">
+                <span class="label">APY</span>
+                <span class="value green" id="modal-apy">—</span>
+            </div>
+            <div class="pool-info-row">
+                <span class="label">TVL</span>
+                <span class="value" id="modal-tvl">—</span>
+            </div>
+            <div class="pool-info-row">
+                <span class="label">IL Risk</span>
+                <span class="value orange" id="modal-il">—</span>
+            </div>
+            <div class="pool-info-row">
+                <span class="label">Type</span>
+                <span class="value" id="modal-type">—</span>
+            </div>
+        </div>
+
+        <!-- Mode toggle -->
+        <div class="mode-toggle">
+            <button class="mode-btn active" id="mode-sim" onclick="setMode('simulate')">🧪 Simulate</button>
+            <button class="mode-btn" id="mode-live" onclick="setMode('live')">⚡ Live Invest</button>
+        </div>
+
+        <!-- Amount -->
+        <div class="amount-section">
+            <div class="amount-label">Amount to invest</div>
+            <div class="amount-input-wrap">
+                <input class="amount-input" id="amount-input" type="number" value="10" min="0.5" step="1">
+                <span class="amount-currency">USD</span>
+            </div>
+            <div class="quick-amounts">
+                <button class="quick-btn" onclick="setAmount(5)">$5</button>
+                <button class="quick-btn" onclick="setAmount(10)">$10</button>
+                <button class="quick-btn" onclick="setAmount(25)">$25</button>
+                <button class="quick-btn" onclick="setAmount(50)">$50</button>
+                <button class="quick-btn" onclick="setAmount(100)">$100</button>
+            </div>
+        </div>
+
+        <!-- Projected earnings -->
+        <div class="pool-info-box" id="projection-box" style="margin-bottom:16px;">
+            <div style="color:#888;font-size:12px;margin-bottom:8px;">📊 Projected Earnings</div>
+            <div class="pool-info-row">
+                <span class="label">Daily</span>
+                <span class="value green" id="proj-daily">—</span>
+            </div>
+            <div class="pool-info-row">
+                <span class="label">Monthly</span>
+                <span class="value green" id="proj-monthly">—</span>
+            </div>
+            <div class="pool-info-row">
+                <span class="label">Yearly</span>
+                <span class="value green" id="proj-yearly">—</span>
+            </div>
+        </div>
+
+        <!-- Steps (populated after submit) -->
+        <div class="steps-container" id="steps-container" style="display:none;">
+            <div style="color:#888;font-size:12px;margin-bottom:10px;">Execution Steps</div>
+            <div id="steps-list"></div>
+        </div>
+
+        <!-- Result -->
+        <div class="result-box" id="result-box">
+            <div class="result-msg" id="result-msg"></div>
+        </div>
+
+        <!-- Submit -->
+        <button class="invest-submit-btn" id="submit-btn" onclick="submitInvest()">
+            🧪 Simulate Investment
+        </button>
+    </div>
+</div>
+
+<script>
+// ─────────────────────────────────────────────────────────────
+// STATE
+// ─────────────────────────────────────────────────────────────
+// Pools: DeFi Llama direct (works from any origin, CORS-enabled)
+// Invest/Balances: localhost:3001 (requires local Obelisk server)
+const LLAMA_API  = 'https://yields.llama.fi/pools';
+const LOCAL_API  = 'http://localhost:3001/api/aerodrome';
+let allPools   = [];
+let activeFilter = 'all';
+let currentPool  = null;
+let investMode   = 'simulate'; // 'simulate' | 'live'
+let localAvailable = false; // set to true if localhost:3001 responds
+
+// ─────────────────────────────────────────────────────────────
+// INIT
+// ─────────────────────────────────────────────────────────────
+window.addEventListener('DOMContentLoaded', async () => {
+    // Check if local Obelisk server is available
+    try {
+        const ping = await fetch('http://localhost:3001/api/health', { signal: AbortSignal.timeout(2000) });
+        localAvailable = ping.ok;
+    } catch { localAvailable = false; }
+
+    if (localAvailable) {
+        loadBalances();
+    } else {
+        document.getElementById('bal-base').textContent = 'n/a (local only)';
+        document.getElementById('bal-arb').textContent  = 'n/a (local only)';
+        document.getElementById('bal-wallet').textContent = 'n/a';
+    }
+
+    loadPools();
+    document.getElementById('amount-input').addEventListener('input', updateProjections);
+});
+
+// ─────────────────────────────────────────────────────────────
+// BALANCES
+// ─────────────────────────────────────────────────────────────
+async function loadBalances() {
+    try {
+        const res = await fetch(`${LOCAL_API}/balances`);
+        const d   = await res.json();
+        if (!d.success) return;
+
+        document.getElementById('bal-base').textContent =
+            `$${d.base.total_USD} (${parseFloat(d.base.ETH).toFixed(4)} ETH + $${d.base.USDC} USDC)`;
+        document.getElementById('bal-arb').textContent =
+            `$${d.arbitrum.ETH_USD} (${parseFloat(d.arbitrum.ETH).toFixed(4)} ETH)`;
+        document.getElementById('bal-wallet').textContent =
+            d.wallet.slice(0,6) + '...' + d.wallet.slice(-4);
+        document.getElementById('bal-wallet').title = d.wallet;
+    } catch (e) {
+        console.warn('[Aerodrome] Balance fetch failed:', e.message);
+    }
+}
+
+// ─────────────────────────────────────────────────────────────
+// POOLS — DeFi Llama direct (CORS-enabled public API)
+// ─────────────────────────────────────────────────────────────
+async function loadPools() {
+    document.getElementById('pool-container').innerHTML = `
+        <div class="loading-state" style="grid-column:1/-1">
+            <div class="spinner"></div>
+            <p>Fetching live pools from DeFi Llama...</p>
+        </div>`;
+
+    try {
+        const ctrl = new AbortController();
+        const tid  = setTimeout(() => ctrl.abort(), 20000);
+        const res  = await fetch(LLAMA_API, { signal: ctrl.signal });
+        clearTimeout(tid);
+        if (!res.ok) throw new Error(`DeFi Llama HTTP ${res.status}`);
+        const data = await res.json();
+
+        const MIN_TVL = 50000;
+        let pools = (data.data || []).filter(p =>
+            (p.project || '').toLowerCase().includes('aerodrome') &&
+            p.chain === 'Base' &&
+            (p.tvlUsd || 0) >= MIN_TVL &&
+            p.apy != null &&
+            p.status !== 'dead'
+        );
+
+        pools = pools
+            .sort((a, b) => (b.apy || 0) - (a.apy || 0))
+            .slice(0, 100)
+            .map((p, i) => ({
+                rank:         i + 1,
+                poolId:       p.pool,
+                symbol:       p.symbol,
+                tvlUsd:       Math.round(p.tvlUsd || 0),
+                apy:          parseFloat((p.apy  || 0).toFixed(2)),
+                apyBase:      parseFloat((p.apyBase  || 0).toFixed(2)),
+                apyReward:    parseFloat((p.apyReward || 0).toFixed(2)),
+                stable:       !!(p.poolMeta?.includes('stable')),
+                ilRisk:       p.ilRisk || 'no',
+                rewardTokens: p.rewardTokens || [],
+                tokens:       p.underlyingTokens || [],
+                project:      p.project,
+            }));
+
+        allPools = pools;
+        renderPools();
+    } catch (e) {
+        document.getElementById('pool-container').innerHTML = `
+            <div class="empty-state" style="grid-column:1/-1">
+                <h3>⚠️ Could not load pools</h3>
+                <p>${e.message}</p>
+                <button class="filter-btn" style="margin-top:16px;" onclick="loadPools()">↻ Retry</button>
+            </div>`;
+    }
+}
+
+function setFilter(btn, filter) {
+    document.querySelectorAll('.filter-btn[data-filter]').forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+    activeFilter = filter;
+    renderPools();
+}
+
+function renderPools() {
+    const search = document.getElementById('search-input').value.toLowerCase().trim();
+    let pools = allPools;
+
+    if (activeFilter === 'stable')   pools = pools.filter(p => p.stable);
+    if (activeFilter === 'volatile') pools = pools.filter(p => !p.stable);
+    if (activeFilter === 'high')     pools = pools.filter(p => p.apy >= 1000);
+
+    if (search) pools = pools.filter(p => p.symbol.toLowerCase().includes(search));
+
+    if (!pools.length) {
+        document.getElementById('pool-container').innerHTML = `
+            <div class="empty-state" style="grid-column:1/-1">
+                <h3>No pools found</h3>
+                <p>Try a different filter or search term.</p>
+            </div>`;
+        return;
+    }
+
+    document.getElementById('pool-container').innerHTML = pools.map(pool => {
+        const apy   = pool.apy;
+        const apyCls = apy > 1000 ? 'apy-high' : apy > 100 ? 'apy-mid' : '';
+        const apyStr = apy > 10000 ? `${(apy/1000).toFixed(1)}k%` : apy.toFixed(1) + '%';
+        const tvl   = pool.tvlUsd >= 1e6 ? `$${(pool.tvlUsd/1e6).toFixed(2)}M` : `$${(pool.tvlUsd/1e3).toFixed(0)}K`;
+        const typeCls = pool.stable ? 'stable' : 'volatile';
+        const typeLabel = pool.stable ? 'Stable' : 'Volatile';
+
+        const parts = pool.symbol.split('-');
+        const sym0  = parts[0] || '?';
+        const sym1  = parts[1] || '?';
+
+        return `
+        <div class="pool-card" onclick="openModal(${pool.rank - 1})">
+            <div class="pool-rank">#${pool.rank}</div>
+            <div class="pool-header">
+                <div class="pool-icons">
+                    <div class="pool-icon">${sym0.slice(0,3)}</div>
+                    <div class="pool-icon">${sym1.slice(0,3)}</div>
+                </div>
+                <div>
+                    <div class="pool-name">${pool.symbol}</div>
+                    <div style="display:flex;gap:4px;margin-top:4px;">
+                        <span class="pool-type ${typeCls}">${typeLabel}</span>
+                        ${pool.project?.includes('slipstream') ? '<span class="pool-type" style="background:rgba(130,80,255,0.1);color:#a066ff;">CL</span>' : ''}
+                    </div>
+                </div>
+            </div>
+            <div class="pool-stats">
+                <div class="pool-stat">
+                    <div class="pool-stat-value ${apyCls}">${apyStr}</div>
+                    <div class="pool-stat-label">APY</div>
+                </div>
+                <div class="pool-stat">
+                    <div class="pool-stat-value">${tvl}</div>
+                    <div class="pool-stat-label">TVL</div>
+                </div>
+                <div class="pool-stat">
+                    <div class="pool-stat-value" style="color:${pool.ilRisk==='yes'?'#ff8c42':'#00e676'}">${pool.ilRisk === 'yes' ? 'Yes' : 'Low'}</div>
+                    <div class="pool-stat-label">IL Risk</div>
+                </div>
+            </div>
+            <div class="pool-apy-breakdown">
+                ${pool.apyBase > 0 ? `<span class="apy-tag base-apy">Fee ${pool.apyBase.toFixed(2)}%</span>` : ''}
+                ${pool.apyReward > 0 ? `<span class="apy-tag reward-apy">AERO ${pool.apyReward.toFixed(0)}%</span>` : ''}
+                ${pool.ilRisk === 'yes' ? `<span class="apy-tag il-risk">IL Risk</span>` : ''}
+            </div>
+            <button class="invest-btn">1-Click Invest →</button>
+        </div>`;
+    }).join('');
+}
+
+// ─────────────────────────────────────────────────────────────
+// MODAL
+// ─────────────────────────────────────────────────────────────
+function openModal(index) {
+    // index is relative to filtered list — use allPools by searching visible pools
+    // Actually we pass rank-1 which is allPools index
+    currentPool = allPools[index];
+    if (!currentPool) return;
+
+    // Reset state
+    document.getElementById('steps-container').style.display = 'none';
+    document.getElementById('steps-list').innerHTML = '';
+    document.getElementById('result-box').style.display = 'none';
+    document.getElementById('submit-btn').disabled = false;
+
+    // Fill modal
+    document.getElementById('modal-title').textContent = `Invest: ${currentPool.symbol}`;
+    document.getElementById('modal-pair').textContent = currentPool.symbol;
+    document.getElementById('modal-apy').textContent = currentPool.apy.toFixed(2) + '% APY';
+    document.getElementById('modal-tvl').textContent = currentPool.tvlUsd >= 1e6
+        ? `$${(currentPool.tvlUsd/1e6).toFixed(2)}M`
+        : `$${(currentPool.tvlUsd/1e3).toFixed(0)}K`;
+    document.getElementById('modal-il').textContent = currentPool.ilRisk === 'yes' ? 'Yes (Volatile)' : 'Low';
+    document.getElementById('modal-type').textContent = currentPool.stable ? 'Stable Pool' : 'Volatile Pool';
+
+    updateProjections();
+    document.getElementById('modal-overlay').classList.add('open');
+}
+
+function closeModal(e) {
+    if (e.target === document.getElementById('modal-overlay')) closeModalDirect();
+}
+function closeModalDirect() {
+    document.getElementById('modal-overlay').classList.remove('open');
+    currentPool = null;
+}
+
+function setMode(mode) {
+    investMode = mode;
+    document.getElementById('mode-sim').classList.toggle('active', mode === 'simulate');
+    document.getElementById('mode-live').classList.toggle('active', mode === 'live');
+    document.getElementById('submit-btn').textContent =
+        mode === 'simulate' ? '🧪 Simulate Investment' : '⚡ Execute Live Invest';
+}
+
+function setAmount(v) {
+    document.getElementById('amount-input').value = v;
+    updateProjections();
+}
+
+function updateProjections() {
+    if (!currentPool) return;
+    const amount = parseFloat(document.getElementById('amount-input').value) || 0;
+    const apy = currentPool.apy / 100;
+    const daily   = amount * apy / 365;
+    const monthly = daily * 30;
+    const yearly  = amount * apy;
+
+    document.getElementById('proj-daily').textContent   = `$${daily.toFixed(4)}`;
+    document.getElementById('proj-monthly').textContent = `$${monthly.toFixed(2)}`;
+    document.getElementById('proj-yearly').textContent  = `$${yearly.toFixed(2)}`;
+}
+
+// ─────────────────────────────────────────────────────────────
+// INVEST
+// ─────────────────────────────────────────────────────────────
+async function submitInvest() {
+    if (!currentPool) return;
+
+    const amountUSD = parseFloat(document.getElementById('amount-input').value);
+    if (!amountUSD || amountUSD < 0.5) {
+        alert('Minimum $0.50');
+        return;
+    }
+
+    const simulate = investMode === 'simulate';
+
+    // Show steps area
+    document.getElementById('steps-container').style.display = 'block';
+    document.getElementById('result-box').style.display = 'none';
+    document.getElementById('submit-btn').disabled = true;
+    document.getElementById('submit-btn').textContent = simulate ? '🧪 Simulating...' : '⚡ Executing...';
+
+    // Seed pending steps
+    const pendingSteps = [
+        { step: 1, name: 'Balance Check' },
+        { step: 2, name: simulate ? 'Bridge Check (simulated)' : 'Bridge Arbitrum→Base' },
+        { step: 3, name: 'Pool Info' },
+        { step: 4, name: `Swap ETH → ${currentPool.symbol.split('-')[0]} + ${currentPool.symbol.split('-')[1]}` },
+        { step: 5, name: `Add Liquidity ${currentPool.symbol}` },
+    ];
+    renderSteps(pendingSteps.map(s => ({ ...s, status: 'pending' })));
+
+    try {
+        const body = {
+            token0:    currentPool.tokens[0] || '',
+            token1:    currentPool.tokens[1] || '',
+            stable:    currentPool.stable,
+            symbol:    currentPool.symbol,
+            amountUSD,
+            simulate,
+        };
+
+        if (!body.token0 || !body.token1) {
+            throw new Error('Pool token addresses not available from DeFi Llama for this pool.');
+        }
+
+        if (!localAvailable) throw new Error('Obelisk server (localhost:3001) not reachable — launch it with: pm2 start obelisk');
+
+        const res = await fetch(`${LOCAL_API}/invest/1click`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(body),
+        });
+
+        const d = await res.json();
+        renderSteps(d.steps || []);
+
+        const box = document.getElementById('result-box');
+        const msg = document.getElementById('result-msg');
+        box.style.display = 'block';
+
+        if (d.success) {
+            box.className = 'result-box success';
+            msg.innerHTML = `✅ ${d.message}${d.basescan ? ` — <a href="${d.basescan}" target="_blank" style="color:#4da6ff;">View on Basescan</a>` : ''}`;
+        } else {
+            box.className = 'result-box error';
+            msg.textContent = '❌ ' + (d.error || 'Unknown error');
+        }
+    } catch (e) {
+        const box = document.getElementById('result-box');
+        box.style.display = 'block';
+        box.className = 'result-box error';
+        document.getElementById('result-msg').textContent = '❌ ' + e.message;
+    }
+
+    document.getElementById('submit-btn').disabled = false;
+    document.getElementById('submit-btn').textContent =
+        simulate ? '🧪 Simulate Again' : '⚡ Invest Again';
+}
+
+function renderSteps(steps) {
+    const list = document.getElementById('steps-list');
+    if (!steps || !steps.length) { list.innerHTML = ''; return; }
+
+    list.innerHTML = steps.map(s => {
+        const statusDot = {
+            ok:        '✓',
+            simulated: '~',
+            failed:    '✗',
+            skipped:   '–',
+            pending:   s.step,
+            running:   '⟳',
+        }[s.status] || s.step;
+
+        const details = Object.entries(s)
+            .filter(([k]) => !['step','name','status','tx'].includes(k))
+            .map(([k,v]) => `<span>${k.replace(/_/g,' ')}: <strong>${v}</strong></span>`)
+            .join(' &nbsp;·&nbsp; ');
+
+        return `
+        <div class="step-item">
+            <div class="step-dot ${s.status}">${statusDot}</div>
+            <div class="step-info">
+                <div class="step-name">${s.name}</div>
+                ${details ? `<div class="step-detail">${details}</div>` : ''}
+                ${s.tx ? `<div class="step-tx"><a href="https://basescan.org/tx/${s.tx}" target="_blank">🔗 ${s.tx.slice(0,18)}...</a></div>` : ''}
+            </div>
+        </div>`;
+    }).join('');
+}
+</script>
+</body>
+</html>

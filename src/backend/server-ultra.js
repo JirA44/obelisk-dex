@@ -192,7 +192,23 @@ const BINANCE_SYMBOL_MAP = {
     'TIA/USDC': 'tiausdt',
     'JTO/USDC': 'jtousdt',
     'WIF/USDC': 'wifusdt',
-    'BONK/USDC': 'bonkusdt'
+    'BONK/USDC': 'bonkusdt',
+    // New assets
+    'TON/USDC': 'tonusdt',
+    'NEAR/USDC': 'nearusdt',
+    'ATOM/USDC': 'atomusdt',
+    'LTC/USDC': 'ltcusdt',
+    'BCH/USDC': 'bchusdt',
+    'PEPE/USDC': 'pepeusdt',
+    'FIL/USDC': 'filusdt',
+    'AAVE/USDC': 'aaveusdt',
+    'LDO/USDC': 'ldousdt',
+    'IMX/USDC': 'imxusdt',
+    'RENDER/USDC': 'renderusdt',
+    'FET/USDC': 'fetusdt',
+    'HBAR/USDC': 'hbarusdt',
+    'SAND/USDC': 'sandusdt',
+    'MANA/USDC': 'manausdt'
 };
 
 // Reverse mapping: Binance symbol -> Obelisk pairs
@@ -230,7 +246,21 @@ const COINBASE_SYMBOL_MAP = {
     'UNI/USDC': 'UNI-USD',
     'OP/USDC': 'OP-USD',
     'APT/USDC': 'APT-USD',
-    'SUI/USDC': 'SUI-USD'
+    'SUI/USDC': 'SUI-USD',
+    // New assets
+    'TON/USDC': 'TON-USD',
+    'NEAR/USDC': 'NEAR-USD',
+    'ATOM/USDC': 'ATOM-USD',
+    'LTC/USDC': 'LTC-USD',
+    'BCH/USDC': 'BCH-USD',
+    'FIL/USDC': 'FIL-USD',
+    'AAVE/USDC': 'AAVE-USD',
+    'LDO/USDC': 'LDO-USD',
+    'RENDER/USDC': 'RENDER-USD',
+    'FET/USDC': 'FET-USD',
+    'HBAR/USDC': 'HBAR-USD',
+    'SAND/USDC': 'SAND-USD',
+    'MANA/USDC': 'MANA-USD'
 };
 
 // Kraken symbol mapping
@@ -243,7 +273,16 @@ const KRAKEN_SYMBOL_MAP = {
     'AVAX/USDC': 'AVAX/USD',
     'DOGE/USDC': 'DOGE/USD',
     'DOT/USDC': 'DOT/USD',
-    'LINK/USDC': 'LINK/USD'
+    'LINK/USDC': 'LINK/USD',
+    // New assets
+    'TON/USDC': 'TON/USD',
+    'NEAR/USDC': 'NEAR/USD',
+    'ATOM/USDC': 'ATOM/USD',
+    'LTC/USDC': 'LTC/USD',
+    'BCH/USDC': 'BCH/USD',
+    'FIL/USDC': 'FIL/USD',
+    'AAVE/USDC': 'AAVE/USD',
+    'HBAR/USDC': 'HBAR/USD'
 };
 
 // Import lending system
@@ -390,6 +429,16 @@ const sonicDexRouter = require('./routes/sonic-dex');
 app.use('/api/sonic-dex', sonicDexRouter);
 console.log('✅ Sonic DEX Router: ShadowDEX CL/V2, SwapX, Beets, Equalizer, Metropolis');
 
+// Aerodrome Finance 1-Click Invest (Base chain)
+const aerodromeInvestRouter = require('./routes/aerodrome-invest');
+app.use('/api/aerodrome', aerodromeInvestRouter);
+console.log('✅ Aerodrome Invest: Bridge+Swap+LP in 1-click (Base chain)');
+
+// Global Markets — Stocks, ETFs, Commodities (Korean, US, Japan, EU...)
+const globalMarketsRouter = require('./routes/global-markets');
+app.use('/api/markets/global', globalMarketsRouter);
+console.log('✅ Global Markets: KR/US/JP/EU stocks + ETFs + Commodities (Yahoo Finance)');
+
 // Sonic HFT Engine stats proxy (sonic-hft PM2 process on port 3002)
 app.get('/api/hft/status', (req, res) => {
     const hftHttp = require('http');
@@ -473,36 +522,53 @@ app.get('/ready', (req, res) => {
 // TOP 15+ MARKETS - Real-time data
 // ===========================================
 const markets = {
-    // Major pairs
-    'BTC/USDC': { price: 104850, change24h: 2.34, volume: 2850000000, high: 105200, low: 102800, volatility: 0.0008 },
-    'ETH/USDC': { price: 3945, change24h: 1.87, volume: 1580000000, high: 3980, low: 3850, volatility: 0.001 },
-    'SOL/USDC': { price: 228.50, change24h: 4.21, volume: 820000000, high: 232, low: 218, volatility: 0.0015 },
-    'ARB/USDC': { price: 1.85, change24h: 3.12, volume: 156000000, high: 1.92, low: 1.78, volatility: 0.002 },
+    // Major pairs — fallback prices updated 2026-02-19
+    'BTC/USDC': { price: 67000, change24h: 1.15, volume: 2850000000, high: 67500, low: 65800, volatility: 0.0008 },
+    'ETH/USDC': { price: 1940, change24h: 0.06, volume: 1580000000, high: 1990, low: 1905, volatility: 0.001 },
+    'SOL/USDC': { price: 82.00, change24h: 1.15, volume: 820000000, high: 83.50, low: 80.50, volatility: 0.0015 },
+    'ARB/USDC': { price: 0.098, change24h: -1.20, volume: 156000000, high: 0.105, low: 0.094, volatility: 0.002 },
 
     // USDT pairs
-    'BTC/USDT': { price: 104850, change24h: 2.34, volume: 1250000000, high: 105200, low: 102800, volatility: 0.0008 },
-    'ETH/USDT': { price: 3945, change24h: 1.87, volume: 580000000, high: 3980, low: 3850, volatility: 0.001 },
-    'SOL/USDT': { price: 228.50, change24h: 4.21, volume: 320000000, high: 232, low: 218, volatility: 0.0015 },
+    'BTC/USDT': { price: 67000, change24h: 1.15, volume: 1250000000, high: 67500, low: 65800, volatility: 0.0008 },
+    'ETH/USDT': { price: 1940, change24h: 0.06, volume: 580000000, high: 1990, low: 1905, volatility: 0.001 },
+    'SOL/USDT': { price: 82.00, change24h: 1.15, volume: 320000000, high: 83.50, low: 80.50, volatility: 0.0015 },
 
     // Top 10 tokens
-    'XRP/USDC': { price: 2.42, change24h: 3.45, volume: 256000000, high: 2.50, low: 2.35, volatility: 0.0018 },
-    'ADA/USDC': { price: 1.15, change24h: 2.11, volume: 178000000, high: 1.18, low: 1.10, volatility: 0.0016 },
-    'AVAX/USDC': { price: 53.80, change24h: 5.67, volume: 245000000, high: 55.20, low: 51.50, volatility: 0.002 },
-    'DOGE/USDC': { price: 0.425, change24h: -1.23, volume: 189000000, high: 0.44, low: 0.41, volatility: 0.003 },
-    'DOT/USDC': { price: 9.85, change24h: 1.92, volume: 98000000, high: 10.10, low: 9.60, volatility: 0.0017 },
-    'LINK/USDC': { price: 28.75, change24h: 2.45, volume: 167000000, high: 29.50, low: 28.00, volatility: 0.0015 },
-    'MATIC/USDC': { price: 0.68, change24h: 1.78, volume: 134000000, high: 0.70, low: 0.66, volatility: 0.002 },
-    'UNI/USDC': { price: 14.25, change24h: 3.21, volume: 112000000, high: 14.80, low: 13.80, volatility: 0.0018 },
+    'XRP/USDC': { price: 1.41, change24h: 0.80, volume: 256000000, high: 1.45, low: 1.37, volatility: 0.0018 },
+    'ADA/USDC': { price: 0.272, change24h: 1.10, volume: 178000000, high: 0.285, low: 0.265, volatility: 0.0016 },
+    'AVAX/USDC': { price: 8.89, change24h: -2.10, volume: 245000000, high: 9.20, low: 8.70, volatility: 0.002 },
+    'DOGE/USDC': { price: 0.098, change24h: -1.50, volume: 189000000, high: 0.102, low: 0.094, volatility: 0.003 },
+    'DOT/USDC': { price: 4.20, change24h: 0.90, volume: 98000000, high: 4.35, low: 4.10, volatility: 0.0017 },
+    'LINK/USDC': { price: 8.52, change24h: 1.20, volume: 167000000, high: 8.80, low: 8.30, volatility: 0.0015 },
+    'MATIC/USDC': { price: 0.379, change24h: 0.50, volume: 134000000, high: 0.392, low: 0.368, volatility: 0.002 },
+    'UNI/USDC': { price: 3.37, change24h: 1.80, volume: 112000000, high: 3.50, low: 3.25, volatility: 0.0018 },
 
     // Additional pairs
-    'OP/USDC': { price: 2.95, change24h: 4.56, volume: 89000000, high: 3.05, low: 2.82, volatility: 0.0022 },
-    'APT/USDC': { price: 12.80, change24h: 2.89, volume: 76000000, high: 13.20, low: 12.40, volatility: 0.002 },
-    'INJ/USDC': { price: 38.50, change24h: 5.12, volume: 145000000, high: 40.00, low: 36.50, volatility: 0.0025 },
-    'SUI/USDC': { price: 4.25, change24h: 6.78, volume: 234000000, high: 4.45, low: 3.95, volatility: 0.003 },
-    'TIA/USDC': { price: 8.90, change24h: 3.45, volume: 87000000, high: 9.20, low: 8.55, volatility: 0.0022 },
-    'JTO/USDC': { price: 3.85, change24h: 4.23, volume: 56000000, high: 4.00, low: 3.65, volatility: 0.0025 },
-    'WIF/USDC': { price: 2.45, change24h: 8.92, volume: 178000000, high: 2.65, low: 2.20, volatility: 0.004 },
-    'BONK/USDC': { price: 0.0000345, change24h: 12.45, volume: 89000000, high: 0.000038, low: 0.000031, volatility: 0.005 }
+    'OP/USDC': { price: 0.138, change24h: -1.50, volume: 89000000, high: 0.145, low: 0.133, volatility: 0.0022 },
+    'APT/USDC': { price: 0.86, change24h: 0.80, volume: 76000000, high: 0.90, low: 0.83, volatility: 0.002 },
+    'INJ/USDC': { price: 3.30, change24h: 1.20, volume: 145000000, high: 3.45, low: 3.18, volatility: 0.0025 },
+    'SUI/USDC': { price: 0.917, change24h: 2.10, volume: 234000000, high: 0.950, low: 0.890, volatility: 0.003 },
+    'TIA/USDC': { price: 0.318, change24h: 0.90, volume: 87000000, high: 0.330, low: 0.308, volatility: 0.0022 },
+    'JTO/USDC': { price: 1.20, change24h: 1.50, volume: 56000000, high: 1.25, low: 1.16, volatility: 0.0025 },
+    'WIF/USDC': { price: 0.216, change24h: 3.20, volume: 178000000, high: 0.225, low: 0.208, volatility: 0.004 },
+    'BONK/USDC': { price: 0.0000061, change24h: 4.50, volume: 89000000, high: 0.0000065, low: 0.0000058, volatility: 0.005 },
+
+    // New assets
+    'TON/USDC': { price: 5.50, change24h: 2.10, volume: 145000000, high: 5.70, low: 5.30, volatility: 0.002 },
+    'NEAR/USDC': { price: 5.80, change24h: 3.45, volume: 132000000, high: 6.00, low: 5.55, volatility: 0.0022 },
+    'ATOM/USDC': { price: 8.20, change24h: 1.85, volume: 98000000, high: 8.50, low: 7.95, volatility: 0.0018 },
+    'LTC/USDC': { price: 125.00, change24h: 1.20, volume: 210000000, high: 128.00, low: 122.00, volatility: 0.0012 },
+    'BCH/USDC': { price: 320.00, change24h: 2.35, volume: 165000000, high: 328.00, low: 312.00, volatility: 0.0015 },
+    'PEPE/USDC': { price: 0.0000145, change24h: 8.75, volume: 245000000, high: 0.0000158, low: 0.0000132, volatility: 0.006 },
+    'FIL/USDC': { price: 5.20, change24h: 2.60, volume: 78000000, high: 5.40, low: 5.00, volatility: 0.0022 },
+    'AAVE/USDC': { price: 235.00, change24h: 3.10, volume: 112000000, high: 242.00, low: 228.00, volatility: 0.0018 },
+    'LDO/USDC': { price: 2.10, change24h: 4.20, volume: 67000000, high: 2.20, low: 2.00, volatility: 0.0025 },
+    'IMX/USDC': { price: 1.50, change24h: 3.80, volume: 54000000, high: 1.58, low: 1.43, volatility: 0.0028 },
+    'RENDER/USDC': { price: 5.80, change24h: 5.40, volume: 89000000, high: 6.05, low: 5.55, volatility: 0.003 },
+    'FET/USDC': { price: 1.10, change24h: 4.90, volume: 76000000, high: 1.16, low: 1.04, volatility: 0.003 },
+    'HBAR/USDC': { price: 0.22, change24h: 2.75, volume: 145000000, high: 0.228, low: 0.212, volatility: 0.0022 },
+    'SAND/USDC': { price: 0.45, change24h: 3.20, volume: 58000000, high: 0.468, low: 0.432, volatility: 0.003 },
+    'MANA/USDC': { price: 0.40, change24h: 2.90, volume: 52000000, high: 0.415, low: 0.385, volatility: 0.003 }
 };
 
 // Millisecond timestamp tracking

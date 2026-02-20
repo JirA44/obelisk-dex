@@ -1,0 +1,384 @@
+[
+  {
+    "startTime": 1771486857910,
+    "date": "2026-02-19 07:40:57",
+    "elapsedMin": 17,
+    "trades": 5,
+    "wins": 3,
+    "losses": 2,
+    "timeouts": 5,
+    "winRate": "60.0%",
+    "pnl": "$0.0079",
+    "tradesPerHour": 18,
+    "batchesExec": 0,
+    "batchesSkip": 0,
+    "byPair": {
+      "BTC/USDC": {
+        "trades": 1,
+        "pnl": 0.0011693383419497277,
+        "wins": 1
+      },
+      "ETH/USDC": {
+        "trades": 0,
+        "pnl": 0,
+        "wins": 0
+      },
+      "SOL/USDC": {
+        "trades": 4,
+        "pnl": 0.006697367273273499,
+        "wins": 2
+      },
+      "ARB/USDC": {
+        "trades": 0,
+        "pnl": 0,
+        "wins": 0
+      }
+    }
+  },
+  {
+    "startTime": 1771487881689,
+    "date": "2026-02-19 07:58:01",
+    "elapsedMin": 4,
+    "trades": 1,
+    "wins": 0,
+    "losses": 1,
+    "timeouts": 0,
+    "winRate": "0.0%",
+    "pnl": "$-0.0094",
+    "tradesPerHour": 15,
+    "batchesExec": 0,
+    "batchesSkip": 0,
+    "byPair": {
+      "BTC/USDC": {
+        "trades": 0,
+        "pnl": 0,
+        "wins": 0
+      },
+      "ETH/USDC": {
+        "trades": 0,
+        "pnl": 0,
+        "wins": 0
+      },
+      "SOL/USDC": {
+        "trades": 0,
+        "pnl": 0,
+        "wins": 0
+      },
+      "ARB/USDC": {
+        "trades": 1,
+        "pnl": -0.00940733772342454,
+        "wins": 0
+      }
+    }
+  },
+  {
+    "startTime": 1771488131928,
+    "date": "2026-02-19 08:02:11",
+    "elapsedMin": 32,
+    "trades": 19,
+    "wins": 7,
+    "losses": 12,
+    "timeouts": 15,
+    "winRate": "36.8%",
+    "pnl": "$-0.0174",
+    "tradesPerHour": 36,
+    "batchesExec": 1,
+    "batchesSkip": 0,
+    "byPair": {
+      "BTC/USDC": {
+        "trades": 1,
+        "pnl": 0.0030751426737922125,
+        "wins": 1
+      },
+      "ETH/USDC": {
+        "trades": 7,
+        "pnl": -0.002125200865864487,
+        "wins": 3
+      },
+      "SOL/USDC": {
+        "trades": 11,
+        "pnl": -0.018316343443433428,
+        "wins": 3
+      }
+    }
+  },
+  {
+    "startTime": 1771490068554,
+    "date": "2026-02-19 08:34:28",
+    "elapsedMin": 252,
+    "trades": 130,
+    "wins": 64,
+    "losses": 66,
+    "timeouts": 107,
+    "winRate": "49.2%",
+    "pnl": "$-0.0104",
+    "tradesPerHour": 31,
+    "batchesExec": 12,
+    "batchesSkip": 654,
+    "byPair": {
+      "BTC/USDC": {
+        "trades": 15,
+        "pnl": 0.011263960865772707,
+        "wins": 10
+      },
+      "ETH/USDC": {
+        "trades": 32,
+        "pnl": 0.012834437542883883,
+        "wins": 17
+      },
+      "SOL/USDC": {
+        "trades": 83,
+        "pnl": -0.03445267141312207,
+        "wins": 37
+      }
+    }
+  },
+  {
+    "startTime": 1771505237724,
+    "date": "2026-02-19 12:47:17",
+    "elapsedMin": 2,
+    "trades": 1,
+    "wins": 0,
+    "losses": 1,
+    "timeouts": 1,
+    "winRate": "0.0%",
+    "pnl": "$-0.0006",
+    "tradesPerHour": 30,
+    "batchesExec": 0,
+    "batchesSkip": 0,
+    "byPair": {
+      "BTC/USDC": {
+        "trades": 0,
+        "pnl": 0,
+        "wins": 0
+      },
+      "ETH/USDC": {
+        "trades": 0,
+        "pnl": 0,
+        "wins": 0
+      },
+      "SOL/USDC": {
+        "trades": 1,
+        "pnl": -0.000618811881187556,
+        "wins": 0
+      }
+    }
+  },
+  {
+    "startTime": 1771505415205,
+    "date": "2026-02-19 12:50:15",
+    "elapsedMin": 1,
+    "trades": 0,
+    "wins": 0,
+    "losses": 0,
+    "timeouts": 0,
+    "winRate": "0%",
+    "pnl": "$0.0000",
+    "tradesPerHour": 0,
+    "batchesExec": 0,
+    "batchesSkip": 0,
+    "byPair": {
+      "BTC/USDC": {
+        "trades": 0,
+        "pnl": 0,
+        "wins": 0
+      },
+      "ETH/USDC": {
+        "trades": 0,
+        "pnl": 0,
+        "wins": 0
+      },
+      "SOL/USDC": {
+        "trades": 0,
+        "pnl": 0,
+        "wins": 0
+      }
+    }
+  },
+  {
+    "startTime": 1771505484644,
+    "date": "2026-02-19 12:51:24",
+    "elapsedMin": 3,
+    "trades": 0,
+    "wins": 0,
+    "losses": 0,
+    "timeouts": 0,
+    "winRate": "0%",
+    "pnl": "$0.0000",
+    "tradesPerHour": 0,
+    "batchesExec": 0,
+    "batchesSkip": 0,
+    "byPair": {
+      "BTC/USDC": {
+        "trades": 0,
+        "pnl": 0,
+        "wins": 0
+      },
+      "ETH/USDC": {
+        "trades": 0,
+        "pnl": 0,
+        "wins": 0
+      },
+      "SOL/USDC": {
+        "trades": 0,
+        "pnl": 0,
+        "wins": 0
+      }
+    }
+  },
+  {
+    "startTime": 1771505685179,
+    "date": "2026-02-19 12:54:45",
+    "elapsedMin": 370.1,
+    "trades": 640,
+    "wins": 265,
+    "losses": 375,
+    "timeouts": 400,
+    "winRate": "41.4%",
+    "pnl": "$-0.3563",
+    "tradesPerHour": 104,
+    "batchesExec": 54,
+    "batchesSkip": 2369,
+    "byPair": {
+      "BTC/USDC": {
+        "trades": 163,
+        "pnl": -0.08082495250572763,
+        "wins": 75
+      },
+      "ETH/USDC": {
+        "trades": 217,
+        "pnl": -0.18997709175499594,
+        "wins": 85
+      },
+      "SOL/USDC": {
+        "trades": 260,
+        "pnl": -0.0854683889938638,
+        "wins": 105
+      }
+    }
+  },
+  {
+    "startTime": 1771530636328,
+    "date": "2026-02-19 19:50:36",
+    "elapsedMin": 19,
+    "trades": 16,
+    "wins": 6,
+    "losses": 10,
+    "timeouts": 10,
+    "winRate": "37.5%",
+    "pnl": "$-9.0470",
+    "tradesPerHour": 51,
+    "batchesExec": 1,
+    "batchesSkip": 4,
+    "byPair": {
+      "BTC/USDC": {
+        "trades": 4,
+        "pnl": -0.0024344127195761417,
+        "wins": 2
+      },
+      "ETH/USDC": {
+        "trades": 3,
+        "pnl": 0.0034177329022782943,
+        "wins": 1
+      },
+      "SOL/USDC": {
+        "trades": 9,
+        "pnl": -9.047970438895849,
+        "wins": 3
+      }
+    }
+  },
+  {
+    "startTime": 1771531853191,
+    "date": "2026-02-19 20:10:53",
+    "elapsedMin": 47,
+    "trades": 36,
+    "wins": 14,
+    "losses": 22,
+    "timeouts": 30,
+    "winRate": "38.9%",
+    "pnl": "$8.9067",
+    "tradesPerHour": 46,
+    "batchesExec": 3,
+    "batchesSkip": 82,
+    "byPair": {
+      "BTC/USDC": {
+        "trades": 2,
+        "pnl": 0.0032747659897473455,
+        "wins": 1
+      },
+      "ETH/USDC": {
+        "trades": 9,
+        "pnl": -0.00771401630349867,
+        "wins": 3
+      },
+      "SOL/USDC": {
+        "trades": 25,
+        "pnl": 8.911143394356436,
+        "wins": 10
+      }
+    }
+  },
+  {
+    "startTime": 1771534681268,
+    "date": "2026-02-19 20:58:01",
+    "elapsedMin": 1,
+    "trades": 0,
+    "wins": 0,
+    "losses": 0,
+    "timeouts": 0,
+    "winRate": "0%",
+    "pnl": "$0.0000",
+    "tradesPerHour": 0,
+    "batchesExec": 0,
+    "batchesSkip": 0,
+    "byPair": {
+      "BTC/USDC": {
+        "trades": 0,
+        "pnl": 0,
+        "wins": 0
+      },
+      "ETH/USDC": {
+        "trades": 0,
+        "pnl": 0,
+        "wins": 0
+      },
+      "SOL/USDC": {
+        "trades": 0,
+        "pnl": 0,
+        "wins": 0
+      }
+    }
+  },
+  {
+    "startTime": 1771534771367,
+    "date": "2026-02-19 20:59:31",
+    "elapsedMin": 250,
+    "trades": 127,
+    "wins": 72,
+    "losses": 55,
+    "timeouts": 100,
+    "winRate": "56.7%",
+    "pnl": "$0.1842",
+    "tradesPerHour": 30,
+    "batchesExec": 24,
+    "batchesSkip": 1126,
+    "byPair": {
+      "BTC/USDC": {
+        "trades": 18,
+        "pnl": 0.061037421724354904,
+        "wins": 13
+      },
+      "ETH/USDC": {
+        "trades": 25,
+        "pnl": 0.03808271976663436,
+        "wins": 15
+      },
+      "SOL/USDC": {
+        "trades": 84,
+        "pnl": 0.08508069317764295,
+        "wins": 44
+      }
+    }
+  }
+]

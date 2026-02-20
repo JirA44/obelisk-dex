@@ -1593,6 +1593,11 @@
             <section class="tab-content" id="tab-investments">
                 <div id="investments-guide-container"></div>
                 <div id="investments-content"></div>
+
+                <!-- Aerodrome 1-Click Invest -->
+                <div style="padding:20px;">
+                    <div id="aero-widget-investments" style="background:rgba(255,78,138,0.04);border:1px solid rgba(255,78,138,0.15);border-radius:14px;padding:16px;"></div>
+                </div>
             </section>
 
             <!-- Portfolio Tab -->
@@ -2003,6 +2008,17 @@
     <script src="js/defi/gmx-integration.js"></script>
     <script src="js/defi/gains-integration.js"></script>
     <script src="js/defi/aerodrome-integration.js"></script>
+    <script src="js/defi/aerodrome-widget.js"></script>
+    <script>
+    document.addEventListener('DOMContentLoaded', () => {
+        document.querySelectorAll('[data-tab="investments"]').forEach(btn => {
+            btn.addEventListener('click', () => setTimeout(() => {
+                const el = document.getElementById('aero-widget-investments');
+                if (el && !el.dataset.mounted) { el.dataset.mounted='1'; AeroWidget.mount('investments', { maxHeight:'420px' }); }
+            }, 100));
+        });
+    });
+    </script>
     <script src="js/defi/pendle-integration.js"></script>
     <script src="js/defi/defi-manager.js"></script>
     <script src="js/defi/defi-ui.js"></script>

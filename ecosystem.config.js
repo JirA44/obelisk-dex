@@ -26,6 +26,22 @@ module.exports = {
       env: {
         NODE_ENV: 'production'
       }
+    },
+    {
+      name: 'breakout-bot',
+      script: 'breakout-pm2.js',
+      exec_mode: 'fork',
+      instances: 1,
+      autorestart: true,
+      watch: false,
+      max_memory_restart: '200M',
+      restart_delay: 10000,
+      env: {
+        NODE_ENV: 'production',
+        BREAKOUT_EXECUTOR: 'obelisk',
+        BREAKOUT_SIZE: '5',
+        BREAKOUT_TOUCHES: '3'
+      }
     }
   ]
 };

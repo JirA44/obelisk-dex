@@ -5,7 +5,12 @@
 const ObeliskDashboard = (function() {
     'use strict';
 
-    const t = (key) => (typeof I18n !== 'undefined' && I18n.t) ? I18n.t(key) : key;
+    // t() with fallback: returns human-readable fallback when translation equals the key
+    const t = (key, fallback) => {
+        if (typeof I18n === 'undefined' || !I18n.t) return fallback !== undefined ? fallback : key;
+        const result = I18n.t(key);
+        return (result && result !== key) ? result : (fallback !== undefined ? fallback : key);
+    };
 
     // Portfolio history snapshots (localStorage)
     const SNAPSHOT_KEY = 'obelisk_portfolio_snapshots';
@@ -221,9 +226,9 @@ const ObeliskDashboard = (function() {
         const safeTotal = safeNum(totalValue, 10000);
         const safePnl = safeNum(pnl24h, 234.56);
 
-        // Calculate base value safely
+        // Calculate base value safely (guard against 0/0 = NaN)
         const base = safeTotal > Math.abs(safePnl) ? safeTotal - safePnl : safeTotal;
-        const pnlPercentRaw = base > 0 ? (safePnl / base) * 100 : 0;
+        const pnlPercentRaw = (base > 0 && Number.isFinite(safePnl / base)) ? (safePnl / base) * 100 : 0;
         const pnlPercent = safeNum(pnlPercentRaw, 0).toFixed(2);
 
         const pnlColor = safePnl >= 0 ? '#00ff88' : '#ff4444';
@@ -253,22 +258,22 @@ const ObeliskDashboard = (function() {
         };
 
         const labels = {
-            totalValue: t('dash_total_value') || 'Valeur totale du portfolio',
-            activePositions: t('dash_active_positions') || 'Positions actives',
-            watchlist: t('dash_watchlist') || 'Liste de suivi',
-            pairs: t('dash_pairs') || 'paires',
-            pnl24h: t('dash_pnl_24h') || 'PnL 24h',
-            allocation: t('dash_allocation') || 'Allocation',
-            marketMovers: t('dash_market_movers') || 'Tendances du marché',
-            quickActions: t('dash_quick_actions') || 'Actions rapides',
-            recentActivity: t('dash_recent_activity') || 'Activité récente',
-            noActivity: t('dash_no_activity') || 'Aucune activité récente',
-            trade: t('trade') || 'Trading',
-            swap: t('swap') || 'Échange',
-            portfolio: t('portfolio') || 'Portfolio',
-            invest: t('invest') || 'Investir',
-            wallet: t('wallet') || 'Portefeuille',
-            combos: t('combos') || 'Combos'
+            totalValue: t('dash_total_value', 'Portfolio Value'),
+            activePositions: t('dash_active_positions', 'Active Positions'),
+            watchlist: t('dash_watchlist', 'Watchlist'),
+            pairs: t('dash_pairs', 'pairs'),
+            pnl24h: t('dash_pnl_24h', 'PnL 24h'),
+            allocation: t('dash_allocation', 'Allocation'),
+            marketMovers: t('dash_market_movers', 'Market Movers'),
+            quickActions: t('dash_quick_actions', 'Quick Actions'),
+            recentActivity: t('dash_recent_activity', 'Recent Activity'),
+            noActivity: t('dash_no_activity', 'No recent activity'),
+            trade: t('trade', 'Trade'),
+            swap: t('swap', 'Swap'),
+            portfolio: t('portfolio', 'Portfolio'),
+            invest: t('invest', 'Invest'),
+            wallet: t('wallet', 'Wallet'),
+            combos: t('combos', 'Combos')
         };
 
         el.innerHTML = `
@@ -372,6 +377,11 @@ const ObeliskDashboard = (function() {
                 </div>
             </div>
         `;
+
+        // Re-translate data-i18n elements injected by this render
+        if (typeof I18n !== 'undefined' && I18n.translatePage) {
+            I18n.translatePage();
+        }
 
         // Draw charts after DOM insert
         requestAnimationFrame(() => {

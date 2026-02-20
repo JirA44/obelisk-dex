@@ -554,6 +554,85 @@
         <button class="risk-btn" onclick="filterByRisk('Medium-High')" data-i18n="combos_medium_high">Medium-High</button>
     </div>
 
+    <!-- ═══════════════════════════════════════════════════════════ -->
+    <!-- AERODROME FINANCE — Base Chain — 1-Click Real Invest      -->
+    <!-- ═══════════════════════════════════════════════════════════ -->
+    <div id="aerodromeSection" style="max-width:1600px;margin:0 auto 40px;padding:0 40px;">
+
+        <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:20px;flex-wrap:wrap;gap:12px;">
+            <div>
+                <h2 style="font-size:28px;color:#fff;margin-bottom:6px;">
+                    🔴 Aerodrome Finance
+                    <span style="font-size:14px;background:linear-gradient(90deg,#0052ff,#00d4ff);-webkit-background-clip:text;-webkit-text-fill-color:transparent;margin-left:8px;">Base Chain — LIVE</span>
+                </h2>
+                <p style="color:#666;font-size:14px;">Pools réels · TVL ≥ $50k · Triés par APY · 1-clic = Bridge + Swap + LP</p>
+            </div>
+            <div style="display:flex;gap:10px;align-items:center;flex-wrap:wrap;">
+                <div id="aeroBalanceChip" style="background:rgba(0,82,255,0.15);border:1px solid rgba(0,82,255,0.4);border-radius:20px;padding:8px 16px;font-size:13px;color:#00d4ff;cursor:pointer;" onclick="loadAeroBalances()">
+                    Wallet: <span id="aeroBalText">chargement...</span>
+                </div>
+                <button onclick="loadAerodromePools()" style="padding:8px 20px;background:rgba(0,212,255,0.1);border:1px solid rgba(0,212,255,0.4);color:#00d4ff;border-radius:20px;cursor:pointer;font-size:13px;">
+                    Refresh
+                </button>
+                <select id="aeroFilterStable" onchange="loadAerodromePools()" style="background:#1a1a3a;border:1px solid rgba(100,200,255,0.3);color:#aaa;padding:8px 14px;border-radius:20px;cursor:pointer;font-size:13px;">
+                    <option value="">Tous types</option>
+                    <option value="false">Volatile (haut APY)</option>
+                    <option value="true">Stable (faible IL)</option>
+                </select>
+            </div>
+        </div>
+
+        <div id="aeroPoolsGrid" style="display:grid;grid-template-columns:repeat(auto-fill,minmax(340px,1fr));gap:20px;">
+            <div style="grid-column:1/-1;text-align:center;padding:40px;color:#666;">
+                Chargement des pools Aerodrome...
+            </div>
+        </div>
+    </div>
+
+    <!-- Aerodrome Invest Modal -->
+    <div id="aeroModal" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,0.85);z-index:1000;align-items:center;justify-content:center;">
+        <div style="background:#0f0f2a;border:1px solid rgba(0,212,255,0.3);border-radius:20px;padding:32px;max-width:480px;width:90%;position:relative;">
+            <button onclick="closeAeroModal()" style="position:absolute;top:16px;right:16px;background:none;border:none;color:#666;font-size:24px;cursor:pointer;">&times;</button>
+            <h3 id="aeroModalTitle" style="color:#fff;margin-bottom:6px;font-size:20px;">Invest in Pool</h3>
+            <p id="aeroModalSub" style="color:#666;font-size:13px;margin-bottom:24px;"></p>
+
+            <div style="background:rgba(0,82,255,0.08);border:1px solid rgba(0,82,255,0.2);border-radius:12px;padding:16px;margin-bottom:20px;">
+                <div style="display:flex;justify-content:space-between;margin-bottom:8px;font-size:13px;">
+                    <span style="color:#888;">APY</span><span id="aeroModalApy" style="color:#00ff88;font-weight:bold;"></span>
+                </div>
+                <div style="display:flex;justify-content:space-between;margin-bottom:8px;font-size:13px;">
+                    <span style="color:#888;">TVL</span><span id="aeroModalTvl" style="color:#fff;"></span>
+                </div>
+                <div style="display:flex;justify-content:space-between;font-size:13px;">
+                    <span style="color:#888;">Type</span><span id="aeroModalType" style="color:#fff;"></span>
+                </div>
+            </div>
+
+            <div style="margin-bottom:20px;">
+                <label style="color:#aaa;font-size:13px;display:block;margin-bottom:8px;">Montant ($USD)</label>
+                <input type="number" id="aeroAmount" value="1" min="0.5" step="0.5"
+                    style="width:100%;background:#1a1a3a;border:1px solid rgba(0,212,255,0.3);color:#fff;padding:12px 16px;border-radius:10px;font-size:18px;"
+                    oninput="updateAeroPreview()">
+            </div>
+
+            <div id="aeroFlowPreview" style="background:rgba(0,0,0,0.3);border-radius:10px;padding:14px;margin-bottom:20px;font-size:12px;color:#888;line-height:1.8;">
+                <!-- Flow steps will appear here -->
+            </div>
+
+            <div id="aeroInvestResult" style="display:none;"></div>
+
+            <div style="display:flex;gap:10px;">
+                <button onclick="executeAeroInvest(true)" style="flex:1;padding:14px;background:linear-gradient(90deg,#8a2be2,#5a1dbe);border:none;color:#fff;border-radius:12px;cursor:pointer;font-weight:bold;font-size:14px;">
+                    🎮 Simuler
+                </button>
+                <button onclick="executeAeroInvest(false)" style="flex:1;padding:14px;background:linear-gradient(90deg,#0052ff,#00d4ff);border:none;color:#fff;border-radius:12px;cursor:pointer;font-weight:bold;font-size:14px;">
+                    💎 Investir $<span id="aeroRealBtn">1</span> RÉEL
+                </button>
+            </div>
+            <p style="text-align:center;color:#555;font-size:11px;margin-top:12px;">Flow: Bridge (si besoin) → Swap 50/50 → AddLiquidity Aerodrome</p>
+        </div>
+    </div>
+
     <div class="combos-grid" id="combosGrid">
         <!-- Combos will be loaded here -->
     </div>
@@ -1032,6 +1111,267 @@
                   `${t('combos_rebalance')}: ${combo.rebalanceFrequency}\n\n` +
                   `${explanation.what}`);
         }
+
+        // ═══════════════════════════════════════════════════
+        // AERODROME FINANCE — 1-Click Invest Logic
+        // ═══════════════════════════════════════════════════
+
+        let aeroCurrentPool = null;
+
+        async function loadAerodromePools() {
+            const grid = document.getElementById('aeroPoolsGrid');
+            grid.innerHTML = '<div style="grid-column:1/-1;text-align:center;padding:40px;color:#666;">Chargement des pools Aerodrome en direct (DeFi Llama)...</div>';
+
+            const stableFilter = document.getElementById('aeroFilterStable').value;
+
+            try {
+                // Call DeFi Llama directly — CORS-enabled, works from any origin
+                const ctrl2 = new AbortController();
+                const tid2  = setTimeout(() => ctrl2.abort(), 20000);
+                const resp = await fetch('https://yields.llama.fi/pools', { signal: ctrl2.signal });
+                clearTimeout(tid2);
+                if (!resp.ok) throw new Error(`DeFi Llama HTTP ${resp.status}`);
+                const raw = await resp.json();
+
+                const MIN_TVL = 50000;
+                let pools = (raw.data || []).filter(p =>
+                    (p.project || '').toLowerCase().includes('aerodrome') &&
+                    p.chain === 'Base' &&
+                    (p.tvlUsd || 0) >= MIN_TVL &&
+                    p.apy != null &&
+                    p.status !== 'dead'
+                );
+
+                if (stableFilter === 'true')  pools = pools.filter(p => p.poolMeta?.includes('stable'));
+                if (stableFilter === 'false') pools = pools.filter(p => !p.poolMeta?.includes('stable'));
+
+                pools = pools
+                    .sort((a, b) => (b.apy || 0) - (a.apy || 0))
+                    .slice(0, 100)
+                    .map((p, i) => ({
+                        rank:         i + 1,
+                        poolId:       p.pool,
+                        symbol:       p.symbol,
+                        tvlUsd:       Math.round(p.tvlUsd || 0),
+                        apy:          parseFloat((p.apy  || 0).toFixed(2)),
+                        apyBase:      parseFloat((p.apyBase  || 0).toFixed(2)),
+                        apyReward:    parseFloat((p.apyReward || 0).toFixed(2)),
+                        stable:       !!(p.poolMeta?.includes('stable')),
+                        ilRisk:       p.ilRisk || 'no',
+                        rewardTokens: p.rewardTokens || [],
+                        tokens:       p.underlyingTokens || [],
+                        project:      p.project,
+                    }));
+
+                if (!pools.length) {
+                    grid.innerHTML = '<div style="grid-column:1/-1;text-align:center;padding:40px;color:#ff6666;">Aucun pool trouvé.</div>';
+                    return;
+                }
+
+                grid.innerHTML = pools.map(pool => renderAeroCard(pool)).join('');
+
+            } catch (err) {
+                grid.innerHTML = `<div style="grid-column:1/-1;text-align:center;padding:40px;color:#ff6666;">Erreur: ${err.message} <br><button onclick="loadAerodromePools()" style="margin-top:12px;padding:8px 20px;background:rgba(0,212,255,0.1);border:1px solid rgba(0,212,255,0.4);color:#00d4ff;border-radius:20px;cursor:pointer;">↻ Réessayer</button></div>`;
+            }
+        }
+
+        function fmtApy(apy) {
+            if (apy > 9999) return `${(apy/1000).toFixed(0)}k%`;
+            if (apy > 999)  return `${apy.toFixed(0)}%`;
+            return `${apy.toFixed(1)}%`;
+        }
+
+        function renderAeroCard(pool) {
+            const isCL     = pool.project === 'aerodrome-slipstream';
+            const apyColor = pool.apy > 1000 ? '#ff4444' : pool.apy > 100 ? '#ff9900' : pool.apy > 20 ? '#ffd700' : '#00ff88';
+            const tvlFmt   = pool.tvlUsd >= 1e6 ? `$${(pool.tvlUsd/1e6).toFixed(1)}M` : `$${(pool.tvlUsd/1e3).toFixed(0)}k`;
+            const badge    = pool.stable ? '⚖️ Stable' : '⚡ Volatile';
+            const badgeClr = pool.stable ? 'rgba(0,255,136,0.15)' : 'rgba(255,170,0,0.15)';
+            const badgeBdr = pool.stable ? 'rgba(0,255,136,0.4)'  : 'rgba(255,170,0,0.4)';
+            const clBadge  = isCL ? `<span style="background:rgba(138,43,226,0.2);border:1px solid rgba(138,43,226,0.5);border-radius:6px;padding:2px 8px;font-size:11px;color:#cc88ff;">CL</span>` : '';
+            const ilBadge  = pool.ilRisk === 'no' ? '' : `<span style="background:rgba(255,100,100,0.15);border:1px solid rgba(255,100,100,0.4);border-radius:6px;padding:2px 8px;font-size:11px;color:#ff9999;">⚠️ IL</span>`;
+            const rewardBadge = (pool.rewardTokens||[]).length > 0
+                ? '<span style="background:rgba(255,60,0,0.15);border:1px solid rgba(255,60,0,0.4);border-radius:6px;padding:2px 8px;font-size:11px;color:#ff6644;">🔴 AERO</span>' : '';
+            const poolJSON = JSON.stringify(pool).replace(/"/g,'&quot;');
+            const btnLabel = isCL ? '🔗 Aerodrome' : '+ Invest';
+            const btnStyle = isCL
+                ? 'padding:8px 18px;background:rgba(138,43,226,0.3);border:1px solid rgba(138,43,226,0.5);color:#cc88ff;border-radius:20px;cursor:pointer;font-size:13px;'
+                : 'padding:8px 18px;background:linear-gradient(90deg,#0052ff,#00d4ff);border:none;color:#fff;border-radius:20px;cursor:pointer;font-size:13px;font-weight:bold;';
+            const rankColor = pool.rank <= 3 ? '#ffd700' : '#555';
+
+            return `
+            <div style="background:rgba(15,15,40,0.9);border:1px solid rgba(0,82,255,0.2);border-radius:16px;overflow:hidden;transition:all 0.3s;cursor:pointer;"
+                 onmouseover="this.style.borderColor='rgba(0,82,255,0.6)';this.style.transform='translateY(-3px)'"
+                 onmouseout="this.style.borderColor='rgba(0,82,255,0.2)';this.style.transform=''"
+                 onclick="${isCL ? `window.open('https://aerodrome.finance/liquidity','_blank')` : `openAeroModal(${poolJSON})`}">
+
+                <div style="padding:16px 20px;background:linear-gradient(135deg,rgba(0,82,255,0.08),rgba(0,212,255,0.05));">
+                    <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:8px;">
+                        <div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap;">
+                            <span style="font-size:13px;font-weight:bold;color:${rankColor};">#${pool.rank}</span>
+                            <span style="font-weight:bold;color:#fff;font-size:15px;">${pool.symbol}</span>
+                            <span style="background:${badgeClr};border:1px solid ${badgeBdr};border-radius:6px;padding:2px 7px;font-size:10px;color:#aaa;">${badge}</span>
+                            ${clBadge}
+                        </div>
+                        <span style="font-size:20px;font-weight:bold;color:${apyColor};">${fmtApy(pool.apy)}</span>
+                    </div>
+                    <div style="display:flex;gap:5px;flex-wrap:wrap;">${ilBadge}${rewardBadge}</div>
+                </div>
+
+                <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:1px;background:rgba(255,255,255,0.04);">
+                    <div style="padding:11px 14px;background:#0d0d26;text-align:center;">
+                        <div style="font-size:16px;font-weight:bold;color:${apyColor};">${fmtApy(pool.apy)}</div>
+                        <div style="font-size:10px;color:#555;margin-top:2px;">APY total</div>
+                    </div>
+                    <div style="padding:11px 14px;background:#0d0d26;text-align:center;">
+                        <div style="font-size:16px;font-weight:bold;color:#00d4ff;">${tvlFmt}</div>
+                        <div style="font-size:10px;color:#555;margin-top:2px;">TVL</div>
+                    </div>
+                    <div style="padding:11px 14px;background:#0d0d26;text-align:center;">
+                        <div style="font-size:16px;font-weight:bold;color:#aaa;">${pool.apyBase.toFixed(1)}%</div>
+                        <div style="font-size:10px;color:#555;margin-top:2px;">Fees APY</div>
+                    </div>
+                </div>
+
+                <div style="padding:12px 18px;display:flex;align-items:center;justify-content:space-between;">
+                    <div style="font-size:11px;color:#555;">
+                        AERO: <span style="color:#ff6644;">${fmtApy(pool.apyReward)}</span>
+                        ${isCL ? '<span style="color:#cc88ff;margin-left:8px;">· CL tick range</span>' : ''}
+                    </div>
+                    <button onclick="event.stopPropagation();${isCL ? `window.open('https://aerodrome.finance/liquidity','_blank')` : `openAeroModal(${poolJSON})`}"
+                        style="${btnStyle}">
+                        ${btnLabel}
+                    </button>
+                </div>
+            </div>`;
+        }
+
+        async function loadAeroBalances() {
+            document.getElementById('aeroBalText').textContent = '...';
+            const isLocal = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1';
+            if (!isLocal) {
+                document.getElementById('aeroBalText').textContent = 'local only';
+                return;
+            }
+            try {
+                const resp = await fetch('http://localhost:3001/api/aerodrome/balances');
+                const data = await resp.json();
+                if (data.success) {
+                    document.getElementById('aeroBalText').textContent =
+                        `Base $${data.base.total_USD} | Arb $${data.arbitrum.ETH_USD}`;
+                } else {
+                    document.getElementById('aeroBalText').textContent = 'Erreur';
+                }
+            } catch {
+                document.getElementById('aeroBalText').textContent = 'Hors ligne';
+            }
+        }
+
+        function openAeroModal(pool) {
+            aeroCurrentPool = pool;
+            document.getElementById('aeroModalTitle').textContent = `${pool.symbol}`;
+            document.getElementById('aeroModalSub').textContent = `Pool Aerodrome Finance — Base Chain`;
+            document.getElementById('aeroModalApy').textContent = `${pool.apy}% APY`;
+            document.getElementById('aeroModalTvl').textContent = pool.tvlUsd >= 1e6
+                ? `$${(pool.tvlUsd/1e6).toFixed(2)}M` : `$${(pool.tvlUsd/1e3).toFixed(0)}k`;
+            document.getElementById('aeroModalType').textContent = pool.stable ? '⚖️ Stable (faible IL)' : '⚡ Volatile';
+            document.getElementById('aeroInvestResult').style.display = 'none';
+            updateAeroPreview();
+            document.getElementById('aeroModal').style.display = 'flex';
+        }
+
+        function closeAeroModal() {
+            document.getElementById('aeroModal').style.display = 'none';
+            aeroCurrentPool = null;
+        }
+
+        function updateAeroPreview() {
+            const amount = parseFloat(document.getElementById('aeroAmount').value) || 1;
+            document.getElementById('aeroRealBtn').textContent = amount.toFixed(2);
+
+            const steps = [
+                `① Check balances (Base + Arbitrum)`,
+                `② Bridge Arbitrum→Base si besoin (Across Protocol, ~60s)`,
+                `③ Swap ETH→${aeroCurrentPool ? aeroCurrentPool.symbol.split('-')[0] : 'TOKEN0'} ($${(amount/2).toFixed(2)})`,
+                `③ Swap ETH→${aeroCurrentPool ? aeroCurrentPool.symbol.split('-')[1] || 'TOKEN1' : 'TOKEN1'} ($${(amount/2).toFixed(2)})`,
+                `④ Add Liquidity → Aerodrome ${aeroCurrentPool ? aeroCurrentPool.symbol : 'Pool'}`,
+                `✅ LP tokens dans ton wallet`,
+            ];
+
+            document.getElementById('aeroFlowPreview').innerHTML = steps
+                .map(s => `<div style="padding:2px 0;">${s}</div>`).join('');
+        }
+
+        async function executeAeroInvest(simulate) {
+            if (!aeroCurrentPool) return;
+            const amount = parseFloat(document.getElementById('aeroAmount').value) || 1;
+
+            const btn = event.target;
+            btn.disabled = true;
+            btn.textContent = simulate ? '⏳ Simulation...' : '⏳ Exécution...';
+
+            const resultDiv = document.getElementById('aeroInvestResult');
+            resultDiv.style.display = 'none';
+
+            try {
+                const isLocal = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1';
+                if (!isLocal) throw new Error('Serveur Obelisk requis en local (pm2 start obelisk). Les pools sont lisibles partout mais l\'invest nécessite le serveur local.');
+                const resp = await fetch('http://localhost:3001/api/aerodrome/invest/1click', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        token0:    aeroCurrentPool.tokens[0],
+                        token1:    aeroCurrentPool.tokens[1],
+                        stable:    aeroCurrentPool.stable,
+                        symbol:    aeroCurrentPool.symbol,
+                        amountUSD: amount,
+                        simulate,
+                    })
+                });
+
+                const data = await resp.json();
+
+                const ok = data.success;
+                const color = ok ? (simulate ? '#9b59b6' : '#00ff88') : '#ff6666';
+
+                resultDiv.style.display = 'block';
+                resultDiv.innerHTML = `
+                    <div style="background:${ok ? 'rgba(0,255,136,0.06)' : 'rgba(255,100,100,0.06)'};border:1px solid ${color};border-radius:10px;padding:14px;margin-bottom:16px;">
+                        <div style="font-weight:bold;color:${color};margin-bottom:8px;">
+                            ${ok ? (simulate ? '🎮 Simulation OK' : '✅ Investi!') : '❌ Erreur'}
+                        </div>
+                        <div style="font-size:13px;color:#aaa;">${data.message || data.error}</div>
+                        ${data.basescan ? `<a href="${data.basescan}" target="_blank" style="display:inline-block;margin-top:8px;font-size:12px;color:#00d4ff;">Voir sur Basescan →</a>` : ''}
+                    </div>
+                    ${data.steps ? `
+                    <div style="font-size:12px;color:#555;">
+                        ${data.steps.map(s => `
+                            <div style="display:flex;justify-content:space-between;padding:4px 0;border-bottom:1px solid rgba(255,255,255,0.04);">
+                                <span>${s.step}. ${s.name}</span>
+                                <span style="color:${s.status==='ok'?'#00ff88':s.status==='simulated'?'#9b59b6':s.status==='skipped'?'#888':'#ff6666'}">${s.status}</span>
+                            </div>
+                        `).join('')}
+                    </div>` : ''}
+                `;
+
+                if (ok && !simulate) loadAeroBalances();
+
+            } catch (err) {
+                resultDiv.style.display = 'block';
+                resultDiv.innerHTML = `<div style="color:#ff6666;font-size:13px;">Erreur réseau: ${err.message}</div>`;
+            } finally {
+                btn.disabled = false;
+                btn.textContent = simulate ? '🎮 Simuler' : `💎 Investir $${amount} RÉEL`;
+            }
+        }
+
+        // Load Aerodrome pools + balances on page load
+        loadAerodromePools();
+        loadAeroBalances();
+
+        // ═══════════════════════════════════════════════════
+        // END AERODROME
+        // ═══════════════════════════════════════════════════
 
         // Load combos on page load
         loadCombos();

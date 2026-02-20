@@ -128,4 +128,17 @@ router.get('/stats', (req, res) => {
     }
 });
 
+// ─── GET /api/sonic-dex/ready ─────────────────────────────────────────────
+// Check if wallet is ready for HFT (balance + gas)
+router.get('/ready', async (req, res) => {
+    try {
+        const SonicDexExecutor = require('../hft/sonic-dex-executor');
+        const exec = new SonicDexExecutor();
+        const status = await exec.checkReady();
+        res.json(status);
+    } catch (err) {
+        res.status(500).json({ error: err.message });
+    }
+});
+
 module.exports = router;

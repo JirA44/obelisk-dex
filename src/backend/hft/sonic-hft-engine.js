@@ -18,19 +18,32 @@
 
 const AutoBatcher = require('../auto-batcher');
 const http = require('http');
+const fs   = require('fs');
+const path = require('path');
+
+// ─── Track Record paths ───────────────────────────────────────────────────────
+const TRACKING_DIR  = path.join(__dirname, '../../../data/tracking');
+const TRADES_FILE   = path.join(TRACKING_DIR, 'sonic_hft_trades.jsonl');
+const SESSIONS_FILE = path.join(TRACKING_DIR, 'sonic_hft_sessions.json');
+
+// Ensure tracking dir exists
+if (!fs.existsSync(TRACKING_DIR)) fs.mkdirSync(TRACKING_DIR, { recursive: true });
 
 // ─── Config ───────────────────────────────────────────────────────────────────
 
 const CFG = {
     // Pairs to trade (Obelisk markets)
-    pairs:         ['BTC/USDC', 'ETH/USDC', 'SOL/USDC', 'ARB/USDC'],
+    pairs:         ['BTC/USDC', 'ETH/USDC', 'SOL/USDC'],  // ARB removed: too volatile for 2s checks (slippage)
 
     // Trade params
     sizeUsd:       5.00,    // $5 per trade
-    slPct:         0.005,   // SL -0.5%
-    tpPct:         0.015,   // TP +1.5%
-    maxHoldMs:     60000,   // Force close after 60s
+    slPct:         0.001,   // SL -0.1%
+    tpPct:         0.005,   // TP +0.5% (5:1 RR, break-even 16.7% — was 0.3%)
+    maxHoldMs:     120000,  // Force close after 120s (was 60s — more time for TP)
     maxPositions:  5,       // max concurrent across all pairs
+
+    // Executor: 'paper' (default) or 'apex'
+    executor:      'paper',
 
     // Signal
     rsiWindow:     14,
@@ -46,7 +59,7 @@ const CFG = {
     priceInterval: 2000,    // fetch all markets every 2s
 
     // Batch / Profit Guard
-    batchSize:     10,
+    batchSize:     5,       // was 10 — batches plus fréquents, moins de skips
     chain:         'SONIC',
 
     // Obelisk API
@@ -59,8 +72,29 @@ class SonicHFTEngine {
     constructor(config = {}) {
         this.cfg = { ...CFG, ...config };
 
+        // Executor: 'paper' | 'apex' | 'obelisk'
+        this._executor = null;
+        if (this.cfg.executor === 'apex') {
+            const ApexHFTBridge = require('./apex-hft-bridge');
+            this._executor = new ApexHFTBridge();
+            console.log('[HFT] Executor: APEX (live orders)');
+        } else if (this.cfg.executor === 'obelisk') {
+            const ObeliskExecutor = require('./obelisk-executor');
+            this._executor = new ObeliskExecutor();
+            console.log('[HFT] Executor: OBELISK (perps → Sonic settlement)');
+        } else if (this.cfg.executor === 'sonic-dex') {
+            const SonicDexExecutor = require('./sonic-dex-executor');
+            this._executor = new SonicDexExecutor();
+            console.log('[HFT] Executor: SONIC-DEX (real on-chain swaps via Odos/SwapX/Beets)');
+        } else {
+            console.log('[HFT] Executor: PAPER (no real orders)');
+        }
+
         // Per-pair price history: { 'BTC/USDC': [{price, ts}, ...] }
         this.priceHistory = {};
+
+        // Previous RSI per pair for crossover detection: { 'BTC/USDC': rsiValue }
+        this.prevRSI = {};
 
         // Cooldown tracker: { 'BTC/USDC_long': lastSignalTs, ... }
         this.cooldowns = {};
@@ -167,12 +201,51 @@ class SonicHFTEngine {
         return ema;
     }
 
+    // ── Drift Detector (ms-level momentum) ────────────────────────────────────
+    // Returns avg drift % over last windowMs milliseconds
+    // Positive = upward momentum, Negative = downward momentum
+
+    _calcDrift(pair, windowMs = 10000) {
+        const hist = this.priceHistory[pair];
+        if (hist.length < 3) return 0;
+
+        const now = Date.now();
+        const cutoff = now - windowMs;
+
+        // Points dans la fenêtre temporelle
+        const window = hist.filter(h => h.ts >= cutoff);
+        if (window.length < 2) return 0;
+
+        const oldest = window[0].price;
+        const newest = window[window.length - 1].price;
+        return (newest - oldest) / oldest; // ratio (ex: -0.01 = -1%)
+    }
+
+    // ── Price Gap Detector ─────────────────────────────────────────────────────
+    // Returns gap % between last 2 ticks — spike = danger, skip trade
+
+    _calcPriceGap(pair) {
+        const hist = this.priceHistory[pair];
+        if (hist.length < 2) return 0;
+        const prev = hist[hist.length - 2].price;
+        const cur  = hist[hist.length - 1].price;
+        return Math.abs((cur - prev) / prev); // toujours positif
+    }
+
     // ── Signal per pair ────────────────────────────────────────────────────────
 
     _getSignal(pair) {
         const hist = this.priceHistory[pair];
         const minLen = Math.max(this.cfg.rsiWindow + 2, this.cfg.emaSlow + 1);
         if (hist.length < minLen) return null;
+
+        // ── Price Gap Filter: skip si spike > 0.3% entre 2 ticks (2s)
+        // Spike = slippage garanti, spread excessif
+        const gap = this._calcPriceGap(pair);
+        if (gap > 0.003) {
+            console.log(`[HFT-DRIFT] ⚡ ${pair} GAP ${(gap*100).toFixed(3)}% > 0.3% — skip tick`);
+            return null;
+        }
 
         const ps  = hist.map(h => h.price);
         const rsi = this._calcRSI(ps, this.cfg.rsiWindow);
@@ -187,21 +260,50 @@ class SonicHFTEngine {
         const emaSlow = this._calcEMA(ps, this.cfg.emaSlow);
         if (emaFast === null || emaSlow === null) return null;
 
-        const now = Date.now();
+        const now     = Date.now();
+        const prevRsi = this.prevRSI[pair] ?? 50; // neutral default
+        this.prevRSI[pair] = rsi;
 
-        // Long: RSI oversold + below VWAP + EMA5 < EMA20 (downtrend about to reverse)
-        if (rsi < this.cfg.rsiOversold && dev < -this.cfg.vwapPct && emaFast < emaSlow) {
+        // Filter degenerate RSI values (all gains / all losses — unreliable)
+        if (rsi >= 99 || rsi <= 1) return null;
+
+        // ── Drift Detector (10s window)
+        // drift < -0.001 (-0.1%/10s) = momentum baissier fort
+        // drift > +0.001 (+0.1%/10s) = momentum haussier fort
+        const drift10s  = this._calcDrift(pair, 10000);
+        const drift1s   = this._calcDrift(pair, 2000); // 1 tick = 2s
+
+        // Long: fresh RSI crossover below oversold + below VWAP + EMA confirms
+        // + drift filter: pas de long si momentum baissier fort
+        const longCross = prevRsi >= this.cfg.rsiOversold && rsi < this.cfg.rsiOversold;
+        if (longCross && dev < -this.cfg.vwapPct && emaFast < emaSlow) {
+            // Drift filter: si momentum baissier sur 10s → skip long (marché continue de baisser)
+            if (drift10s < -0.002) {
+                console.log(`[HFT-DRIFT] ↓ ${pair} skip LONG — drift10s ${(drift10s*100).toFixed(3)}% (bearish momentum)`);
+                return null;
+            }
             const key = `${pair}_long`;
-            if ((this.cooldowns[key] || 0) + this.cfg.cooldownMs > now) return null; // cooldown
+            if ((this.cooldowns[key] || 0) + this.cfg.cooldownMs > now) return null;
             this.cooldowns[key] = now;
-            return { side: 'long',  pair, rsi: +rsi.toFixed(1), dev: +dev.toFixed(5), price: cur };
+            return { side: 'long',  pair, rsi: +rsi.toFixed(1), dev: +dev.toFixed(5), price: cur, drift10s: +drift10s.toFixed(6), drift1s: +drift1s.toFixed(6) };
         }
-        // Short: RSI overbought + above VWAP + EMA5 > EMA20 (uptrend about to reverse)
-        if (rsi > this.cfg.rsiOverbought && dev > this.cfg.vwapPct && emaFast > emaSlow) {
+
+        // Short: fresh RSI crossover above overbought + above VWAP + EMA confirms
+        // + drift boost: si momentum baissier → signal renforcé
+        const shortCross = prevRsi <= this.cfg.rsiOverbought && rsi > this.cfg.rsiOverbought;
+        if (shortCross && dev > this.cfg.vwapPct && emaFast > emaSlow) {
+            // Drift filter: si momentum haussier fort sur 10s → skip short (rebond en cours)
+            if (drift10s > 0.002) {
+                console.log(`[HFT-DRIFT] ↑ ${pair} skip SHORT — drift10s ${(drift10s*100).toFixed(3)}% (bullish momentum)`);
+                return null;
+            }
             const key = `${pair}_short`;
-            if ((this.cooldowns[key] || 0) + this.cfg.cooldownMs > now) return null; // cooldown
+            if ((this.cooldowns[key] || 0) + this.cfg.cooldownMs > now) return null;
             this.cooldowns[key] = now;
-            return { side: 'short', pair, rsi: +rsi.toFixed(1), dev: +dev.toFixed(5), price: cur };
+            // Drift boost: si drift baissier confirmé → log comme signal fort
+            const driftBoost = drift10s < -0.001;
+            if (driftBoost) console.log(`[HFT-DRIFT] ⚡ ${pair} SHORT BOOST — drift10s ${(drift10s*100).toFixed(3)}% confirms signal`);
+            return { side: 'short', pair, rsi: +rsi.toFixed(1), dev: +dev.toFixed(5), price: cur, drift10s: +drift10s.toFixed(6), drift1s: +drift1s.toFixed(6), driftBoost };
         }
         return null;
     }
@@ -228,6 +330,13 @@ class SonicHFTEngine {
 
         this.positions[id] = pos;
         this.stats.tradesOpened++;
+
+        // Fire real order if executor configured
+        if (this._executor) {
+            this._executor.open(signal.pair, signal.side, this.cfg.sizeUsd)
+                .catch(e => console.warn(`[HFT] Executor open error: ${e.message}`));
+        }
+
         return pos;
     }
 
@@ -264,6 +373,14 @@ class SonicHFTEngine {
         if (ps) { ps.trades++; ps.pnl += pnl; if (pnl > 0) ps.wins++; }
 
         try { this.batcher.addTrade(trade); } catch {}
+        this._logTrade(trade);
+
+        // Close real position if executor configured
+        if (this._executor) {
+            this._executor.close(pos.pair)
+                .catch(e => console.warn(`[HFT] Executor close error: ${e.message}`));
+        }
+
         return trade;
     }
 
@@ -285,6 +402,43 @@ class SonicHFTEngine {
                 else if (cur <= pos.tp) this._closePos(pos, cur, 'TP');
             }
         }
+    }
+
+    // ── Track Record ───────────────────────────────────────────────────────────
+
+    _logTrade(trade) {
+        try {
+            fs.appendFileSync(TRADES_FILE, JSON.stringify(trade) + '\n');
+        } catch {}
+    }
+
+    _saveSession() {
+        try {
+            const s = this.getStats();
+            let sessions = [];
+            if (fs.existsSync(SESSIONS_FILE)) {
+                sessions = JSON.parse(fs.readFileSync(SESSIONS_FILE, 'utf8'));
+            }
+            const idx = sessions.findIndex(x => x.startTime === this.stats.startTime);
+            const entry = {
+                startTime:   this.stats.startTime,
+                date:        new Date(this.stats.startTime).toISOString().slice(0, 19).replace('T', ' '),
+                elapsedMin:  +(s.elapsedSec / 60).toFixed(1),
+                trades:      this.stats.tradesClosed,
+                wins:        this.stats.wins,
+                losses:      this.stats.losses,
+                timeouts:    this.stats.timeouts,
+                winRate:     s.winRate,
+                pnl:         s.totalPnl,
+                tradesPerHour: +s.tradesPerHour,
+                batchesExec: this.stats.batchesExecuted,
+                batchesSkip: this.stats.batchesSkipped,
+                byPair:      this.stats.byPair,
+            };
+            if (idx >= 0) sessions[idx] = entry;
+            else sessions.push(entry);
+            fs.writeFileSync(SESSIONS_FILE, JSON.stringify(sessions, null, 2));
+        } catch {}
     }
 
     // ── Batch handler ──────────────────────────────────────────────────────────
