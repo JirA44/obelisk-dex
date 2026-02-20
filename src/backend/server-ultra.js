@@ -445,6 +445,21 @@ const strategiesRouter = require('./routes/strategies');
 app.use('/api/strategies', strategiesRouter);
 console.log('✅ Strategy Generator: 10,000+ paper strategies (PrimeXBT style)');
 
+// Alert System — +1%/-1% price & PnL threshold alerts
+const alertsRouter = require('./routes/alerts');
+app.use('/api/alerts', alertsRouter);
+const { getAlertService } = require('./alerts');
+const alertService = getAlertService(); // starts simulated tick automatically
+console.log('✅ Alert System: +1%/-1% price/PnL alerts (5s tick, WebSocket ready)');
+
+// Flash Loans & Lending Strategies
+const flashLoansRouter = require('./routes/flash-loans');
+app.use('/api/flash-loans', flashLoansRouter);
+const { getFlashLoanEngine } = require('./flash-loan-engine');
+const flashLoanEngine = getFlashLoanEngine(lendingSystem, obeliskAMM);
+flashLoanEngine.startScanner(30000); // scan every 30s
+console.log('✅ Flash Loans: DEX arb + liquidation hunting + lending strategies (fee=0.09%)');
+
 // Global Markets — Stocks, ETFs, Commodities (Korean, US, Japan, EU...)
 const globalMarketsRouter = require('./routes/global-markets');
 app.use('/api/markets/global', globalMarketsRouter);
