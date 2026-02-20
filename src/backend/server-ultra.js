@@ -440,6 +440,11 @@ initCopyTradingRoutes();
 app.use('/api/copy-trading', copyTradingRouter);
 console.log('✅ Copy Trading: 20 strategy managers, leaderboard, copy system');
 
+// Strategy Generator — 10,000+ paper trading strategies
+const strategiesRouter = require('./routes/strategies');
+app.use('/api/strategies', strategiesRouter);
+console.log('✅ Strategy Generator: 10,000+ paper strategies (PrimeXBT style)');
+
 // Global Markets — Stocks, ETFs, Commodities (Korean, US, Japan, EU...)
 const globalMarketsRouter = require('./routes/global-markets');
 app.use('/api/markets/global', globalMarketsRouter);

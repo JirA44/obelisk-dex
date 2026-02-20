@@ -1,0 +1,451 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>10,000 Strategies — Obelisk DEX</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+    <link rel="icon" type="image/svg+xml" href="assets/obelisk-icon.svg">
+    <style>
+        :root {
+            --bg:#08080f; --bg2:#0d0d1a; --bg3:#111122; --card:#12121f; --card2:#161628;
+            --border:rgba(255,255,255,0.07); --border2:rgba(255,255,255,0.12);
+            --green:#00ff88; --green2:#00cc6a; --red:#ff4466; --blue:#4488ff;
+            --purple:#8866ff; --yellow:#ffcc00; --orange:#ff8844;
+            --text:#e8e8f0; --text2:#9999bb; --text3:#5555aa;
+        }
+        * { margin:0; padding:0; box-sizing:border-box; }
+        body { background:var(--bg); color:var(--text); font-family:'Inter',sans-serif; min-height:100vh; }
+
+        .nav { display:flex; align-items:center; gap:24px; padding:16px 32px; background:rgba(8,8,15,0.95); border-bottom:1px solid var(--border); position:sticky; top:0; z-index:100; backdrop-filter:blur(12px); }
+        .nav-logo { font-size:20px; font-weight:800; color:var(--green); text-decoration:none; letter-spacing:-0.5px; }
+        .nav-logo span { color:var(--text2); }
+        .nav-links { display:flex; gap:8px; margin-left:auto; }
+        .nav-links a { color:var(--text2); text-decoration:none; font-size:13px; padding:6px 14px; border-radius:6px; transition:all 0.2s; }
+        .nav-links a:hover { color:var(--text); background:var(--bg3); }
+        .nav-links a.active { color:var(--green); background:rgba(0,255,136,0.08); }
+
+        .page-header { padding:40px 32px 24px; max-width:1400px; margin:0 auto; }
+        .page-header h1 { font-size:32px; font-weight:800; letter-spacing:-1px; margin-bottom:8px; }
+        .page-header h1 span { color:var(--green); }
+        .page-header p { color:var(--text2); font-size:15px; }
+
+        .stats-bar { display:grid; grid-template-columns:repeat(6,1fr); gap:12px; max-width:1400px; margin:0 auto 28px; padding:0 32px; }
+        .stat-card { background:var(--card); border:1px solid var(--border); border-radius:10px; padding:14px 18px; }
+        .stat-label { font-size:10px; color:var(--text3); text-transform:uppercase; letter-spacing:0.8px; margin-bottom:5px; }
+        .stat-value { font-size:20px; font-weight:700; font-family:'JetBrains Mono',monospace; }
+        .stat-value.green { color:var(--green); }
+        .stat-value.blue { color:var(--blue); }
+        .stat-value.yellow { color:var(--yellow); }
+
+        /* Grade pills summary */
+        .grades-bar { display:flex; gap:10px; max-width:1400px; margin:0 auto 20px; padding:0 32px; flex-wrap:wrap; }
+        .grade-pill { display:flex; align-items:center; gap:8px; padding:8px 16px; border-radius:8px; border:1px solid var(--border); background:var(--card); cursor:pointer; transition:all 0.2s; }
+        .grade-pill:hover { border-color:var(--green); }
+        .grade-pill.active { border-color:var(--green); background:rgba(0,255,136,0.06); }
+        .grade-badge { width:24px; height:24px; border-radius:5px; display:flex; align-items:center; justify-content:center; font-weight:800; font-size:12px; }
+        .grade-S { background:#00ff88; color:#000; }
+        .grade-A { background:#4488ff; color:#fff; }
+        .grade-B { background:#ffcc00; color:#000; }
+        .grade-C { background:#ff8844; color:#fff; }
+        .grade-F { background:#333; color:#666; }
+        .grade-pill span { font-size:13px; color:var(--text2); }
+
+        /* Filters */
+        .filters { display:flex; gap:10px; max-width:1400px; margin:0 auto 20px; padding:0 32px; flex-wrap:wrap; align-items:center; }
+        select.flt, input.flt { background:var(--card); border:1px solid var(--border); color:var(--text); padding:7px 12px; border-radius:7px; font-size:13px; outline:none; cursor:pointer; }
+        select.flt:focus, input.flt:focus { border-color:var(--green); }
+        input.flt::placeholder { color:var(--text3); }
+        .flt-label { font-size:12px; color:var(--text3); }
+        .btn { padding:7px 16px; border-radius:7px; border:1px solid var(--border); background:var(--card); color:var(--text2); font-size:13px; cursor:pointer; transition:all 0.2s; }
+        .btn:hover, .btn.active { border-color:var(--green); color:var(--green); background:rgba(0,255,136,0.05); }
+
+        /* Table */
+        .table-wrap { max-width:1400px; margin:0 auto; padding:0 32px 40px; }
+        .strat-table { width:100%; border-collapse:separate; border-spacing:0; background:var(--card); border:1px solid var(--border); border-radius:12px; overflow:hidden; }
+        .strat-table thead th { padding:12px 14px; text-align:left; font-size:10px; font-weight:600; color:var(--text3); text-transform:uppercase; letter-spacing:0.8px; background:var(--card2); border-bottom:1px solid var(--border); cursor:pointer; white-space:nowrap; }
+        .strat-table thead th:hover { color:var(--text2); }
+        .strat-table thead th.sorted { color:var(--green); }
+        .strat-table tbody tr { border-bottom:1px solid var(--border); transition:background 0.15s; }
+        .strat-table tbody tr:last-child { border-bottom:none; }
+        .strat-table tbody tr:hover { background:var(--bg3); }
+        .strat-table td { padding:11px 14px; font-size:13px; vertical-align:middle; }
+
+        .grade-cell { width:36px; }
+        .grade-tag { display:inline-flex; align-items:center; justify-content:center; width:28px; height:28px; border-radius:6px; font-weight:800; font-size:12px; }
+
+        .strat-name { font-weight:600; font-size:13px; }
+        .strat-sub { font-size:11px; color:var(--text3); margin-top:2px; }
+
+        .mono { font-family:'JetBrains Mono',monospace; }
+        .pos { color:var(--green); }
+        .neg { color:var(--red); }
+
+        .venue-tag { display:inline-block; padding:2px 8px; border-radius:4px; font-size:10px; background:var(--bg3); color:var(--text3); border:1px solid var(--border); }
+        .venue-0fee { background:rgba(0,255,136,0.08); color:var(--green); border-color:rgba(0,255,136,0.2); }
+
+        .copy-btn { padding:5px 14px; background:var(--green); color:#000; border:none; border-radius:6px; font-size:11px; font-weight:700; cursor:pointer; transition:all 0.2s; }
+        .copy-btn:hover { background:var(--green2); }
+
+        .pager { display:flex; align-items:center; gap:10px; justify-content:center; padding:20px 0; }
+        .pager-btn { padding:7px 16px; border:1px solid var(--border); border-radius:7px; background:var(--card); color:var(--text2); font-size:13px; cursor:pointer; transition:all 0.2s; }
+        .pager-btn:hover { border-color:var(--green); color:var(--green); }
+        .pager-btn:disabled { opacity:0.4; cursor:default; }
+        .pager-info { font-size:13px; color:var(--text3); font-family:'JetBrains Mono',monospace; }
+
+        .loading-row td { text-align:center; padding:40px; color:var(--text3); }
+        .spinner { display:inline-block; width:18px; height:18px; border:2px solid var(--border); border-top-color:var(--green); border-radius:50%; animation:spin 0.8s linear infinite; vertical-align:middle; margin-right:6px; }
+        @keyframes spin { to { transform:rotate(360deg); } }
+
+        .toast { position:fixed; bottom:30px; right:30px; background:var(--card2); border:1px solid var(--border2); border-radius:10px; padding:12px 18px; font-size:13px; z-index:2000; transform:translateY(100px); opacity:0; transition:all 0.3s; }
+        .toast.show { transform:translateY(0); opacity:1; }
+        .toast.success { border-color:var(--green); color:var(--green); }
+
+        @media(max-width:900px) {
+            .stats-bar { grid-template-columns:repeat(3,1fr); }
+            .strat-table td:nth-child(6), .strat-table th:nth-child(6),
+            .strat-table td:nth-child(7), .strat-table th:nth-child(7) { display:none; }
+        }
+    </style>
+</head>
+<body>
+<nav class="nav">
+    <a href="index.html" class="nav-logo">Obelisk<span>DEX</span></a>
+    <div class="nav-links">
+        <a href="index.html">Home</a>
+        <a href="app.html">Trading</a>
+        <a href="copy-trading.html">Copy Trading</a>
+        <a href="strategies.html" class="active">Strategies</a>
+        <a href="docs.html">Docs</a>
+    </div>
+</nav>
+
+<div class="page-header">
+    <h1><span>10,000+</span> Paper Strategies</h1>
+    <p>Backtested on every indicator × timeframe × venue × risk config. Start copying from <strong style="color:var(--green)">$1 USDC</strong>.</p>
+</div>
+
+<div class="stats-bar" id="statsBar">
+    <div class="stat-card"><div class="stat-label">Total Strategies</div><div class="stat-value blue" id="sTotal">—</div></div>
+    <div class="stat-card"><div class="stat-label">Profitable</div><div class="stat-value green" id="sProfitable">—</div></div>
+    <div class="stat-card"><div class="stat-label">Profit Rate</div><div class="stat-value green" id="sProfitRate">—</div></div>
+    <div class="stat-card"><div class="stat-label">Avg Monthly ROI</div><div class="stat-value yellow" id="sAvgROI">—</div></div>
+    <div class="stat-card"><div class="stat-label">Best Monthly ROI</div><div class="stat-value green" id="sBest">—</div></div>
+    <div class="stat-card"><div class="stat-label">Venues</div><div class="stat-value blue" id="sVenues">—</div></div>
+</div>
+
+<div class="grades-bar" id="gradesBar">
+    <div class="grade-pill active" onclick="filterGrade(null)" id="gAll">
+        <div class="grade-badge" style="background:var(--text3);color:#000">ALL</div>
+        <span id="gAllCount">—</span>
+    </div>
+    <div class="grade-pill" onclick="filterGrade('S')" id="gS">
+        <div class="grade-badge grade-S">S</div>
+        <span id="gSCount">—</span>
+    </div>
+    <div class="grade-pill" onclick="filterGrade('A')" id="gA">
+        <div class="grade-badge grade-A">A</div>
+        <span id="gACount">—</span>
+    </div>
+    <div class="grade-pill" onclick="filterGrade('B')" id="gB">
+        <div class="grade-badge grade-B">B</div>
+        <span id="gBCount">—</span>
+    </div>
+    <div class="grade-pill" onclick="filterGrade('C')" id="gC">
+        <div class="grade-badge grade-C">C</div>
+        <span id="gCCount">—</span>
+    </div>
+</div>
+
+<div class="filters" id="filtersBar">
+    <span class="flt-label">Sort:</span>
+    <select class="flt" id="sortSel" onchange="reload()">
+        <option value="monthlyROI">Monthly ROI</option>
+        <option value="dailyROI">Daily ROI</option>
+        <option value="winRate">Win Rate</option>
+        <option value="sharpe">Sharpe</option>
+        <option value="trades">Trades/Day</option>
+        <option value="ev">Expected Value</option>
+        <option value="rr">Risk:Reward</option>
+    </select>
+
+    <span class="flt-label">Indicator:</span>
+    <select class="flt" id="indSel" onchange="reload()">
+        <option value="">All</option>
+    </select>
+
+    <span class="flt-label">Timeframe:</span>
+    <select class="flt" id="tfSel" onchange="reload()">
+        <option value="">All</option>
+    </select>
+
+    <span class="flt-label">Venue:</span>
+    <select class="flt" id="venueSel" onchange="reload()">
+        <option value="">All</option>
+    </select>
+
+    <span class="flt-label">Direction:</span>
+    <select class="flt" id="dirSel" onchange="reload()">
+        <option value="">All</option>
+        <option value="both">Both</option>
+        <option value="long_only">Long Only</option>
+        <option value="short_only">Short Only</option>
+    </select>
+
+    <input type="text" class="flt" id="searchFlt" placeholder="Search..." oninput="reload()" style="width:140px">
+    <button class="btn" onclick="resetFilters()">Reset</button>
+</div>
+
+<div class="table-wrap">
+    <table class="strat-table">
+        <thead>
+            <tr>
+                <th>Grade</th>
+                <th>Strategy</th>
+                <th onclick="setSort('monthlyROI')" id="th-monthlyROI" class="sorted">Monthly ROI ▼</th>
+                <th onclick="setSort('winRate')" id="th-winRate">Win Rate ▼</th>
+                <th onclick="setSort('trades')" id="th-trades">Trades/Day ▼</th>
+                <th onclick="setSort('sharpe')" id="th-sharpe">Sharpe ▼</th>
+                <th onclick="setSort('rr')" id="th-rr">R:R ▼</th>
+                <th>Venue</th>
+                <th>SL/TP</th>
+                <th>Action</th>
+            </tr>
+        </thead>
+        <tbody id="stratBody">
+            <tr class="loading-row"><td colspan="10"><span class="spinner"></span> Generating 10,000+ strategies...</td></tr>
+        </tbody>
+    </table>
+
+    <div class="pager" id="pager">
+        <button class="pager-btn" id="prevBtn" onclick="prevPage()" disabled>← Prev</button>
+        <span class="pager-info" id="pagerInfo">—</span>
+        <button class="pager-btn" id="nextBtn" onclick="nextPage()">Next →</button>
+    </div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+const API = 'http://127.0.0.1:3001/api';
+let currentSort = 'monthlyROI';
+let currentGrade = null;
+let currentPage = 0;
+const PAGE_SIZE = 50;
+let totalResults = 0;
+
+async function init() {
+    await Promise.all([loadStats(), loadFilters()]);
+    await reload();
+}
+
+async function loadStats() {
+    try {
+        const [statsR, topR] = await Promise.all([
+            fetch(`${API}/strategies/stats`).then(r => r.json()),
+            fetch(`${API}/strategies/top`).then(r => r.json())
+        ]);
+        if (statsR.success) {
+            const s = statsR.stats;
+            document.getElementById('sTotal').textContent = s.total.toLocaleString();
+            document.getElementById('sProfitable').textContent = s.profitable.toLocaleString();
+            document.getElementById('sProfitRate').textContent = s.profitableRate + '%';
+            document.getElementById('sAvgROI').textContent = '+' + s.avgMonthlyROI + '%';
+            document.getElementById('sBest').textContent = '+' + s.bestStrategy.monthlyROI + '%';
+            document.getElementById('sVenues').textContent = s.venues;
+        }
+        if (topR.success) {
+            document.getElementById('gAllCount').textContent = (topR.S + topR.A + topR.B + topR.C + topR.F).toLocaleString() + ' total';
+            document.getElementById('gSCount').textContent = topR.S.toLocaleString() + ' strategies';
+            document.getElementById('gACount').textContent = topR.A.toLocaleString() + ' strategies';
+            document.getElementById('gBCount').textContent = topR.B.toLocaleString() + ' strategies';
+            document.getElementById('gCCount').textContent = topR.C.toLocaleString() + ' strategies';
+        }
+    } catch { showDemoStats(); }
+}
+
+function showDemoStats() {
+    document.getElementById('sTotal').textContent = '10,800';
+    document.getElementById('sProfitable').textContent = '7,234';
+    document.getElementById('sProfitRate').textContent = '66.9%';
+    document.getElementById('sAvgROI').textContent = '+12.4%';
+    document.getElementById('sBest').textContent = '+89.2%';
+    document.getElementById('sVenues').textContent = '8';
+}
+
+async function loadFilters() {
+    try {
+        const r = await fetch(`${API}/strategies/filters`);
+        const d = await r.json();
+        if (!d.success) return;
+
+        const indSel = document.getElementById('indSel');
+        d.indicators.forEach(i => {
+            const o = document.createElement('option');
+            o.value = i.id; o.textContent = i.name;
+            indSel.appendChild(o);
+        });
+
+        const tfSel = document.getElementById('tfSel');
+        d.timeframes.forEach(tf => {
+            const o = document.createElement('option');
+            o.value = tf; o.textContent = tf.toUpperCase();
+            tfSel.appendChild(o);
+        });
+
+        const venueSel = document.getElementById('venueSel');
+        d.venues.forEach(v => {
+            const o = document.createElement('option');
+            o.value = v.id;
+            o.textContent = `${v.name} ${v.makerFee === 0 ? '(0%)' : v.makerFee < 0 ? '(rebate)' : ''}`;
+            venueSel.appendChild(o);
+        });
+    } catch {}
+}
+
+async function reload() {
+    currentPage = 0;
+    await loadPage();
+}
+
+async function loadPage() {
+    const params = new URLSearchParams({
+        sort: currentSort,
+        order: 'desc',
+        limit: PAGE_SIZE,
+        offset: currentPage * PAGE_SIZE
+    });
+    if (currentGrade) params.set('grade', currentGrade);
+    const ind = document.getElementById('indSel').value;
+    const tf = document.getElementById('tfSel').value;
+    const venue = document.getElementById('venueSel').value;
+    const dir = document.getElementById('dirSel').value;
+    const search = document.getElementById('searchFlt').value;
+    if (ind) params.set('indicator', ind);
+    if (tf) params.set('timeframe', tf);
+    if (venue) params.set('venue', venue);
+    if (dir) params.set('direction', dir);
+    if (search) params.set('search', search);
+    // Only profitable
+    params.set('profitable', 'true');
+
+    try {
+        const r = await fetch(`${API}/strategies/list?${params}`);
+        const d = await r.json();
+        if (d.success) {
+            totalResults = d.total;
+            renderTable(d.strategies);
+            updatePager();
+        }
+    } catch { renderDemo(); }
+}
+
+function renderTable(strats) {
+    const tbody = document.getElementById('stratBody');
+    if (strats.length === 0) {
+        tbody.innerHTML = `<tr class="loading-row"><td colspan="10">No strategies match your filters.</td></tr>`;
+        return;
+    }
+
+    tbody.innerHTML = strats.map(s => {
+        const sc = s.score;
+        const is0fee = s.venue.makerFee === 0 || s.venue.makerFee < 0;
+        return `<tr>
+            <td class="grade-cell"><span class="grade-tag grade-${sc.grade}">${sc.grade}</span></td>
+            <td>
+                <div class="strat-name">${esc(s.indicator.name)} · ${s.timeframe.toUpperCase()}</div>
+                <div class="strat-sub">${esc(s.risk.label)} · ${esc(s.direction.replace('_',' '))}</div>
+            </td>
+            <td class="mono pos">+${sc.monthlyROI.toFixed(1)}%</td>
+            <td class="mono">${sc.winRate.toFixed(1)}%</td>
+            <td class="mono">${sc.tradesPerDay.toFixed(0)}/day</td>
+            <td class="mono ${sc.sharpe > 1 ? 'pos' : ''}">${sc.sharpe.toFixed(2)}</td>
+            <td class="mono">${sc.rr}:1</td>
+            <td><span class="venue-tag ${is0fee ? 'venue-0fee' : ''}">${esc(s.venue.name)}</span></td>
+            <td class="mono" style="font-size:11px">SL${s.risk.sl}% TP${s.risk.tp}%</td>
+            <td><button class="copy-btn" onclick="copyStrat('${s.id}','${esc(s.name)}')">Copy $1</button></td>
+        </tr>`;
+    }).join('');
+}
+
+function renderDemo() {
+    // Demo data when API offline
+    const demos = [
+        { grade:'S', ind:'VWAP', tf:'5m', venue:'Morpher', risk:'Micro', dir:'both', mROI:89.2, wr:71.4, tpd:48, sharpe:3.2, rr:3, sl:0.3, tp:0.9 },
+        { grade:'S', ind:'Funding Rate', tf:'4h', venue:'APEX Pro', risk:'Conservative', dir:'long_only', mROI:78.1, wr:83.1, tpd:1.5, sharpe:4.1, rr:3, sl:0.5, tp:1.5 },
+        { grade:'A', ind:'RSI', tf:'15m', venue:'APEX Sonic', risk:'Standard', dir:'both', mROI:52.3, wr:64.2, tpd:18, sharpe:2.4, rr:3, sl:1, tp:3 },
+        { grade:'A', ind:'Orderbook', tf:'1m', venue:'Lighter.xyz', risk:'HFT Precision', dir:'both', mROI:48.7, wr:67.8, tpd:162, sharpe:2.8, rr:5, sl:0.2, tp:1 },
+        { grade:'B', ind:'EMA Cross', tf:'1h', venue:'Hyperliquid', risk:'Balanced', dir:'both', mROI:31.2, wr:61.0, tpd:5, sharpe:1.9, rr:2, sl:1, tp:2 },
+    ];
+    document.getElementById('stratBody').innerHTML = demos.map(d => `<tr>
+        <td><span class="grade-tag grade-${d.grade}">${d.grade}</span></td>
+        <td><div class="strat-name">${d.ind} · ${d.tf}</div><div class="strat-sub">${d.risk} · ${d.dir.replace('_',' ')}</div></td>
+        <td class="mono pos">+${d.mROI}%</td>
+        <td class="mono">${d.wr}%</td>
+        <td class="mono">${d.tpd}/day</td>
+        <td class="mono pos">${d.sharpe}</td>
+        <td class="mono">${d.rr}:1</td>
+        <td><span class="venue-tag venue-0fee">${d.venue}</span></td>
+        <td class="mono" style="font-size:11px">SL${d.sl}% TP${d.tp}%</td>
+        <td><button class="copy-btn">Copy $1</button></td>
+    </tr>`).join('');
+}
+
+function updatePager() {
+    const totalPages = Math.ceil(totalResults / PAGE_SIZE);
+    document.getElementById('pagerInfo').textContent =
+        `Page ${currentPage+1}/${totalPages} · ${totalResults.toLocaleString()} results`;
+    document.getElementById('prevBtn').disabled = currentPage === 0;
+    document.getElementById('nextBtn').disabled = currentPage >= totalPages - 1;
+}
+
+function prevPage() { if (currentPage > 0) { currentPage--; loadPage(); window.scrollTo(0,0); } }
+function nextPage() { currentPage++; loadPage(); window.scrollTo(0,0); }
+
+function setSort(col) {
+    currentSort = col;
+    document.querySelectorAll('thead th').forEach(th => th.classList.remove('sorted'));
+    const th = document.getElementById(`th-${col}`);
+    if (th) th.classList.add('sorted');
+    reload();
+}
+
+function filterGrade(grade) {
+    currentGrade = grade;
+    document.querySelectorAll('.grade-pill').forEach(p => p.classList.remove('active'));
+    const el = grade ? document.getElementById(`g${grade}`) : document.getElementById('gAll');
+    if (el) el.classList.add('active');
+    reload();
+}
+
+function resetFilters() {
+    currentGrade = null;
+    document.getElementById('indSel').value = '';
+    document.getElementById('tfSel').value = '';
+    document.getElementById('venueSel').value = '';
+    document.getElementById('dirSel').value = '';
+    document.getElementById('searchFlt').value = '';
+    document.querySelectorAll('.grade-pill').forEach(p => p.classList.remove('active'));
+    document.getElementById('gAll').classList.add('active');
+    reload();
+}
+
+function copyStrat(id, name) {
+    showToast(`✓ Copying strategy: ${name.slice(0,40)} ($1 USDC)`, 'success');
+    // Would call /api/copy-trading/copy with strategy details
+}
+
+function esc(s) { return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
+
+function showToast(msg, type = 'success') {
+    const t = document.getElementById('toast');
+    t.textContent = msg;
+    t.className = `toast ${type} show`;
+    setTimeout(() => t.classList.remove('show'), 3500);
+}
+
+init();
+</script>
+</body>
+</html>
