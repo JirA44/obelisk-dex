@@ -77,7 +77,15 @@ class ObeliskPerps {
             'BTC', 'ETH', 'SOL', 'ARB', 'LINK', 'DOGE', 'XRP', 'ADA', 'AVAX', 'OP',
             'AAVE', 'CRV', 'UNI', 'MKR', 'LDO', 'MATIC', 'SUI', 'APT', 'NEAR', 'FTM',
             'TIA', 'INJ', 'SEI', 'PENDLE', 'ENA', 'WIF', 'PEPE', 'BONK', 'JUP',
-            'RENDER', 'STX', 'IMX', 'GALA', 'AXS', 'SAND', 'ENJ'
+            'RENDER', 'STX', 'IMX', 'GALA', 'AXS', 'SAND', 'ENJ',
+            // V3.3: RWA — Gold-backed (DeFiLlama top RWA, 2026)
+            'PAXG',  // Paxos Gold — 1 PAXG = 1 troy oz gold ($1.76B market cap)
+            'XAUT',  // Tether Gold — 1 XAUT = 1 troy oz gold ($1.93B market cap)
+            // V3.4: Stablecoins avec price action (depeg trading + Ethena yield)
+            'USDE',  // Ethena synthetic dollar — $3B+ volume/jour Binance, fluctuations réelles
+            'FDUSD', // First Digital USD (Binance stablecoin) — perps actifs
+            'FRAX',  // Frax Finance — algo-stable, price action sur depeg events
+            'ENA',   // Ethena governance token — corrélé à USDE
         ];
 
         // V3.2: Global synthetic assets (stocks, ETFs, indices, commodities)
