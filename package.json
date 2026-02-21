@@ -1,7 +1,7 @@
 {
   "name": "obelisk-backend",
-  "version": "2.0.0",
-  "description": "OBELISK DEX Backend - Ultra-Fast Trading API with Institutional Support",
+  "version": "2.1.0",
+  "description": "OBELISK DEX Backend V2.1 - Backed Assets (OBK-USD/BTC/GOLD/EUR/SPX/ETH) + CDP Collateral + Revenue Tracker",
   "main": "server-ultra.js",
   "scripts": {
     "start": "node server-ultra.js",

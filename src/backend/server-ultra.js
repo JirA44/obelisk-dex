@@ -60,6 +60,7 @@ const liquidityRouter = require('./routes/liquidity');
 const marketIntelRouter = require('./routes/market_intel');
 const derivativesRouter = require('./routes/derivatives');  // V3.3: Structured derivatives
 const totRouter         = require('./tot_router');           // V3.4: ToT Venue Router
+const { router: backedAssetsRouter } = require('./routes/backed-assets'); // V2.1: Backed Assets + CDP + Revenue
 const { getFeatureStatus, isDemoMode, canDeposit } = require('./config/features');
 
 const cookieParser = require('cookie-parser');
@@ -95,6 +96,30 @@ const internalEngine = new InternalMatchingEngine();
 // V2.5: Import Obelisk AMM (autonomous trading like Uniswap)
 const { ObeliskAMM } = require('./obelisk-amm');
 const obeliskAMM = new ObeliskAMM();
+
+// V3.5: Import Obelisk StableSwap (Curve-style, 0.04% fee, A=100)
+const { ObeliskStableSwap } = require('./obelisk-stableswap');
+const obeliskStableSwap = new ObeliskStableSwap();
+
+// V3.6: StablecoinOrderFlow — depeg detection + auto orders ($0.01 ticks)
+const { StablecoinOrderFlow } = require('./hft/stablecoin-orderflow');
+const stableOrderFlow = new StablecoinOrderFlow(obeliskStableSwap);
+
+// V3.6: OrderFlowModule — aggTrade tick indicators for stable pairs
+let stableOrderFlowModule = null;
+try {
+    const path = require('path');
+    const os   = require('os');
+    const { OrderFlowModule } = require(path.join(os.homedir(), 'mixbot', 'order_flow_module.js'));
+    stableOrderFlowModule = new OrderFlowModule({
+        enabled: true,
+        pairs: ['USDE', 'FDUSD', 'PAXG', 'USDC', 'USDT', 'DAI'],
+        // FRAX excluded: fraxusdt Binance pair stale (~$0.66, suspended)
+    });
+    console.log('[OBELISK] OrderFlowModule (stable) loaded ✓');
+} catch(e) {
+    console.warn('[OBELISK] OrderFlowModule not available:', e.message);
+}
 
 // V2.6: Import Obelisk Perps (internal perpetuals engine)
 const { ObeliskPerps } = require('./obelisk-perps');
@@ -139,10 +164,18 @@ const settlementBatcher = new AutoBatcher(blockchainSettlement, {
     enabled: true           // Auto-settlement ON
 });
 
+// Treasury Accumulator — accumule fees vers Arb/Sonic/Cosmos/USDC/USDT
+const TreasuryAccumulator = require('./treasury-accumulator');
+const treasury = new TreasuryAccumulator({ wallet: process.env.WALLET_ADDRESS || '0x377706801308ac4c3Fe86EEBB295FeC6E1279140' });
+
 // Connect settlement to Obelisk Perps
 obeliskPerps.settlementEngine = blockchainSettlement;
 obeliskPerps.batcher = settlementBatcher;
 console.log('✅ Auto-Batcher initialized - Settlement enabled (Sonic Multicall3 priority)');
+
+// Init Treasury (async, non-bloquant)
+treasury.attachEngines(obeliskPerps, null);
+treasury.initialize().catch(err => console.warn('[Treasury] Init warning:', err.message));
 
 // ===========================================
 // MULTI-SOURCE PRICE AGGREGATION
@@ -210,7 +243,20 @@ const BINANCE_SYMBOL_MAP = {
     'FET/USDC': 'fetusdt',
     'HBAR/USDC': 'hbarusdt',
     'SAND/USDC': 'sandusdt',
-    'MANA/USDC': 'manausdt'
+    'MANA/USDC': 'manausdt',
+    // Stablecoin depeg feed (USDT as reference — liquid pairs only)
+    'USDC/USDT': 'usdcusdt',  // liquid ✅
+    'DAI/USDT':  'daiusdt',   // liquid ✅
+    // FRAX removed: fraxusdt stale/suspended on Binance (~$0.66)
+    // USDE removed: usdeusd not standard pair
+};
+
+// Stablecoin Binance symbols → token name for orderflow feed
+const STABLECOIN_BINANCE_MAP = {
+    'usdcusdt': 'USDC',
+    'daiusdt':  'DAI',
+    'fraxusdt': 'FRAX',
+    'usdeusd':  'USDE',
 };
 
 // Reverse mapping: Binance symbol -> Obelisk pairs
@@ -411,6 +457,11 @@ app.use('/api/academy', academyRoutes);
 // V2.1: Global Liquidity Indicators
 app.use('/api/liquidity', liquidityRouter);
 app.use('/api/derivatives', derivativesRouter);  // V3.3: Structured derivatives 1:1
+const poolRouter = require('./routes/pool');
+app.use('/api/pool', poolRouter);                // Pool seeding: PAPER → REAL_BACKED → LIVE
+// V2.1: Backed Assets + CDP Collateral + Revenue/Expense Tracker
+app.use('/api/assets',   backedAssetsRouter);   // /api/assets/backed/* + /api/assets/cdp/*
+app.use('/api/revenue',  backedAssetsRouter);   // /api/revenue/dashboard + /api/revenue/report/*
 
 // V3.4: ToT Venue Router — route optimal par trade
 app.post('/api/tot/route', (req, res) => {
@@ -440,10 +491,21 @@ initBlockchainRoutes({
 });
 app.use('/api/blockchain', blockchainRouter);
 
+// Treasury Accumulator — balances Arb/Sonic/Cosmos/USDC/USDT
+const { router: treasuryRouter, initTreasuryRoutes } = require('./routes/treasury');
+initTreasuryRoutes(treasury);
+app.use('/api/treasury', treasuryRouter);
+console.log('✅ Treasury Accumulator: Arb ETH → Sonic S → ATOM → USDC → USDT');
+
 // Sonic DEX Router (ShadowDEX, SwapX, Beets, Equalizer, Metropolis)
 const sonicDexRouter = require('./routes/sonic-dex');
 app.use('/api/sonic-dex', sonicDexRouter);
 console.log('✅ Sonic DEX Router: ShadowDEX CL/V2, SwapX, Beets, Equalizer, Metropolis');
+
+// Superbridge 2-en-1 — Bridge + Swap en 1 appel (Arbitrum→Sonic, Cosmos ATOM 0% fees)
+const superbridgeRouter = require('./routes/superbridge');
+app.use('/api/superbridge', superbridgeRouter);
+console.log('✅ Superbridge 2-en-1: Bridge+Swap | Arbitrum/Sonic/Cosmos/ATOM | fees:0 Cosmos');
 
 // Aerodrome Finance 1-Click Invest (Base chain)
 const aerodromeInvestRouter = require('./routes/aerodrome-invest');
@@ -485,6 +547,11 @@ console.log('✅ Global Markets: KR/US/JP/EU stocks + ETFs + Commodities (Yahoo 
 const venueAssetsRouter = require('./routes/venue-assets');
 app.use('/api/venues', venueAssetsRouter);
 console.log('✅ Venue Assets: OBELISK_PERPS/APEX/DRIFT/ASTERDEX/AERODROME catalog');
+
+// DEX Lending Pool — rendement journalier, prêts aux traders
+const dexLendingRouter = require('./routes/dex-lending');
+app.use('/api/dex-lending', dexLendingRouter);
+console.log('✅ DEX Lending: pool $100K USDC | rendement journalier | GET /api/dex-lending/report');
 
 // Sonic HFT Engine stats proxy (sonic-hft PM2 process on port 3002)
 app.get('/api/hft/status', (req, res) => {
@@ -733,6 +800,11 @@ function handleBinanceTicker(ticker) {
             orderBooks[pair] = generateOrderBook(price, pair);
         }
     });
+
+    // V3.6: Pipe stablecoin ticks to StablecoinOrderFlow ($0.01 resolution)
+    if (STABLECOIN_BINANCE_MAP[symbol] && stableOrderFlow) {
+        stableOrderFlow.feedPrice(STABLECOIN_BINANCE_MAP[symbol], price);
+    }
 
     priceUpdates++;
 }
@@ -2350,6 +2422,209 @@ app.get('/api/amm/stats', (req, res) => {
         },
         message: 'Obelisk AMM - Paper trading (liquidité SIMULÉE)'
     });
+});
+
+// ===========================================
+// V3.5: STABLESWAP API — Curve-style (0.04% fee, A=100)
+// ===========================================
+
+// GET /api/stableswap/pools — list all stable pools
+app.get('/api/stableswap/pools', (req, res) => {
+    try {
+        const pools = obeliskStableSwap.getAllPools();
+        res.json({ success: true, pools, stats: obeliskStableSwap.getStats() });
+    } catch (e) {
+        res.status(500).json({ error: e.message });
+    }
+});
+
+// GET /api/stableswap/quote?from=USDT&to=USDC&amount=1000
+// Returns best rate: Obelisk StableSwap vs Curve (fallback)
+app.get('/api/stableswap/quote', async (req, res) => {
+    try {
+        const { from, to, amount } = req.query;
+        if (!from || !to || !amount) {
+            return res.status(400).json({ error: 'from, to, amount query params required' });
+        }
+        const amountIn = parseFloat(amount);
+        if (isNaN(amountIn) || amountIn <= 0) {
+            return res.status(400).json({ error: 'amount must be a positive number' });
+        }
+
+        const obeliskQuote = obeliskStableSwap.quote(from.toUpperCase(), to.toUpperCase(), amountIn);
+        const bestQuote = await dexAggregator.getBestStableQuote(
+            from.toUpperCase(), to.toUpperCase(), amountIn, obeliskQuote
+        );
+
+        res.json({ success: true, quote: bestQuote });
+    } catch (e) {
+        res.status(500).json({ error: e.message });
+    }
+});
+
+// POST /api/stableswap/swap — execute a stable swap on Obelisk StableSwap
+app.post('/api/stableswap/swap', async (req, res) => {
+    try {
+        const { tokenIn, tokenOut, amountIn, userId } = req.body;
+        if (!tokenIn || !tokenOut || !amountIn) {
+            return res.status(400).json({ error: 'tokenIn, tokenOut, amountIn required' });
+        }
+
+        const result = await obeliskStableSwap.stableSwap(
+            tokenIn.toUpperCase(),
+            tokenOut.toUpperCase(),
+            parseFloat(amountIn),
+            userId || 'anonymous'
+        );
+
+        res.json(result);
+    } catch (e) {
+        res.status(500).json({ error: e.message });
+    }
+});
+
+// ===========================================
+// V3.6: STABLECOIN ORDER FLOW API
+// ===========================================
+
+// GET /api/orderflow/status — engine status + prices + depeg signals + tick indicators
+app.get('/api/orderflow/status', (req, res) => {
+    const prices = stableOrderFlow.getPrices();
+
+    // Enrich each token with aggTrade tick indicators (if OrderFlowModule active)
+    if (stableOrderFlowModule) {
+        for (const token of Object.keys(prices)) {
+            const tf = stableOrderFlowModule.getTickIndicators(token);
+            prices[token].tick = tf.tfAvailable ? {
+                vwap:        tf.tfVWAP,
+                devPct:      tf.tfDevPct,
+                momentum:    tf.tfMomentum,
+                density:     tf.tfDensity,
+                buyDensity:  tf.tfBuyDensity,
+                sellDensity: tf.tfSellDensity,
+                microEMA:    tf.tfMicroEMA,
+                microBull:   tf.tfMicroBull,
+            } : null;
+        }
+    }
+
+    res.json({
+        success: true,
+        running: stableOrderFlow._running,
+        prices,
+        stats:   stableOrderFlow.getStats(),
+        aggTradeActive: !!(stableOrderFlowModule?._wsConnected),
+    });
+});
+
+// GET /api/orderflow/orders — open order book
+app.get('/api/orderflow/orders', (req, res) => {
+    res.json({ success: true, orders: stableOrderFlow.getOrderBook() });
+});
+
+// GET /api/orderflow/fills?limit=50 — fill history
+app.get('/api/orderflow/fills', (req, res) => {
+    const limit = parseInt(req.query.limit) || 50;
+    res.json({ success: true, fills: stableOrderFlow.getFills(limit) });
+});
+
+// POST /api/orderflow/price — manual price feed (for testing)
+// Body: { token: "USDT", price: 0.99 }
+app.post('/api/orderflow/price', (req, res) => {
+    const { token, price } = req.body;
+    if (!token || price === undefined) {
+        return res.status(400).json({ error: 'token and price required' });
+    }
+    stableOrderFlow.feedPrice(token.toUpperCase(), parseFloat(price));
+    res.json({ success: true, token: token.toUpperCase(), price: parseFloat(price), rounded: Math.round(parseFloat(price) * 100) / 100 });
+});
+
+// POST /api/orderflow/order — manual order
+app.post('/api/orderflow/order', async (req, res) => {
+    try {
+        const { tokenIn, tokenOut, amountIn } = req.body;
+        if (!tokenIn || !tokenOut || !amountIn) {
+            return res.status(400).json({ error: 'tokenIn, tokenOut, amountIn required' });
+        }
+        const result = await stableOrderFlow.placeOrder(
+            tokenIn.toUpperCase(),
+            tokenOut.toUpperCase(),
+            parseFloat(amountIn)
+        );
+        res.json({ success: true, order: result });
+    } catch (e) {
+        res.status(500).json({ error: e.message });
+    }
+});
+
+// DELETE /api/orderflow/order/:id — cancel order
+app.delete('/api/orderflow/order/:id', (req, res) => {
+    const result = stableOrderFlow.cancelOrder(req.params.id);
+    res.json(result);
+});
+
+// POST /api/orderflow/start — start engine
+app.post('/api/orderflow/start', (req, res) => {
+    stableOrderFlow.start();
+    res.json({ success: true, message: 'StablecoinOrderFlow started' });
+});
+
+// POST /api/orderflow/stop — stop engine
+app.post('/api/orderflow/stop', (req, res) => {
+    stableOrderFlow.stop();
+    res.json({ success: true, message: 'StablecoinOrderFlow stopped' });
+});
+
+// ===========================================
+// V3.5: RWA MARKETS API
+// ===========================================
+
+const RWA_TOKENS = [
+    { symbol: 'PAXG',   name: 'PAX Gold',                    category: 'gold',      issuer: 'Paxos',       backing: '1 troy oz gold' },
+    { symbol: 'XAUT',   name: 'Tether Gold',                  category: 'gold',      issuer: 'Tether',      backing: '1 troy oz gold' },
+    { symbol: 'OUSG',   name: 'Ondo US Gov Bond',             category: 'tbill',     issuer: 'Ondo Finance',backing: 'US Treasuries' },
+    { symbol: 'USDY',   name: 'Ondo US Dollar Yield',         category: 'yield',     issuer: 'Ondo Finance',backing: 'T-bills + bank deposits' },
+    { symbol: 'BUIDL',  name: 'BlackRock USD Inst. Fund',     category: 'fund',      issuer: 'BlackRock',   backing: 'US T-bills + repos' },
+    { symbol: 'sUSDe',  name: 'Ethena Staked USDe',           category: 'yield',     issuer: 'Ethena',      backing: 'Synthetic delta-neutral USD' },
+    { symbol: 'wstETH', name: 'Lido Wrapped stETH',           category: 'staked_eth',issuer: 'Lido',        backing: 'Staked ETH (beacon chain)' },
+    { symbol: 'STBT',   name: 'Short-term Bond Token',        category: 'tbill',     issuer: 'Matrixport',  backing: 'T-bills + reverse repos' },
+];
+
+// GET /api/rwa/markets — all RWA tokens with live prices
+app.get('/api/rwa/markets', (req, res) => {
+    try {
+        const prices = { ...obeliskAMM.oraclePrices };
+        const markets = RWA_TOKENS.map(t => ({
+            ...t,
+            price: prices[t.symbol] || null,
+            hasPool: obeliskAMM.pools.has(obeliskAMM.getPairId(t.symbol, 'USDC'))
+                  || obeliskStableSwap.pools.has(obeliskStableSwap._pairId(t.symbol, 'USDC'))
+        }));
+        res.json({ success: true, count: markets.length, markets });
+    } catch (e) {
+        res.status(500).json({ error: e.message });
+    }
+});
+
+// GET /api/rwa/pools — RWA pools across AMM + StableSwap
+app.get('/api/rwa/pools', (req, res) => {
+    try {
+        const rwaSymbols = new Set(RWA_TOKENS.map(t => t.symbol));
+
+        const ammPools = obeliskAMM.getAllPools().filter(p =>
+            rwaSymbols.has(p.tokenA) || rwaSymbols.has(p.tokenB)
+        ).map(p => ({ ...p, engine: 'AMM_CPMM', feePercent: '0.30%' }));
+
+        const ssPools = obeliskStableSwap.getAllPools().filter(p =>
+            rwaSymbols.has(p.tokenA) || rwaSymbols.has(p.tokenB)
+        ).map(p => ({ ...p, engine: 'STABLESWAP_CURVE', feePercent: '0.04%' }));
+
+        const allPools = [...ssPools, ...ammPools].sort((a, b) => b.tvl - a.tvl);
+
+        res.json({ success: true, count: allPools.length, pools: allPools });
+    } catch (e) {
+        res.status(500).json({ error: e.message });
+    }
 });
 
 // ===========================================
@@ -4188,6 +4463,22 @@ server.listen(PORT, () => {
         if (ready) {
             console.log('[OBELISK] ✅ AMM ready - PAPER TRADING (liquidité virtuelle)');
             console.log(`[OBELISK]    Pools: ${obeliskAMM.pools.size} | TVL: $${obeliskAMM.calculateTVL().toFixed(0)} (VIRTUEL)`);
+        }
+    });
+
+    // V3.5: Initialize StableSwap (Curve-style, 0.04% fee)
+    obeliskStableSwap.init().then(() => {
+        console.log(`[OBELISK] ✅ StableSwap ready - ${obeliskStableSwap.pools.size} stable pools (A=${obeliskStableSwap.A}, fee=0.04%)`);
+
+        // V3.6: Start StablecoinOrderFlow (after StableSwap is ready)
+        stableOrderFlow.start();
+        console.log('[OBELISK] ✅ StablecoinOrderFlow started — watching depeg signals ($0.01 ticks)');
+
+        // V3.6: Start aggTrade OrderFlowModule for stable pairs
+        if (stableOrderFlowModule) {
+            stableOrderFlowModule.start();
+            stableOrderFlow.setOrderFlow(stableOrderFlowModule);
+            console.log('[OBELISK] ✅ OrderFlowModule (stable aggTrade) started + wired to StableFlow');
         }
     });
 
